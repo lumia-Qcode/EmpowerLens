@@ -5,20 +5,14 @@ Patient-Therapist Interactions"
 
 IMPORTANT — READ BEFORE INTERPRETING RESULTS
 ==============================================
-Psych_data.csv (the "Therapist Q&A" style dataset) contains only:
-    Question (patient text), Answer (therapist text), Therapist, time
-It does NOT contain the 3,000 hand-annotated cognitive-distortion labels
-used in the paper (11 classes: 'No distortion' + 10 distortion types).
-
-Per instructions, this script therefore builds the FULL pipeline end-to-end
-(feature extraction x classifiers, binary + multi-class) but trains on
-SYNTHETIC / PLACEHOLDER labels that are randomly generated to mimic the
-paper's reported label distribution (39.2% No-Distortion, remaining
-60.8% split ~evenly across 10 distortion types). This produces WORKING,
-RUNNABLE CODE that mirrors the paper's design exactly — it does NOT
-produce scientifically meaningful results, since the labels carry no
-real signal from the text. Swap in real annotations (see
-`load_real_labels()` stub) to get genuine results.
+This version trains on the REAL hand-annotated labels in
+Annotated_data.csv (columns: Id_Number, Patient Question, Distorted part,
+Dominant Distortion, Secondary Distortion (Optional)) instead of the
+earlier synthetic/placeholder labels. `Dominant Distortion` is used as
+the ground-truth label (11 classes: 'No Distortion' + 10 distortion
+types), matching the paper's annotation scheme (Section 2.1). The
+synthetic-label generator (`make_synthetic_labels`) is kept in the file
+only for reference/fallback and is no longer called from `main()`.
 
 Offline-environment substitutions (no access to huggingface.co, GloVe
 mirrors, or NLTK download servers from this sandbox):
@@ -58,27 +52,65 @@ DISTORTION_TYPES = [
 ]
 
 # ---------------------------------------------------------------------------
-# 1. LOAD DATA  (patient input only, as in the paper section 2.1)
+# 1. LOAD DATA  (real hand-annotated data, as in the paper section 2.1)
 # ---------------------------------------------------------------------------
 
-def load_data(path="/mnt/user-data/uploads/Psych_data.csv"):
+# Maps the exact strings used in Annotated_data.csv onto the canonical
+# DISTORTION_TYPES spelling/casing used throughout the rest of this script.
+LABEL_NORMALIZATION = {
+    "no distortion": "No Distortion",
+    "emotional reasoning": "Emotional Reasoning",
+    "overgeneralization": "Overgeneralization",
+    "mental filter": "Mental Filter",
+    "should statements": "Should Statements",
+    "all-or-nothing thinking": "All-or-Nothing",
+    "all or nothing": "All-or-Nothing",
+    "mind reading": "Mind Reading",
+    "fortune-telling": "Fortune Telling",
+    "fortune telling": "Fortune Telling",
+    "magnification": "Magnification",
+    "personalization": "Personalization",
+    "labeling": "Labeling",
+}
+
+
+def _normalize_label(raw):
+    key = str(raw).strip().lower()
+    return LABEL_NORMALIZATION.get(key, str(raw).strip())
+
+
+def load_data(path="Annotated_data.csv"):
+    """
+    Loads the real hand-annotated dataset. Uses the patient's input text
+    ('Patient Question') and the 'Dominant Distortion' column as the
+    ground-truth label, exactly as annotated in the paper's methodology
+    (dominant distortion chosen per entry; secondary distortion, if any,
+    is available in 'Secondary Distortion (Optional)' but not used here,
+    matching the paper's primary classification setup).
+    """
     df = pd.read_csv(path)
-    df = df.dropna(subset=["Question"]).reset_index(drop=True)
-    df["text"] = df["Question"].astype(str).str.strip()
+    df = df.dropna(subset=["Patient Question", "Dominant Distortion"]).reset_index(drop=True)
+    df["text"] = df["Patient Question"].astype(str).str.strip()
     df = df[df["text"].str.len() > 10].reset_index(drop=True)
+
+    df["distortion_type"] = df["Dominant Distortion"].apply(_normalize_label)
+    df["binary_label"] = np.where(
+        df["distortion_type"] == "No Distortion", "Non-Distorted", "Distorted"
+    )
     return df
 
 
 # ---------------------------------------------------------------------------
 # 2. SYNTHETIC / PLACEHOLDER LABELS
-#    (Replace this with load_real_labels() once annotations exist)
+#    (kept only for reference / fallback if annotations are ever missing —
+#    NOT used by main() now that real annotations are available)
 # ---------------------------------------------------------------------------
 
 def make_synthetic_labels(n, seed=RANDOM_STATE):
     """
     Randomly assigns labels matching the paper's reported distribution:
     39.2% 'No Distortion', 60.8% split evenly across the 10 distortion types.
-    THESE LABELS CARRY NO REAL SIGNAL — placeholders only, per user request.
+    THESE LABELS CARRY NO REAL SIGNAL — fallback/reference only.
     """
     r = np.random.default_rng(seed)
     p_none = 0.392
@@ -88,11 +120,6 @@ def make_synthetic_labels(n, seed=RANDOM_STATE):
     labels = r.choice(classes, size=n, p=probs)
     binary = np.where(labels == "No Distortion", "Non-Distorted", "Distorted")
     return pd.Series(labels, name="distortion_type"), pd.Series(binary, name="binary_label")
-
-
-def load_real_labels(path=None):
-    """Stub: point this at a CSV with a 'label' column of real annotations."""
-    raise NotImplementedError("No real annotation file was provided.")
 
 
 # ---------------------------------------------------------------------------
@@ -258,17 +285,13 @@ def evaluate_feature_set(X, y, average="weighted"):
 # ---------------------------------------------------------------------------
 
 def main():
-    print("Loading data...")
+    print("Loading real annotated data (Annotated_data.csv)...")
     df = load_data()
-    # subsample for tractable runtime of the full 4-feature x 5-classifier grid
-    N = min(1200, len(df))
-    df = df.sample(n=N, random_state=RANDOM_STATE).reset_index(drop=True)
-    print(f"Using {len(df)} patient entries (subsampled for runtime).")
-
-    print("Generating SYNTHETIC placeholder labels (see module docstring)...")
-    dist_labels, bin_labels = make_synthetic_labels(len(df))
-    df["distortion_type"] = dist_labels
-    df["binary_label"] = bin_labels
+    print(f"Using {len(df)} hand-annotated patient entries.")
+    print("Label distribution (Dominant Distortion):")
+    print(df["distortion_type"].value_counts())
+    print("\nBinary label distribution:")
+    print(df["binary_label"].value_counts())
 
     texts = df["text"].tolist()
     token_lists = [tokenize(t) for t in texts]
@@ -316,10 +339,10 @@ def main():
     multi_df = pd.DataFrame(multi_table).round(2)
     print(multi_df)
 
-    binary_df.to_csv("/home/claude/binary_f1_results.csv")
-    multi_df.to_csv("/home/claude/multiclass_f1_results.csv")
+    binary_df.to_csv("binary_f1_results.csv")
+    multi_df.to_csv("multiclass_f1_results.csv")
     df[["text", "binary_label", "distortion_type"]].to_csv(
-        "/home/claude/labeled_data_sample.csv", index=False
+        "labeled_data_sample.csv", index=False
     )
     print("\nDone. Results saved to binary_f1_results.csv / multiclass_f1_results.csv")
     return binary_df, multi_df
