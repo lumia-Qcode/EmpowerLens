@@ -1,1 +1,21 @@
+# --- Python / envs ---
+.venv/
 venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/
+
+# --- Model weights & checkpoints (never commit — see CLAUDE.md) ---
+*.pt
+*.bin
+*.safetensors
+checkpoints/
+wandb/
+
+# --- HuggingFace / misc caches ---
+.cache/
+
+# NOTE: data/splits/ is intentionally NOT ignored — the frozen train/val/test
+# CSVs and split_manifest.json MUST be committed so every run reads the same
+# splits. Do not add data/splits/ here.
