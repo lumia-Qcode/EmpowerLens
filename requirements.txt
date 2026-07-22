@@ -1,0 +1,17 @@
+# Core numerics / data
+numpy>=1.24
+pandas>=2.0
+
+# Classical ML models + metrics
+scikit-learn>=1.3
+
+# Word2Vec / Doc2Vec embeddings (SIF & S-BERT substitutes)
+gensim>=4.3
+
+# POS tagging
+spacy>=3.7
+# Required spaCy model (install separately after pip install):
+#   python -m spacy download en_core_web_sm
+
+# CLI helper (for planned command-line options)
+click>=8.1

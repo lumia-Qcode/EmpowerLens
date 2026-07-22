@@ -1,0 +1,11 @@
+# Transformer stack for src/train_transformer.py + evaluate.py.
+# Kept separate from requirements.txt (which belongs to the frozen cd_pipeline.py).
+torch
+transformers
+datasets
+accelerate
+scikit-learn
+iterative-stratification
+scipy
+matplotlib
+wandb
