@@ -116,12 +116,29 @@ def metric_bundle(task, y_true, y_pred, model, seed, split,
     return row
 
 
+def _norm_cell(v) -> str:
+    """Normalize a key cell so 42, 42.0, '42' compare equal and ''/NaN/None all
+    collapse to '' (paper rows have an empty seed that reloads as NaN)."""
+    s = str(v).strip()
+    if s in ("", "nan", "NaN", "None", "<NA>"):
+        return ""
+    try:
+        f = float(s)
+        return str(int(f)) if f.is_integer() else s
+    except ValueError:
+        return s
+
+
 def upsert_paper_comparison(rows, path) -> pd.DataFrame:
     """
     Write/merge rows into results/paper_comparison.csv, keyed by
     (model, task, seed, split). Re-running a config overwrites its old row
     rather than appending a duplicate, so the classical baseline and the
     transformer runs accumulate into one table across invocations.
+
+    The dedup key is normalized (via :func:`_norm_cell`) so that seeds read
+    back from CSV as floats/NaN still match freshly-built int/"" values —
+    otherwise the reference rows (empty seed) duplicate on every call.
     """
     path = Path(path)
     new = pd.DataFrame(rows, columns=PAPER_COMPARISON_COLUMNS)
@@ -132,9 +149,11 @@ def upsert_paper_comparison(rows, path) -> pd.DataFrame:
                 old[c] = ""
         old = old[PAPER_COMPARISON_COLUMNS]
         combined = pd.concat([old, new], ignore_index=True)
-        combined = combined.drop_duplicates(subset=_PC_KEY, keep="last").reset_index(drop=True)
     else:
         combined = new
+    norm_key = combined[_PC_KEY].apply(lambda col: col.map(_norm_cell))
+    keep = ~norm_key.duplicated(keep="last")
+    combined = combined[keep.to_numpy()].reset_index(drop=True)
     path.parent.mkdir(parents=True, exist_ok=True)
     combined.to_csv(path, index=False)
     return combined
