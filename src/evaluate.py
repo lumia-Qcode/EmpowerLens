@@ -86,11 +86,24 @@ def predict_logits(model, encodings, pad_id, device, batch_size=16):
     return np.concatenate(chunks, axis=0)
 
 
-def predictions_from_logits(logits, task, thresholds=None):
+def predictions_from_logits(logits, task, thresholds=None, max_labels=0):
     if task == "multilabel":
         probs = 1 / (1 + np.exp(-logits))
         t = np.array(thresholds if thresholds is not None else [0.5] * probs.shape[1])
-        return (probs >= t).astype(int)
+        preds = (probs >= t).astype(int)
+        # Cap to at most `max_labels` positives per row (0 = no cap). The ground
+        # truth carries at most 2 distortions (dominant + optional secondary), so
+        # capping at 2 matches the label structure: keep the highest-probability
+        # fired labels, drop the rest. Rows with <= max_labels are untouched, and
+        # all-zero rows (no_distortion) stay all-zero.
+        if max_labels and max_labels > 0:
+            for i in range(preds.shape[0]):
+                fired = np.nonzero(preds[i])[0]
+                if len(fired) > max_labels:
+                    keep = fired[np.argsort(probs[i, fired])[::-1][:max_labels]]
+                    preds[i] = 0
+                    preds[i, keep] = 1
+        return preds
     return np.argmax(logits, axis=1)
 
 
@@ -126,6 +139,10 @@ def main(argv=None):
     ap.add_argument("--batch-size", type=int, default=16)
     ap.add_argument("--reference", action="store_true",
                     help="append the Shreevastava2021 literature rows (source=paper)")
+    ap.add_argument("--max-labels", type=int, default=2,
+                    help="multilabel only: cap predictions to at most N positives "
+                         "per row (0 = no cap). Default 2 = the dataset's structural "
+                         "max (dominant + optional secondary).")
     args = ap.parse_args(argv)
 
     ckpt = Path(args.checkpoint)
@@ -156,7 +173,7 @@ def main(argv=None):
         y_true = true_labels(df, task)
         enc, trunc_rate = encode_texts(df[TEXT_COL], tokenizer, max_length, truncation)
         logits = predict_logits(model, enc, tokenizer.pad_token_id, device, args.batch_size)
-        y_pred = predictions_from_logits(logits, task, thresholds)
+        y_pred = predictions_from_logits(logits, task, thresholds, max_labels=args.max_labels)
 
         row = metric_bundle(task, y_true, y_pred, model_name, seed, split,
                             truncation_rate=round(trunc_rate, 4))
