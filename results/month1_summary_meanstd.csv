@@ -1,9 +1,13 @@
 model,task,n_classes,split,n_seeds,weighted_f1,macro_f1,macro_f1_10,micro_f1,positive_class_f1,no_distortion_f1,truncation_rate
-mental/mental-bert-base-uncased,multilabel,10.0,test,3,0.195 ± 0.008,0.191 ± 0.013,,0.202 ± 0.004,,,0.020 ± 0.000
-mental/mental-bert-base-uncased,multilabel,10.0,val,3,0.263 ± 0.017,0.262 ± 0.015,,0.255 ± 0.022,,,0.016 ± 0.000
-roberta-base,binary,2.0,test,3,0.720 ± 0.023,0.700 ± 0.025,,0.718 ± 0.024,0.773 ± 0.021,,0.024 ± 0.000
-roberta-base,binary,2.0,val,3,0.767 ± 0.011,0.755 ± 0.012,,0.764 ± 0.010,0.802 ± 0.010,,0.028 ± 0.000
-roberta-base,multiclass,11.0,test,3,0.290 ± 0.007,0.176 ± 0.013,0.138 ± 0.015,0.292 ± 0.003,,0.557 ± 0.006,0.024 ± 0.000
-roberta-base,multiclass,11.0,val,3,0.345 ± 0.011,0.215 ± 0.009,0.175 ± 0.013,0.354 ± 0.016,,0.622 ± 0.039,0.028 ± 0.000
-roberta-base,multilabel,10.0,test,3,0.209 ± 0.009,0.207 ± 0.018,,0.212 ± 0.009,,,0.024 ± 0.000
-roberta-base,multilabel,10.0,val,3,0.287 ± 0.010,0.275 ± 0.012,,0.281 ± 0.012,,,0.028 ± 0.000
+mental/mental-bert-base-uncased,multilabel,10,test,3,0.195 ± 0.008,0.191 ± 0.013,,0.202 ± 0.004,,,0.020 ± 0.000
+mental/mental-bert-base-uncased,multilabel,10,val,3,0.263 ± 0.017,0.262 ± 0.015,,0.255 ± 0.022,,,0.016 ± 0.000
+roberta-base,binary,2,test,3,0.720 ± 0.023,0.700 ± 0.025,,0.718 ± 0.024,0.773 ± 0.021,,0.024 ± 0.000
+roberta-base,binary,2,val,3,0.767 ± 0.011,0.755 ± 0.012,,0.764 ± 0.010,0.802 ± 0.010,,0.028 ± 0.000
+roberta-base,multiclass,11,test,3,0.290 ± 0.007,0.176 ± 0.013,0.138 ± 0.015,0.292 ± 0.003,,0.557 ± 0.006,0.024 ± 0.000
+roberta-base,multiclass,11,val,3,0.345 ± 0.011,0.215 ± 0.009,0.175 ± 0.013,0.354 ± 0.016,,0.622 ± 0.039,0.028 ± 0.000
+roberta-base,multilabel,10,test,3,0.209 ± 0.009,0.207 ± 0.018,,0.212 ± 0.009,,,0.024 ± 0.000
+roberta-base,multilabel,10,val,3,0.287 ± 0.010,0.275 ± 0.012,,0.281 ± 0.012,,,0.028 ± 0.000
+mental/mental-bert-base-uncased,multiclass,11,test,3,0.271 ± 0.003,0.162 ± 0.008,0.125 ± 0.010,0.275 ± 0.007,,0.534 ± 0.015,0.020 ± 0.000
+mental/mental-bert-base-uncased,multiclass,11,val,3,0.337 ± 0.001,0.210 ± 0.010,0.170 ± 0.013,0.333 ± 0.005,,0.608 ± 0.016,0.016 ± 0.000
+mental/mental-bert-base-uncased,binary,2,test,3,0.718 ± 0.009,0.700 ± 0.010,,0.715 ± 0.009,0.768 ± 0.006,,0.020 ± 0.000
+mental/mental-bert-base-uncased,binary,2,val,3,0.745 ± 0.010,0.733 ± 0.012,,0.742 ± 0.010,0.781 ± 0.007,,0.016 ± 0.000
