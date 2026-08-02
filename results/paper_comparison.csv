@@ -24,7 +24,13 @@ roberta-base,multilabel,42.0,val,10,0.294973289381893,0.2887706318019786,,0.2881
 roberta-base,multilabel,42.0,test,10,0.2204939674304499,0.2311797436924771,,0.2166666666666666,,,,0.0237,empowerlens,
 roberta-base,multilabel,1337.0,val,10,0.2726132925060903,0.2589600662726294,,0.2642276422764227,,,,0.0277,empowerlens,
 roberta-base,multilabel,1337.0,test,10,0.1978896351587279,0.1920982726620208,,0.2,,,,0.0237,empowerlens,
-roberta-base,multilabel,2024,val,10,0.2926091287636944,0.2768013812869389,,0.2909090909090909,,,,0.0277,empowerlens,
-roberta-base,multilabel,2024,test,10,0.20878617739716535,0.19636778336603347,,0.2205029013539652,,,,0.0237,empowerlens,
+roberta-base,multilabel,2024.0,val,10,0.2926091287636944,0.2768013812869389,,0.2909090909090909,,,,0.0277,empowerlens,
+roberta-base,multilabel,2024.0,test,10,0.2087861773971653,0.1963677833660334,,0.2205029013539652,,,,0.0237,empowerlens,
+mental/mental-bert-base-uncased,multilabel,42.0,val,10,0.2673603882274557,0.2653035967028265,,0.25,,,,0.0158,empowerlens,
+mental/mental-bert-base-uncased,multilabel,42.0,test,10,0.1838904982946842,0.1748822239525057,,0.1992337164750957,,,,0.0198,empowerlens,
+mental/mental-bert-base-uncased,multilabel,1337.0,val,10,0.240786627395328,0.2418208692170416,,0.2312373225152129,,,,0.0158,empowerlens,
+mental/mental-bert-base-uncased,multilabel,1337.0,test,10,0.2040309994721759,0.2067827281356693,,0.2070393374741201,,,,0.0198,empowerlens,
+mental/mental-bert-base-uncased,multilabel,2024,val,10,0.2822676934431245,0.2788420391671208,,0.2839506172839506,,,,0.0158,empowerlens,
+mental/mental-bert-base-uncased,multilabel,2024,test,10,0.19591810661620015,0.19064335155101736,,0.2,,,,0.0198,empowerlens,
 Shreevastava2021,binary,,paper,2,0.79,,,,,,,,paper,UNSPECIFIED
 Shreevastava2021,multiclass,,paper,UNSTATED,0.3,,,,,,,,paper,weighted
