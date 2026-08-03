@@ -9,3 +9,4 @@ iterative-stratification
 scipy
 matplotlib
 wandb
+seqeval
