@@ -1,3 +1,5 @@
 model,task,n_classes,split,n_seeds,weighted_f1,macro_f1,macro_f1_10,micro_f1,positive_class_f1,no_distortion_f1,truncation_rate
 mental/mental-roberta-base,multilabel,10.0,test,3,0.288 ± 0.008,0.279 ± 0.004,,0.287 ± 0.003,,,0.024 ± 0.000
 mental/mental-roberta-base,multilabel,10.0,val,3,0.345 ± 0.010,0.328 ± 0.009,,0.339 ± 0.008,,,0.028 ± 0.000
+microsoft/deberta-v3-base,multilabel,10.0,test,3,0.209 ± 0.009,0.193 ± 0.010,,0.207 ± 0.012,,,0.008 ± 0.000
+microsoft/deberta-v3-base,multilabel,10.0,val,3,0.343 ± 0.024,0.331 ± 0.025,,0.342 ± 0.022,,,0.012 ± 0.000

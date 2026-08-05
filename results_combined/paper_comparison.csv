@@ -3,7 +3,13 @@ mental/mental-roberta-base,multilabel,42.0,val,10,0.3549111999151446,0.336321331
 mental/mental-roberta-base,multilabel,42.0,test,10,0.2958170492261527,0.2850185864963071,,0.2902584493041749,,,,0.0237,empowerlens,
 mental/mental-roberta-base,multilabel,1337.0,val,10,0.3307811224188573,0.3162080458540278,,0.3278688524590163,,,,0.0277,empowerlens,
 mental/mental-roberta-base,multilabel,1337.0,test,10,0.2776436332744139,0.2757008582595329,,0.2824427480916031,,,,0.0237,empowerlens,
-mental/mental-roberta-base,multilabel,2024,val,10,0.35012112437946935,0.3312250159252855,,0.34324942791762014,,,,0.0277,empowerlens,
-mental/mental-roberta-base,multilabel,2024,test,10,0.29105379013994775,0.27556320754408714,,0.28870292887029286,,,,0.0237,empowerlens,
+mental/mental-roberta-base,multilabel,2024.0,val,10,0.3501211243794693,0.3312250159252855,,0.3432494279176201,,,,0.0277,empowerlens,
+mental/mental-roberta-base,multilabel,2024.0,test,10,0.2910537901399477,0.2755632075440871,,0.2887029288702928,,,,0.0237,empowerlens,
+microsoft/deberta-v3-base,multilabel,42.0,val,10,0.3513694092434074,0.3365911165761128,,0.3462414578587699,,,,0.0119,empowerlens,
+microsoft/deberta-v3-base,multilabel,42.0,test,10,0.2200130995947959,0.2060722468894972,,0.2192393736017897,,,,0.0079,empowerlens,
+microsoft/deberta-v3-base,multilabel,1337.0,val,10,0.366175603200238,0.359054070854556,,0.3673469387755102,,,,0.0119,empowerlens,
+microsoft/deberta-v3-base,multilabel,1337.0,test,10,0.197076568835445,0.1818990554732242,,0.1904761904761904,,,,0.0079,empowerlens,
+microsoft/deberta-v3-base,multilabel,2024,val,10,0.31018353055280684,0.29744986660043005,,0.31346578366445915,,,,0.0119,empowerlens,
+microsoft/deberta-v3-base,multilabel,2024,test,10,0.20947117833551285,0.19233971497946106,,0.21231422505307856,,,,0.0079,empowerlens,
 Shreevastava2021,binary,,paper,2,0.79,,,,,,,,paper,UNSPECIFIED
 Shreevastava2021,multiclass,,paper,UNSTATED,0.3,,,,,,,,paper,weighted
