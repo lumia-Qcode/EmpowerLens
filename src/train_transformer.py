@@ -213,6 +213,12 @@ def main(argv=None):
     if multilabel:
         model_kwargs["problem_type"] = "multi_label_classification"
     model = AutoModelForSequenceClassification.from_pretrained(args.model, **model_kwargs)
+    # Some HF checkpoints (DeBERTa-v3 included) ship a config.json torch_dtype hint that
+    # loads weights as something other than float32. Under fp16 mixed precision, Trainer's
+    # GradScaler expects fp32 master weights and raises "Attempting to unscale FP16
+    # gradients" if it doesn't get them. Forcing fp32 here makes every --model behave the
+    # same way regardless of what its checkpoint config requested.
+    model = model.float()
     model.to(device)
 
     tr_enc, _ = encode_texts(train_df[TEXT_COL], tokenizer, args.max_length, args.truncation, args.head_keep)
