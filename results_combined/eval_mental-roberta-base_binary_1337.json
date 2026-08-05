@@ -1,0 +1,104 @@
+{
+  "meta": {
+    "task": "binary",
+    "model": "mental/mental-roberta-base",
+    "seed": 1337,
+    "epochs": 4,
+    "lr": 2e-05,
+    "batch_size": 16,
+    "max_length": 512,
+    "truncation": "head",
+    "head_keep": 128,
+    "device": "cuda",
+    "smoke": false,
+    "num_labels": 2,
+    "val_truncation_rate": 0.02766798418972332,
+    "val_metrics": {
+      "eval_loss": 0.4721841514110565,
+      "eval_macro_f1": 0.8008658008658008,
+      "eval_runtime": 3.9787,
+      "eval_samples_per_second": 63.589,
+      "eval_steps_per_second": 2.011,
+      "epoch": 4.0
+    },
+    "thresholds": null
+  },
+  "splits": {
+    "val": {
+      "metrics": {
+        "model": "mental/mental-roberta-base",
+        "task": "binary",
+        "seed": 1337.0,
+        "split": "val",
+        "n_classes": 2.0,
+        "weighted_f1": 0.811645534965693,
+        "macro_f1": 0.8008658008658008,
+        "macro_f1_10": "",
+        "micro_f1": 0.8102766798418972,
+        "positive_class_f1": 0.8441558441558441,
+        "no_distortion_f1": "",
+        "no_distortion_wcontrib": "",
+        "truncation_rate": 0.0277,
+        "source": "empowerlens",
+        "averaging": ""
+      },
+      "per_class": [
+        {
+          "class": "non_distorted",
+          "precision": 0.7281553398058253,
+          "recall": 0.7894736842105263,
+          "f1": 0.7575757575757576,
+          "support": 95,
+          "weighted_contribution": 0.28446520541382203
+        },
+        {
+          "class": "distorted",
+          "precision": 0.8666666666666667,
+          "recall": 0.8227848101265823,
+          "f1": 0.8441558441558441,
+          "support": 158,
+          "weighted_contribution": 0.527180329551871
+        }
+      ],
+      "truncation_rate": 0.0277
+    },
+    "test": {
+      "metrics": {
+        "model": "mental/mental-roberta-base",
+        "task": "binary",
+        "seed": 1337.0,
+        "split": "test",
+        "n_classes": 2.0,
+        "weighted_f1": 0.7781231114564449,
+        "macro_f1": 0.7597340930674263,
+        "macro_f1_10": "",
+        "micro_f1": 0.7786561264822134,
+        "positive_class_f1": 0.8271604938271605,
+        "no_distortion_f1": "",
+        "no_distortion_wcontrib": "",
+        "truncation_rate": 0.0237,
+        "source": "empowerlens",
+        "averaging": ""
+      },
+      "per_class": [
+        {
+          "class": "non_distorted",
+          "precision": 0.7,
+          "recall": 0.6847826086956522,
+          "f1": 0.6923076923076923,
+          "support": 92,
+          "weighted_contribution": 0.2517482517482518
+        },
+        {
+          "class": "distorted",
+          "precision": 0.8220858895705522,
+          "recall": 0.8322981366459627,
+          "f1": 0.8271604938271605,
+          "support": 161,
+          "weighted_contribution": 0.5263748597081931
+        }
+      ],
+      "truncation_rate": 0.0237
+    }
+  }
+}
