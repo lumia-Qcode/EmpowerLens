@@ -1,37 +1,26 @@
 import argparse
+import string
 import torch
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from captum.attr import LayerIntegratedGradients
 
 def custom_forward(inputs, model):
-    """
-    Captum requires a function that explicitly returns the raw logits 
-    from the model to calculate the backward gradients.
-    """
     return model(inputs).logits
 
 def highlight_distortion(text: str, model_path: str, threshold_ratio: float = 0.6) -> str:
-    """
-    Analyzes text and returns an HTML string with distorted phrases highlighted.
-    """
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
-    # 1. Load the tokenizer and your locally fine-tuned MentalRoBERTa model
     tokenizer = AutoTokenizer.from_pretrained(model_path)
     model = AutoModelForSequenceClassification.from_pretrained(model_path).to(device)
     model.eval()
 
-    # 2. Tokenize the input text
     inputs = tokenizer(text, return_tensors="pt", truncation=True, max_length=512)
     input_ids = inputs["input_ids"].to(device)
 
-    # 3. Predict the dominant cognitive distortion
     with torch.no_grad():
         logits = model(input_ids).logits
         pred_class = torch.argmax(torch.sigmoid(logits), dim=-1).item()
 
-    # 4. Initialize Captum on RoBERTa's embedding layer
-    # UPDATE: Changed from model.bert.embeddings to model.roberta.embeddings
     lig = LayerIntegratedGradients(
         lambda x: custom_forward(x, model), 
         model.roberta.embeddings
@@ -43,39 +32,59 @@ def highlight_distortion(text: str, model_path: str, threshold_ratio: float = 0.
         return_convergence_delta=True
     )
 
-    # 5. Process the attribution scores for each token
     scores = attributions.sum(dim=-1).squeeze(0).cpu().detach().numpy()
     tokens = tokenizer.convert_ids_to_tokens(input_ids.squeeze(0).tolist())
 
-    # Calculate the dynamic cutoff score based on the highest-scoring word
-    max_score = max(scores) if len(scores) > 0 else 0
+    # 5. Calculate threshold, entirely ignoring punctuation tokens
+    valid_scores = [
+        s for t, s in zip(tokens, scores) 
+        if t not in ["<s>", "</s>", "<pad>"] and not all(c in string.punctuation for c in t.replace("Ġ", ""))
+    ]
+    max_score = max(valid_scores) if valid_scores else 0
     cutoff = max_score * threshold_ratio
 
-    # 6. Reconstruct the sentence and apply HTML <mark> tags
-    highlighted_words = []
+    # 6. Group sub-words into full words and isolate punctuation
+    grouped_words = []
     
     for token, score in zip(tokens, scores):
-        # UPDATE: RoBERTa uses <s>, </s>, and <pad> as special tokens instead of [CLS], [SEP]
         if token in ["<s>", "</s>", "<pad>"]:
             continue
 
-        # UPDATE: RoBERTa uses 'Ġ' to indicate a space BEFORE the word
-        if token.startswith("Ġ"):
-            clean_token = token.replace("Ġ", "")
-            prefix = " " # Add a space
-        else:
-            clean_token = token
-            prefix = "" # No space; attach directly to the previous sub-word
+        clean_token = token.replace("Ġ", "")
+        is_new_word = token.startswith("Ġ")
+        is_punct = all(char in string.punctuation for char in clean_token)
 
-        # Apply the HTML highlight if the word passes the threshold
-        if score >= cutoff and cutoff > 0:
-            formatted_word = f"{prefix}<mark style='background-color: #ffcccc; padding: 0.1em; border-radius: 3px; font-weight: bold;'>{clean_token}</mark>"
+        if is_new_word or not grouped_words:
+            # Start a new word group
+            grouped_words.append({
+                "text": clean_token,
+                "score": 0.0 if is_punct else score,
+                "prefix": " " if is_new_word else ""
+            })
         else:
-            formatted_word = f"{prefix}{clean_token}"
+            if is_punct:
+                # Keep punctuation separate so it never inherits a word's highlight
+                grouped_words.append({
+                    "text": clean_token,
+                    "score": 0.0,
+                    "prefix": ""
+                })
+            else:
+                # Combine sub-words (e.g., "shouldn" + "'t" = "shouldn't")
+                grouped_words[-1]["text"] += clean_token
+                # Give the combined word the highest score of its sub-parts
+                grouped_words[-1]["score"] = max(grouped_words[-1]["score"], score)
 
+    # 7. Apply HTML tags to the cleanly reconstructed words
+    highlighted_words = []
+    for gw in grouped_words:
+        if gw["score"] >= cutoff and cutoff > 0:
+            formatted_word = f"{gw['prefix']}<mark style='background-color: #ffcccc; padding: 0.1em; border-radius: 3px; font-weight: bold;'>{gw['text']}</mark>"
+        else:
+            formatted_word = f"{gw['prefix']}{gw['text']}"
+            
         highlighted_words.append(formatted_word)
 
-    # Clean up any leading whitespace and return the final HTML string
     return "".join(highlighted_words).strip()
 
 
@@ -85,7 +94,6 @@ if __name__ == "__main__":
     parser.add_argument(
         "--model", 
         type=str, 
-        # UPDATE: Point to your MentalRoBERTa checkpoint
         default="checkpoints/multilabel_mental-roberta-base_42",
         help="Path to the saved model checkpoint directory"
     )
