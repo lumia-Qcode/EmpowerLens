@@ -1,6 +1,25 @@
 # =====================================================================
 # PRODUCTION-READY: src/train_transformer.py
 # =====================================================================
+#
+# CHANGES vs the original Month-1/2 version (see EmpowerLens_Report.pdf for
+# the full before/after writeup):
+#   - metric_for_best_model now uses macro_f1_10 for multiclass instead of
+#     macro_f1, so checkpoint selection isn't partly rewarded for the easy
+#     no_distortion class.
+#   - --loss {bce,focal} for multilabel, --focal-gamma to tune it.
+#   - --label-smoothing for binary/multiclass CrossEntropyLoss.
+#   - --grad-accum for a larger effective batch size on a small physical one.
+#   - --lr-scheduler {linear,cosine}.
+#   - --dropout to override the classification head's dropout.
+#   - --freeze-layers to freeze the bottom N encoder layers (coarse
+#     regularization for backbones that overfit, e.g. DeBERTa-v3-base).
+#   - --llrd / --llrd-decay for layer-wise learning-rate decay, a softer
+#     alternative to --freeze-layers.
+#   - --early-stopping-patience to stop wasting epochs once val stops
+#     improving, instead of always training the full --epochs.
+# All new flags default to the OLD behavior (off / unchanged) so existing
+# commands from before this change still run identically unless you opt in.
 
 import os
 os.environ.setdefault("KMP_DUPLICATE_LIB_OK", "TRUE")
@@ -18,16 +37,19 @@ from sklearn.metrics import f1_score
 from transformers import (
     AutoModelForSequenceClassification,
     AutoTokenizer,
+    EarlyStoppingCallback,
     Trainer,
     TrainingArguments,
     set_seed,
 )
 
 from src.data import DISTORTIONS, MC_CLASSES
+from src.losses import FocalLoss, build_llrd_optimizer, freeze_bottom_layers
 
 TEXT_COL = "Patient Question"
 ML_COLS = [f"ml_{d}" for d in DISTORTIONS]
 TASK_NUM_LABELS = {"binary": 2, "multiclass": 11, "multilabel": 10}
+
 
 def resolve_device(choice: str) -> str:
     if choice != "auto":
@@ -38,8 +60,10 @@ def resolve_device(choice: str) -> str:
         return "mps"
     return "cpu"
 
+
 def load_split(splits_dir: str, name: str) -> pd.DataFrame:
     return pd.read_csv(f"{splits_dir}/{name}.csv", encoding="utf-8-sig")
+
 
 def get_labels(df: pd.DataFrame, task: str):
     if task == "binary":
@@ -48,6 +72,7 @@ def get_labels(df: pd.DataFrame, task: str):
         return df["y_mc"].to_numpy().astype(np.int64)
     return df[ML_COLS].to_numpy().astype(np.float32)
 
+
 def _special_token_ids(tokenizer):
     cls = tokenizer.cls_token_id if tokenizer.cls_token_id is not None else tokenizer.bos_token_id
     sep = tokenizer.sep_token_id if tokenizer.sep_token_id is not None else tokenizer.eos_token_id
@@ -55,10 +80,11 @@ def _special_token_ids(tokenizer):
     suffix = [sep] if sep is not None else []
     return prefix, suffix
 
+
 def encode_texts(texts, tokenizer, max_length: int, strategy: str, head_keep: int):
     prefix, suffix = _special_token_ids(tokenizer)
     budget = max_length - len(prefix) - len(suffix)
-    
+
     do_head_tail = strategy == "head_tail" and budget > head_keep
     keep_tail = budget - head_keep
     encodings, truncated = [], 0
@@ -82,6 +108,7 @@ def encode_texts(texts, tokenizer, max_length: int, strategy: str, head_keep: in
     rate = truncated / max(len(texts), 1)
     return encodings, rate
 
+
 class TextDataset(torch.utils.data.Dataset):
     def __init__(self, encodings, labels):
         self.encodings = encodings
@@ -94,6 +121,7 @@ class TextDataset(torch.utils.data.Dataset):
         item = dict(self.encodings[i])
         item["labels"] = self.labels[i]
         return item
+
 
 def collate(batch, pad_id, multilabel):
     maxlen = max(len(b["input_ids"]) for b in batch)
@@ -109,17 +137,20 @@ def collate(batch, pad_id, multilabel):
         "labels": torch.tensor(labels, dtype=torch.float if multilabel else torch.long),
     }
 
+
 def class_weights(y, num_labels, device):
     counts = np.bincount(y, minlength=num_labels).astype(float)
     counts[counts == 0] = 1.0
     w = len(y) / (num_labels * counts)
     return torch.tensor(w, dtype=torch.float, device=device)
 
+
 def pos_weights(y_ml, device):
     n_pos = y_ml.sum(axis=0)
     n_pos[n_pos == 0] = 1.0
     w = (len(y_ml) - n_pos) / n_pos
     return torch.tensor(w, dtype=torch.float, device=device)
+
 
 class WeightedTrainer(Trainer):
     def __init__(self, *args, loss_fn=None, **kwargs):
@@ -131,6 +162,7 @@ class WeightedTrainer(Trainer):
         outputs = model(**inputs)
         loss = self.loss_fn(outputs.logits, labels)
         return (loss, outputs) if return_outputs else loss
+
 
 def make_compute_metrics(task):
     def compute(eval_pred):
@@ -150,6 +182,7 @@ def make_compute_metrics(task):
         return out
     return compute
 
+
 def sweep_thresholds(probs, y_true):
     grid = np.arange(0.05, 0.96, 0.05)
     thresholds = []
@@ -161,6 +194,7 @@ def sweep_thresholds(probs, y_true):
                 best_f1, best_t = f, float(t)
         thresholds.append(round(best_t, 2))
     return thresholds
+
 
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Fine-tune a transformer baseline.")
@@ -178,6 +212,23 @@ def main(argv=None):
     ap.add_argument("--out", default="checkpoints")
     ap.add_argument("--smoke", action="store_true", help="100 rows execution check")
     ap.add_argument("--wandb", action="store_true", help="enable W&B")
+
+    # --- new flags (all default to old behavior) -----------------------
+    ap.add_argument("--loss", choices=["bce", "focal"], default="bce",
+                    help="multilabel only: BCEWithLogitsLoss (default) or FocalLoss")
+    ap.add_argument("--focal-gamma", type=float, default=2.0, help="focal loss gamma, only used with --loss focal")
+    ap.add_argument("--label-smoothing", type=float, default=0.0,
+                    help="binary/multiclass CrossEntropyLoss label smoothing, 0.0 = off (old behavior)")
+    ap.add_argument("--grad-accum", type=int, default=1, help="gradient_accumulation_steps")
+    ap.add_argument("--lr-scheduler", choices=["linear", "cosine"], default="linear")
+    ap.add_argument("--dropout", type=float, default=None,
+                    help="override classifier/hidden dropout prob; default None = model's own config default")
+    ap.add_argument("--freeze-layers", type=int, default=0,
+                    help="freeze the bottom N encoder layers, 0 = off (old behavior)")
+    ap.add_argument("--llrd", action="store_true", help="use layer-wise LR decay optimizer instead of flat --lr")
+    ap.add_argument("--llrd-decay", type=float, default=0.9, help="per-layer LR multiplier, only used with --llrd")
+    ap.add_argument("--early-stopping-patience", type=int, default=0,
+                    help="stop after N eval epochs with no improvement, 0 = off (old behavior: always run --epochs)")
     args = ap.parse_args(argv)
 
     if args.truncation == "head_tail" and args.max_length <= args.head_keep:
@@ -212,6 +263,13 @@ def main(argv=None):
     model_kwargs = {"num_labels": num_labels}
     if multilabel:
         model_kwargs["problem_type"] = "multi_label_classification"
+    if args.dropout is not None:
+        # Not every architecture recognizes both of these config fields, but
+        # from_pretrained silently ignores kwargs a given config class doesn't
+        # define, so passing both is safe across RoBERTa/MentalRoBERTa/DeBERTa.
+        model_kwargs["classifier_dropout"] = args.dropout
+        model_kwargs["hidden_dropout_prob"] = args.dropout
+
     model = AutoModelForSequenceClassification.from_pretrained(args.model, **model_kwargs)
     # Some HF checkpoints (DeBERTa-v3 included) ship a config.json torch_dtype hint that
     # loads weights as something other than float32. Under fp16 mixed precision, Trainer's
@@ -219,6 +277,11 @@ def main(argv=None):
     # gradients" if it doesn't get them. Forcing fp32 here makes every --model behave the
     # same way regardless of what its checkpoint config requested.
     model = model.float()
+
+    if args.freeze_layers > 0:
+        n_total = freeze_bottom_layers(model, args.freeze_layers)
+        print(f"[freeze] froze bottom {args.freeze_layers}/{n_total} encoder layers")
+
     model.to(device)
 
     tr_enc, _ = encode_texts(train_df[TEXT_COL], tokenizer, args.max_length, args.truncation, args.head_keep)
@@ -228,26 +291,47 @@ def main(argv=None):
 
     if multilabel:
         pw = pos_weights(y_train, device)
-        loss_fn = nn.BCEWithLogitsLoss(pos_weight=pw)
+        if args.loss == "focal":
+            loss_fn = FocalLoss(pos_weight=pw, gamma=args.focal_gamma)
+            print(f"[loss] FocalLoss(gamma={args.focal_gamma}) with pos_weight from class frequency")
+        else:
+            loss_fn = nn.BCEWithLogitsLoss(pos_weight=pw)
     else:
         cw = class_weights(y_train, num_labels, device)
-        loss_fn = nn.CrossEntropyLoss(weight=cw)
+        loss_fn = nn.CrossEntropyLoss(weight=cw, label_smoothing=args.label_smoothing)
 
     run_name = f"{args.task}_{args.model.split('/')[-1]}_{args.seed}" + ("_smoke" if args.smoke else "")
     out_dir = Path(args.out) / run_name
 
+    # Old default was hardcoded to macro_f1 for every task, which for
+    # multiclass rewards the model partly for the easy no_distortion class.
+    # macro_f1_10 (no_distortion excluded) is the honest selection metric.
+    metric_key = "macro_f1_10" if args.task == "multiclass" else "macro_f1"
+
     targs = TrainingArguments(
         output_dir=str(out_dir), num_train_epochs=args.epochs, per_device_train_batch_size=args.batch_size,
         per_device_eval_batch_size=args.batch_size, learning_rate=args.lr, warmup_ratio=0.1, weight_decay=0.01,
-        eval_strategy="epoch", save_strategy="epoch", load_best_model_at_end=True, metric_for_best_model="macro_f1",
+        gradient_accumulation_steps=args.grad_accum, lr_scheduler_type=args.lr_scheduler,
+        eval_strategy="epoch", save_strategy="epoch", load_best_model_at_end=True, metric_for_best_model=metric_key,
         greater_is_better=True, save_total_limit=1, fp16=(device == "cuda"), logging_steps=10, report_to=report_to,
         seed=args.seed, use_cpu=(device == "cpu"),
     )
+
+    optimizers = (None, None)
+    if args.llrd:
+        optimizer = build_llrd_optimizer(model, base_lr=args.lr, decay=args.llrd_decay, head_lr=args.lr)
+        optimizers = (optimizer, None)  # Trainer builds the matching scheduler itself
+        print(f"[llrd] layer-wise LR decay enabled: base_lr={args.lr} decay={args.llrd_decay}")
+
+    callbacks = []
+    if args.early_stopping_patience > 0:
+        callbacks.append(EarlyStoppingCallback(early_stopping_patience=args.early_stopping_patience))
 
     trainer = WeightedTrainer(
         model=model, args=targs, train_dataset=train_ds, eval_dataset=val_ds,
         data_collator=functools.partial(collate, pad_id=tokenizer.pad_token_id, multilabel=multilabel),
         compute_metrics=make_compute_metrics(args.task), processing_class=tokenizer, loss_fn=loss_fn,
+        optimizers=optimizers, callbacks=callbacks or None,
     )
 
     trainer.train()
@@ -274,6 +358,10 @@ def main(argv=None):
         "task": args.task, "model": args.model, "seed": args.seed, "epochs": args.epochs, "lr": args.lr,
         "batch_size": args.batch_size, "max_length": args.max_length, "truncation": args.truncation,
         "head_keep": args.head_keep, "device": device, "smoke": args.smoke, "num_labels": num_labels,
+        "loss": args.loss if multilabel else "weighted_ce", "focal_gamma": args.focal_gamma if args.loss == "focal" else None,
+        "label_smoothing": args.label_smoothing, "grad_accum": args.grad_accum, "lr_scheduler": args.lr_scheduler,
+        "dropout": args.dropout, "freeze_layers": args.freeze_layers, "llrd": args.llrd, "llrd_decay": args.llrd_decay,
+        "early_stopping_patience": args.early_stopping_patience,
         "val_truncation_rate": val_trunc_rate,
         "val_metrics": {k: float(v) for k, v in val_metrics.items() if isinstance(v, (int, float))},
         "thresholds": thresholds,
@@ -281,8 +369,9 @@ def main(argv=None):
     (out_dir / "meta.json").write_text(json.dumps(meta, indent=2))
 
     print(f"\nSaved to {out_dir}/")
-    print(f"  val macro_f1 = {val_metrics.get('eval_macro_f1', float('nan')):.3f}")
+    print(f"  val {metric_key} = {val_metrics.get('eval_' + metric_key, float('nan')):.3f}")
     return 0
+
 
 if __name__ == "__main__":
     raise SystemExit(main())
