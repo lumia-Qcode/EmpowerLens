@@ -55,19 +55,18 @@ os.chdir(REPO_DIR)
 # assigns T4 x2 and the multi-device weight-loading path can deadlock silently.
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
-# Never let the Hub stall a training run — but never block the first download either.
+# NOTE: deliberately NO Hugging Face environment manipulation here.
 #
-# `from_pretrained("mental/mental-roberta-base")` runs once per seed per stage, 9+
-# times a session. Even with the weights cached it makes a network call to check
-# whether the cached copy is current, and that call has NO default timeout.
-# Observed failure: a run hangs right after printing "[task] device=cuda model=...",
-# GPU at 0%, on a seed that had trained fine minutes earlier.
+# An earlier version set HF_HUB_OFFLINE=1 (and download timeouts) to stop
+# `from_pretrained` making a network call on every seed. That was a misdiagnosis
+# and it CAUSED a failure that did not exist before: the pre-cache used an
+# allow_patterns allowlist, so any file it did not match was never downloaded —
+# and offline mode then made that file unfetchable, so AutoTokenizer.from_pretrained
+# stalled instead of failing cleanly. Stage 1 trained fine before it was added.
 #
-# Forcing HF_HUB_OFFLINE=1 unconditionally fixed that but broke fresh sessions,
-# where nothing is cached yet and offline mode cannot fetch anything. So: set
-# timeouts always, and switch to offline ONLY once the weights are confirmed local.
-os.environ.setdefault("HF_HUB_ETAG_TIMEOUT", "10")
-os.environ.setdefault("HF_HUB_DOWNLOAD_TIMEOUT", "60")
+# Leave `from_pretrained` to manage its own cache. If a genuine Hub stall ever
+# needs handling, do it with a timeout around the call, not by pre-emptively
+# blocking the network.
 
 # --- config -----------------------------------------------------------------
 MODEL = "mental/mental-roberta-base"
@@ -203,26 +202,10 @@ def run_and_report(task, splits_dir, out_dir, seed, extra_flags="", eval_flags="
     return ckpt
 
 
-def _warm_hf_cache():
-    """Download MODEL once, then pin every later load to the local cache.
+if os.environ.get("HF_HUB_OFFLINE") == "1":
+    # A previous version of this file set this and it broke model loading. If it
+    # is still set in the kernel from an earlier exec, clear it.
+    del os.environ["HF_HUB_OFFLINE"]
+    print("[bootstrap] cleared a stale HF_HUB_OFFLINE=1 from this kernel")
 
-    Downloading here (in the notebook process, with a visible progress bar) rather
-    than inside the first training subprocess means: a fresh session works, the
-    download happens exactly once, and every subsequent `from_pretrained` runs with
-    HF_HUB_OFFLINE=1 — no network call, so it cannot hang.
-    """
-    if os.environ.get("HF_HUB_OFFLINE") == "1":
-        print("[bootstrap] HF_HUB_OFFLINE already 1 — assuming cache is warm")
-        return
-    try:
-        from huggingface_hub import snapshot_download
-        snapshot_download(MODEL, allow_patterns=["*.json", "*.txt", "*.safetensors", "*.bin", "*.model"])
-        os.environ["HF_HUB_OFFLINE"] = "1"
-        print(f"[bootstrap] {MODEL} cached; HF_HUB_OFFLINE=1 for all later loads")
-    except Exception as e:  # noqa: BLE001 - never block the run on a warm-up
-        print(f"[bootstrap] could not pre-cache {MODEL} ({type(e).__name__}: {e})")
-        print("[bootstrap] staying ONLINE — check the HF_TOKEN cell and the model licence")
-
-
-_warm_hf_cache()
 print(f"[bootstrap] cwd={Path.cwd()}  model={MODEL}  seeds={SEEDS}  ckpts={CKPT_DIR}")
