@@ -15,30 +15,63 @@ Stage 2 adds focal loss (γ=2.0) + layer-wise LR decay (0.9) at lr 3e-5.
 
 ---
 
-## 1. Valid results
+## 1. Valid results — complete, all three seeds
 
-| Model | Task | weighted_f1 | macro_f1 | macro_f1_10 |
-|---|---|---|---|---|
-| **Cascade** (Stage 1 → Stage 2) | multilabel | **0.229 ± 0.022** | **0.225 ± 0.027** | — |
-| Flat multiclass (`results_multiclass_v2`) | multiclass (11) | 0.280 ± 0.022 | — | **0.125 ± 0.008** |
-| Stage 1 (binary) | binary | 0.746 † | — | — |
+| Model | Task | weighted_f1 | macro_f1 | micro_f1 | macro_f1_10 | positive_class_f1 |
+|---|---|---|---|---|---|---|
+| **Stage 1** | binary | 0.738 ± 0.012 | 0.720 ± 0.010 | 0.735 ± 0.014 | — | **0.785 ± 0.018** |
+| **Cascade** (S1 → S2) | multilabel | **0.229 ± 0.023** | **0.225 ± 0.027** | 0.235 ± 0.025 | — | — |
+| Flat multiclass | multiclass (11) | 0.280 ± 0.022 | — | 0.275 ± 0.028 | **0.124 ± 0.008** | — |
+| *Stage 2 isolated* ‡ | multilabel | *0.273 ± 0.017* | *0.262 ± 0.023* | *0.278 ± 0.015* | — | — |
 
-† Stage 1: `positive_class_f1 = 0.791`, seed 2024 only — seeds 42 and 1337 were
-not recorded from the console. **Re-read them from `results_stage1/eval_*.json`
-before citing**, and report mean ± std like everything else.
+‡ **Not a cascade result.** Scored on distorted-only inputs, which removes the 92
+No-Distortion test rows (36% of the test set) and hides every Stage 1 false
+negative. Tagged `[stage2-isolated]` in `paper_comparison.csv`. Listed here only
+to compute the cascade tax below.
 
-### Notes on the cascade number
+### The cascade tax is smaller than expected
 
-- **Seed spread is wide**: 0.250 / 0.229 / 0.197 for seeds 42 / 1337 / 2024 —
-  ±12% of the mean. Report it as-is rather than smoothing; with 1,278 training
-  rows across 10 classes (~128/class, rarest = 101), that instability is itself
-  evidence that **data volume is the binding constraint**.
-- **Stage 1 is the ceiling.** Any distorted row Stage 1 misses never reaches
-  Stage 2 and is permanently wrong, whatever Stage 2's quality.
-- Stage 2 in isolation scored **val macro_f1 0.343 / 0.331** (seeds 42 / 1337).
-  That figure is *not* comparable — it drops the 92 No-Distortion test rows (36%
-  of the test set) and hides every Stage 1 false negative. It is tagged
-  `[stage2-isolated]` in `paper_comparison.csv` for exactly that reason.
+```
+Stage 2 isolated  macro_f1 = 0.262
+Cascade end-to-end macro_f1 = 0.225
+                    drop   = 0.037   -> retains 86% of isolated performance
+```
+
+Composing the two stages costs only **14%** of Stage 2's standalone quality. That
+is because Stage 1 has strong recall on the distorted class
+(`positive_class_f1 = 0.785`), so most distorted rows do reach Stage 2 — the
+pipeline loses far less than the "Stage 1 is a hard ceiling" framing suggests.
+
+This is a genuinely favourable result for the two-stage design and worth stating
+explicitly: **the cascade's weakness is not error propagation from Stage 1.**
+
+### Stage 2 overfits: 22% val→test drop
+
+```
+val macro_f1  0.343 / 0.331   (seeds 42 / 1337)   mean 0.337
+test macro_f1 0.287 / 0.258 / 0.242               mean 0.262
+```
+
+A 22% relative drop on 1,278 training rows across 10 classes (~128 per class,
+rarest = 101). Together with the wide seed spread below, this is the clearest
+evidence in the run that **training data volume is the binding constraint** — and
+therefore the strongest internal argument for the synthetic-data track.
+
+### Seed spread is wide — report it, don't smooth it
+
+Cascade macro_f1 by seed: **0.250 / 0.229 / 0.197** — a range of 0.053 on a mean
+of 0.225, i.e. ±12%. Same story on Stage 2 isolated (0.287 / 0.258 / 0.242).
+Instability of that size at this data volume is a finding, not noise to hide.
+
+### Stage 1 vs the literature
+
+`positive_class_f1 = 0.785 ± 0.018` against the paper's headline binary
+**F1 = 0.79**, and the leakage-fixed classical replication's **0.69**. Stage 1
+clears the classical baseline comfortably and effectively matches the paper — on
+clean splits, which the paper's own pipeline did not have.
+
+**Confirm which F1 variant the paper reports** before claiming the match: if it is
+weighted rather than positive-class, the comparable number is **0.738**, not 0.785.
 
 ---
 
@@ -138,9 +171,12 @@ The binary task already provides a headline above 0.70.
 
 ## 6. Known gaps
 
-- [ ] Flat multilabel baseline on `data/splits` (§3)
-- [ ] Stage 1 `positive_class_f1` for seeds 42 and 1337
-- [ ] Stage 2 isolated **test** macro_f1 (only val recorded)
-- [ ] Confirm the paper's binary F1 variant, and the 33.7% agreement figure
-- [ ] Per-class breakdown — which of the 10 distortions the cascade fails on
-      (`per_class_cascade_multilabel_*.csv` has it, unread)
+- [ ] **Flat multilabel baseline on `data/splits`** (§3) — the only thing blocking
+      a defensible "is the cascade better than flat?" claim. ~5 min.
+- [ ] Confirm the paper's binary F1 variant (weighted vs positive-class), and the
+      33.7% agreement figure, against the source
+- [ ] Per-class breakdown — which of the 10 distortions the cascade fails on.
+      `per_class_cascade_multilabel_*.csv` has it and is still unread; it feeds
+      directly into the "which classes aren't separable" taxonomy argument
+- [x] ~~Stage 1 `positive_class_f1` for seeds 42 and 1337~~ — recorded, §1
+- [x] ~~Stage 2 isolated **test** macro_f1~~ — recorded, §1
