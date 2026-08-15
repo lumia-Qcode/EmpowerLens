@@ -26,6 +26,7 @@ import json
 import os
 import signal
 import subprocess
+import threading
 import time
 from pathlib import Path
 
@@ -112,21 +113,47 @@ for _d in (STAGE1_OUT, MULTICLASS_OUT, STAGE2_OUT, CASCADE_OUT):
 
 # --- helpers ----------------------------------------------------------------
 def sh(cmd, timeout=None):
-    """Run a command with a HARD timeout; kill the whole process group if it hangs."""
-    print(f"$ {cmd}")
-    proc = subprocess.Popen(cmd, shell=True, start_new_session=True)
+    """Run a command with a HARD timeout; kill the whole process group if it hangs.
+
+    Output is PIPED and drained by a reader thread. This is not cosmetic — it is
+    the fix for the stalls that plagued earlier runs.
+
+    The previous version passed no stdout/stderr, so the child inherited the
+    kernel's file descriptors and wrote into a pipe with a fixed ~64KB OS buffer.
+    Nothing drained that pipe while the parent sat blocked in proc.wait(), so once
+    training had emitted 64KB (roughly the point of the "Loading weights" bar) the
+    child blocked forever on write() and the parent blocked forever on the child.
+    A textbook deadlock — and timing-dependent, which is why the same seed would
+    train fine once and stall the next time, and why running the identical command
+    with `!python ...` always worked: Jupyter drains as it goes.
+    """
+    print(f"$ {cmd}", flush=True)
+    proc = subprocess.Popen(
+        cmd, shell=True, start_new_session=True,
+        stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+        text=True, bufsize=1, errors="replace",
+    )
+
+    def _drain():
+        for line in proc.stdout:
+            print(line, end="", flush=True)
+
+    reader = threading.Thread(target=_drain, daemon=True)
+    reader.start()
+
     try:
         rc = proc.wait(timeout=timeout)
     except subprocess.TimeoutExpired:
-        print(f"[TIMEOUT after {timeout}s] killing process group: {cmd}")
+        print(f"[TIMEOUT after {timeout}s] killing process group: {cmd}", flush=True)
         try:
             os.killpg(os.getpgid(proc.pid), signal.SIGKILL)
         except ProcessLookupError:
             pass
         proc.wait()
         rc = -1
+    reader.join(timeout=10)     # let the tail of the output land before returning
     if rc != 0:
-        print(f"[FAILED] exit code {rc}: {cmd}")
+        print(f"[FAILED] exit code {rc}: {cmd}", flush=True)
     return rc
 
 
