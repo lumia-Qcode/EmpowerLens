@@ -7,6 +7,7 @@ from __future__ import annotations
 import argparse
 import functools
 import json
+import sys
 from pathlib import Path
 
 import matplotlib
@@ -115,6 +116,10 @@ def main(argv=None):
     ap.add_argument("--batch-size", type=int, default=16)
     ap.add_argument("--reference", action="store_true", help="append literature rows")
     ap.add_argument("--max-labels", type=int, default=2, help="multilabel only: cap predictions")
+    ap.add_argument("--allow-distorted-only", action="store_true",
+                    help="permit evaluating against a distorted-only splits dir "
+                         "(Stage 2 in isolation). Results are NOT cascade results — "
+                         "see src/evaluate_cascade.py.")
     args = ap.parse_args(argv)
 
     ckpt = Path(args.checkpoint)
@@ -129,6 +134,36 @@ def main(argv=None):
     head_keep = meta.get("head_keep", 128)
     thresholds = meta.get("thresholds")
     tag = model_name.split("/")[-1]
+
+    # --- Guard: the isolated-Stage-2 trap -----------------------------------
+    # A distorted-only splits dir (produced by make_splits_cascade.py) has had
+    # every No-Distortion row removed. Multilabel metrics computed on it look
+    # excellent, because the hardest and most numerous class is simply absent —
+    # and they are NOT cascade results: they hide every false negative Stage 1
+    # makes. Use src/evaluate_cascade.py for an honest end-to-end number.
+    _test_df = load_split(args.splits, "test")
+    _distorted_only = "y_bin" in _test_df.columns and int((_test_df["y_bin"] == 0).sum()) == 0
+    if _distorted_only:
+        if not args.allow_distorted_only:
+            print(
+                f"\nREFUSING to evaluate: '{args.splits}' contains no No-Distortion rows "
+                f"(all {len(_test_df)} test rows have y_bin==1), so it is a distorted-only\n"
+                f"Stage 2 splits dir. Metrics from it are NOT cascade results and are not\n"
+                f"comparable to any flat model.\n\n"
+                f"  For an honest end-to-end cascade number:\n"
+                f"    python -m src.evaluate_cascade --stage1-checkpoint ... "
+                f"--stage2-checkpoint {args.checkpoint} --splits data/splits_combined\n\n"
+                f"  If you really want Stage 2 in isolation (diagnostics only), re-run with "
+                f"--allow-distorted-only.\n",
+                file=sys.stderr,
+            )
+            return 1
+        # Allowed — but tag the output so the provenance travels with the numbers
+        # and cannot be mistaken for a cascade result in paper_comparison.csv.
+        model_name = f"{model_name}[stage2-isolated]"
+        tag = f"{tag}_stage2-isolated"
+        print("[warn] distorted-only splits: these are Stage-2 ISOLATED diagnostics, "
+              "not cascade results.")
 
     device = resolve_device(args.device)
     tokenizer = AutoTokenizer.from_pretrained(str(ckpt))

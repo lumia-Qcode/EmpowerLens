@@ -1,0 +1,32 @@
+{
+  "created_utc": "2026-08-15T15:04:38.438460+00:00",
+  "purpose": "Stage 2 splits = --source splits filtered to y_bin==1 (distorted only). No re-splitting: row-level train/val/test boundaries are inherited unchanged from --source.",
+  "source_dir": "data\\splits_combined",
+  "n_per_split": {
+    "train": 2694,
+    "val": 158,
+    "test": 161
+  },
+  "n_removed_no_distortion": {
+    "train": 1951,
+    "val": 95,
+    "test": 92
+  },
+  "per_class_train": {
+    "emotional_reasoning": 347,
+    "overgeneralization": 431,
+    "mental_filter": 240,
+    "should_statements": 324,
+    "all_or_nothing": 244,
+    "mind_reading": 465,
+    "fortune_telling": 390,
+    "magnification": 336,
+    "personalization": 254,
+    "labeling": 487
+  },
+  "source_file_sha256": {
+    "train": "6e7d86c767ac851f1931c30aa3c5347d9576753dd16231a218b34644963a7334",
+    "val": "85e1a97421ba9006d685d0ffc9be9c443b41b9de1f3fa0c9bd3425123b0abaa5",
+    "test": "19ab5e226901563bb21c804b16346d180d55dbac06b6c9498138df40d64bbc1e"
+  }
+}
