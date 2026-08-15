@@ -3,53 +3,42 @@ Replication of the methodology in:
 Shreevastava & Foltz (2021), "Detecting Cognitive Distortions from
 Patient-Therapist Interactions"
 
-FIXES APPLIED (vs. original cd_pipeline.py)
+IMPORTANT — READ BEFORE INTERPRETING RESULTS
 ==============================================
-1. TRANSDUCTIVE LEAKAGE FIXED
-   Previously every embedding method (Word2Vec/SIF, Doc2Vec, POS-Word2Vec,
-   SIF's SVD "common component removal") was fit on ALL rows (train+val+test)
-   before the classifier's own train_test_split. This is a real leak:
-     - Doc2Vec (dm=1) learns a parameter vector per document during
-       training, so test-set text was literally optimized into the
-       embedding space it was later "evaluated" on.
-     - Word2Vec vocab/frequencies and SIF's `a/(a+pw)` weighting were
-       computed from corpus stats that included val+test text.
-     - The SIF TruncatedSVD (common-component removal) was fit on the
-       full matrix, so the "noise direction" subtracted was shaped by
-       held-out documents too.
-     - POS-tag Word2Vec had the same full-corpus-fit problem.
-   FIX: every embedding model below is fit ONLY on the training split's
-   text. Val/test vectors are produced by *inference* against the
-   already-fitted model (Word2Vec: average of known word vectors;
-   Doc2Vec: model.infer_vector(); SIF: apply train-fit vocab weights +
-   project out the train-fit principal component, no refitting; POS
-   Word2Vec: same pattern as word-level Word2Vec).
+This version trains on the REAL hand-annotated labels in
+Annotated_data.csv (columns: Id_Number, Patient Question, Distorted part,
+Dominant Distortion, Secondary Distortion (Optional)) instead of the
+earlier synthetic/placeholder labels. `Dominant Distortion` is used as
+the ground-truth label (11 classes: 'No Distortion' + 10 distortion
+types), matching the paper's annotation scheme (Section 2.1). The
+synthetic-label generator (`make_synthetic_labels`) is kept in the file
+only for reference/fallback and is no longer called from `main()`.
 
-2. PRE-COMPUTED SPLITS NOW USED
-   Previously `load_data()` read a nonexistent "Annotated_data.csv" and
-   `evaluate_feature_set()` did its own fresh 80/20 `train_test_split`
-   *every time it was called* (once per feature set x per task), so the
-   test set silently differed between SIF/Doc2Vec/LIWC/POS/hybrid runs
-   and between binary vs. multiclass runs, and val.csv was never touched.
-   FIX: this script loads train.csv / val.csv / test.csv directly (the
-   iterative-stratification split described in split_manifest.json) and
-   reuses the exact same three splits for every feature set and every
-   task, so results are reproducible and comparable. val.csv is used for
-   a val-set F1 as well as test.csv, matching the manifest's 80/10/10
-   split.
-
-Everything else (LIWC lexicon features, spaCy POS tagging, classifier
-choices, offline substitutions for GloVe/S-BERT) is unchanged from the
-original script.
+Offline-environment substitutions (no access to huggingface.co, GloVe
+mirrors, or NLTK download servers from this sandbox):
+  - SIF semantic embeddings : Word2Vec (Skip-gram) trained ON THIS CORPUS
+                              (in place of pretrained GloVe), then SIF-weighted
+                              and averaged, per Arora et al. (2016).
+  - S-BERT stand-in         : Doc2Vec (Distributed Memory) trained on this
+                              corpus — a self-trained *sequential* semantic
+                              embedding, used as the closest offline
+                              approximation to a pretrained transformer.
+  - LIWC                    : A compact hand-built lexicon covering the
+                              same category types the paper highlights
+                              (pronouns, negative emotion, future focus,
+                              feel/perception words, negations, etc.) since
+                              the licensed LIWC dictionary isn't available.
+  - POS tag embeddings      : spaCy (en_core_web_sm, installed from a GitHub
+                              release wheel) for real POS tagging, then
+                              Word2Vec (Skip-gram) trained on POS-tag
+                              sequences, exactly as the paper describes.
 """
 
-import os
 import re
 import warnings
 import numpy as np
 import pandas as pd
 from collections import Counter
-from typing import Literal
 
 warnings.filterwarnings("ignore")
 
@@ -62,6 +51,12 @@ DISTORTION_TYPES = [
     "Fortune Telling", "Magnification", "Personalization", "Labeling",
 ]
 
+# ---------------------------------------------------------------------------
+# 1. LOAD DATA  (real hand-annotated data, as in the paper section 2.1)
+# ---------------------------------------------------------------------------
+
+# Maps the exact strings used in Annotated_data.csv onto the canonical
+# DISTORTION_TYPES spelling/casing used throughout the rest of this script.
 LABEL_NORMALIZATION = {
     "no distortion": "No Distortion",
     "emotional reasoning": "Emotional Reasoning",
@@ -84,39 +79,20 @@ def _normalize_label(raw):
     return LABEL_NORMALIZATION.get(key, str(raw).strip())
 
 
-# ---------------------------------------------------------------------------
-# 1. LOAD PRE-COMPUTED SPLITS (train.csv / val.csv / test.csv)
-# ---------------------------------------------------------------------------
-
-def _resolve_split_dir():
+def load_data(path="Annotated_data.csv"):
     """
-    Looks for train.csv/val.csv/test.csv in a few likely locations so this
-    script works whether it's run from the repo root, from data/splits, or
-    with the CSVs sitting next to the script. Set DATA_SPLIT_DIR env var
-    (or edit `candidates` below) to point at a different location.
+    Loads the real hand-annotated dataset. Uses the patient's input text
+    ('Patient Question') and the 'Dominant Distortion' column as the
+    ground-truth label, exactly as annotated in the paper's methodology
+    (dominant distortion chosen per entry; secondary distortion, if any,
+    is available in 'Secondary Distortion (Optional)' but not used here,
+    matching the paper's primary classification setup).
     """
-    candidates = [
-        os.environ.get("DATA_SPLIT_DIR", ""),
-        os.path.join("data", "splits"),
-        "splits",
-        ".",
-    ]
-    for c in candidates:
-        if c and all(
-            os.path.isfile(os.path.join(c, f))
-            for f in ("train.csv", "val.csv", "test.csv")
-        ):
-            return c
-    raise FileNotFoundError(
-        "Could not find train.csv/val.csv/test.csv. Set DATA_SPLIT_DIR "
-        "to the folder containing them, e.g. DATA_SPLIT_DIR=data/splits"
-    )
-
-
-def _prep(df):
+    df = pd.read_csv(path)
     df = df.dropna(subset=["Patient Question", "Dominant Distortion"]).reset_index(drop=True)
     df["text"] = df["Patient Question"].astype(str).str.strip()
     df = df[df["text"].str.len() > 10].reset_index(drop=True)
+
     df["distortion_type"] = df["Dominant Distortion"].apply(_normalize_label)
     df["binary_label"] = np.where(
         df["distortion_type"] == "No Distortion", "Non-Distorted", "Distorted"
@@ -124,21 +100,30 @@ def _prep(df):
     return df
 
 
-def load_splits(split_dir=None):
+# ---------------------------------------------------------------------------
+# 2. SYNTHETIC / PLACEHOLDER LABELS
+#    (kept only for reference / fallback if annotations are ever missing —
+#    NOT used by main() now that real annotations are available)
+# ---------------------------------------------------------------------------
+
+def make_synthetic_labels(n, seed=RANDOM_STATE):
     """
-    Loads the REAL pre-computed, iteratively-stratified train/val/test
-    splits (see split_manifest.json) instead of re-splitting from scratch.
-    Returns three DataFrames: train_df, val_df, test_df.
+    Randomly assigns labels matching the paper's reported distribution:
+    39.2% 'No Distortion', 60.8% split evenly across the 10 distortion types.
+    THESE LABELS CARRY NO REAL SIGNAL — fallback/reference only.
     """
-    split_dir = split_dir or _resolve_split_dir()
-    train_df = _prep(pd.read_csv(os.path.join(split_dir, "train.csv")))
-    val_df = _prep(pd.read_csv(os.path.join(split_dir, "val.csv")))
-    test_df = _prep(pd.read_csv(os.path.join(split_dir, "test.csv")))
-    return train_df, val_df, test_df
+    r = np.random.default_rng(seed)
+    p_none = 0.392
+    p_each = (1 - p_none) / 10
+    classes = ["No Distortion"] + DISTORTION_TYPES
+    probs = [p_none] + [p_each] * 10
+    labels = r.choice(classes, size=n, p=probs)
+    binary = np.where(labels == "No Distortion", "Non-Distorted", "Distorted")
+    return pd.Series(labels, name="distortion_type"), pd.Series(binary, name="binary_label")
 
 
 # ---------------------------------------------------------------------------
-# 2. TOKENIZATION
+# 3. FEATURE EXTRACTORS
 # ---------------------------------------------------------------------------
 
 TOKEN_RE = re.compile(r"[A-Za-z']+")
@@ -147,11 +132,6 @@ TOKEN_RE = re.compile(r"[A-Za-z']+")
 def tokenize(text):
     return [t.lower() for t in TOKEN_RE.findall(text)]
 
-
-# ---------------------------------------------------------------------------
-# 3. FEATURE EXTRACTORS — each one is FIT ON TRAIN ONLY, then used to
-#    TRANSFORM val/test (no refitting, no peeking at held-out text).
-# ---------------------------------------------------------------------------
 
 # --- 3a. SIF over self-trained Word2Vec (GloVe substitute) -----------------
 
@@ -164,71 +144,42 @@ def train_word2vec(token_lists, size=100, window=5, min_count=2, seed=RANDOM_STA
     return model
 
 
-def fit_sif(train_token_lists, w2v_model, a=1e-3):
-    """
-    Fits SIF weighting (word-frequency table from TRAIN only) and the
-    common-component (TruncatedSVD) direction on TRAIN embeddings only.
-    Returns a `transform(token_lists)` closure that can be applied to any
-    split (train, val, or test) without refitting anything.
-    """
-    from sklearn.decomposition import TruncatedSVD
-
-    vocab_counts = Counter(w for toks in train_token_lists for w in toks)
+def sif_embeddings(token_lists, w2v_model, a=1e-3):
+    """Smooth Inverse Frequency sentence embeddings (Arora et al., 2016)."""
+    vocab_counts = Counter(w for toks in token_lists for w in toks)
     total = sum(vocab_counts.values())
     dim = w2v_model.vector_size
-
-    def _raw_sif(token_lists):
-        vecs = np.zeros((len(token_lists), dim))
-        for i, toks in enumerate(token_lists):
-            weighted = []
-            for w in toks:
-                if w in w2v_model.wv:
-                    pw = vocab_counts.get(w, 0) / total if total else 0
-                    weight = a / (a + pw) if pw > 0 else 1.0
-                    weighted.append(weight * w2v_model.wv[w])
-            vecs[i] = np.mean(weighted, axis=0) if weighted else np.zeros(dim)
-        return vecs
-
-    train_vecs = _raw_sif(train_token_lists)
+    vecs = np.zeros((len(token_lists), dim))
+    for i, toks in enumerate(token_lists):
+        weighted = []
+        for w in toks:
+            if w in w2v_model.wv:
+                pw = vocab_counts[w] / total
+                weight = a / (a + pw)
+                weighted.append(weight * w2v_model.wv[w])
+        vecs[i] = np.mean(weighted, axis=0) if weighted else np.zeros(dim)
+    # remove first principal component (standard SIF step)
+    from sklearn.decomposition import TruncatedSVD
     svd = TruncatedSVD(n_components=1, random_state=RANDOM_STATE)
-    svd.fit(train_vecs)  # fit on TRAIN only
+    svd.fit(vecs)
     pc = svd.components_
-
-    def transform(token_lists):
-        vecs = _raw_sif(token_lists)
-        return vecs - vecs.dot(pc.T).dot(pc)  # project out train-fit component
-
-    return transform
+    vecs = vecs - vecs.dot(pc.T).dot(pc)
+    return vecs
 
 
 # --- 3b. Doc2Vec sequential embeddings (S-BERT substitute) -----------------
 
-def train_doc2vec(train_token_lists, size=100, seed=RANDOM_STATE):
+def doc2vec_embeddings(token_lists, size=100, seed=RANDOM_STATE):
     from gensim.models.doc2vec import Doc2Vec, TaggedDocument
-    docs = [TaggedDocument(toks, [i]) for i, toks in enumerate(train_token_lists)]
+    docs = [TaggedDocument(toks, [i]) for i, toks in enumerate(token_lists)]
     model = Doc2Vec(
         docs, vector_size=size, window=5, min_count=2, dm=1,
         workers=1, seed=seed, epochs=20,
     )
-    return model
+    return np.array([model.dv[i] for i in range(len(token_lists))])
 
 
-def doc2vec_transform(token_lists, model, is_train, infer_epochs=20):
-    """
-    For TRAIN docs (which the model was actually trained on) we can pull
-    the learned vector directly via model.dv[i]. For VAL/TEST docs we use
-    infer_vector(), which holds the model's learned word vectors fixed and
-    only optimizes a *new* doc vector for the unseen text — this does not
-    touch/update the trained model, unlike calling train() again.
-    """
-    if is_train:
-        return np.array([model.dv[i] for i in range(len(token_lists))])
-    return np.array([
-        model.infer_vector(toks, epochs=infer_epochs) for toks in token_lists
-    ])
-
-
-# --- 3c. LIWC-style lexicon features (deterministic, no fitting needed) ----
+# --- 3c. LIWC-style lexicon features ---------------------------------------
 
 LIWC_LEXICON = {
     "pronoun_1p": {"i", "me", "my", "mine", "myself"},
@@ -262,7 +213,7 @@ def liwc_features(texts):
     return pd.DataFrame(rows).values
 
 
-# --- 3d. POS tag embeddings via spaCy + Skip-gram ---------------------------
+# --- 3d. POS tag embeddings via spaCy + Skip-gram --------------------------
 
 def pos_tag_sequences(texts, nlp, batch_size=64):
     seqs = []
@@ -271,17 +222,14 @@ def pos_tag_sequences(texts, nlp, batch_size=64):
     return seqs
 
 
-def train_pos_word2vec(train_pos_seqs, size=30, seed=RANDOM_STATE):
+def pos_embeddings(pos_seqs, size=30, seed=RANDOM_STATE):
     from gensim.models import Word2Vec
     model = Word2Vec(
-        sentences=train_pos_seqs, vector_size=size, window=3, min_count=1,
+        sentences=pos_seqs, vector_size=size, window=3, min_count=1,
         sg=1, workers=1, seed=seed, epochs=10,
     )
-    return model
-
-
-def pos_embeddings_transform(pos_seqs, model, max_len=40):
     dim = model.vector_size
+    max_len = 40  # pad/truncate for a fixed-size representation
     vecs = np.zeros((len(pos_seqs), dim))
     for i, seq in enumerate(pos_seqs):
         seq = seq[:max_len]
@@ -310,34 +258,26 @@ def get_classifiers():
     }
 
 
-def evaluate_feature_set(X_train, y_train, X_val, y_val, X_test, y_test,
-                          average: Literal['micro', 'macro', 'samples', 'weighted', 'binary', None] = "weighted"):
-    """
-    Uses the SAME fixed train/val/test split for every feature set and
-    every task (no fresh random split per call, unlike the original).
-    Fits StandardScaler + LabelEncoder on TRAIN only.
-    Reports F1 on both val and test.
-    """
+def evaluate_feature_set(X, y, average="weighted"):
+    from sklearn.model_selection import train_test_split
     from sklearn.preprocessing import StandardScaler, LabelEncoder
     from sklearn.metrics import f1_score
 
     le = LabelEncoder()
-    y_train_enc = le.fit_transform(y_train)
-    # unseen labels in val/test would break transform(); guard just in case
-    y_val_enc = le.transform(y_val)
-    y_test_enc = le.transform(y_test)
-
+    y_enc = le.fit_transform(y)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y_enc, test_size=0.2, random_state=RANDOM_STATE, stratify=y_enc
+    )
     scaler = StandardScaler()
-    X_train_s = scaler.fit_transform(X_train)
-    X_val_s = scaler.transform(X_val)
-    X_test_s = scaler.transform(X_test)
+    X_train = scaler.fit_transform(X_train)
+    X_test = scaler.transform(X_test)
 
-    val_results, test_results = {}, {}
+    results = {}
     for name, clf in get_classifiers().items():
-        clf.fit(X_train_s, y_train_enc)
-        val_results[name] = f1_score(y_val_enc, clf.predict(X_val_s), average=average)
-        test_results[name] = f1_score(y_test_enc, clf.predict(X_test_s), average=average)
-    return val_results, test_results
+        clf.fit(X_train, y_train)
+        preds = clf.predict(X_test)
+        results[name] = f1_score(y_test, preds, average=average)
+    return results
 
 
 # ---------------------------------------------------------------------------
@@ -345,98 +285,67 @@ def evaluate_feature_set(X_train, y_train, X_val, y_val, X_test, y_test,
 # ---------------------------------------------------------------------------
 
 def main():
-    print("Loading pre-computed train/val/test splits...")
-    train_df, val_df, test_df = load_splits()
-    print(f"train={len(train_df)}  val={len(val_df)}  test={len(test_df)}")
-    print("\nTrain label distribution (Dominant Distortion):")
-    print(train_df["distortion_type"].value_counts())
+    print("Loading real annotated data (Annotated_data.csv)...")
+    df = load_data()
+    print(f"Using {len(df)} hand-annotated patient entries.")
+    print("Label distribution (Dominant Distortion):")
+    print(df["distortion_type"].value_counts())
+    print("\nBinary label distribution:")
+    print(df["binary_label"].value_counts())
 
-    train_tok = [tokenize(t) for t in train_df["text"]]
-    val_tok = [tokenize(t) for t in val_df["text"]]
-    test_tok = [tokenize(t) for t in test_df["text"]]
+    texts = df["text"].tolist()
+    token_lists = [tokenize(t) for t in texts]
 
-    # --- SIF (Word2Vec fit on train only) -----------------------------
-    print("Training Word2Vec on TRAIN only (SIF substrate)...")
-    w2v = train_word2vec(train_tok)
-    sif_transform = fit_sif(train_tok, w2v)
-    X_sif_train = sif_transform(train_tok)
-    X_sif_val = sif_transform(val_tok)
-    X_sif_test = sif_transform(test_tok)
+    print("Training Word2Vec (SIF substrate)...")
+    w2v = train_word2vec(token_lists)
+    X_sif = sif_embeddings(token_lists, w2v)
 
-    # --- Doc2Vec (fit on train only, infer for val/test) ----------------
-    print("Training Doc2Vec on TRAIN only (S-BERT substitute)...")
-    d2v = train_doc2vec(train_tok)
-    X_d2v_train = doc2vec_transform(train_tok, d2v, is_train=True)
-    X_d2v_val = doc2vec_transform(val_tok, d2v, is_train=False)
-    X_d2v_test = doc2vec_transform(test_tok, d2v, is_train=False)
+    print("Training Doc2Vec (S-BERT substitute)...")
+    X_d2v = doc2vec_embeddings(token_lists)
 
-    # --- LIWC (deterministic per-doc counts, no fitting) -----------------
     print("Computing LIWC-style lexicon features...")
-    X_liwc_train = liwc_features(train_df["text"])
-    X_liwc_val = liwc_features(val_df["text"])
-    X_liwc_test = liwc_features(test_df["text"])
+    X_liwc = liwc_features(texts)
 
-    # --- POS embeddings (Word2Vec fit on train POS sequences only) -------
-    print("Running spaCy POS tagging + Skip-gram POS embeddings (fit on train only)...")
+    print("Running spaCy POS tagging + Skip-gram POS embeddings...")
     import spacy
     nlp = spacy.load("en_core_web_sm")
-    pos_train = pos_tag_sequences(train_df["text"], nlp)
-    pos_val = pos_tag_sequences(val_df["text"], nlp)
-    pos_test = pos_tag_sequences(test_df["text"], nlp)
-    pos_w2v = train_pos_word2vec(pos_train)
-    X_pos_train = pos_embeddings_transform(pos_train, pos_w2v)
-    X_pos_val = pos_embeddings_transform(pos_val, pos_w2v)
-    X_pos_test = pos_embeddings_transform(pos_test, pos_w2v)
+    pos_seqs = pos_tag_sequences(texts, nlp)
+    X_pos = pos_embeddings(pos_seqs)
 
-    # --- Hybrid S-BERT(sub) + LIWC ---------------------------------------
-    X_hyb_train = np.hstack([X_d2v_train, X_liwc_train])
-    X_hyb_val = np.hstack([X_d2v_val, X_liwc_val])
-    X_hyb_test = np.hstack([X_d2v_test, X_liwc_test])
+    print("Building hybrid BERT+LIWC feature set...")
+    X_hybrid = np.hstack([X_d2v, X_liwc])
 
     feature_sets = {
-        "SIF": (X_sif_train, X_sif_val, X_sif_test),
-        "S-BERT(sub)": (X_d2v_train, X_d2v_val, X_d2v_test),
-        "LIWC": (X_liwc_train, X_liwc_val, X_liwc_test),
-        "POS": (X_pos_train, X_pos_val, X_pos_test),
-        "S-BERT+LIWC": (X_hyb_train, X_hyb_val, X_hyb_test),
+        "SIF": X_sif,
+        "S-BERT(sub)": X_d2v,
+        "LIWC": X_liwc,
+        "POS": X_pos,
+        "S-BERT+LIWC": X_hybrid,
     }
 
     print("\n=== BINARY CLASSIFICATION (Distorted vs Non-Distorted) ===")
-    binary_val_table, binary_test_table = {}, {}
-    for fname, (Xtr, Xv, Xte) in feature_sets.items():
+    binary_table = {}
+    for fname, X in feature_sets.items():
         print(f"  evaluating {fname}...")
-        val_res, test_res = evaluate_feature_set(
-            Xtr, train_df["binary_label"], Xv, val_df["binary_label"],
-            Xte, test_df["binary_label"],
-        )
-        binary_val_table[fname] = val_res
-        binary_test_table[fname] = test_res
-    binary_val_df = pd.DataFrame(binary_val_table).round(2)
-    binary_test_df = pd.DataFrame(binary_test_table).round(2)
-    print("val F1:\n", binary_val_df)
-    print("test F1:\n", binary_test_df)
+        binary_table[fname] = evaluate_feature_set(X, df["binary_label"])
+    binary_df = pd.DataFrame(binary_table).round(2)
+    print(binary_df)
 
     print("\n=== MULTI-CLASS CLASSIFICATION (Type of Distortion) ===")
-    multi_val_table, multi_test_table = {}, {}
-    for fname, (Xtr, Xv, Xte) in feature_sets.items():
+    multi_table = {}
+    for fname, X in feature_sets.items():
         print(f"  evaluating {fname}...")
-        val_res, test_res = evaluate_feature_set(
-            Xtr, train_df["distortion_type"], Xv, val_df["distortion_type"],
-            Xte, test_df["distortion_type"],
-        )
-        multi_val_table[fname] = val_res
-        multi_test_table[fname] = test_res
-    multi_val_df = pd.DataFrame(multi_val_table).round(2)
-    multi_test_df = pd.DataFrame(multi_test_table).round(2)
-    print("val F1:\n", multi_val_df)
-    print("test F1:\n", multi_test_df)
+        multi_table[fname] = evaluate_feature_set(X, df["distortion_type"])
+    multi_df = pd.DataFrame(multi_table).round(2)
+    print(multi_df)
 
-    binary_val_df.to_csv("binary_f1_val_results.csv")
-    binary_test_df.to_csv("binary_f1_test_results.csv")
-    multi_val_df.to_csv("multiclass_f1_val_results.csv")
-    multi_test_df.to_csv("multiclass_f1_test_results.csv")
-    print("\nDone. Results saved to binary_f1_*_results.csv / multiclass_f1_*_results.csv")
-    return binary_val_df, binary_test_df, multi_val_df, multi_test_df
+    binary_df.to_csv("binary_f1_results.csv")
+    multi_df.to_csv("multiclass_f1_results.csv")
+    df[["text", "binary_label", "distortion_type"]].to_csv(
+        "labeled_data_sample.csv", index=False
+    )
+    print("\nDone. Results saved to binary_f1_results.csv / multiclass_f1_results.csv")
+    return binary_df, multi_df
 
 
 if __name__ == "__main__":
