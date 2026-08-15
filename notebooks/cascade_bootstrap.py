@@ -63,8 +63,19 @@ SEEDS = (42, 1337, 2024)
 TRAIN_TIMEOUT = 3600
 EVAL_TIMEOUT = 3600
 
-COMBINED_SPLITS = "data/splits_combined"     # FULL splits (has No-Distortion rows)
-STAGE2_SPLITS = "data/splits_stage2"         # distorted-only, derived from the above
+# PARENT_SPLITS must be a FULL splits dir (containing No-Distortion rows).
+#
+# Currently data/splits — the original Annotated_data.csv splits, verified clean:
+# train-in-val = 0, train-in-test = 0.
+#
+# NOT data/splits_combined: CODIPAS overlaps Annotated_data heavily (1,937 of its
+# 2,621 rows are already in it), so merging leaked 194/253 val rows and 189/253
+# test rows into train — 75% of the evaluation set. Any result from that dir is
+# invalid. Switch back only after CODIPAS is deduplicated against the frozen
+# Annotated val/test.
+PARENT_SPLITS = "data/splits"
+COMBINED_SPLITS = PARENT_SPLITS               # back-compat alias for older cells
+STAGE2_SPLITS = "data/splits_stage2"          # distorted-only, derived from PARENT_SPLITS
 
 STAGE1_OUT = "results_stage1"
 MULTICLASS_OUT = "results_multiclass_v2"

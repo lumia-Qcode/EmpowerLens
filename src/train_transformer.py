@@ -39,9 +39,12 @@ from transformers import (
     AutoTokenizer,
     EarlyStoppingCallback,
     Trainer,
+    # transformers 5.x dropped the group_by_length flag; the sampler it used is
+    # still available and is wired up manually in WeightedTrainer below.
     TrainingArguments,
     set_seed,
 )
+from transformers.trainer_pt_utils import LengthGroupedSampler
 
 from src.data import DISTORTIONS, MC_CLASSES
 from src.losses import FocalLoss, build_llrd_optimizer, freeze_bottom_layers
@@ -162,6 +165,34 @@ class WeightedTrainer(Trainer):
         outputs = model(**inputs)
         loss = self.loss_fn(outputs.logits, labels)
         return (loss, outputs) if return_outputs else loss
+
+    def _get_train_sampler(self, train_dataset=None):
+        """Batch similar-length sequences together.
+
+        Token lengths here are very skewed (median 138, p95 482, max 1396), so a
+        randomly-drawn batch gets padded to its longest member and wastes roughly
+        2.5x the compute on padding. Grouping by length removes most of that.
+
+        transformers 5.x removed the ``group_by_length=True`` TrainingArguments
+        flag, so the sampler is wired up by hand here. It only changes which
+        examples share a batch — not what the model sees — and stays seeded, so
+        runs remain reproducible.
+        """
+        ds = train_dataset if train_dataset is not None else self.train_dataset
+        if ds is None:
+            return None
+        try:
+            # encodings[i] is a dict — len() on it would count keys, not tokens.
+            lengths = [len(ds.encodings[i]["input_ids"]) for i in range(len(ds))]
+            return LengthGroupedSampler(
+                batch_size=self.args.train_batch_size,
+                dataset=ds,
+                lengths=lengths,
+                generator=torch.Generator().manual_seed(self.args.seed),
+            )
+        except Exception as e:  # noqa: BLE001 - never let an optimisation break training
+            print(f"[warn] length-grouped sampling unavailable ({e}); using default sampler")
+            return super()._get_train_sampler(train_dataset)
 
 
 def make_compute_metrics(task):

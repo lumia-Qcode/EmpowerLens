@@ -1,32 +1,32 @@
 {
-  "created_utc": "2026-08-15T15:04:38.438460+00:00",
+  "created_utc": "2026-08-15T18:30:07.527729+00:00",
   "purpose": "Stage 2 splits = --source splits filtered to y_bin==1 (distorted only). No re-splitting: row-level train/val/test boundaries are inherited unchanged from --source.",
-  "source_dir": "data\\splits_combined",
+  "source_dir": "data\\splits",
   "n_per_split": {
-    "train": 2694,
+    "train": 1278,
     "val": 158,
     "test": 161
   },
   "n_removed_no_distortion": {
-    "train": 1951,
+    "train": 746,
     "val": 95,
     "test": 92
   },
   "per_class_train": {
-    "emotional_reasoning": 347,
-    "overgeneralization": 431,
-    "mental_filter": 240,
-    "should_statements": 324,
-    "all_or_nothing": 244,
-    "mind_reading": 465,
-    "fortune_telling": 390,
-    "magnification": 336,
-    "personalization": 254,
-    "labeling": 487
+    "emotional_reasoning": 135,
+    "overgeneralization": 222,
+    "mental_filter": 121,
+    "should_statements": 108,
+    "all_or_nothing": 101,
+    "mind_reading": 232,
+    "fortune_telling": 168,
+    "magnification": 196,
+    "personalization": 162,
+    "labeling": 162
   },
   "source_file_sha256": {
-    "train": "6e7d86c767ac851f1931c30aa3c5347d9576753dd16231a218b34644963a7334",
-    "val": "85e1a97421ba9006d685d0ffc9be9c443b41b9de1f3fa0c9bd3425123b0abaa5",
-    "test": "19ab5e226901563bb21c804b16346d180d55dbac06b6c9498138df40d64bbc1e"
+    "train": "2410e1d640c698898cbae334d74a53cc6313a4029e1c88ff5f942c7ae9a024d4",
+    "val": "82510ce7acab58d58cc8d9397ff214fcb2beef7a6bae235a2b7dff12a366b9ec",
+    "test": "1013562d7c8887746689959d38724a3adb7d29ab07cc9e71782d85276282d1e0"
   }
 }
