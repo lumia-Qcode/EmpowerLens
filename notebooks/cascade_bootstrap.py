@@ -55,6 +55,23 @@ os.chdir(REPO_DIR)
 # assigns T4 x2 and the multi-device weight-loading path can deadlock silently.
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
+# Never let the Hub stall a training run.
+#
+# `from_pretrained("mental/mental-roberta-base")` runs once per seed per stage —
+# 9+ times a session. Even when the weights are already cached, it makes a network
+# call to check whether the cached copy is current, and that call has no default
+# timeout. Observed failure: a run hangs immediately after printing the
+# "[multilabel] device=cuda model=..." line, with the GPU at 0%, on a seed that
+# had trained fine minutes earlier.
+#
+# HF_HUB_OFFLINE=1 loads straight from the local cache (/root/.cache/huggingface,
+# which lives outside /kaggle/working and survives re-clones) with no network call.
+# Set HF_HUB_OFFLINE=0 in a cell before this exec if you ever need to pull a model
+# you have not downloaded yet.
+os.environ.setdefault("HF_HUB_OFFLINE", "1")
+os.environ.setdefault("HF_HUB_ETAG_TIMEOUT", "10")     # belt and braces if re-enabled
+os.environ.setdefault("HF_HUB_DOWNLOAD_TIMEOUT", "60")
+
 # --- config -----------------------------------------------------------------
 MODEL = "mental/mental-roberta-base"
 TAG = MODEL.split("/")[-1]
