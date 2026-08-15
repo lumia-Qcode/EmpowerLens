@@ -160,8 +160,15 @@ def main(argv=None):
             return 1
         # Allowed — but tag the output so the provenance travels with the numbers
         # and cannot be mistaken for a cascade result in paper_comparison.csv.
+        # Tag the MODEL NAME only — that is what lands in paper_comparison.csv's
+        # `model` column, so the provenance travels with the numbers.
+        #
+        # Deliberately do NOT rename `tag`: it builds the output filenames
+        # (eval_<tag>_<task>_<seed>.json), and callers locate those files by the
+        # un-renamed name. Renaming it broke the notebook's skip-if-already-done
+        # check, which made every re-run retrain from scratch, and made completed
+        # seeds report as "train/evaluate failed or timed out".
         model_name = f"{model_name}[stage2-isolated]"
-        tag = f"{tag}_stage2-isolated"
         print("[warn] distorted-only splits: these are Stage-2 ISOLATED diagnostics, "
               "not cascade results.")
 
