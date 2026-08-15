@@ -1,0 +1,4 @@
+id,prompt_id,language,reflection_text,annotator_id,dominant_distortion,secondary_distortion,distorted_part,confidence_1to5,notes
+real_0001,1,english,"<paste the reflection here>",,,,,,
+real_0002,2,english,"<paste the reflection here>",,,,,,
+real_0003,3,english,"<paste the reflection here>",,,,,,
