@@ -99,6 +99,17 @@ MULTICLASS_OUT = "results_multiclass_v2"
 STAGE2_OUT = "results_stage2"
 CASCADE_OUT = "results_cascade"
 
+# Checkpoints live OUTSIDE the repo clone.
+#
+# Cell 1 runs `rm -rf /kaggle/working/empowerlens` to re-clone, and its comment
+# claims that only deletes the code, "not your checkpoints!". That was false while
+# checkpoints sat at empowerlens/checkpoints/ — re-running cell 1 wiped every
+# trained model, and the cascade eval then had nothing to load. Keeping them at
+# /kaggle/working/checkpoints makes that comment true and makes cell 1 safe to
+# re-run mid-session.
+CKPT_DIR = "/kaggle/working/checkpoints" if Path("/kaggle/working").is_dir() else "checkpoints"
+Path(CKPT_DIR).mkdir(parents=True, exist_ok=True)
+
 for _d in (STAGE1_OUT, MULTICLASS_OUT, STAGE2_OUT, CASCADE_OUT):
     Path(_d).mkdir(parents=True, exist_ok=True)
 
@@ -147,7 +158,8 @@ def show_test_metrics(out_dir, task, seed):
               f"macro_f1={m['macro_f1']:.3f}")
 
 
-def run_and_report(task, splits_dir, out_dir, seed, extra_flags="", eval_flags=""):
+def run_and_report(task, splits_dir, out_dir, seed, extra_flags="", eval_flags="",
+                   ckpt_dir=None):
     """Train one config, evaluate it, drop the optimizer state, sync, report.
 
     Skips entirely if the eval JSON already exists, so re-running after a restart
@@ -157,7 +169,13 @@ def run_and_report(task, splits_dir, out_dir, seed, extra_flags="", eval_flags="
     dir requires --allow-distorted-only, because src/evaluate.py now refuses it by
     default. Those numbers are ISOLATED diagnostics, never cascade results.
     """
-    ckpt = f"checkpoints/{task}_{TAG}_{seed}"
+    # ckpt_dir separates checkpoints that would otherwise collide: names are
+    # {task}_{TAG}_{seed}, so a flat multilabel model and the distorted-only
+    # Stage 2 model at the same seed write to the SAME path and silently
+    # overwrite each other. Pass a different ckpt_dir for any second run of the
+    # same task.
+    ckpt_root = ckpt_dir or CKPT_DIR
+    ckpt = f"{ckpt_root}/{task}_{TAG}_{seed}"
     eval_json = Path(out_dir) / f"eval_{TAG}_{task}_{seed}.json"
 
     if eval_json.exists():
@@ -167,7 +185,7 @@ def run_and_report(task, splits_dir, out_dir, seed, extra_flags="", eval_flags="
 
     rc = sh(
         f"python -m src.train_transformer --task {task} --model {MODEL} --seed {seed} "
-        f"--device auto --splits {splits_dir} {extra_flags}",
+        f"--device auto --splits {splits_dir} --out {ckpt_root} {extra_flags}",
         timeout=TRAIN_TIMEOUT,
     )
 

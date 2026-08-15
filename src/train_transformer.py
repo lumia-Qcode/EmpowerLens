@@ -386,6 +386,11 @@ def main(argv=None):
         val_metrics["eval_micro_f1"] = float(f1_score(y_val, best_preds, average="micro", zero_division=0))
 
     meta = {
+        # Record WHICH splits this was trained on. Without it there is no way to
+        # tell a checkpoint trained on data/splits from one trained on a leaked
+        # or combined dir after the fact — which is exactly the question that
+        # matters when results look surprising.
+        "splits": args.splits,
         "task": args.task, "model": args.model, "seed": args.seed, "epochs": args.epochs, "lr": args.lr,
         "batch_size": args.batch_size, "max_length": args.max_length, "truncation": args.truncation,
         "head_keep": args.head_keep, "device": device, "smoke": args.smoke, "num_labels": num_labels,

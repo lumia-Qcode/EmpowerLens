@@ -1,5 +1,5 @@
 {
-  "created_utc": "2026-08-15T18:30:07.527729+00:00",
+  "created_utc": "2026-08-15T19:58:03.311323+00:00",
   "purpose": "Stage 2 splits = --source splits filtered to y_bin==1 (distorted only). No re-splitting: row-level train/val/test boundaries are inherited unchanged from --source.",
   "source_dir": "data\\splits",
   "n_per_split": {
