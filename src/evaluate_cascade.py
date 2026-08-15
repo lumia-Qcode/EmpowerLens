@@ -28,6 +28,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from pathlib import Path
 
 import numpy as np
@@ -93,7 +94,13 @@ def main(argv=None):
 
     stage1_tag = Path(args.stage1_checkpoint).name
     stage2_tag = Path(args.stage2_checkpoint).name
-    model_name = f"cascade[{stage1_tag}+{stage2_tag}]"
+    # Strip the trailing _<seed> from the checkpoint names. `seed` is already its
+    # own column in paper_comparison.csv, and leaving it in the model name made
+    # every seed a distinct model — so groupby(model) had one row per group and
+    # mean +/- std came out as NaN. Filenames below keep the full tags so runs
+    # never overwrite each other.
+    _no_seed = lambda t: re.sub(r"_\d+$", "", t)
+    model_name = f"cascade[{_no_seed(stage1_tag)}+{_no_seed(stage2_tag)}]"
 
     rows = []
     eval_json = {
