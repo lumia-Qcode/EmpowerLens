@@ -19,3 +19,14 @@ wandb/
 # NOTE: data/splits/ is intentionally NOT ignored — the frozen train/val/test
 # CSVs and split_manifest.json MUST be committed so every run reads the same
 # splits. Do not add data/splits/ here.
+
+# --- PatternReframe ---
+# The 2.4 MB tarball IS committed (data/patternreframe/*.tar.gz) so the pipeline
+# runs offline. The 23 MB it extracts to is DERIVED — regenerated on demand by
+# src/make_splits_patternreframe.py, never committed.
+data/patternreframe/extracted/
+# Derived splits: val/test are byte-identical copies of data/splits_stage2, and
+# train is regenerated deterministically from the tarball above. Not committed —
+# unlike the frozen eval splits, there is nothing here to pin.
+data/splits_stage2_pr/
+data/splits_pr/

@@ -33,21 +33,29 @@ What this script does and does NOT give you
   **ignored** — everything is emitted as training data. Evaluation stays on the
   untouched Annotated test set ("train augmented, test natural").
 
+The 2.4 MB tarball is COMMITTED at data/patternreframe/, so none of the below needs
+network access. It is extracted on demand to data/patternreframe/extracted/, which
+is gitignored — 23 MB of derived text does not belong in git.
+
 Usage
 -----
-    python -m src.make_splits_patternreframe --source <dir-with-train.txt> \\
-        --out data/splits_patternreframe
+    python -m src.make_splits_patternreframe --out data/splits_patternreframe
 
     # append to an existing Stage 2 training set (val/test copied through unchanged)
-    python -m src.make_splits_patternreframe --source <dir> \\
+    python -m src.make_splits_patternreframe \\
         --merge-into data/splits_stage2 --out data/splits_stage2_pr --force
+
+    # or point at an already-extracted dir (e.g. a fresh download on Kaggle)
+    python -m src.make_splits_patternreframe --source /kaggle/working/reframe_thoughts_dataset ...
 """
 
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import sys
+import tarfile
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -82,10 +90,60 @@ def _load_jsonl(path: Path):
     return [json.loads(l) for l in path.read_text(encoding="utf-8").splitlines() if l.strip()]
 
 
+# The tarball is committed (2.4 MB) so this runs offline and reproducibly. The
+# EXTRACTED text is 23 MB and is gitignored — it is regenerated from the tarball
+# on demand, never committed.
+DEFAULT_SOURCE = Path("data/patternreframe/reframe_thoughts_v0.1.tar.gz")
+SOURCE_SHA256 = "bfbfc61c26341dd64b59945c3d290caba67fa2db435fb01ac309cef295222c99"
+
+
+def _resolve_source(src: Path) -> Path:
+    """Accept either an extracted dir or the .tar.gz, and return the dir.
+
+    Extracting on demand keeps the repo small while still making the pipeline
+    runnable with no network: the archive is the committed artifact, the text
+    files are derived.
+    """
+    if src.is_dir():
+        return src
+    if not src.exists():
+        raise FileNotFoundError(
+            f"{src} not found. Either pass --source <extracted dir>, or place the "
+            f"2.4 MB tarball at {DEFAULT_SOURCE} (see the module docstring for the URL)."
+        )
+
+    digest = hashlib.sha256(src.read_bytes()).hexdigest()
+    if digest != SOURCE_SHA256:
+        # A mismatch means a different release or a corrupt download — refuse
+        # rather than silently building splits from unknown data.
+        raise ValueError(
+            f"{src} sha256 mismatch:\n  expected {SOURCE_SHA256}\n  got      {digest}"
+        )
+
+    dest = src.parent / "extracted"
+    marker = dest / "train.txt"
+    if not marker.exists():
+        dest.mkdir(parents=True, exist_ok=True)
+        with tarfile.open(src) as t:
+            # filter="data" (3.12+) blocks absolute paths, .. traversal, symlinks
+            # and device files. Guarded because it is not in every version.
+            try:
+                t.extractall(dest, filter="data")
+            except TypeError:
+                t.extractall(dest)
+        if not marker.exists():          # the archive nests one directory deep
+            for cand in dest.rglob("train.txt"):
+                dest = cand.parent
+                break
+        print(f"[extract] {src} -> {dest}")
+    return dest
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description="PatternReframe -> repo column contract.")
-    ap.add_argument("--source", required=True,
-                    help="dir containing train.txt / valid.txt / test.txt")
+    ap.add_argument("--source", default=str(DEFAULT_SOURCE),
+                    help="the committed .tar.gz (default, extracted on demand) OR a "
+                         "dir already containing train.txt / valid.txt / test.txt")
     ap.add_argument("--out", default="data/splits_patternreframe")
     ap.add_argument("--merge-into", default=None,
                     help="existing splits dir; its train is prepended and its "
@@ -104,10 +162,11 @@ def main(argv=None):
     ap.add_argument("--force", action="store_true")
     args = ap.parse_args(argv)
 
-    src, out = Path(args.source), Path(args.out)
+    out = Path(args.out)
     if out.exists() and any(out.iterdir()) and not args.force:
         print(f"REFUSING to overwrite {out} (pass --force)", file=sys.stderr)
         return 1
+    src = _resolve_source(Path(args.source))
 
     rows, skipped = [], 0
     for name in ("train", "valid", "test"):
