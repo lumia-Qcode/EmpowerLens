@@ -87,7 +87,14 @@ EVAL_TIMEOUT = 3600
 # test rows into train — 75% of the evaluation set. Any result from that dir is
 # invalid. Switch back only after CODIPAS is deduplicated against the frozen
 # Annotated val/test.
-PARENT_SPLITS = "data/splits"
+#
+# Switchable WITHOUT editing this file: set EMPOWERLENS_SPLITS before the exec.
+#     import os; os.environ["EMPOWERLENS_SPLITS"] = "data/splits_codipas_cls"
+#     exec(open(BOOT).read())
+# It must be set BEFORE, not after — every path below is derived at exec time, so
+# reassigning PARENT_SPLITS afterwards would leave STAGE2_SPLITS and the output
+# dirs still pointing at the previous dataset.
+PARENT_SPLITS = os.environ.get("EMPOWERLENS_SPLITS", "data/splits")
 COMBINED_SPLITS = PARENT_SPLITS               # back-compat alias for older cells
 
 # ---- everything below is DERIVED from PARENT_SPLITS -------------------------
