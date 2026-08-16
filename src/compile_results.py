@@ -47,6 +47,7 @@ SPLITS_BY_DIR = {
     "results_stage2":        ("data/splits_stage2",      True,  "cascade Stage 2 ISOLATED - distorted-only, not a cascade result"),
     "results_cascade":       ("data/splits",             True,  "cascade end-to-end, composed prediction"),
     "results_multiclass_v2": ("data/splits",             True,  "flat 11-class, clean splits"),
+    "results_multilabel_flat": ("data/splits",           True,  "flat multilabel — the cascade's matched competitor"),
 }
 
 

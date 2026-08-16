@@ -13,6 +13,12 @@ True,results,data/splits,multiclass,mental/mental-bert-base-uncased,0.271,0.004,
 True,results,data/splits,multiclass,roberta-base,0.29,0.008,0.176,0.016,0.138,0.018,0.292,0.004,,,0.557,0.007
 True,results,data/splits,multilabel,mental/mental-bert-base-uncased,0.195,0.01,0.191,0.016,,,0.202,0.004,,,,
 True,results,data/splits,multilabel,roberta-base,0.209,0.011,0.207,0.021,,,0.212,0.011,,,,
+True,results_cascade,data/splits,binary,cascade[binary_mental-roberta-base+multilabel_mental-roberta-base],0.738,0.012,0.717,0.012,,,0.738,0.013,0.794,0.012,,
+True,results_cascade,data/splits,multilabel,cascade[binary_mental-roberta-base+multilabel_mental-roberta-base],0.247,0.01,0.24,0.012,,,0.25,0.002,,,,
 True,results_codipas,data/splits_codipas_cls,binary,mental/mental-bert-base-uncased,0.723,0.002,0.72,0.001,,,0.723,0.003,0.746,0.011,,
 True,results_codipas,data/splits_codipas_cls,multiclass,mental/mental-bert-base-uncased,0.391,0.012,0.271,0.023,0.243,0.025,0.378,0.008,,,0.549,0.006
 True,results_codipas,data/splits_codipas_cls,multilabel,mental/mental-bert-base-uncased,0.28,0.029,0.276,0.031,,,0.28,0.029,,,,
+True,results_multiclass_v2,data/splits,multiclass,mental/mental-roberta-base,0.285,0.009,0.168,0.018,0.129,0.022,0.279,0.01,,,0.556,0.037
+True,results_multilabel_flat,data/splits,multilabel,mental/mental-roberta-base,0.238,0.024,0.237,0.03,,,0.239,0.02,,,,
+True,results_stage1,data/splits,binary,mental/mental-roberta-base,0.738,0.012,0.717,0.012,,,0.738,0.013,0.794,0.012,,
+True,results_stage2,data/splits_stage2,multilabel,mental/mental-roberta-base[stage2-isolated],0.29,0.013,0.277,0.016,,,0.296,0.008,,,,

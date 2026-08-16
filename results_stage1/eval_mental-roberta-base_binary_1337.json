@@ -1,0 +1,115 @@
+{
+  "meta": {
+    "splits": "data/splits",
+    "task": "binary",
+    "model": "mental/mental-roberta-base",
+    "seed": 1337,
+    "epochs": 3,
+    "lr": 2e-05,
+    "batch_size": 32,
+    "max_length": 256,
+    "truncation": "head_tail",
+    "head_keep": 128,
+    "device": "cuda",
+    "smoke": false,
+    "num_labels": 2,
+    "loss": "weighted_ce",
+    "focal_gamma": null,
+    "label_smoothing": 0.0,
+    "grad_accum": 1,
+    "lr_scheduler": "linear",
+    "dropout": null,
+    "freeze_layers": 0,
+    "llrd": false,
+    "llrd_decay": 0.9,
+    "early_stopping_patience": 2,
+    "val_truncation_rate": 0.22924901185770752,
+    "val_metrics": {
+      "eval_loss": 0.5371901988983154,
+      "eval_macro_f1": 0.7575667459688078,
+      "eval_runtime": 1.0146,
+      "eval_samples_per_second": 249.372,
+      "eval_steps_per_second": 7.885,
+      "epoch": 3.0
+    },
+    "thresholds": null
+  },
+  "splits": {
+    "val": {
+      "metrics": {
+        "model": "mental/mental-roberta-base",
+        "task": "binary",
+        "seed": 1337.0,
+        "split": "val",
+        "n_classes": 2.0,
+        "weighted_f1": 0.7716448350693084,
+        "macro_f1": 0.7575667459688078,
+        "macro_f1_10": "",
+        "micro_f1": 0.7707509881422925,
+        "positive_class_f1": 0.8141025641025641,
+        "no_distortion_f1": "",
+        "no_distortion_wcontrib": "",
+        "truncation_rate": 0.2292,
+        "source": "empowerlens",
+        "averaging": ""
+      },
+      "per_class": [
+        {
+          "class": "non_distorted",
+          "precision": 0.6868686868686869,
+          "recall": 0.7157894736842105,
+          "f1": 0.7010309278350515,
+          "support": 95,
+          "weighted_contribution": 0.263232957092213
+        },
+        {
+          "class": "distorted",
+          "precision": 0.8246753246753247,
+          "recall": 0.8037974683544303,
+          "f1": 0.8141025641025641,
+          "support": 158,
+          "weighted_contribution": 0.5084118779770953
+        }
+      ],
+      "truncation_rate": 0.2292
+    },
+    "test": {
+      "metrics": {
+        "model": "mental/mental-roberta-base",
+        "task": "binary",
+        "seed": 1337.0,
+        "split": "test",
+        "n_classes": 2.0,
+        "weighted_f1": 0.7470355731225297,
+        "macro_f1": 0.7267080745341614,
+        "macro_f1_10": "",
+        "micro_f1": 0.7470355731225297,
+        "positive_class_f1": 0.8012422360248447,
+        "no_distortion_f1": "",
+        "no_distortion_wcontrib": "",
+        "truncation_rate": 0.249,
+        "source": "empowerlens",
+        "averaging": ""
+      },
+      "per_class": [
+        {
+          "class": "non_distorted",
+          "precision": 0.6521739130434783,
+          "recall": 0.6521739130434783,
+          "f1": 0.6521739130434783,
+          "support": 92,
+          "weighted_contribution": 0.23715415019762848
+        },
+        {
+          "class": "distorted",
+          "precision": 0.8012422360248447,
+          "recall": 0.8012422360248447,
+          "f1": 0.8012422360248447,
+          "support": 161,
+          "weighted_contribution": 0.5098814229249011
+        }
+      ],
+      "truncation_rate": 0.249
+    }
+  }
+}

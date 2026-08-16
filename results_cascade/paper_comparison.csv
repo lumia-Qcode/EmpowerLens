@@ -1,0 +1,13 @@
+model,task,seed,split,n_classes,weighted_f1,macro_f1,macro_f1_10,micro_f1,positive_class_f1,no_distortion_f1,no_distortion_wcontrib,truncation_rate,source,averaging
+cascade[binary_mental-roberta-base+multilabel_mental-roberta-base],binary,42,val,2,0.7645569187071164,0.7510822510822511,,0.7628458498023716,0.8051948051948052,,,0.2292,empowerlens,
+cascade[binary_mental-roberta-base+multilabel_mental-roberta-base],multilabel,42,val,10,0.2791140242725545,0.2731505621102094,,0.2723577235772357,,,,0.3533,empowerlens,
+cascade[binary_mental-roberta-base+multilabel_mental-roberta-base],binary,42,test,2,0.7245234358843351,0.7037668941522816,,0.7233201581027668,0.779874213836478,,,0.249,empowerlens,
+cascade[binary_mental-roberta-base+multilabel_mental-roberta-base],multilabel,42,test,10,0.2550729584134285,0.2475838412747473,,0.2524271844660194,,,,0.3439,empowerlens,
+cascade[binary_mental-roberta-base+multilabel_mental-roberta-base],binary,1337,val,2,0.7716448350693084,0.7575667459688078,,0.7707509881422925,0.8141025641025641,,,0.2292,empowerlens,
+cascade[binary_mental-roberta-base+multilabel_mental-roberta-base],multilabel,1337,val,10,0.2434319978584979,0.2243647944336872,,0.2559055118110236,,,,0.3442,empowerlens,
+cascade[binary_mental-roberta-base+multilabel_mental-roberta-base],binary,1337,test,2,0.7470355731225297,0.7267080745341614,,0.7470355731225297,0.8012422360248447,,,0.249,empowerlens,
+cascade[binary_mental-roberta-base+multilabel_mental-roberta-base],multilabel,1337,test,10,0.2366500955379609,0.2259837964344219,,0.2495201535508637,,,,0.3354,empowerlens,
+cascade[binary_mental-roberta-base+multilabel_mental-roberta-base],binary,2024,val,2,0.7757809085923165,0.7622062824635172,,0.7747035573122529,0.8167202572347267,,,0.2292,empowerlens,
+cascade[binary_mental-roberta-base+multilabel_mental-roberta-base],multilabel,2024,val,10,0.2616274043055868,0.2530926882941577,,0.26294820717131473,,,,0.3333,empowerlens,
+cascade[binary_mental-roberta-base+multilabel_mental-roberta-base],binary,2024,test,2,0.7421396283274737,0.7204419889502762,,0.7430830039525692,0.8,,,0.249,empowerlens,
+cascade[binary_mental-roberta-base+multilabel_mental-roberta-base],multilabel,2024,test,10,0.2504765588249514,0.24690665928860045,,0.2490566037735849,,,,0.3354,empowerlens,

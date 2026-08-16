@@ -149,10 +149,8 @@ hides Stage 1's false negatives. Tagged `[stage2-isolated]`. Diagnostic only.
 
 **What lost / unresolved**
 
-- **No measurable win over flat.** Cascade 0.225 ± 0.027 vs flat roberta-base
-  0.207 ± 0.021 — the gap (0.018) is inside the error bars. Honest claim:
-  *"indistinguishable"*, not *"better"*. And backbone + truncation config differ,
-  so even that is not like-for-like. **A matched flat baseline is still missing.**
+- **No measurable win over flat** — now confirmed with a matched baseline in E7.
+  (These E6 figures are superseded; see E7.)
 - **Stage 2 overfits badly** — val 0.337 → test 0.262, a **22% drop**.
 - **Seed instability** — cascade macro_f1 by seed: 0.250 / 0.229 / 0.197, **±12%**
   of the mean.
@@ -161,6 +159,45 @@ hides Stage 1's false negatives. Tagged `[stage2-isolated]`. Diagnostic only.
 ~128 training examples per class (rarest 101). The overfitting and seed variance
 are both classic small-data signatures. Rearranging models has now been tested and
 does not move the number; more data is the untested lever.
+
+---
+
+## E7 — Flat multilabel baseline, matched (2026-08-16, second run)
+
+The comparison E6 could not make. Same backbone (`mental-roberta-base`), same
+config (`--max-length 256 --truncation head_tail --batch-size 32`), same clean
+`data/splits`, same seeds. Cascade re-run in the same session.
+
+| | seed 42 | seed 1337 | seed 2024 | mean ± std |
+|---|---|---|---|---|
+| **Cascade** macro_f1 | 0.248 | 0.226 | 0.247 | **0.240 ± 0.012** |
+| **Flat** macro_f1 | 0.224 | 0.271 | 0.217 | **0.237 ± 0.030** |
+
+**Result: no measurable difference.** +0.003 on a pooled sd of 0.023 — about one
+eighth of a standard deviation. Splitting the model in two does **not** change
+accuracy on this data.
+
+**A secondary observation, not established:** the cascade's seed spread is much
+tighter (macro std 0.012 vs 0.030; micro 0.002 vs 0.020, a 10x gap). Flat swings
+0.217–0.271, cascade sits 0.226–0.248. But **n=3 cannot establish a variance
+difference** — the F-ratio is 6.25 against a ~19 critical value. Report as
+"appeared more stable; more seeds needed", nothing stronger.
+
+### This run supersedes E6's cascade figures
+
+| seed | E6 (2026-08-16, first) | E7 (re-run) |
+|---|---|---|
+| 42 | 0.250 | 0.248 |
+| 1337 | 0.229 | 0.226 |
+| **2024** | **0.197** | **0.247** |
+
+Seeds 42 and 1337 reproduce. Seed 2024 moved 0.05 — and that is exactly the seed
+whose Stage 2 training hung and was interrupted in the first run, so its
+checkpoint came from a disrupted process. **Use 0.240 ± 0.012, not 0.225 ± 0.027.**
+
+A useful methodological note for the writeup: an infrastructure failure changed a
+headline number by 0.05, larger than any architectural difference measured in this
+project.
 
 ---
 
