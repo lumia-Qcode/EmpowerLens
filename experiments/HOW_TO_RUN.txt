@@ -10,8 +10,31 @@ HOW_TO_RUN.txt                       - this file
 
 SCOPE NOTE: every experiment here uses the FLAT architecture only (one
 Mental-RoBERTa head per task). Cascade (Stage 1 binary gate -> Stage 2
-multilabel) is  separate track on Kaggle and is not run or compared
+multilabel)  separate track on Kaggle and is not run or compared
 anywhere in this suite, including Experiment 7.
+
+TASK GATING (--task binary / multiclass / multilabel)
+-------------------------------------------------------
+Each experiment only makes sense for certain tasks, and the script enforces
+this — pass a mismatched --task and it exits immediately with a message
+telling you which experiment number to use instead, rather than silently
+training the wrong kind of head.
+
+  Experiment 1 (audit)                 -> any task (binary/multiclass/multilabel)
+  Experiment 2 (dataset ablation)      -> any task; defaults to multilabel
+  Experiment 3 (CE vs weighted CE)     -> binary or multiclass only
+  Experiment 4 (focal vs class-bal.)   -> binary or multiclass only
+  Experiment 5 (weighted sampling)     -> binary or multiclass only
+  Experiment 6 (multilabel per-label)  -> multilabel only
+  Experiment 7 (flat report)           -> multilabel only
+  Experiment 8 (sequence length)       -> any task
+
+If you omit --task entirely, each experiment falls back to whichever task
+it's built around (Experiment 3/4/5 -> multiclass, Experiment 6/7 -> multi-
+label, Experiment 1/2/8 -> multiclass unless you say otherwise) — so
+`--experiment 3 --task binary` runs the binary version of that comparison,
+`--experiment 3` alone runs the multiclass version, and `--experiment 3
+--task multilabel` fails fast with a pointer to Experiment 6.
 
 
 STEP 0 — Commit the script to the repo (one-time, do this first)
@@ -79,21 +102,36 @@ Experiments 3, 4, and 5 at all.
 
 STEP 3 — Experiment 2 (dataset ablation)
 --------------------------------------------
-Run the "Experiment 2" cell. This is the heaviest single cell: it trains
-3 data configs (Annotated only / CODIPAS only / Annotated+CODIPAS) x 3
-seeds = 9 full training runs, each followed by val+test evaluation.
+Task is **multilabel**. Unlike the other experiments, this cell is split into
+four separate cells so exactly ONE dataset trains at a time (never in
+parallel) — you can run them back to back, or spread them across separate
+Kaggle sessions if you're tight on time:
 
-  Output: results/exp2/
-    exp2_all_seed_results.csv     - every individual (config, seed) row
-    exp2_mean_std_by_config.csv   - mean +/- SD per config
+  2a. Annotated only        -> trains 3 seeds, evaluates, writes results
+  2b. CODIPAS only           -> same, for the CODIPAS-only splits
+  2c. Annotated + CODIPAS    -> same, for the combined splits
+  2d. Aggregate              -> --aggregate-only, does NOT retrain anything;
+                                 just re-reads the CSVs written by 2a/2b/2c
+                                 and rebuilds the mean +/- SD summary
+
+  All output goes to result_experiment/exp2/ (not results/exp2/):
+    exp2_all_seed_results.csv     - every individual (config, seed) row,
+                                     appended to as each of 2a/2b/2c finishes
+    exp2_mean_std_by_config.csv   - mean +/- SD per config (written by 2d)
+
+  Run order doesn't matter as long as 2d runs last. If a session times out
+  partway through, just re-run whichever of 2a/2b/2c didn't finish, then 2d
+  — already-completed configs won't be retrained since each cell only
+  touches its own --only-config.
 
   Read this to answer: "is the improvement coming from more data, and is
   it consistent across seeds?" — check that the combined config beats
   both single-source configs on most/all seeds, not just on average.
 
-  If your Kaggle session is short on time, you can instead run one config
-  at a time by adding --only-config annotated_only (or codipas_only /
-  annotated_plus_codipas) to the command and re-running the cell for each.
+  Note: re-running the SAME 2a/2b/2c cell twice (e.g. after it already
+  succeeded) will append duplicate rows to exp2_all_seed_results.csv for
+  that config's seeds — delete result_experiment/exp2/ first if you want a
+  clean re-run, or dedupe in pandas by (config, seed) afterwards.
 
 
 STEP 4 — Experiment 3 (only if Experiment 1 showed imbalance)

@@ -3,7 +3,8 @@ EmpowerLens — Flat Mental-RoBERTa experiment suite (Experiments 1-8).
 
 SCOPE NOTE
 ----------
-Cascade architecture is deliberately OUT OF SCOPE here — it is not yet stable (GPU deadlock failures). Every
+Cascade architecture is deliberately OUT OF SCOPE here — that track is
+on Kaggle separately and it is not yet stable (GPU deadlock failures). Every
 experiment in this file, including Experiment 7, uses the existing FLAT
 architecture only (single Mental-RoBERTa head per task, exactly as trained by
 ``src/train_transformer.py``). Experiment 7 therefore reports flat-model
@@ -83,6 +84,54 @@ from src.train_transformer import (
 
 DEFAULT_MODEL = "mental/mental-roberta-base"
 DEFAULT_SEEDS = [42, 1337, 2024]
+
+# Which --task values each experiment is valid for, and what --task it
+# should default to when the person doesn't pass one explicitly. This is
+# what makes "--experiment 3 --task binary" run the binary CE-vs-weighted-CE
+# comparison, "--experiment 3 --task multiclass" run the multiclass version,
+# and "--experiment 3 --task multilabel" refuse with a pointer to Exp 6 —
+# 3/4/5 are class-imbalance-via-loss experiments for single-label heads
+# (binary or multiclass, both softmax+CE-family); 6/7 are multilabel-only
+# (sigmoid+BCE-family); 1/2/8 apply to any task.
+EXPERIMENT_ALLOWED_TASKS = {
+    1: {"binary", "multiclass", "multilabel"},
+    2: {"binary", "multiclass", "multilabel"},
+    3: {"binary", "multiclass"},
+    4: {"binary", "multiclass"},
+    5: {"binary", "multiclass"},
+    6: {"multilabel"},
+    7: {"multilabel"},
+    8: {"binary", "multiclass", "multilabel"},
+}
+EXPERIMENT_DEFAULT_TASK = {
+    1: "multiclass", 2: "multilabel", 3: "multiclass", 4: "multiclass",
+    5: "multiclass", 6: "multilabel", 7: "multilabel", 8: "multiclass",
+}
+EXPERIMENT_REDIRECT_HINT = {
+    3: "For multilabel class imbalance, use Experiment 6 (label-wise loss weighting) instead.",
+    4: "For multilabel class imbalance, use Experiment 6 (label-wise loss weighting) instead.",
+    5: "For multilabel class imbalance, use Experiment 6 (label-wise loss weighting) instead.",
+    6: "For binary/multiclass class imbalance, use Experiment 3 (CE vs weighted CE), "
+       "Experiment 4 (focal vs class-balanced), or Experiment 5 (weighted sampling) instead.",
+    7: "Experiment 7 reports the flat MULTILABEL model only. For binary/multiclass results, "
+       "run Experiment 2 (dataset ablation) or 3/4/5 (imbalance) with the task you need.",
+}
+
+
+def validate_task_for_experiment(experiment: int, task: str) -> None:
+    """Enforce that --task matches what the experiment actually measures,
+    so 'put --task binary and binary-relevant experiments run, put
+    --task multiclass and multiclass-relevant ones run, etc.' — mismatches
+    fail loudly with a pointer to the right experiment number instead of
+    silently training the wrong head."""
+    allowed = EXPERIMENT_ALLOWED_TASKS[experiment]
+    if task in allowed:
+        return
+    hint = EXPERIMENT_REDIRECT_HINT.get(experiment, "")
+    raise SystemExit(
+        f"Experiment {experiment} only supports --task {sorted(allowed)}, got --task {task!r}. "
+        + hint
+    )
 
 
 # =====================================================================
@@ -484,25 +533,39 @@ def experiment2_dataset_ablation(args):
             f"Pass --annotated-splits / --codipas-splits / --combined-splits."
         )
 
+    if args.aggregate_only:
+        _aggregate_experiment2(args)
+        return
+
     if args.seed is None:
-        # orchestration mode: spawn one subprocess per (config, seed)
-        for name, splits_dir in configs.items():
+        # orchestration mode: spawn one subprocess per (config, seed).
+        # Respects --only-config so a single call trains exactly one dataset
+        # at a time (all 3 of ITS seeds), never more than that.
+        configs_to_orchestrate = (
+            {args.only_config: configs[args.only_config]} if args.only_config else configs
+        )
+        for name, splits_dir in configs_to_orchestrate.items():
             base_argv = ["--experiment", "2", "--task", args.task, "--out", args.out,
                          "--annotated-splits", args.annotated_splits,
                          "--codipas-splits", args.codipas_splits,
                          "--combined-splits", args.combined_splits,
                          "--only-config", name]
             orchestrate_all_seeds(2, args.seeds, base_argv)
-        _aggregate_experiment2(args)
+        if not args.only_config:
+            _aggregate_experiment2(args)
         return
 
     # single-seed leaf run for one config (called by the orchestration above,
-    # or directly if the caller only wants one config/seed)
+    # or directly if the caller only wants one config/seed). Loss is chosen
+    # by task: multilabel needs weighted BCE, binary/multiclass need
+    # weighted CE — passing "weighted_ce" for a multilabel task would be
+    # silently wrong (build_loss would reject it), so this must branch.
+    loss_name = "weighted_bce" if args.task == "multilabel" else "weighted_ce"
     configs_to_run = {args.only_config: configs[args.only_config]} if args.only_config else configs
     for name, splits_dir in configs_to_run.items():
         eval_json = run_single_seed(
             experiment_tag=f"exp2_{name}", task=args.task, model_name=args.model, seed=args.seed,
-            splits_dir=splits_dir, out_dir=str(out / name), loss_name="weighted_ce",
+            splits_dir=splits_dir, out_dir=str(out / name), loss_name=loss_name,
             sampler_name="none", args=args,
         )
         row = {"config": name, "seed": args.seed,
@@ -582,13 +645,14 @@ def _aggregate_generic(out: Path, in_name: str, out_name: str, group_cols: list[
 
 
 def experiment3_ce_vs_weighted_ce(args):
-    """Standard CE vs class-weighted CE, multiclass, same backbone/splits.
-    Run this only if Experiment 1's audit shows meaningful imbalance
-    (e.g. no_distortion / all_or_nothing support gap)."""
+    """Standard CE vs class-weighted CE, binary or multiclass (--task),
+    same backbone/splits. Run this only if Experiment 1's audit shows
+    meaningful imbalance (e.g. no_distortion / all_or_nothing support gap
+    for multiclass, or the Distorted/Non-Distorted split for binary)."""
     out = Path(args.out); out.mkdir(parents=True, exist_ok=True)
     if args.seed is None:
         for loss_name in ("ce", "weighted_ce"):
-            base_argv = ["--experiment", "3", "--task", "multiclass", "--splits", args.splits,
+            base_argv = ["--experiment", "3", "--task", args.task, "--splits", args.splits,
                          "--out", args.out, "--loss", loss_name]
             orchestrate_all_seeds(3, args.seeds, base_argv)
         _aggregate_generic(out, "exp3_all_seed_results.csv", "exp3_mean_std.csv", ["loss"])
@@ -597,13 +661,13 @@ def experiment3_ce_vs_weighted_ce(args):
 
 
 def experiment4_focal_vs_class_balanced(args):
-    """Best of {weighted_ce baseline} vs focal vs class_balanced, multiclass.
-    Run only if Experiment 3's weighted CE improvement over plain CE is
-    insufficient (per the FYP's stated decision rule)."""
+    """Best of {weighted_ce baseline} vs focal vs class_balanced, binary or
+    multiclass (--task). Run only if Experiment 3's weighted CE improvement
+    over plain CE is insufficient (per the FYP's stated decision rule)."""
     out = Path(args.out); out.mkdir(parents=True, exist_ok=True)
     if args.seed is None:
         for loss_name in ("weighted_ce", "focal", "class_balanced"):
-            base_argv = ["--experiment", "4", "--task", "multiclass", "--splits", args.splits,
+            base_argv = ["--experiment", "4", "--task", args.task, "--splits", args.splits,
                          "--out", args.out, "--loss", loss_name, "--gamma", str(args.gamma),
                          "--cb-beta", str(args.cb_beta)]
             orchestrate_all_seeds(4, args.seeds, base_argv)
@@ -614,12 +678,13 @@ def experiment4_focal_vs_class_balanced(args):
 
 def experiment5_weighted_sampling(args):
     """Weighted sampling vs the best loss-based approach from Exp3/4
-    (pass --best-loss to name it), all other settings fixed."""
+    (pass --best-loss to name it), binary or multiclass (--task), all
+    other settings fixed."""
     out = Path(args.out); out.mkdir(parents=True, exist_ok=True)
     best_loss = args.best_loss or "weighted_ce"
     if args.seed is None:
         for sampler_name in ("none", "weighted"):
-            base_argv = ["--experiment", "5", "--task", "multiclass", "--splits", args.splits,
+            base_argv = ["--experiment", "5", "--task", args.task, "--splits", args.splits,
                          "--out", args.out, "--loss", best_loss, "--sampler", sampler_name]
             orchestrate_all_seeds(5, args.seeds, base_argv)
         _aggregate_generic(out, "exp5_all_seed_results.csv", "exp5_mean_std.csv", ["loss", "sampler"])
@@ -642,14 +707,14 @@ def experiment6_multilabel(args):
     out = Path(args.out); out.mkdir(parents=True, exist_ok=True)
     loss_name = args.loss if args.loss != "ce" else "weighted_bce"
     if args.seed is None:
-        base_argv = ["--experiment", "6", "--task", "multilabel", "--splits", args.splits,
+        base_argv = ["--experiment", "6", "--task", args.task, "--splits", args.splits,
                      "--out", args.out, "--loss", loss_name, "--gamma", str(args.gamma)]
         orchestrate_all_seeds(6, args.seeds, base_argv)
         _report_experiment6(out)
         return
 
     eval_json = run_single_seed(
-        experiment_tag="exp6", task="multilabel", model_name=args.model, seed=args.seed,
+        experiment_tag="exp6", task=args.task, model_name=args.model, seed=args.seed,
         splits_dir=args.splits, out_dir=str(out), loss_name=loss_name, sampler_name="none", args=args,
     )
     pc_test = pd.DataFrame(eval_json["splits"]["test"]["per_class"])
@@ -692,14 +757,14 @@ def experiment7_flat_report(args):
           "Izza's separate Kaggle track and is intentionally not run here.")
     loss_name = args.loss if args.loss != "ce" else "weighted_bce"
     if args.seed is None:
-        base_argv = ["--experiment", "7", "--task", "multilabel", "--splits", args.splits,
+        base_argv = ["--experiment", "7", "--task", args.task, "--splits", args.splits,
                      "--out", args.out, "--loss", loss_name]
         orchestrate_all_seeds(7, args.seeds, base_argv)
         _report_experiment7(out)
         return
 
     eval_json = run_single_seed(
-        experiment_tag="exp7_flat", task="multilabel", model_name=args.model, seed=args.seed,
+        experiment_tag="exp7_flat", task=args.task, model_name=args.model, seed=args.seed,
         splits_dir=args.splits, out_dir=str(out), loss_name=loss_name, sampler_name="none", args=args,
     )
     pc_test = pd.DataFrame(eval_json["splits"]["test"]["per_class"])
@@ -803,7 +868,11 @@ def build_arg_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(description="EmpowerLens flat Mental-RoBERTa experiment suite (1-8).")
     ap.add_argument("--experiment", type=int, required=True, choices=range(1, 9))
     ap.add_argument("--model", default=DEFAULT_MODEL)
-    ap.add_argument("--task", default="multiclass", choices=["binary", "multiclass", "multilabel"])
+    ap.add_argument("--task", default=None,
+                    choices=["binary", "multiclass", "multilabel"],
+                    help="defaults to whichever task each experiment measures if omitted "
+                         "(see EXPERIMENT_DEFAULT_TASK) — e.g. Experiment 6/7 default to "
+                         "multilabel, Experiment 3/4/5 default to multiclass")
     ap.add_argument("--splits", default="data/splits_combined")
     ap.add_argument("--out", default="results/experiments")
     ap.add_argument("--seed", type=int, default=None, help="omit to orchestrate all --seeds via subprocess")
@@ -831,6 +900,10 @@ def build_arg_parser() -> argparse.ArgumentParser:
     ap.add_argument("--codipas-splits", default="data/splits_codipas_cls")
     ap.add_argument("--combined-splits", default="data/splits_combined")
     ap.add_argument("--only-config", default=None, help=argparse.SUPPRESS)  # internal, used by orchestration
+    ap.add_argument("--aggregate-only", action="store_true",
+                    help="skip training entirely; just re-read existing *_all_seed_results.csv "
+                         "and rewrite the mean/std summary (use after running each dataset "
+                         "config separately with --only-config)")
     # Experiment 8
     ap.add_argument("--run-longformer", action="store_true")
     ap.add_argument("--longformer-model", default="allenai/longformer-base-4096")
@@ -844,6 +917,10 @@ def main(argv=None):
     args = ap.parse_args(argv)
     args.seeds = [int(s) for s in args.seeds.split(",")]
     args.experiment_num_str = str(args.experiment)
+
+    if args.task is None:
+        args.task = EXPERIMENT_DEFAULT_TASK[args.experiment]
+    validate_task_for_experiment(args.experiment, args.task)
 
     dispatch = {
         1: experiment1_audit,
