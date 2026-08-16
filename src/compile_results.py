@@ -48,6 +48,13 @@ SPLITS_BY_DIR = {
     "results_cascade":       ("data/splits",             True,  "cascade end-to-end, composed prediction"),
     "results_multiclass_v2": ("data/splits",             True,  "flat 11-class, clean splits"),
     "results_multilabel_flat": ("data/splits",           True,  "flat multilabel — the cascade's matched competitor"),
+    # CODIPAS variants — the bootstrap suffixes every output dir from PARENT_SPLITS,
+    # so a CODIPAS run cannot overwrite the Annotated results above.
+    "results_stage1_codipas_cls":        ("data/splits_codipas_cls",        True, "CODIPAS cascade Stage 1"),
+    "results_stage2_codipas_cls":        ("data/splits_stage2_codipas_cls", True, "CODIPAS Stage 2 ISOLATED - not a cascade result"),
+    "results_cascade_codipas_cls":       ("data/splits_codipas_cls",        True, "CODIPAS cascade end-to-end"),
+    "results_multilabel_flat_codipas_cls": ("data/splits_codipas_cls",      True, "CODIPAS flat multilabel baseline"),
+    "results_multiclass_v2_codipas_cls": ("data/splits_codipas_cls",        True, "CODIPAS flat 11-class"),
 }
 
 

@@ -89,12 +89,26 @@ EVAL_TIMEOUT = 3600
 # Annotated val/test.
 PARENT_SPLITS = "data/splits"
 COMBINED_SPLITS = PARENT_SPLITS               # back-compat alias for older cells
-STAGE2_SPLITS = "data/splits_stage2"          # distorted-only, derived from PARENT_SPLITS
 
-STAGE1_OUT = "results_stage1"
-MULTICLASS_OUT = "results_multiclass_v2"
-STAGE2_OUT = "results_stage2"
-CASCADE_OUT = "results_cascade"
+# ---- everything below is DERIVED from PARENT_SPLITS -------------------------
+# Change PARENT_SPLITS alone (e.g. to "data/splits_codipas_cls") and every path
+# follows, so two datasets can never overwrite each other.
+#
+# Without this, running the cascade on CODIPAS would have:
+#   * OVERWRITTEN data/splits_stage2 (Step 1 regenerates it in place), and
+#   * written its results into results_stage1/ etc. on top of the Annotated run.
+# The default ("splits") keeps the original unsuffixed names so the committed
+# 2026-08-16 results stay where they are.
+_DS = Path(PARENT_SPLITS).name                          # "splits" | "splits_codipas_cls"
+_SUF = "" if _DS == "splits" else "_" + _DS.replace("splits_", "")
+
+STAGE2_SPLITS = f"data/splits_stage2{_SUF}"   # distorted-only, derived from PARENT_SPLITS
+
+STAGE1_OUT = f"results_stage1{_SUF}"
+MULTICLASS_OUT = f"results_multiclass_v2{_SUF}"
+STAGE2_OUT = f"results_stage2{_SUF}"
+CASCADE_OUT = f"results_cascade{_SUF}"
+FLAT_OUT = f"results_multilabel_flat{_SUF}"
 
 # Checkpoints live OUTSIDE the repo clone.
 #
@@ -104,10 +118,11 @@ CASCADE_OUT = "results_cascade"
 # trained model, and the cascade eval then had nothing to load. Keeping them at
 # /kaggle/working/checkpoints makes that comment true and makes cell 1 safe to
 # re-run mid-session.
-CKPT_DIR = "/kaggle/working/checkpoints" if Path("/kaggle/working").is_dir() else "checkpoints"
+CKPT_DIR = (f"/kaggle/working/checkpoints{_SUF}" if Path("/kaggle/working").is_dir()
+            else f"checkpoints{_SUF}")
 Path(CKPT_DIR).mkdir(parents=True, exist_ok=True)
 
-for _d in (STAGE1_OUT, MULTICLASS_OUT, STAGE2_OUT, CASCADE_OUT):
+for _d in (STAGE1_OUT, MULTICLASS_OUT, STAGE2_OUT, CASCADE_OUT, FLAT_OUT):
     Path(_d).mkdir(parents=True, exist_ok=True)
 
 
