@@ -210,6 +210,107 @@ Fixed by §2.2 + the swap.
 
 ---
 
+## 4b. Span-level training — the idea worth testing next
+
+**The proposal:** stop collapsing CODIPAS's spans into one label per message. Train
+on the spans directly, since each span is text with a *directly human-assigned*
+label.
+
+**Why it's attractive**
+```
+span-level rows : 5,055   (vs 3,277 messages — +54%)
+  No distortion : 2,778   (55%)
+  distorted     : 2,277
+per class: Labeling 398 · Mind reading 296 · Should statements 281
+           Overgeneralization 265 · Emotional reasoning 262 · Fortune-telling 247
+           Magnification 154 · All-or-nothing 138 · Mental filter 121 · Personalization 115
+```
+- **Zero derived labels.** The aggregation rule in
+  `make_splits_codipas_classification.py` disappears entirely — no most-frequent
+  vote, no tie-breaks. Every label is a human judgement about that exact text.
+- 54% more examples, and `Emotional reasoning` (262) — the class PatternReframe
+  lacks — is present.
+
+**The objection in the current docstring does NOT apply.** It says feeding the
+same message repeatedly with different labels would train against contradictory
+targets. True — but that is an argument against feeding the *message* n times, not
+against feeding the *span*, which is different text each time.
+
+**Three real objections**
+1. **Context loss.** Span median is 21 words vs 129 for the message (span ≈ 36% of
+   its message). "He has tried a number of medications and none of them have
+   worked" — is that Overgeneralization? You need the surrounding facts to weigh
+   the thought against, which is precisely the Diagnosis-of-Thought argument. A
+   21-word fragment often carries the thought and none of the evidence.
+2. **Deployment mismatch.** At inference EmpowerLens gets a whole reflection, not a
+   pre-extracted span — so a span-trained model meets inputs it never saw, unless
+   a span extractor is built first (a harder task).
+3. **Comparability.** The paper and `Annotated_data.csv` are message-level. Span
+   results compare to neither, losing the replication anchor.
+4. 322 exact `(message, span)` duplicates to dedupe.
+
+**The version to actually build: span WITH its message as context.** Standard
+span-classification — input is the full message with the target span marked,
+output is that span's label:
+```
+[CLS] ...full message... [SEP] ...target span... [SEP]  ->  Overgeneralization
+```
+Keeps all three properties: 5,055 examples, zero derived labels, full context
+retained. And it produces span-level output directly, which is what the dashboard
+needs for highlighting (§5).
+
+`Annotated_data.csv` has 1,597 spans in `Distorted part` too, so the same design
+works on both datasets and comparability is restored.
+
+**Cost:** a new `src/make_splits_span.py` emitting `(message, span, label)` rows,
+plus a two-segment input path in `encode_texts`. ~150 lines; `train_transformer.py`
+otherwise unchanged. **Sequence it after the re-run** — there are already three
+open experiments (CODIPAS cascade, flat baseline, PatternReframe).
+
+---
+
+## 4c. PatternReframe — available, strong fit for the data-volume problem
+
+**Download (the `parl.ai` URL redirects twice; use the final one):**
+```
+https://dl.fbaipublicfiles.com/parlai/reframe_thoughts/reframe_thoughts_v0.1.tar.gz
+2,482,759 bytes (2.4 MB) · sha256 bfbfc61c26341dd64b59945c3d290caba67fa2db435fb01ac309cef295222c99
+```
+The GitHub page (`facebookresearch/ParlAI/projects/reframe_thoughts`) has only a
+README — no data. ParlAI is **not** required; the tarball is public.
+
+Maddela, Ung, Xu, Madotto, Foran & Boureau (2023), *Training Models to Generate,
+Recognize, and Reframe Unhelpful Thoughts*, ACL 2023. arXiv:2307.02768.
+~10k thoughts + ~27k positive reframes, persona-conditioned.
+
+**Taxonomy overlap is 9 of 10:**
+
+| PatternReframe | EmpowerLens |
+|---|---|
+| Catastrophizing | Magnification |
+| Overgeneralizing | Overgeneralization |
+| Personalization | Personalization |
+| Black-and-white | All-or-nothing thinking |
+| Mental filter | Mental filter |
+| Mind Reading | Mind Reading |
+| Fortune Telling | Fortune-telling |
+| Should statements | Should statements |
+| Labeling | Labeling |
+| Discounting the positive | *(no direct match)* |
+| *(none)* | **Emotional Reasoning** |
+
+**And it is balanced** — 921–1024 thoughts per pattern (~950 avg) against your
+101–232. That is **4–9× more data for the rarest classes**, aimed squarely at the
+binding constraint identified in §1.
+
+**Caveat:** these are crowdworkers writing to order, persona-conditioned — not
+naturally occurring text. Same character as your own synthetic output, so it may
+not transfer to real reflections any better than the generator does. A
+data-volume fix, not a realism fix. The reframes (27k) are also a separate asset
+for the reframing half of the product, unused for now.
+
+---
+
 ## 5. Distorted-span work (not started)
 
 ### 5.1 The spans exist and are being thrown away — P2
