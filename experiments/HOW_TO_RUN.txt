@@ -1,0 +1,244 @@
+EmpowerLens — Flat Mental-RoBERTa Experiment Suite
+How to run Experiments 1-8 end to end
+=====================================
+
+FOLDER CONTENTS
+---------------
+experiments_flat_mentalroberta.py    - the experiment script (Experiments 1-8)
+kaggle_runner_flat_experiments.ipynb - Kaggle GPU notebook that runs all 8 experiments
+HOW_TO_RUN.txt                       - this file
+
+SCOPE NOTE: every experiment here uses the FLAT architecture only (one
+Mental-RoBERTa head per task). Cascade (Stage 1 binary gate -> Stage 2
+multilabel)  separate track on Kaggle and is not run or compared
+anywhere in this suite, including Experiment 7.
+
+TASK GATING (--task binary / multiclass / multilabel)
+-------------------------------------------------------
+Each experiment only makes sense for certain tasks, and the script enforces
+this — pass a mismatched --task and it exits immediately with a message
+telling you which experiment number to use instead, rather than silently
+training the wrong kind of head.
+
+  Experiment 1 (audit)                 -> any task (binary/multiclass/multilabel)
+  Experiment 2 (dataset ablation)      -> any task; defaults to multilabel
+  Experiment 3 (CE vs weighted CE)     -> binary or multiclass only
+  Experiment 4 (focal vs class-bal.)   -> binary or multiclass only
+  Experiment 5 (weighted sampling)     -> binary or multiclass only
+  Experiment 6 (multilabel per-label)  -> multilabel only
+  Experiment 7 (flat report)           -> multilabel only
+  Experiment 8 (sequence length)       -> any task
+
+If you omit --task entirely, each experiment falls back to whichever task
+it's built around (Experiment 3/4/5 -> multiclass, Experiment 6/7 -> multi-
+label, Experiment 1/2/8 -> multiclass unless you say otherwise) — so
+`--experiment 3 --task binary` runs the binary version of that comparison,
+`--experiment 3` alone runs the multiclass version, and `--experiment 3
+--task multilabel` fails fast with a pointer to Experiment 6.
+
+
+STEP 0 — Commit the script to the repo (one-time, do this first)
+------------------------------------------------------------------
+The notebook clones your repo and runs the script as a module
+(`python -m src.experiments_flat_mentalroberta`), so it has to live inside
+the repo, next to the other src/ files.
+
+  1. Copy experiments_flat_mentalroberta.py into your local clone of
+     EmpowerLens, at: EmpowerLens/src/experiments_flat_mentalroberta.py
+  2. From the repo root:
+        git checkout lumia-space
+        git add src/experiments_flat_mentalroberta.py
+        git commit -m "Add flat Mental-RoBERTa experiment suite (Exp 1-8)"
+        git push
+  3. Confirm your frozen splits are already committed and pushed too:
+        data/splits/            (Annotated only)
+        data/splits_codipas_cls/ (CODIPAS only)
+        data/splits_combined/    (Annotated + CODIPAS)
+     If any of these are missing, generate/commit them first (see
+     src/make_splits.py and CLAUDE.md) — the script refuses to invent
+     splits itself, by design (no-leakage discipline).
+
+You only need to redo Step 0 when the script itself changes.
+
+
+STEP 1 — Open the notebook on Kaggle
+--------------------------------------
+  1. Upload kaggle_runner_flat_experiments.ipynb as a new Kaggle notebook
+     (File -> Upload Notebook), or paste its cells into a new notebook.
+  2. Settings (right sidebar):
+       Accelerator: GPU T4 x2 (the notebook pins itself to GPU 0, so a
+                    single T4 also works fine, just slower)
+       Internet:    On (needed for pip installs + the HF model downloads)
+  3. Run the "Clone the repo, install deps, pin to a single GPU" cell.
+     It clones lumia-space, installs requirements-transformer.txt, and
+     sets CUDA_VISIBLE_DEVICES=0 (avoids the known T4x2 deadlock).
+  4. Run the sanity-check cell — it should print "Found
+     src/experiments_flat_mentalroberta.py". If it doesn't, go back to
+     Step 0.
+
+
+STEP 2 — Run Experiment 1 first (data/label audit)
+------------------------------------------------------
+This one is cheap (no training) and its output decides whether you need
+Experiments 3, 4, and 5 at all.
+
+  Run the "Experiment 1" cell. It writes to results/exp1/:
+    exp1_multiclass_frequencies.csv       - class counts per split
+    exp1_multilabel_prevalence.csv        - per-label prevalence per split
+    exp1_label_cooccurrence_counts_train.csv
+    exp1_label_cooccurrence_jaccard_train.csv
+    exp1_imbalance_flags.md               - rare-class warnings
+
+  Read exp1_imbalance_flags.md:
+    - If it lists several distortions with low support (e.g. all_or_nothing,
+      personalization), imbalance is real -> proceed to Experiment 3.
+    - If nothing is flagged, you can skip straight to Experiment 6/7/8 and
+      treat 3/4/5 as optional confirmation runs.
+
+  Optional: if you already have trained checkpoints and want per-class
+  F1 + a confusion matrix, uncomment the second command in the notebook
+  cell and point --checkpoint-mc / --checkpoint-ml at them.
+
+
+STEP 3 — Experiment 2 (dataset ablation)
+--------------------------------------------
+Task is **multilabel**. Unlike the other experiments, this cell is split into
+four separate cells so exactly ONE dataset trains at a time (never in
+parallel) — you can run them back to back, or spread them across separate
+Kaggle sessions if you're tight on time:
+
+  2a. Annotated only        -> trains 3 seeds, evaluates, writes results
+  2b. CODIPAS only           -> same, for the CODIPAS-only splits
+  2c. Annotated + CODIPAS    -> same, for the combined splits
+  2d. Aggregate              -> --aggregate-only, does NOT retrain anything;
+                                 just re-reads the CSVs written by 2a/2b/2c
+                                 and rebuilds the mean +/- SD summary
+
+  All output goes to result_experiment/exp2/ (not results/exp2/):
+    exp2_all_seed_results.csv     - every individual (config, seed) row,
+                                     appended to as each of 2a/2b/2c finishes
+    exp2_mean_std_by_config.csv   - mean +/- SD per config (written by 2d)
+
+  Run order doesn't matter as long as 2d runs last. If a session times out
+  partway through, just re-run whichever of 2a/2b/2c didn't finish, then 2d
+  — already-completed configs won't be retrained since each cell only
+  touches its own --only-config.
+
+  Read this to answer: "is the improvement coming from more data, and is
+  it consistent across seeds?" — check that the combined config beats
+  both single-source configs on most/all seeds, not just on average.
+
+  Note: re-running the SAME 2a/2b/2c cell twice (e.g. after it already
+  succeeded) will append duplicate rows to exp2_all_seed_results.csv for
+  that config's seeds — delete result_experiment/exp2/ first if you want a
+  clean re-run, or dedupe in pandas by (config, seed) afterwards.
+
+
+STEP 4 — Experiment 3 (only if Experiment 1 showed imbalance)
+-------------------------------------------------------------------
+Run the "Experiment 3" cell: standard CE vs class-weighted CE, multiclass,
+3 seeds each.
+
+  Output: results/exp3/exp3_all_seed_results.csv, exp3_mean_std.csv
+
+  Decision rule: if weighted_ce's mean macro_f1_10 clearly beats plain ce
+  (more than ~1 SD), stop here and use weighted_ce going forward — skip to
+  Experiment 6. If the gain is small/inconsistent, continue to Experiment 4.
+
+
+STEP 5 — Experiment 4 (only if Experiment 3's gain is insufficient)
+-------------------------------------------------------------------------
+Run the "Experiment 4" cell: weighted_ce vs focal vs class_balanced,
+multiclass, 3 seeds each.
+
+  Output: results/exp4/exp4_all_seed_results.csv, exp4_mean_std.csv
+
+  Pick whichever loss has the best mean macro_f1_10 with the smallest SD
+  across seeds — that's your "best loss" for Experiment 5.
+
+
+STEP 6 — Experiment 5 (weighted sampling vs best loss)
+------------------------------------------------------------
+In the "Experiment 5" cell, set BEST_LOSS to whatever won in Step 4 (or
+Step 3 if you skipped Step 5), then run it.
+
+  Output: results/exp5/exp5_all_seed_results.csv, exp5_mean_std.csv
+
+  Compares --sampler none vs --sampler weighted with that loss fixed.
+
+
+STEP 7 — Experiment 6 (multilabel per-label + thresholds)
+----------------------------------------------------------------
+Run the "Experiment 6" cell (default loss weighted_bce; the commented
+alternative below it tries focal label-wise weighting instead — run both
+if you want to compare).
+
+  Output: results/exp6/
+    exp6_per_label_all_seeds.csv    - per-label P/R/F1/support, every seed
+    exp6_per_label_mean_std.csv     - per-label F1 mean +/- SD across seeds
+    exp6_all_seed_results.csv, exp6_mean_std.csv  - overall macro/micro F1
+
+  Thresholds are swept on val only (existing sweep_thresholds function)
+  and then frozen for the test-set numbers you see here — no extra work
+  needed, this is already how train_transformer.py / evaluate.py work.
+
+
+STEP 8 — Experiment 7 (flat multilabel report)
+---------------------------------------------------
+Run the "Experiment 7" cell.
+
+  Output: results/exp7/
+    exp7_flat_all_seed_results.csv        - macro/micro F1, every seed
+    exp7_flat_per_label_all_seeds.csv     - per-label F1, every seed
+    exp7_flat_per_label_mean_std.csv      - per-label F1 mean +/- SD
+
+  This is FLAT-architecture-only, as noted above. When Izza's cascade
+  numbers are ready, put them next to this table — this script does not
+  produce or estimate cascade numbers itself.
+
+
+STEP 9 — Experiment 8 (sequence length / truncation)
+-----------------------------------------------------------
+Run the "Experiment 8" cell.
+
+  Output: results/exp8/exp8_sequence_length_stats.json
+    - median, p90, p95, max token length (pooled across train/val/test)
+    - % truncated at 128 / 256 / 512 / 1024 tokens
+
+  If "pct_truncated_at_512" is above 10% (the default threshold), the
+  cell tells you to re-run with --run-longformer. Uncomment the second
+  command in that cell, adjust --longformer-model if you want a
+  domain-specific long-context checkpoint instead of the generic
+  allenai/longformer-base-4096, and run it. If truncation is below 10%,
+  the script skips the long-context run automatically — no wasted GPU time.
+
+
+STEP 10 — Download results
+-------------------------------
+Run the last cell ("Copy everything to /kaggle/working"). This copies the
+entire results/ tree (all experiments) to /kaggle/working/results, which
+Kaggle lets you download from the notebook's Output tab once the session
+ends (or via "Save Version" -> "Save & Run All").
+
+
+TROUBLESHOOTING
+----------------
+- "src/experiments_flat_mentalroberta.py not found" at the sanity check:
+  you skipped Step 0, or pushed to the wrong branch. Check BRANCH in the
+  first code cell matches where you committed it.
+
+- KeyError on a column like 'y_mc' or 'ml_<label>' during Experiment 2's
+  CODIPAS-only run: data/splits_codipas_cls must use the exact same
+  column schema as data/splits (Patient Question, y_bin, y_mc, ml_*).
+  Regenerate it with the same target-derivation logic as
+  src/make_splits.py / src/data.py if it doesn't.
+
+- Training hangs / silently stalls on T4 x2: confirm the
+  CUDA_VISIBLE_DEVICES=0 cell actually ran before any training cell (a
+  fresh Kaggle session resets environment variables).
+
+- Re-running a cell after a partial failure: all *_all_seed_results.csv
+  files are append-only, so a re-run will duplicate rows for any
+  (config/loss/sampler, seed) pair that already succeeded. Delete the
+  relevant results/<expN>/ folder before re-running if you want a clean
+  file, or dedupe afterwards in pandas by (relevant key columns, seed).
