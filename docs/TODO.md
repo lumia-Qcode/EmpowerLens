@@ -299,15 +299,36 @@ Recognize, and Reframe Unhelpful Thoughts*, ACL 2023. arXiv:2307.02768.
 | Discounting the positive | *(no direct match)* |
 | *(none)* | **Emotional Reasoning** |
 
-**And it is balanced** — 921–1024 thoughts per pattern (~950 avg) against your
-101–232. That is **4–9× more data for the rarest classes**, aimed squarely at the
-binding constraint identified in §1.
+**Measured after downloading — the taxonomy table above is right, but the
+"4-9x more data for the rarest classes" claim needs three big qualifications:**
 
-**Caveat:** these are crowdworkers writing to order, persona-conditioned — not
-naturally occurring text. Same character as your own synthetic output, so it may
-not transfer to real reflections any better than the generator does. A
-data-volume fix, not a realism fix. The reframes (27k) are also a separate asset
-for the reframing half of the product, unused for now.
+| | |
+|---|---|
+| total thoughts | 9,688 (official split is test-heavy: 1,920 / 961 / 6,807 — ignored; all become train) |
+| after mapping | **8,712 rows** usable — 970 dropped ("Discounting the positive" has no counterpart, and merging it into `mental_filter` would corrupt that class) |
+| **No-Distortion rows** | **ZERO.** Cannot help Stage 1 (binary needs negatives). An exact structural fit for **Stage 2 only** |
+| **emotional_reasoning** | **ZERO coverage.** The key exists in `marked_patterns` but its intensity is 0 in all 9,688 rows — so 9 of your 10 classes get augmented and one does not, making it *relatively* rarer |
+| median thought length | **17 words** vs **129** in Annotated — the biggest risk by far |
+| `marked_patterns` | graded intensity 0-5 across 11 patterns; **93%** of thoughts carry 2+ |
+
+`src/make_splits_patternreframe.py` handles all of this. It builds the multi-label
+columns from `marked_patterns` rather than the single primary label, with
+`--min-intensity 3` as the default because that yields **1.48 labels/row** —
+closest to Annotated's 1.3. (`>=1` gives 3.55, `>=2` 1.83, `>=4` only 0.61.)
+Getting this wrong makes the *label structure itself* a distribution shift.
+
+```
+python -m src.make_splits_patternreframe --source <extracted-dir>     --merge-into data/splits_stage2 --out data/splits_stage2_pr --force
+```
+
+Takes Stage 2 from **1,278 -> 9,990 train rows (7.8x)**; val/test pass through
+untouched, per "train augmented, test natural".
+
+**The honest experiment:** train Stage 2 on the merged set, evaluate on the
+unchanged Annotated test set. If the 17-vs-129-word gap dominates, this will not
+help — and that is itself a result about what shape the synthetic pipeline's
+output needs to be. The 27k reframes are a separate, currently unused asset for
+the reframing half of the product.
 
 ---
 

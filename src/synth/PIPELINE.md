@@ -10,7 +10,7 @@ address, and exactly what is borrowed vs. original.
 
 > **Scope.** Synthetic rows are **training data only**. The evaluation (test) set
 > is separate: real, human-written reflections labelled via
-> [`data/labeling/labeling_guide.md`](../../data/labeling/labeling_guide.md).
+> [`data/synthetic_gen/labeling/labeling_guide.md`](../../data/synthetic_gen/labeling/labeling_guide.md).
 > Synthetic data is never used for testing.
 
 ---

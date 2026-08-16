@@ -529,7 +529,7 @@ def build_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(description="EmpowerLens synthetic data generator (English track, cross-provider).")
     ap.add_argument("--n", type=int, default=300)
     ap.add_argument("--seed", type=int, default=42)
-    ap.add_argument("--seeds", default="data/seeds/entrepreneurial_seeds.jsonl")
+    ap.add_argument("--seeds", default="data/synthetic_gen/seeds/entrepreneurial_seeds.jsonl")
     ap.add_argument("--out", default="data/synthetic/synthetic_train_en.jsonl")
     ap.add_argument("--gen-provider", default="anthropic", choices=["anthropic", "gemini"])
     ap.add_argument("--gen-model", default="claude-sonnet-5")
