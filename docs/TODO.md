@@ -262,10 +262,32 @@ needs for highlighting (§5).
 `Annotated_data.csv` has 1,597 spans in `Distorted part` too, so the same design
 works on both datasets and comparability is restored.
 
-**Cost:** a new `src/make_splits_span.py` emitting `(message, span, label)` rows,
-plus a two-segment input path in `encode_texts`. ~150 lines; `train_transformer.py`
-otherwise unchanged. **Sequence it after the re-run** — there are already three
-open experiments (CODIPAS cascade, flat baseline, PatternReframe).
+**You are not starting from a blank page.** `src/make_splits_codipas.py` already
+exists and is unused — it produces **span-level** splits (`data/splits_codipas`,
+5,055 rows) and, critically, already solves the hardest correctness problem:
+
+> *Splitting rows independently would put near-duplicate or literally identical
+> source text in both train and test — a leakage bug worse than the one already
+> fixed in cd_pipeline.py, since here it would leak the exact same input text
+> across splits, just with a different span highlighted.*
+
+It splits at the **group level** (`Id_Patient_Question`), so every span from one
+message lands in the same split. That is exactly the hazard that produced the
+`splits_combined` disaster, anticipated and prevented.
+
+What it does *not* do is pair each span with its parent message as context, which
+is the version worth building (a bare 21-word span usually lacks the facts needed
+to judge the thought). So the work is: extend that script to emit
+`(message, span, label)` rather than span-only, and add a two-segment input path
+to `encode_texts`.
+
+Note `data/splits_codipas` has **never been generated** — only the message-level
+`data/splits_codipas_cls` exists, which is what every CODIPAS result so far used.
+
+**Cost:** extend `src/make_splits_codipas.py` (group-level splitting already done),
+plus a two-segment input path in `encode_texts`. `train_transformer.py` otherwise
+unchanged. **Sequence it after the re-run** — there are already three open
+experiments (CODIPAS cascade, flat baseline, PatternReframe).
 
 ---
 
