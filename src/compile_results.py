@@ -55,6 +55,15 @@ SPLITS_BY_DIR = {
     "results_cascade_codipas_cls":       ("data/splits_codipas_cls",        True, "CODIPAS cascade end-to-end"),
     "results_multilabel_flat_codipas_cls": ("data/splits_codipas_cls",      True, "CODIPAS flat multilabel baseline"),
     "results_multiclass_v2_codipas_cls": ("data/splits_codipas_cls",        True, "CODIPAS flat 11-class"),
+    # TRANSFER: trained on CODIPAS, evaluated on the FROZEN Annotated test set.
+    # Leakage-free (train-in-test = 0), but scores are depressed by label
+    # DISAGREEMENT, not by data volume — CODIPAS's derived y_mc matches the human
+    # annotation on only 36.9% of the 2,017 shared texts. Read as label transfer.
+    "results_stage1_codipas_transfer":        ("data/splits",        True, "TRANSFER: CODIPAS-trained, Annotated test; see label_agreement"),
+    "results_stage2_codipas_transfer":        ("data/splits_stage2_codipas_transfer", True, "TRANSFER Stage 2 ISOLATED - not a cascade result"),
+    "results_cascade_codipas_transfer":       ("data/splits",        True, "TRANSFER cascade end-to-end on Annotated test"),
+    "results_multilabel_flat_codipas_transfer": ("data/splits",      True, "TRANSFER flat multilabel on Annotated test"),
+    "results_multiclass_v2_codipas_transfer": ("data/splits",        True, "TRANSFER flat 11-class on Annotated test"),
 }
 
 

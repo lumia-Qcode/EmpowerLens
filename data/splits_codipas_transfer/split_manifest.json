@@ -1,0 +1,40 @@
+{
+  "created_utc": "2026-08-16T18:43:54.918543+00:00",
+  "purpose": "Train on CODIPAS, evaluate on the FROZEN Annotated test set. A label-transfer study, NOT a data-augmentation study \u2014 see label_agreement below.",
+  "sources": {
+    "codipas": "data\\splits_codipas_cls",
+    "annotated": "data\\splits"
+  },
+  "n_codipas_unique": 3276,
+  "n_removed_because_in_annotated_val_or_test": 504,
+  "n_train": 2772,
+  "n_train_overlapping_annotated_train": 2016,
+  "n_train_new_texts": 756,
+  "n_val": 253,
+  "n_test": 253,
+  "leak_check": {
+    "train_in_val": 0,
+    "train_in_test": 0
+  },
+  "label_agreement": {
+    "n_shared_with_annotated_train": 2017,
+    "y_mc_agreement": 0.3689,
+    "top_disagreements_annotated_to_codipas": {
+      "overgeneralization -> no_distortion": 67,
+      "magnification -> no_distortion": 65,
+      "mind_reading -> no_distortion": 64,
+      "no_distortion -> labeling": 49,
+      "emotional_reasoning -> no_distortion": 47,
+      "mental_filter -> no_distortion": 44,
+      "personalization -> no_distortion": 39,
+      "no_distortion -> mind_reading": 38,
+      "fortune_telling -> no_distortion": 35,
+      "should_statements -> no_distortion": 32
+    }
+  },
+  "caveats": [
+    "CODIPAS y_mc is DERIVED by an aggregation rule, not human-annotated.",
+    "Only ~756 of its texts are new; the rest is Annotated train relabelled.",
+    "A low score is the EXPECTED outcome and does not show that more data fails to help \u2014 it shows the two label sets disagree."
+  ]
+}
