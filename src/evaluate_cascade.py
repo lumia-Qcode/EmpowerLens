@@ -100,12 +100,25 @@ def main(argv=None):
     # mean +/- std came out as NaN. Filenames below keep the full tags so runs
     # never overwrite each other.
     _no_seed = lambda t: re.sub(r"_\d+$", "", t)
-    model_name = f"cascade[{_no_seed(stage1_tag)}+{_no_seed(stage2_tag)}]"
+
+    # The dataset must be part of the identity, not just the output folder.
+    #
+    # Checkpoint names are {task}_{model}_{seed} — identical whether they were
+    # trained on data/splits or data/splits_codipas_cls. Without this suffix a
+    # CODIPAS run produces the same model_name and the same filenames, and
+    # upsert_paper_comparison keys on (model, task, seed, split) — so it would
+    # SILENTLY REPLACE the Annotated rows rather than append. Losing results with
+    # no error is worse than a file clash.
+    dataset_tag = Path(args.splits).name          # e.g. "splits", "splits_codipas_cls"
+    model_name = f"cascade[{_no_seed(stage1_tag)}+{_no_seed(stage2_tag)}]@{dataset_tag}"
+    run_tag = f"{stage1_tag}_{stage2_tag}_on_{dataset_tag}"
 
     rows = []
     eval_json = {
         "stage1_checkpoint": args.stage1_checkpoint,
         "stage2_checkpoint": args.stage2_checkpoint,
+        "splits_dir": args.splits,       # which dataset this was scored on
+        "model_name": model_name,
         "splits": {},
     }
 
@@ -128,7 +141,7 @@ def main(argv=None):
         rows.extend([row_bin, row_ml])
 
         pc_ml = per_class_table("multilabel", y_ml_true, y_ml_pred)
-        pc_path = out / f"per_class_cascade_multilabel_{stage1_tag}_{stage2_tag}_{split}.csv"
+        pc_path = out / f"per_class_cascade_multilabel_{run_tag}_{split}.csv"
         pc_ml.to_csv(pc_path, index=False)
 
         eval_json["splits"][split] = {
@@ -146,7 +159,7 @@ def main(argv=None):
         )
 
     upsert_paper_comparison(rows, out / "paper_comparison.csv")
-    (out / f"eval_cascade_{stage1_tag}_{stage2_tag}.json").write_text(
+    (out / f"eval_cascade_{run_tag}.json").write_text(
         json.dumps(eval_json, indent=2), encoding="utf-8"
     )
     print(f"\nWrote cascade eval JSON, per-class CSVs, and paper_comparison.csv to {out}/")
