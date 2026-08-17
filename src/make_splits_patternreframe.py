@@ -29,9 +29,17 @@ What this script does and does NOT give you
   Annotated_data.csv reflections are a median of 129. Training on one-liners and
   testing on paragraphs is a real distribution shift, and it is the most likely
   reason this fails to help. Report that if it does.
-* The official train/valid/test split is test-heavy (1,920 / 961 / 6,807) and is
-  **ignored** — everything is emitted as training data. Evaluation stays on the
-  untouched Annotated test set ("train augmented, test natural").
+* The official train/valid/test split is test-heavy (1,920 / 961 / 6,807). By
+  default everything becomes training data and evaluation stays on the untouched
+  Annotated test set ("train augmented, test natural").
+
+  The official splits ARE meaningful in one respect: they are **persona-disjoint**
+  (231 / 115 / 812 personas, zero pairwise overlap). Since each thought is written
+  *from* its persona, any in-domain holdout must respect that boundary or the model
+  can match persona-specific phrasing instead of distortion structure. Hence
+  ``--holdout official-valid``, which reserves their valid split (961 rows) and
+  costs only those rows; reserving their *test* split would cost 6,807 and leave
+  less training data than Annotated already provides.
 
 The 2.4 MB tarball is COMMITTED at data/patternreframe/, so none of the below needs
 network access. It is extracted on demand to data/patternreframe/extracted/, which
@@ -173,10 +181,19 @@ def main(argv=None):
     # The official split is NOT used for this: it is test-heavy (1,920/961/6,807),
     # so honouring it would cut training data from 8,712 to 1,920 and destroy the
     # premise of the experiment. A random slice costs ~870 training rows instead.
-    ap.add_argument("--holdout-frac", type=float, default=0.0,
-                    help="carve this fraction of PatternReframe into a separate "
-                         "in-domain splits dir (0.1 recommended). Held-out rows are "
-                         "REMOVED from train, so the diagnostic is not leaked.")
+    # The official splits are PERSONA-DISJOINT — 231/115/812 personas with zero
+    # pairwise overlap — and each thought is written FROM its persona, so a random
+    # holdout puts the same persona on both sides and lets the model match
+    # persona-specific phrasing rather than distortion structure. Default respects
+    # that boundary.
+    ap.add_argument("--holdout", choices=["none", "official-valid", "random"],
+                    default="none",
+                    help="in-domain diagnostic set. 'official-valid' uses the authors' "
+                         "valid split (961 rows, persona-disjoint, the correct choice); "
+                         "'random' takes a stratified --holdout-frac slice and is NOT "
+                         "persona-disjoint, so it reads optimistically.")
+    ap.add_argument("--holdout-frac", type=float, default=0.1,
+                    help="fraction used only by --holdout random")
     ap.add_argument("--holdout-out", default=None,
                     help="where to write the in-domain diagnostic dir "
                          "(default: <out>_holdout)")
@@ -233,34 +250,57 @@ def main(argv=None):
                 "y_bin": 1,               # every PatternReframe row is distorted
                 "y_mc": MC_CLASSES.index(canon),
                 **ml,
+                # Provenance, needed for a persona-disjoint holdout. The official
+                # splits share ZERO personas (231/115/812, no pairwise overlap), and
+                # thoughts are written FROM the persona, so a holdout that ignores
+                # this boundary lets the model match persona-specific phrasing
+                # instead of distortion structure. Dropped before writing.
+                "_src_split": name,
             })
 
-    df = pd.DataFrame(rows)[KEEP_COLS].drop_duplicates(subset=[TEXT_COL]).reset_index(drop=True)
+    df = pd.DataFrame(rows).drop_duplicates(subset=[TEXT_COL]).reset_index(drop=True)
     out.mkdir(parents=True, exist_ok=True)
 
     holdout_info = None
-    if args.holdout_frac > 0:
-        # Stratify on y_mc so the diagnostic set has the same class mix as training —
-        # an unstratified slice this size could easily under-represent a class and
-        # make its macro F1 meaningless.
-        keep = []
-        for _, g in df.groupby("y_mc"):
-            n = max(1, round(len(g) * args.holdout_frac))
-            keep.extend(g.sample(n, random_state=args.holdout_seed).index)
-        hold = df.loc[sorted(keep)].reset_index(drop=True)
-        df = df.drop(index=keep).reset_index(drop=True)   # never leak into train
+    if args.holdout != "none":
+        if args.holdout == "official-valid":
+            # The authors' own valid split: 961 rows over 115 personas, disjoint from
+            # every other split. Costs 961 training rows. Their TEST split would be
+            # the more conventional choice but costs 6,807 — that would cut training
+            # data to ~1,900 and leave no more than the Annotated set already has,
+            # destroying the premise of the experiment.
+            #
+            # Training on rows the authors called "test" is deliberate and safe here
+            # because no PatternReframe benchmark number is reported: this is
+            # borrowed training data plus an in-domain sanity check, not a
+            # leaderboard entry.
+            mask = df["_src_split"] == "valid"
+            hold = df[mask].reset_index(drop=True)
+            df = df[~mask].reset_index(drop=True)
+        else:
+            # Random stratified slice. NOT persona-disjoint — the same persona can
+            # land on both sides, so the diagnostic reads optimistically. Kept only
+            # as a comparison point for the official-valid holdout.
+            keep = []
+            for _, g in df.groupby("y_mc"):
+                n = max(1, round(len(g) * args.holdout_frac))
+                keep.extend(g.sample(n, random_state=args.holdout_seed).index)
+            hold = df.loc[sorted(keep)].reset_index(drop=True)
+            df = df.drop(index=keep).reset_index(drop=True)
 
         # Halve it into val/test so the dir is a normal splits dir that evaluate.py
         # can read without special-casing.
         h_out = Path(args.holdout_out or f"{args.out}_holdout")
         h_out.mkdir(parents=True, exist_ok=True)
         mid = len(hold) // 2
-        df.to_csv(h_out / "train.csv", index=False)       # same train, for self-consistency
-        hold.iloc[:mid].to_csv(h_out / "val.csv", index=False)
-        hold.iloc[mid:].to_csv(h_out / "test.csv", index=False)
+        df[KEEP_COLS].to_csv(h_out / "train.csv", index=False)
+        hold[KEEP_COLS].iloc[:mid].to_csv(h_out / "val.csv", index=False)
+        hold[KEEP_COLS].iloc[mid:].to_csv(h_out / "test.csv", index=False)
         holdout_info = {
             "dir": str(h_out),
-            "frac": args.holdout_frac,
+            "mode": args.holdout,
+            "persona_disjoint": args.holdout == "official-valid",
+            "frac": args.holdout_frac if args.holdout == "random" else None,
             "seed": args.holdout_seed,
             "n_holdout": int(len(hold)),
             "n_val": int(mid), "n_test": int(len(hold) - mid),
@@ -272,6 +312,8 @@ def main(argv=None):
                                                    encoding="utf-8")
         print(f"[holdout] {len(hold)} rows -> {h_out} "
               f"(val={mid}, test={len(hold) - mid}); train reduced to {len(df)}")
+
+    df = df[KEEP_COLS]          # drop _src_split; provenance never reaches a CSV
 
     manifest = {
         "created_utc": datetime.now(timezone.utc).isoformat(),

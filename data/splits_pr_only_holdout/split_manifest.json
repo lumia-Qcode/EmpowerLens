@@ -1,9 +1,11 @@
 {
   "dir": "data\\splits_pr_only_holdout",
-  "frac": 0.1,
+  "mode": "official-valid",
+  "persona_disjoint": true,
+  "frac": null,
   "seed": 42,
-  "n_holdout": 871,
-  "n_val": 435,
-  "n_test": 436,
+  "n_holdout": 866,
+  "n_val": 433,
+  "n_test": 433,
   "purpose": "IN-DOMAIN diagnostic for stage A. A high score here with a low score on the Annotated test set means the domain gap is the problem; low on both means stage A itself failed."
 }
