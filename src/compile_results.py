@@ -72,6 +72,12 @@ SPLITS_BY_DIR = {
     "results_cascade_codipas_transfer_matched":       ("data/splits", True, "TRANSFER size-matched cascade on Annotated test"),
     "results_multilabel_flat_codipas_transfer_matched": ("data/splits", True, "TRANSFER size-matched flat multilabel"),
     "results_multiclass_v2_codipas_transfer_matched": ("data/splits", True, "TRANSFER size-matched flat 11-class"),
+    # SEQUENTIAL fine-tuning (notebooks/kaggle_runner_sequential.ipynb). Both stages
+    # are distorted-only, so these are ISOLATED numbers comparable ONLY to
+    # results_stage2 (macro_f1 0.277) — never to a flat or cascade result.
+    "results_seq_stageA":         ("data/splits_pr_only", True, "SEQ stage A: PatternReframe only; scored on Annotated test = ZERO-SHOT transfer"),
+    "results_seq_stageB":         ("data/splits_stage2",  True, "SEQ stage B: continued on Annotated from stage A; compare to results_stage2"),
+    "results_seq_stageA_holdout": ("data/splits_pr_only_holdout", True, "SEQ stage A IN-DOMAIN diagnostic (PatternReframe held-out), not a target-task result"),
 }
 
 

@@ -47,6 +47,12 @@ exec(open(_CASCADE).read())
 PR_SPLITS = "data/splits_pr_only"        # train = PatternReframe, val/test = target
 TARGET_SPLITS = "data/splits_stage2"     # Annotated distorted-only
 
+# In-domain diagnostic for stage A. Without it a low stage-A score on the Annotated
+# test set is ambiguous — stage A may have learned nothing, or learned PatternReframe
+# well and failed to transfer. Those need opposite responses, so measure both.
+PR_HOLDOUT = "data/splits_pr_only_holdout"
+SEQ_A_HOLDOUT_OUT = "results_seq_stageA_holdout"
+
 TAG_A = "mrb-prA"                        # stage A identity
 TAG_B = "mrb-prA-annB"                   # stage B identity
 
@@ -59,7 +65,7 @@ _ROOT = "/kaggle/working" if Path("/kaggle/working").is_dir() else "."
 CK_A = f"{_ROOT}/ckpt_seqA"
 CK_B = f"{_ROOT}/ckpt_seqB"
 
-for _d in (SEQ_A_OUT, SEQ_B_OUT):
+for _d in (SEQ_A_OUT, SEQ_B_OUT, SEQ_A_HOLDOUT_OUT):
     Path(_d).mkdir(parents=True, exist_ok=True)
 for _d in (CK_A, CK_B):
     Path(_d).mkdir(parents=True, exist_ok=True)
@@ -119,4 +125,34 @@ def run_stage(init_model, tag, splits_dir, out_dir, seed, ckpt_root,
     return ckpt
 
 
-print(f"[seq-bootstrap] stageA->{SEQ_A_OUT} stageB->{SEQ_B_OUT}  ckpts={CK_A}, {CK_B}")
+def eval_only(ckpt, out_dir, splits_dir, tag, seed,
+              eval_flags="--allow-distorted-only"):
+    """Score an ALREADY-TRAINED checkpoint against a second splits dir.
+
+    Used to give stage A an in-domain score on held-out PatternReframe alongside
+    its out-of-domain score on the Annotated test set. Reading the two together is
+    the point:
+
+        high in-domain, low on Annotated -> domain gap; stage A worked
+        low on both                      -> stage A itself failed; fix before concluding
+
+    No training, so this is cheap. Skips if the eval JSON already exists.
+    """
+    Path(out_dir).mkdir(parents=True, exist_ok=True)
+    ev = Path(out_dir) / f"eval_{tag}_multilabel_{seed}.json"
+    if ev.exists():
+        print(f"  [seed {seed}] {tag} on {splits_dir}: already done — skipping")
+    elif not Path(ckpt).is_dir():
+        print(f"  [seed {seed}] checkpoint missing at {ckpt} — train stage A first")
+        return
+    else:
+        sh(f"python -m src.evaluate --checkpoint {ckpt} --reference "
+           f"--splits {splits_dir} --out {out_dir} {eval_flags}", timeout=EVAL_TIMEOUT)
+    if ev.exists():
+        m = json.loads(ev.read_text())["splits"]["test"]["metrics"]
+        print(f"  [seed {seed}] {tag} IN-DOMAIN: test macro_f1={m['macro_f1']:.3f}")
+    sync(out_dir)
+
+
+print(f"[seq-bootstrap] stageA->{SEQ_A_OUT} stageB->{SEQ_B_OUT} "
+      f"holdout->{SEQ_A_HOLDOUT_OUT}  ckpts={CK_A}, {CK_B}")

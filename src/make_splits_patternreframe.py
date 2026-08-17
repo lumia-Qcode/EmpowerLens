@@ -165,6 +165,31 @@ def main(argv=None):
     # Annotated_data.csv averages 1.3 (dominant + optional secondary, capped at 2),
     # so 3 is the closest match. The primary label is forced on regardless, so no
     # row can end up with zero labels.
+    # An IN-DOMAIN diagnostic set. Without one, stage A is scored only on the
+    # Annotated test set, and a low number is ambiguous: stage A may have learned
+    # nothing, or it may have learned PatternReframe well and simply not transferred.
+    # Those call for opposite responses (fix the run vs report a negative result).
+    #
+    # The official split is NOT used for this: it is test-heavy (1,920/961/6,807),
+    # so honouring it would cut training data from 8,712 to 1,920 and destroy the
+    # premise of the experiment. A random slice costs ~870 training rows instead.
+    ap.add_argument("--holdout-frac", type=float, default=0.0,
+                    help="carve this fraction of PatternReframe into a separate "
+                         "in-domain splits dir (0.1 recommended). Held-out rows are "
+                         "REMOVED from train, so the diagnostic is not leaked.")
+    ap.add_argument("--holdout-out", default=None,
+                    help="where to write the in-domain diagnostic dir "
+                         "(default: <out>_holdout)")
+    ap.add_argument("--holdout-seed", type=int, default=42)
+    # "Discounting the positive" is a whole class of 970 rows with no counterpart in
+    # this taxonomy. Merging it into mental_filter is ABLATION-ONLY, off by default:
+    # mental_filter has 936 rows, so the merge doubles it to 1,906 and makes it twice
+    # the size of every other class, with half of it a different CBT concept. See the
+    # note in PATTERN_MAP.
+    ap.add_argument("--merge-discounting", action="store_true",
+                    help="ABLATION: map 'Discounting the positive' onto mental_filter "
+                         "instead of dropping it. Broadens the class definition away "
+                         "from the one the test set is annotated with.")
     ap.add_argument("--min-intensity", type=int, default=3,
                     help="marked_patterns intensity at or above which a pattern counts "
                          "as present (0-5 scale; default 3 ~= 1.3 labels/row, matching "
@@ -178,13 +203,19 @@ def main(argv=None):
         return 1
     src = _resolve_source(Path(args.source))
 
+    pattern_map = dict(PATTERN_MAP)
+    if args.merge_discounting:
+        pattern_map["Discounting the positive"] = "mental_filter"
+        print("[ablation] 'Discounting the positive' -> mental_filter "
+              "(broadens the class beyond the test set's annotation)")
+
     rows, skipped = [], 0
     for name in ("train", "valid", "test"):
         p = src / f"{name}.txt"
         if not p.exists():
             raise FileNotFoundError(f"missing {p} — point --source at the extracted dir")
         for r in _load_jsonl(p):
-            canon = PATTERN_MAP.get(r["pattern"])
+            canon = pattern_map.get(r["pattern"])
             if canon is None:            # "Discounting the positive" etc.
                 skipped += 1
                 continue
@@ -193,7 +224,7 @@ def main(argv=None):
             # thoughts carry 2+ patterns with a graded intensity, which matches the
             # multilabel task far better than a single label does.
             for k, v in (r.get("marked_patterns") or {}).items():
-                m = PATTERN_MAP.get(k)
+                m = pattern_map.get(k)
                 if m and str(v).isdigit() and int(v) >= args.min_intensity:
                     ml[f"ml_{m}"] = 1
             ml[f"ml_{canon}"] = 1        # the primary is always present
@@ -207,6 +238,41 @@ def main(argv=None):
     df = pd.DataFrame(rows)[KEEP_COLS].drop_duplicates(subset=[TEXT_COL]).reset_index(drop=True)
     out.mkdir(parents=True, exist_ok=True)
 
+    holdout_info = None
+    if args.holdout_frac > 0:
+        # Stratify on y_mc so the diagnostic set has the same class mix as training —
+        # an unstratified slice this size could easily under-represent a class and
+        # make its macro F1 meaningless.
+        keep = []
+        for _, g in df.groupby("y_mc"):
+            n = max(1, round(len(g) * args.holdout_frac))
+            keep.extend(g.sample(n, random_state=args.holdout_seed).index)
+        hold = df.loc[sorted(keep)].reset_index(drop=True)
+        df = df.drop(index=keep).reset_index(drop=True)   # never leak into train
+
+        # Halve it into val/test so the dir is a normal splits dir that evaluate.py
+        # can read without special-casing.
+        h_out = Path(args.holdout_out or f"{args.out}_holdout")
+        h_out.mkdir(parents=True, exist_ok=True)
+        mid = len(hold) // 2
+        df.to_csv(h_out / "train.csv", index=False)       # same train, for self-consistency
+        hold.iloc[:mid].to_csv(h_out / "val.csv", index=False)
+        hold.iloc[mid:].to_csv(h_out / "test.csv", index=False)
+        holdout_info = {
+            "dir": str(h_out),
+            "frac": args.holdout_frac,
+            "seed": args.holdout_seed,
+            "n_holdout": int(len(hold)),
+            "n_val": int(mid), "n_test": int(len(hold) - mid),
+            "purpose": "IN-DOMAIN diagnostic for stage A. A high score here with a low "
+                       "score on the Annotated test set means the domain gap is the "
+                       "problem; low on both means stage A itself failed.",
+        }
+        (h_out / "split_manifest.json").write_text(json.dumps(holdout_info, indent=2),
+                                                   encoding="utf-8")
+        print(f"[holdout] {len(hold)} rows -> {h_out} "
+              f"(val={mid}, test={len(hold) - mid}); train reduced to {len(df)}")
+
     manifest = {
         "created_utc": datetime.now(timezone.utc).isoformat(),
         "source": str(src),
@@ -215,6 +281,8 @@ def main(argv=None):
                    "train/valid/test split is ignored; everything becomes train.",
         "n_rows": int(len(df)),
         "n_skipped_unmappable_pattern": skipped,
+        "merge_discounting": bool(args.merge_discounting),
+        "holdout": holdout_info,
         "per_class": {c.replace("ml_", ""): int(df[c].sum()) for c in ML_COLS},
         "median_words": int(df[TEXT_COL].str.split().str.len().median()),
         "caveats": [

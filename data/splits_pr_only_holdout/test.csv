@@ -1,0 +1,437 @@
+Patient Question,y_bin,y_mc,ml_emotional_reasoning,ml_overgeneralization,ml_mental_filter,ml_should_statements,ml_all_or_nothing,ml_mind_reading,ml_fortune_telling,ml_magnification,ml_personalization,ml_labeling
+The money i put towards my dreams of starting a business i ended up using during my vacation because i didnt have enough extra funds to go sightseeing. Im starting to believe that im not cut out to be an entrepreneur since im so bad with money.,1,10,0,0,1,0,0,0,0,0,0,1
+IT is just the worst job in the world. You have to deal with people who just don't know how to even turn on their computers.,1,3,0,1,1,0,0,0,0,0,0,0
+I live alone and I'm scared if I died that no one would find my body.,1,8,0,0,0,0,0,0,0,1,0,0
+My parents recently moved to Florida. I bet something bad will happen to them because of Florida man.,1,2,0,1,0,0,0,0,0,1,0,0
+I shopped a lot online. I'm going to run out of money and become homeless.,1,8,0,1,0,0,0,0,0,1,0,0
+I'll be very bored and lonely after I retire.,1,3,0,0,1,0,0,0,1,0,0,0
+"I'm obsessed with my dog, I know I annoy him and he hates me.",1,6,0,0,0,0,0,1,0,0,0,0
+"I get in a lot of car crashes, I am a horrible driver.",1,5,0,1,0,0,1,0,0,0,0,1
+"I can't whistle, I'm sure to die in the woods one day because people won't be able to find me.",1,7,0,0,0,0,0,0,1,1,0,0
+The social event I went to didn't have as many people as I thought. What a waste of time.,1,5,0,0,0,0,1,0,0,0,0,0
+"My favorite meal is lunch, people think i'm gay.",1,6,0,0,0,0,0,1,0,0,0,0
+My parents will never be proud of me if I don't stop shopping and start saving.,1,5,0,0,0,0,1,0,0,0,0,1
+"My band's show was a total disaster. Sure, we sold out the club and played a decent set, but someone was heckling us.",1,3,0,0,1,0,0,0,0,0,0,0
+"I always seem to be losing things, most recently, my mind. I'm sure I will get crazy and be sent to a mental institution for the rest of my life.",1,8,0,0,0,0,0,0,1,1,0,0
+"I enjoy playing with edged weapons, so I will probably cut off my own hand one day.",1,7,0,0,0,0,0,0,1,1,0,0
+My grandpa is angry with me because I asked him for ice cream.,1,6,0,0,0,0,0,1,0,0,0,0
+My partner is silent. I am sure because he doesn't want to visit the national park with me.,1,7,0,0,0,0,0,1,1,0,0,0
+"I love my parrot, but he probably doesn't love me back.",1,5,0,0,0,0,1,1,0,0,0,0
+"I planned to Harry Potter book, one of its series is missing. The entire plan of reading is ruined.",1,5,0,0,0,0,1,0,0,0,0,0
+My mom hasn't texted me in a while. This means that she's probably angry at me.,1,6,0,0,0,0,0,1,0,0,0,0
+My job is very fulfilling but it's not safe. I might be breathing in so many chemicals that my lungs might collapse.,1,9,0,0,0,0,0,0,0,1,1,0
+"I work on a farm, I'm going to have to do manual labor until I die.",1,2,0,1,0,0,0,0,1,1,0,0
+"I work on semi trucks for a living, I will probably get crushed by one and never be able to work again.",1,8,0,0,0,0,0,0,0,1,0,0
+"I do not own any pets because I had a dog once, and it ran away. Any pet that that I own will run away from me.",1,2,0,1,0,0,0,0,1,0,0,0
+"My nickname is bubblegum, people will think i'm so childish for having that name and will shun me.",1,5,0,0,0,0,1,1,0,0,0,0
+I don't eat that well so I'm gonna die a terrible death.,1,8,0,0,0,0,0,0,1,1,0,0
+"I wear glasses all day so I can see things clearly, but at the same time it hinders my sport activities very much.",1,3,0,0,1,0,0,0,0,0,0,0
+"I like the color blue and drive a blue car, but know that blue is a terrible color.",1,8,0,0,0,0,0,0,0,1,0,0
+I'm scared of clowns and I'm going to ruin my relationship with my girlfriend because of it.,1,9,0,0,0,0,0,0,1,0,1,0
+"I live alone in a really big, kind of creepy house. No one will ever want to come visit me.",1,2,0,1,0,0,0,1,0,0,0,0
+I am a vegan but accidently ate meat today. I'm the worst vegan ever.,1,10,0,0,0,0,0,0,0,0,0,1
+Nine of my horses won their races but I can't be happy about that because one lost.,1,3,0,0,1,0,0,0,0,0,0,0
+"I'm a student, my life always full of stress of exams and deadlines",1,2,0,1,0,0,0,0,0,0,0,0
+My older brother got arrested for drug possession. He doesn't care how his actions make his family feel.,1,10,0,0,0,0,0,1,0,0,0,1
+I laughed at my best friend when he fell on a slippery floor and he got angry at me. I will never learn to empathize.,1,7,0,0,0,0,0,0,1,0,0,0
+"My cat died, I'm so miserable, every day I wake up I know he's just not going to be there anymore.",1,3,0,0,1,0,0,0,0,0,0,0
+Even though I do not like acting I should get every acting job because my father was famous.,1,4,0,0,0,1,0,0,0,0,0,0
+"Once my landlord finds out about my pet skunk, I'll be evicted.",1,7,0,0,0,0,0,0,1,1,0,0
+"I build drones for work, but I'm not very smart.",1,10,0,0,0,0,0,0,0,0,0,1
+I failed to sell any encyclopedias. I will never be a manager now.,1,7,0,0,0,0,0,0,1,0,0,0
+I work at a power plant. My boss probably will never promote me.,1,7,0,0,0,0,0,0,1,0,0,0
+My parents are too busy to drive from Florida to my house this month. I'm sure that my parents will never have time to visit me again.,1,7,0,0,0,0,0,0,1,1,0,0
+"I like to create websites, but my last client hasn't responded to my emails. They probably hate my design and are thinking of firing me.",1,6,0,0,0,0,0,1,0,1,0,0
+"I work as a personal trainer, people most likely think I'm stupid and incapable of doing something that requires a college degree.",1,7,0,0,0,0,0,1,1,0,0,0
+My car is black. I'm probably thought to be an evil person.,1,2,0,1,0,0,0,1,0,0,0,0
+My favorite person was voted off first of my favorite show dancing with the stars. Now the entire show is totally ruined.,1,5,0,0,1,0,1,0,0,0,0,0
+Most of my students passed their last exam except one. It's because I'm a terrible teacher.,1,9,0,0,0,0,0,0,0,0,1,0
+My father got injured while he was serving in the military. He stayed in the service too long because he had to support me as a child.,1,9,0,0,0,0,0,0,0,0,1,0
+My parents have been irritable. they probably hate that I live with them,1,6,0,0,0,0,0,1,0,0,0,0
+"I ordered pizza tonight instead of my room mate's favorite food, sushi. He's probably really mad at me right now.",1,6,0,0,0,0,0,1,0,0,0,0
+"I love all my fellow coworkers, except my boss i think she hates me and will never promote me.",1,3,0,1,1,0,0,1,0,0,0,0
+I do not own any pets. I guess I won't get hired at the shelter I applied to.,1,7,0,0,0,0,0,0,1,0,0,0
+"I work at the gas station, I must not be very successful.",1,10,0,0,0,0,0,0,0,0,0,1
+I'm afraid of spiders. I'm such a loser for being such a scardy cat.,1,9,0,0,0,0,0,0,0,0,1,1
+I like watching the walking dead but i think the show will get cancelled soon.,1,5,0,0,0,0,1,0,1,0,0,0
+I am happy to be in medical school but I think all these late nights staying up is really making me lose my hair.,1,3,0,0,1,0,0,0,0,0,0,0
+I have braces. My ability to eat is ruined!,1,5,0,1,0,0,1,0,0,0,0,0
+"I'm about to sign a contract to become a male model, but my nose is too long and my eyes are too wide.",1,3,0,0,1,0,0,0,0,0,0,0
+I can't get in touch with my roommates. A clown probably killed them and stole my dogs.,1,8,0,0,0,0,0,0,0,1,0,0
+"My drone company fired me, they must have thought I was not good at my job.",1,6,0,0,0,0,0,1,0,0,0,0
+I am such a slow swimmer. I will never make it onto the swim team.,1,2,0,1,0,0,0,0,0,0,0,0
+"I didn't take a good picture today, so I'll probably never take one again.",1,8,0,0,0,0,1,0,0,1,0,0
+"Winter is my favorite time of the year, but snow ruin everything",1,6,0,0,0,0,0,1,0,0,0,0
+I like to hunt but i'm so horrible at it.,1,5,0,0,0,0,1,0,0,0,0,0
+My last wife must hate the fact I can't pay alimony.,1,6,0,0,0,0,0,1,0,0,0,0
+"My husband and I have been together 20 years. He will definitely leave me for someone younger,",1,8,0,0,0,0,0,0,1,1,0,0
+I just got a new haircut to help with my image but Im still the ugliest person ever,1,10,0,1,0,0,0,0,0,0,0,1
+"My wife and kids like to go camping with me, and if they don't, I'll divorce her!",1,5,0,0,0,0,1,0,0,0,0,0
+"Going snorkeling is my favorite thing to do, I'll probably end up drowning one day.",1,8,0,0,0,0,0,0,0,1,0,0
+I am an athlete who plays basketball. I should get and award for dribbling the ball so well.,1,4,0,0,0,1,0,0,0,0,0,0
+The entire dance season is ruined. We're still in first place but we lost our last two competitions.,1,3,0,0,1,0,0,0,0,0,0,0
+I am in my last year of grad school but I failed my last test so I'll probably just fail out entirely.,1,2,0,1,0,0,0,0,1,1,0,0
+"I love the band tool and go to all of their concerts. They should be grateful because if it wasn't for me, their concerts would never be sold out.",1,4,0,0,0,1,0,0,0,0,0,0
+"I am violinist with a nurse as a mother, but I think she's trying to get more time away from me.",1,6,0,0,0,0,0,1,0,0,0,0
+My family criticized me because I changed my hair color to blue.,1,8,0,0,0,0,0,1,0,1,0,0
+"My dad is a college professor, but he is starting to get quite old. I am sure the college will fire him and he will die from a lack of purpose right away.",1,8,0,0,0,0,0,0,0,1,0,0
+My girlfriend looks sad. I believe she didn't want to join the golfing trip with my friends.,1,4,0,0,0,1,0,1,0,0,0,0
+I love rock climbing. but I am afraid I'll fell and die,1,3,0,0,1,0,0,0,0,1,0,0
+My favorite plant in my garden died. I'm sure the rest of them will die now too.,1,2,0,1,0,0,1,0,0,0,0,0
+"I have a family that are all tall, so I will always need to duck under doorways in the future.",1,5,0,0,0,0,1,0,0,0,0,0
+I failed my math test this weekend. I'll never learn fractions.,1,2,0,1,0,0,0,0,1,0,0,0
+"My family is very supportive of my skiing, but I am afraid I'll get injured and die",1,7,0,0,0,0,0,0,1,1,0,0
+"I just went to a comic con and it was really fun to see all of the different booths. However, my favorite comic was not displayed at the convention which ruined everything.",1,3,0,0,1,0,0,0,0,0,0,0
+"The hockey game was a disaster. I made 6 goals and was voted most valuable player, but we still lost in the end.",1,3,0,0,1,0,0,0,0,0,0,0
+My parents didn't have any other children. It's because they hated me.,1,9,0,0,0,0,0,1,0,0,1,0
+I have 2 brothers. They are both losers because I picked on them when we were younger.,1,9,0,0,0,0,0,0,0,0,1,0
+I struggle to maintain eye contact so everyone should just deal with it.,1,4,0,0,0,1,0,0,0,0,0,0
+"I'm so cool, I should have a bunch of people inviting me to their Halloween parties.",1,4,0,0,0,1,0,0,0,0,0,0
+I had a bike wreck on a sloped hill last week. I'm not going that route again because I will likely have an accident every time I go that way.,1,2,0,1,0,0,0,0,1,1,0,0
+I misspelled a word in my most recent spelling bee competition. I will never win another spelling be again.,1,2,0,1,0,0,0,0,1,0,0,0
+I'm seven foot tall and hoping to play basketball overseas. But I recently had knee surgery and that will probably keep me from getting to play.,1,7,0,0,0,0,0,0,1,0,0,0
+"I never learned how to drive, I'll never be able to travel the country.",1,5,0,0,0,0,1,0,1,0,0,0
+A piece of cheese somehow got in my salad and I ate before I knew what it was. I think I will be sick all night now.,1,8,0,0,0,0,0,0,1,1,0,0
+I'm not looking for anyone but i am sure no one wants to date me because i'm ugly,1,8,0,0,0,0,0,0,1,1,1,0
+My kid are being silent because they know I plan to sent the dogs up for adoption.,1,6,0,0,0,0,0,1,0,0,0,0
+My only friend is a dog people must think i am a weirdo,1,10,0,0,0,0,0,1,0,0,0,1
+"My last song written was awful, am so useless at writing music",1,10,0,1,0,0,0,0,0,0,0,1
+"I prefer to live where the weather is cold, I should move to Alaska.",1,4,0,0,0,1,0,0,0,0,0,0
+I'm going boating on the weekend but it will probably rain and ruin my experience.,1,7,0,0,0,0,0,0,1,0,0,0
+i drive a ferrari. I'm probably going to get into a horrible car crash driving it.,1,8,0,0,0,0,0,0,1,1,0,0
+My vacation home in the mountains doesn't have an indoor hot tub. It's a terrible vacation home.,1,5,0,0,1,0,1,0,0,0,0,0
+If you don’t go to college you will never be successful.,1,2,0,1,0,0,1,0,1,0,0,0
+i have a car but i will probably die of a car accident someday.,1,8,0,0,0,0,0,0,1,1,0,0
+I am a vegan because I love animals. Everyone should stop eating animal products and switch to a plant-based diet.,1,4,0,0,0,1,0,0,0,0,0,0
+"I love being outside and playing soccer, but the entire day was ruined because my team lost.",1,3,0,0,1,0,0,0,0,0,0,0
+I’ve had the same job for 8 years. I bet my boss will fire me because he is sick of seeing my face.,1,7,0,0,0,0,0,0,1,0,0,0
+I work for the navy. I will probably get kicked out for not doing my job well enough.,1,7,0,0,0,0,0,0,1,1,0,0
+"I fantasize about living in another country but that is all it will ever be, a fantasy.",1,5,0,0,0,0,1,0,1,0,0,0
+"I like to read books, but my favorite author wrote a bad novel because I'm so useless.",1,10,0,0,0,0,0,0,0,0,1,1
+I am a middle-aged woman who loves her family. It is why people think I don't talk a lot.,1,6,0,0,0,0,0,1,0,0,0,0
+I never get good tips because I'm a poor waitress.,1,9,0,0,0,0,0,0,0,0,1,1
+I want to adopt a dog but the shelter will probably deny me.,1,7,0,0,0,0,0,0,1,0,0,0
+One of my employees did not show up. He must have died in a car crash on the way over here.,1,8,0,0,0,0,0,0,0,1,0,0
+I'm a vet tech but the other day I slightly hurt an animal by accident. I am such a terrible tech.,1,9,0,0,0,0,0,0,0,0,1,0
+I am going to be forced to go back on active duty even though I want to be done with the military.,1,7,0,0,0,0,0,0,1,0,0,0
+"I accidentally drank while pregnant once. It's such a smooth pregnancy, but this one drink surely ruined all their development.",1,3,0,0,1,0,0,0,0,1,0,0
+"I am looking to date. Sure I am nice, but many men would not like my two children and not be interested to date me.",1,3,0,0,1,0,0,0,0,0,0,0
+I got a mediocre grade on my art project. My teacher must think I have no potential as an artist.,1,6,0,0,0,0,0,1,0,0,0,0
+My students aren't doing well in the class. They're always going to fail.,1,2,0,1,0,0,0,0,1,0,0,0
+MY honda civic is really fast. It won't last another three months.,1,7,0,0,0,0,0,0,1,0,0,0
+I hurt my waist swimming the other day.  I don't even think it's worth swimming ever again now.,1,5,0,0,0,0,1,0,0,1,0,0
+I like swimming but what if i hit my head on the side and drown ?,1,6,0,0,0,0,0,1,1,1,0,0
+I havent heard from my friends with the last week no matter what how much i try to get in contact with them. Its probably because im just not that much of an interesting person.,1,9,0,0,0,0,0,1,0,0,1,0
+"My mother is a professional make up artist, I flunked out of the trade school trying to follow in her footsteps because I'm a failure of a person.",1,10,0,0,0,0,0,0,0,0,0,1
+I like to help people because it makes me feel good. People probably think that's all I do because I'm old and retired.,1,6,0,0,0,0,0,1,0,0,0,0
+"I work at a museum but can't get around easily, I'm a useless tour guide.",1,10,0,0,0,0,0,0,0,0,1,1
+No one liked my latest Reddit post. I am sure this is because they thought it was boring and not insightful.,1,6,0,0,0,0,0,1,0,0,0,0
+I love chickens but they hate me because I am bigger than them.,1,9,0,0,0,0,0,1,0,0,1,0
+My boss messed up the accounting in finance today. He's never going to get it right.,1,2,0,1,0,0,0,0,1,0,0,0
+"My therapist doesn't understand my problems, I'm a lost cause.",1,10,0,1,0,0,0,0,0,0,0,1
+I failed my audition and the director is going to have me completely black listed in the industry.,1,4,0,0,0,1,0,0,1,1,0,0
+"I have 3 kids but I can't always be there to play with them all, I'm such a useless father.",1,10,0,0,0,0,0,0,0,0,1,1
+I want to move to Australia soon to marry my boyfriend but know I will get bit by a spider one day.,1,7,0,0,0,0,0,0,1,1,0,0
+"My car is black , it just doesn't stand out with other black cars even though it's an expensive model.",1,3,0,0,1,0,0,0,0,0,0,0
+"I am a teacher, I will never have a meaningful career.",1,3,0,0,1,0,0,0,1,0,0,0
+I haven't been on a date since high school. I am sure it's because guys see me ugly,1,6,0,0,0,0,0,1,0,0,0,0
+"I can't whistly and no matter how much I try, it's just never going to happen.",1,2,0,1,0,0,0,0,1,0,0,0
+My best friend came all the way from Tanzania to visit last week. I couldn't see her everyday. She probably thinks I would have rather been doing other things.,1,8,0,0,0,0,0,1,0,1,0,0
+I haven't gotten any call backs for a new job. I will never find a job.,1,7,0,0,0,0,0,0,1,1,0,0
+My mother in law made sweet potatoes for our Thanksgiving meal. She should make something that I would enjoy eating.,1,4,0,0,0,1,0,0,0,0,0,0
+I missed an easy catch at the game yesterday.  Coach will probably make me sit on the bench for the next few weeks.,1,7,0,0,0,0,0,0,1,0,0,0
+I always drive the kids to school in the morning. They will probably be moody today since didn't pack their favorite lunch.,1,7,0,0,0,0,0,0,1,0,0,0
+I work as a stand up comedian but I'll likely never make it big since I'm not famous already.,1,2,0,1,0,0,0,0,1,0,0,0
+Being an only child has spoiled my ability to act responsibly.,1,3,0,0,1,0,0,0,0,0,0,0
+People probably think I am good at basketball because I am so tall.,1,6,0,0,0,0,0,1,0,0,0,0
+"A trans friend of mine had a bad experience at that restaurant. I'm never going there because if I go, I'll have a bad experience too.",1,2,0,1,0,0,0,0,1,0,0,0
+"My upstairs neighbor played music loud at night, I will never get along with them.",1,2,0,1,0,0,0,0,1,0,0,0
+"I am a retired school teacher, but I know they are going to take away my pension.",1,7,0,0,0,0,0,0,1,0,0,0
+I opened up a restaurant. I always make bad business choices.,1,10,0,0,0,0,0,0,0,0,0,1
+My mother has her own fashion brand but I don't because I'm so stupid.,1,10,0,0,0,0,0,0,0,0,0,1
+"I had eggs for breakfast, but I dropped one on the floor. My breakfast is ruined.",1,3,0,0,1,0,0,0,0,0,0,0
+I should be a male model since I have overcome so many obstacles in my life such as cancer.,1,4,0,0,0,1,0,0,0,0,0,0
+I burn so much money in gas every week because of my commute. I will never be able to put any money aside for emergencies.,1,2,0,1,0,0,0,0,1,0,0,0
+One of my yoga students slipped and hurt their back. It's because I didn't teach them better core strength.,1,9,0,0,0,0,0,0,0,0,1,0
+The recipe for the cupcakes listed the wrong amount of milk needed. I'm such a horrible baker.,1,9,0,0,0,0,0,0,0,0,1,0
+"I love to keep a small garden outside my house, but the rainy season will destroy all my work.",1,7,0,0,0,0,0,0,1,0,0,0
+I should be able to eat pizza for every meal on everyday.,1,4,0,0,0,1,0,0,0,0,0,0
+One of my pets seems tired lately. Maybe it has a terminal illness.,1,8,0,0,0,0,0,0,0,1,0,0
+I live in the united states. My live sucks.,1,5,0,0,0,0,1,0,0,0,0,0
+Living close to the coast is beyond my financial means. Sure it's nice to be close to the beach but why spend so much when I am all by myself.,1,3,0,0,1,0,0,0,0,0,0,0
+I'm a librarian. The library I work at is awful though because they don't have as many books as the Library of Congress.,1,5,0,0,0,0,1,0,0,0,0,0
+I'm married so I should be able to know what my husband wants for dinner before he gets home,1,6,0,0,0,1,0,1,0,0,0,0
+"I love singing when I am in the shower, but I suck at it.",1,10,0,0,0,0,0,0,0,0,0,1
+"The weather was bad today, I'll never be able to enjoy a warm day at the beach.",1,2,0,1,0,0,0,0,0,0,0,0
+"I submitted my poetry to a competition, but I haven't heard back yet. I bet it's because they hate it and don't want to be bothered to  offer critiques.",1,6,0,0,0,0,0,1,0,0,0,0
+"I work at a grocery store and mess up a customer order, am such a useless employee",1,5,0,0,0,0,1,0,0,0,0,0
+One of the plants in my garden died. I'm a complete failure and should just give up the hobby.,1,5,0,0,0,0,1,0,0,0,0,1
+My favorite artist is guns and roses. I am sure they will never have a concert I can attend.,1,6,0,0,0,0,0,1,1,0,0,0
+"Even though I have a masters degree, I still can't find a job! I'm a total failure as a functioning adult.",1,10,0,0,0,0,1,0,0,0,0,1
+I like to draw but these drawings look like they are drawn by a four year old,1,10,0,0,0,0,0,0,0,0,0,1
+"I love shopping at stylish stores, but I waste too much money.",1,9,0,0,0,0,0,0,0,0,1,0
+"I play as a quaterback, I am going to injure myself playing and then never be able to play again.",1,8,0,0,0,0,0,0,1,1,0,0
+"I saw a spider in the bathroom. It will bite me when I am asleep, and I will die from a painful and deadly allergic reaction.",1,8,0,0,0,0,0,0,0,1,0,0
+I need lots of money to feed my family. I will never money to save.,1,7,0,0,0,0,0,0,1,0,0,0
+"I prefer to live where the weather is cold, but one day I am sure we will all freeze to death.",1,7,0,0,0,0,0,0,1,1,0,0
+I am in a lot of debt. I am such a failure,1,10,0,0,0,0,0,0,0,0,0,1
+I'm recently divorced. It's because I was a lousy husband.,1,10,0,0,0,0,0,0,0,0,1,1
+I forgot to feed my puppy yesterday. He must think that I'm a bad owner.,1,6,0,0,0,0,0,1,0,0,0,0
+"My dad died while I was in high school, making me a terrible child.",1,10,0,0,0,0,0,0,0,0,1,1
+I drive a Ferrari. It's probably because I have no self esteem and think the Ferrari will make people respect me.,1,10,0,0,1,0,0,0,0,0,0,1
+I sleep alone every night. I will never find someone to share a bed with me.,1,2,0,1,0,0,0,0,1,0,0,0
+I am a teacher. All of my students should always pass.,1,4,0,0,0,1,0,0,0,0,0,0
+I own my own business but I have nobody to help me out because my brother lives in England. I'll lose my business someday,1,8,0,0,0,0,0,0,1,1,0,0
+I already have 5 kids. They are driving me insane and I am going to end up in the psych hospital.,1,8,0,0,0,0,0,0,0,1,0,0
+I never talk to the single teachers at school.  I am sure they would never be interested in someone with such a thick accent.,1,6,0,0,0,0,0,1,0,0,0,0
+I have been taking iron pills but still feel bad. These pills will never work for me.,1,7,0,1,0,0,0,0,1,0,0,0
+I own my own music store. The other day a kid came in and stole a record. All kids will steal from me.,1,2,0,1,0,0,0,0,0,0,0,0
+I hated going to my moms store because she would always make me pay for things why would she not just give me them for free she works there!,1,9,0,0,0,0,0,0,0,0,1,0
+I love scary movies. One day I'll have a heart attack because I watch them so much.,1,8,0,0,0,0,0,0,0,1,0,0
+My friends tell me I am really good at acting. I am sure they are just telling me this to make me feel better.,1,6,0,0,0,0,0,1,0,0,0,0
+"I forgot the concert due to a late nap, i will never accomplish anything.",1,2,0,1,0,0,0,0,1,0,0,0
+I can't do math and it's very hard for me. I will just fail the class most likely.,1,8,0,0,0,0,0,0,1,1,0,0
+My best friend lives in Japan. I will never see him again.,1,5,0,0,0,0,1,0,1,0,0,0
+I didn't get a good tip at work today. It's because I'm not a very good waitress.,1,9,0,0,0,0,0,0,0,0,1,0
+"I bought a new ferrari today but my delivery order was late, what a bad day.",1,3,0,0,1,0,0,0,0,0,0,0
+"I want to be an explorer, but I'm probably going to get lost forever.",1,7,0,0,0,0,0,0,1,1,0,0
+Because I was in band all four years of high school the university should give me a music scholarship.,1,4,0,0,0,1,0,0,0,0,0,0
+My newest sewing project didn't sell on Etsy.  It's because I'm terrible at sewing.,1,10,0,1,0,0,0,0,0,0,0,1
+"I was late for class again today, so I will probably never graduate.",1,7,0,0,0,0,0,0,1,1,0,0
+"My ticket got cancelled for a flight to the UK, I am never going to visit that country.",1,5,0,0,0,0,1,0,1,0,0,0
+I like anime because it was all my parents showed me when i was a kid i wish they had taught me to like other things too.,1,9,0,0,0,0,0,0,0,0,1,0
+I enjoy cooking so women are forever going to think I'm too feminine to date.,1,2,0,1,0,0,0,1,0,0,0,0
+Harry Potter is my favorite book series. There will never be a book series as good ever again.,1,2,0,1,0,0,0,0,0,0,0,0
+I am not good at expressing myself. I will never be invited to speak in a Ted Talk.,1,7,0,0,0,0,0,0,1,0,0,0
+"ever since my boyfriend left me, I never stop looking for love, I will die without getting married.",1,8,0,0,0,0,0,0,1,1,0,0
+My dog misbehaved on our walk yesterday. I'm a terrible pet owner.,1,10,0,0,0,0,0,0,0,0,0,1
+At work today my manager was in a bad mood. It’s my fault for not making them laugh.,1,9,0,0,0,0,0,0,0,0,1,0
+People probably think I get out of trouble just because my parents are lawyers,1,6,0,0,0,0,0,1,0,0,0,0
+"I like to ride my bike, but I'm a loser because I never win the races I enter.",1,5,0,0,0,0,1,0,0,0,0,0
+"My parents have been married for a while, they should just retire and give me the house.",1,4,0,0,0,1,0,0,0,0,0,0
+"This basketball game sucked. Sure, we won but it was very boring.",1,3,0,0,1,0,0,0,0,0,0,0
+"I am former military, our country is probably failing because I left.",1,9,0,0,0,0,0,0,0,0,1,0
+Someone knocked the cans I had just stocked off the shelf. They think they are more important than humble retail workers.,1,10,0,0,0,0,0,1,0,0,0,1
+I own a boat. People should admire me for my success.,1,4,0,0,0,1,0,0,0,0,0,0
+"I love talking on the phone, I bet my mom thinks I'm a time waster.",1,6,0,0,0,0,0,1,0,0,0,0
+People have stopped paying attention to my singing. They will probably boo me soon.,1,7,0,0,0,0,0,0,1,0,0,0
+I can't seem to get through this new physics book I'm reading.  I'm too stupid to understand it.,1,10,0,0,0,0,0,0,0,0,0,1
+I forgot to sign one document at the circuit court today. I will not be trusted as a judge ever again.,1,2,0,1,0,0,0,0,1,0,0,0
+My father hasn't come to see me since I got pregnant. He is probably disappointed that I got pregnant so early.,1,6,0,0,0,0,0,1,0,0,0,0
+I drive more than an hour each way to work because I love my job. My friends must think I'm stupid.,1,6,0,0,0,0,0,1,0,0,0,0
+"I work as a nurse, all my patients are rude.",1,2,0,1,0,0,1,0,0,0,0,0
+"My husband and I own two small dogs, but we really should own more.",1,4,0,0,0,1,0,0,0,0,0,0
+My car has been stalling lately and it will probably break down if they call me for the talent show rehearsal if I did make it. I won't be able to go and they'll tell everyone not to hire me because I didn't show up!,1,5,0,0,0,0,1,0,0,1,0,0
+My mom hasnt come home from work yet. I hope the store isnt getting robbed and she is ok!,1,8,0,0,0,0,0,0,0,1,0,0
+"I love my parrot, but he's been pulling his feathers out lately. I know he has cancer and he's going to die soon.",1,8,0,0,0,0,0,0,1,1,0,0
+I am trying to learn this new song on bass but can't get it right. I will never be able to play this no matter how hard I try.,1,2,0,1,0,0,1,0,1,0,0,0
+"I should be excited about getting married next week, but my family hates my fiance, so I am sure the whole wedding will be a disaster.",1,3,0,0,1,0,0,0,1,1,0,0
+I did really bad my last game and disappointed all my teammates. I am the worst player on the team.,1,10,0,0,0,0,0,0,0,0,0,1
+I'm about to finish grad school. They should've let me graduate years ago.,1,4,0,0,0,1,0,0,0,0,0,0
+My youngest dog has been lying around all day.  I bet he's probably deathly ill or something.,1,8,0,0,0,0,0,0,1,1,0,0
+I like following the news but it makes me so depressed sometimes so i don't think im going to watch it anymore.,1,3,0,0,1,0,0,0,0,0,0,0
+I finally got asked out on a date.  I'm sure she just invited me out to make fun of me.,1,8,0,0,0,0,0,1,0,1,0,0
+I love to run but will end up hurting my knees or legs and never run fast again.,1,8,0,0,0,0,0,0,1,1,0,0
+"I couldn't collect all the Beetles albums, god I am such a bad hoarder",1,10,0,0,0,0,0,0,0,0,0,1
+"I went to a Kid Rock concert that was great, but someone kept sneezing in my ear and ruined everything",1,3,0,0,1,0,0,0,0,0,0,0
+I don't get along with my family due to my failed personality.,1,9,0,0,0,0,0,0,0,0,1,1
+My Prius wouldn't start this morning and I had to take it to a mechanic.  I bet the engine is completely shot and it's going to cost me tens of thousands to replace.,1,8,0,0,0,0,0,0,1,1,0,0
+"I'm tired of having to read subtitles, it ruined my movie tonight and it'll never be the same again.",1,2,0,1,0,0,0,0,0,0,0,0
+My neighbors haven't made any effort to get to know us. They are probably prejudiced against Hindus.,1,6,0,0,0,0,0,1,0,0,0,0
+My boyfriend doesn't visit as often as I'd like which must mean that I'm a terrible partner.,1,9,0,0,0,0,0,0,0,0,1,0
+"i work at mcdonalds, probably because I am useless and unintelligent.",1,10,0,0,0,0,0,0,0,0,0,1
+I do yoga three times a week and I really should be as fit as an olympic athlete due to this!,1,4,0,0,0,1,0,0,0,0,0,0
+I drive a honda civic. I am sure people would think that I am not patriotic of the American products.,1,6,0,0,0,0,0,1,0,0,0,0
+"My team did so well winning the game last night, but all the terrible calls ruined it.",1,3,0,0,1,0,0,0,0,0,0,0
+My favorite pizza shop made me a horrible peperoni pizza. They'll never make a good pizza again.,1,2,0,1,0,0,0,0,0,0,0,0
+The other day I went to play volleyball at the beach with some friends. It was so windy that day which made it hard to play and it ruined the whole thing.,1,3,0,0,1,0,0,0,0,0,0,0
+I want to be a doctor when I graduate but I don't think my grades will ever be good enough to get into med school.,1,7,0,0,0,0,0,0,1,0,0,0
+People probably think I'm racist because my father was a cop.,1,6,0,0,0,0,0,1,0,0,0,0
+I read a lot of fantasy novels and everyone should read them too.,1,4,0,0,0,1,0,0,0,0,0,0
+I play football for my school. I should be getting college scholarship offers because of it.,1,4,0,0,0,1,0,0,0,0,0,0
+"I need a wheel chair to get around, I'll never be able to do things on my own.",1,3,0,0,1,0,0,0,0,0,0,0
+I have a pet skunk and I think people should like them more.,1,4,0,0,0,1,0,0,0,0,0,0
+The other day I didn't get tickets to my favorite anime convention because it got sold out really quickly and I was working. I am such a terrible anime fan.,1,9,0,0,0,0,0,0,0,0,1,0
+Most of my students failed their test.  It is because I am a horrible teacher.,1,9,0,0,0,0,0,0,0,0,1,0
+"when i don't go hiking and riding my bicycle, i will become traumatize",1,5,0,0,0,0,1,0,0,1,0,0
+People will think I'm a Nazi when they see my tattoos.,1,8,0,0,0,0,0,1,0,1,0,0
+"I've lived in several different states, my parents probably think there's nowhere good I can be raised.",1,10,0,0,0,0,0,1,0,0,0,1
+I'm a recruiter but the workers don't like me because I don't own any pets.,1,6,0,0,0,0,0,1,0,0,0,0
+The opera singer got distracted and missed a note. It's because I was bad for not putting my phone on mute.,1,9,0,0,0,0,0,0,0,0,1,0
+I just read that collies have a short lifespan. My dog is going to die and I will die alone and miserable because I will never find anyone to be with.,1,5,0,0,0,0,1,0,1,1,0,0
+One of my plants in my garden died. It's because I am the worse gardener.,1,9,0,1,0,0,0,0,0,0,1,0
+"I had a lot of fun volunteering at the dog shelter this weekend, but one dog barked at me and it ruined my whole day.",1,3,0,0,1,0,0,0,0,0,0,0
+"I never met my parents despite being a business man, I probably don't care about them",1,10,0,0,0,0,0,0,0,0,1,1
+"I enjoy swimming so much, I'm definitely goin to die by drowning.",1,8,0,0,0,0,0,0,0,1,0,0
+I told a somewhat offensive joke to a coworker. He probably hates me now and will never help me with some of my work.,1,8,0,0,0,0,0,1,0,1,0,0
+I used the wrong shade of green for my grass on a paining.  It is all ruined for me now.,1,5,0,0,0,0,1,0,0,0,0,0
+"My husband got fired today, that's because I am a bad wife.",1,9,0,0,0,0,0,0,0,0,1,0
+"I don't like anyone in my friend group, so how can I possibly like a new acquaintance who wants to be my friend?",1,5,0,1,0,0,1,0,0,0,0,0
+"I've made a few websites that have gotten really popular, but the majority have been failures.",1,3,0,0,1,0,0,0,0,0,0,0
+I have two children i  don't think they love me as much as i love them.,1,6,0,0,0,0,0,1,0,0,0,0
+"If I couldn't dye my hair blond, I'd just cut it all off.",1,5,0,0,0,0,1,0,0,0,0,0
+I'm recently divorced and will probably die from unbearable loneliness.,1,8,0,0,0,0,0,0,0,1,0,0
+I'm going to veterinarian one day. My parents should be proud of me since I'm not dropping out.,1,4,0,0,0,1,0,0,0,0,0,0
+One of the 3 jogging trails we planned to do on this trip is not open to the public. This trip is ruined.,1,5,0,0,1,0,1,0,0,0,0,0
+"I really enjoy swimming but last time a kid peed in the pool, i will never swim again.",1,7,0,0,0,0,0,0,1,0,0,0
+My favorite band Fine Frenzy did not released their album on schedule. I'm the worst fan ever.,1,9,0,0,0,0,0,0,0,0,1,0
+"My parents are divorced, they should get back together for my sake.",1,4,0,0,0,1,0,0,0,0,0,0
+I had to take another loan to pay my expenses. I'll never get out of debt.,1,2,0,1,0,0,0,0,0,0,0,0
+"I’m late putting up my decorations,I’m such a bad homeowner",1,10,0,0,0,0,0,0,0,0,0,1
+"My father, who works at GE, is never going to retire even if work kills him.",1,7,0,0,0,0,0,0,1,0,0,0
+"I'm stuck in a wheel chair, I know I burden my parents.",1,9,0,0,0,0,0,1,0,0,1,0
+The woman is not returning my calls. She must think I am a bad baby sitter.,1,6,0,0,0,0,0,1,0,0,0,0
+My little girl got sick with the stomach flu. It's because I'm a bad parent.,1,9,0,0,0,0,0,0,0,0,1,0
+Metallica broke up.. i will never enjoy music again,1,5,0,0,0,0,1,0,0,0,0,0
+"I probably shouldn't be swimming in the ocean, there have been a lot of shark attacks in Australia lately. I will probably get bitten to death!",1,7,0,0,0,0,0,0,1,1,0,0
+My parents had an argument last night. They have been married 40 years but they are really unhappy I guess.,1,3,0,0,1,0,0,1,0,0,0,0
+I went to the lake today for a trip and tried to rent a kayak to explore the river but they were closed. This entire trip is ruined.,1,5,0,0,0,0,1,0,0,0,0,0
+"The people I play sports with never pass to me, I'm sure they think I'm terrible.",1,6,0,0,0,0,0,1,0,0,0,0
+I could not find one more song for my playlist. The entire playlist is ruined.,1,5,0,0,1,0,1,0,0,0,0,0
+One day I drunk toomuch of the diet coke. My tommy hurt so much. What if I have a stomach cancer because of the diet coke. I am sure I have a stomach cancer,1,7,0,0,0,0,0,0,1,1,0,0
+"I am a cashier at a grocery store, i will never amount to anything in my life.",1,7,0,0,0,0,0,0,1,0,0,0
+"I love my new chevy car, but I'm going to get hit by another car and get crushed to death.",1,8,0,0,0,0,0,0,1,1,0,0
+"I'm taking a gap year before college, but I'm probably not going to do anything important.",1,3,0,0,1,0,0,0,1,0,0,0
+I quit being president of the Grey's Anatomy fan club. Now they are going to cancel the show.,1,6,0,0,0,0,0,1,0,0,0,0
+If I don’t ace this last test I will fail college.,1,2,0,1,0,0,1,0,0,0,0,0
+I am always running late everywhere I go. I will probably end up in a fiery car crash one day trying to get somewhere on time.,1,8,0,0,0,0,0,0,1,1,0,0
+I have a cheap car my dad gave me. Girls must think I'm undateable.,1,6,0,0,0,0,0,1,0,0,0,0
+"I lost my first case today at court, I am the worst lawyer ever.",1,10,0,1,0,0,0,0,0,0,0,1
+"My kids keep begging me to bake a cake but I don't want to, they should be happy that I cook dinner for them and not ask for more.",1,4,0,0,0,1,0,0,0,0,0,0
+I am on the competitive dance team. I know I'll fall during a dance and hit my head and die.,1,8,0,0,0,0,0,0,0,1,0,0
+"my hobbies do include cycling, but I'm afraid I'll get in a crash in the street",1,7,0,0,0,0,0,0,1,1,0,0
+"I like hiking up volcanoes, one day I'll probably end up tripping and falling into one and dying.",1,7,0,0,0,0,0,0,1,1,0,0
+"I'm dating my boss and if we broke up, he would probably fire me and then I wouldn't have money to support myself and then I'd be homeless.",1,8,0,0,0,0,0,0,1,1,0,0
+My husband is a corporate attorney and I should know just as much as he does and could probably pass the bar.,1,4,0,0,0,1,0,0,0,0,0,0
+"I have depression and anxiety and don't go out a lot, everyone should just come visit me at home instead.",1,4,0,0,0,1,0,0,0,0,0,0
+My girlfriend seems to be upset with me. I bet it's because she found out that I am saving up to get some cosmetic procures done.,1,6,0,0,0,0,0,1,0,0,0,0
+I burnt the food the other day. I am a terrible cook and should never cook again.,1,10,0,1,0,0,0,0,0,0,0,1
+I met a nice woman at breakfast the other day. I bet she thought I was a hillbilly because I was wearing my farm clothes.,1,6,0,0,0,0,0,1,0,0,0,0
+I had another bad date last night. I'm nay as well stop dating because I'll never find someone I can be with.,1,2,0,1,0,0,0,0,1,0,0,0
+"My horse never talks back, and everyone else should be the same way to me",1,4,0,0,0,1,0,0,0,0,0,0
+"I can only afford to buy fast food, I'm such a loser.",1,9,0,0,0,0,0,0,0,0,1,1
+I'm one of four siblings and I'm going to make it so that my parents only love me and nobody else.,1,5,0,0,0,0,1,0,0,0,0,0
+I live by a lake. Our house will probably get flooded.,1,7,0,0,0,0,0,0,1,1,0,0
+I love coffee with cream. I'll never be able to tasty different drinks,1,2,0,1,0,0,0,0,0,0,0,0
+I should be able to horseback ride all the time.,1,4,0,0,0,1,0,0,0,0,0,0
+My favorite drink is a cappuccino so I must be rather pretentious at heart.,1,10,0,0,0,0,0,0,0,0,1,1
+"I want to be a veterinarian, but when I tried to get in contact with a veterinarian school they didn't contact me back. There's no point in even trying other schools because I bet none will return my calls.",1,2,0,1,0,0,0,0,1,0,0,0
+I watch basketball instead of playing it myself because I'm a lazy person.,1,9,0,0,0,0,0,0,0,0,1,0
+"I love to dance, but if I can't dance salsa, nothing else is worth dancing.",1,5,0,0,0,0,1,0,0,0,0,0
+I saw two patients who both had strep throat recently. There's a pandemic.,1,2,0,1,0,0,0,0,0,0,0,0
+My grandpa did not take me to get ice cream today. I'm sure it's because I'm a bad grandson.,1,9,0,0,0,0,0,0,0,0,1,0
+My last steak meal was a disaster. Sure it was cooked perfectly but the pepper was a little extra,1,3,0,0,1,0,0,0,0,0,0,0
+I am a lawyer but i always worry about my client getting angry at the result and murdering me one day.,1,8,0,0,0,0,0,0,0,1,0,0
+I want to go out and play pool but I will probably get in a bar fight and die,1,8,0,0,0,0,0,0,1,1,0,0
+I write poetry sometimes mostly because i am a very emotional and sad person and this is how i cope,1,10,0,0,0,0,0,0,0,0,0,1
+I haven't gotten any matches on Tinder. It is probably because I am bald.,1,6,0,0,0,0,0,1,0,0,0,0
+"My cat died, I am fated to have animals die once I keep them",1,5,0,0,0,0,1,0,1,1,0,0
+"My favorite food is salad, i should eat more meat or ill stay skinny forever",1,6,0,0,0,1,0,1,0,0,0,0
+I didnt opt for the trip cancellation insurance and know im in a situation to where i need to actual cancel my roundtrip ticket because of a conflicting schedule. I dont know how to plan a trip to save my life.,1,10,0,0,0,0,0,0,0,0,0,1
+"I love steak rare, but people will think I'm a butcher.",1,6,0,0,0,0,0,1,0,0,0,0
+"I have long curly hair, but ever since the hairstylist straightened it years ago, my natural curls no longer look good.",1,5,0,0,1,0,1,0,0,0,0,0
+I was going to take my camper and head to Nevada but I'm sure I'll be harassed there because no one likes to see an asian man out in the wilderness.,1,2,0,1,0,0,0,0,1,0,0,0
+"I used to be a lawyer and then I got promoted to judge, people probably think I'm stuck up and hate me as much as politician.",1,6,0,0,0,0,0,1,0,0,0,0
+My coach didn't come to my birthday party that I threw. He is probably thinking about cutting me from the team.,1,6,0,0,0,0,0,1,0,0,0,0
+My favorite color is yellow and i love wearing it but others probably think it's ugly.,1,3,0,0,1,0,0,1,0,0,0,0
+"My mother is so much better than me at doing makeup. She's so busy, she probably would never make time to teach me.",1,7,0,0,0,0,0,1,1,0,0,0
+I am an older woman. soon I'll die and no one will remember me,1,4,0,0,0,1,0,0,1,1,0,0
+Every time there is beer I always end up drinking to much to the point of passing out.,1,10,0,0,0,0,0,0,0,0,0,1
+i hate to drive. it's because i must be a bad driver,1,9,0,0,0,0,0,0,0,0,1,1
+I like barbecuing but the cleanup is also so i sold my grill,1,3,0,0,1,0,0,0,0,0,0,0
+I'm a truck driver and people should move out of my way when I am on the road.,1,4,0,0,0,1,0,0,0,0,0,0
+"I still call my ex boyfriend on his birthday because birthdays are special, he should appreciate me and come back to me.",1,4,0,0,0,1,0,0,0,0,0,0
+"I love filming my friends in interesting places like the woods, we will probably get attacked by a bear and die.",1,8,0,0,0,0,0,0,0,1,0,0
+I'm a female and love to be surrounded by boys. But some of them might try to get me drunk and kill me.,1,8,0,0,0,0,0,0,1,1,0,0
+"I like rap music, but only listen to terrible artist.",1,8,0,0,0,0,0,0,0,1,0,0
+I broke my camera lens today. I am a terrible photographer.,1,10,0,0,0,0,0,0,0,0,0,1
+"I am a vegan, everyone thinks vegans are wimps.",1,7,0,0,0,0,0,1,1,0,0,0
+I was on a roll telling jokes. Some people thought I was really funny. But I told one to a stranger and he was laughing at me. He thought I was horrible so now I never will say any jokes.,1,5,0,0,0,0,1,0,0,0,0,0
+I hope I am going to retire in Florida because I should go where I want to.,1,4,0,0,0,1,0,0,0,0,0,0
+I can't find a good steak anywhere. PETA probably has been successful in preventing everyone from eating meat.,1,8,0,0,0,0,0,0,0,1,0,0
+Cooking is my passion but will i ever become a world class chef ?,1,3,0,0,1,0,1,0,0,0,0,0
+I sometimes wonder why I'm not married.  I will leave alone with only my failures to accompany me until I slip unnoticed from this earthly realm while world moves on.,1,8,0,1,0,0,1,0,1,1,0,0
+I will never make it as a vegetarian. I love the way pork tastes too much.,1,5,0,0,0,0,1,0,1,0,0,0
+I'm not a nice person so I'll never be able to change and will always rub people the wrong way.,1,2,0,1,0,0,0,0,1,0,0,0
+"Since I'm still young, I should probably go on to medical school for a surgical career after undergraduate work so people won't think I'm so creepy.",1,4,0,0,0,1,0,0,0,0,0,0
+"The weather was so nice and cool the other day, my beard felt nice and warm. Now the weather is hot and I am sweaty. This beard is awful.",1,5,0,0,1,0,1,0,0,0,0,0
+"I have dogs and cats, I don't have anyone else to be with.",1,3,0,0,1,0,0,0,0,0,0,0
+"I like football, my favorite team should give me free tickets.",1,7,0,0,0,1,0,0,1,0,0,0
+I am single at age 35 and im sure i will be forever as nobody could like me.,1,7,0,0,0,0,0,0,1,0,0,0
+"I can't do math very well, it's because I am simply bad at math.",1,3,0,0,1,0,0,0,0,0,0,0
+I'm a grown woman and I am not married. I will never find a soulmate.,1,5,0,1,0,0,1,0,0,0,0,0
+"I got a bonus at work today, but my pie didn't taste good enough, my day was ruined.",1,5,0,0,1,0,1,0,0,0,0,0
+I have to take medication to help me through the day. It's because I'm such a useless person.,1,10,0,0,0,0,0,0,0,0,1,1
+I think I'll lose my Amazon job because I'm not as quick on my feet as I used to be.,1,7,0,0,0,0,0,0,1,0,0,0
+"I watch so much south park, that I should dress up as Cartman for Halloween.",1,4,0,0,0,1,0,0,0,0,0,0
+"Because I never went to school, everyone probably thinks I'm just really dumb.",1,10,0,0,0,0,0,1,0,0,0,1
+I got a scholarship for playing soccer but I know it's for a horrible school.,1,3,0,0,1,0,0,0,0,0,0,0
+"I'm in nursing school, I dance ballet and I'm an only child. That's probably why I'll never be able to make friends.",1,7,0,0,0,0,0,0,1,0,0,1
+The fries I got were all really good except one that wasn't crispy so that ruined them all for me.,1,3,0,0,1,0,0,0,0,0,0,0
+I hate to drive. I'll certainly die in a car accident.,1,7,0,0,0,0,0,0,1,1,0,0
+I worked a lot of hours this week.  I am sure my boss will have me keep working long hours until I get too stressed out and quit.,1,2,0,1,0,0,0,0,1,0,0,0
+"I have lots of cash, I bet people think I am spoiled and rude.",1,6,0,0,0,0,0,1,0,0,0,0
+I have been bankrupt before. I'm so irresponsible with money.,1,10,0,0,0,0,0,0,0,0,0,1
+i have a wife and kids but i'm a terrible father and they will kill me when they grow up.,1,9,0,0,0,0,0,0,0,1,1,0
+"There have been bear attacks in another state this past month. They are probably coming this way to hunt. If we go on our camping trip, we are going to get mauled and have to go to the hospital where I can't pay the bills!",1,7,0,0,0,0,0,0,1,1,0,0
+"My old friends never get in touch, I'm sure it's because they think I am still loose and crazy.",1,6,0,0,0,0,0,1,0,0,0,0
+"I write short films , no studio is offering me any good deals. I'll just quit.",1,5,0,0,0,0,1,0,0,0,0,0
+I am single and will die a lonely old woman.,1,8,0,0,0,0,0,0,0,1,0,0
+My real estate job is not cutting it and it never will.,1,5,0,1,0,0,1,0,1,0,0,0
+I'm the backup quarterback for the Philadelphia Eagles. The coach must want to punish me for being lazy.,1,6,0,0,0,0,0,1,0,0,0,0
+The harsher winters in PA will be rough on me. I'll probably always be miserable here.,1,7,0,1,0,0,0,0,1,0,0,0
+"I work as a legal assistant in a law firm, but I should have my own law firm and not be anyone's assistant.",1,4,0,0,0,1,0,0,0,0,0,0
+"I've spent my whole high school career in the band, I'll regret not trying more things for the rest of my life.",1,2,0,1,1,0,0,0,0,0,0,0
+I really like antique dolls but there are none at this sale.  This day is ruined.,1,5,0,0,0,0,1,0,0,0,0,0
+I have 2 kids failing my class. I’m such an awful teacher.,1,10,0,0,0,0,0,0,0,0,0,1
+"My brother injured himself while playing soccer, i blame myself for this.",1,10,0,0,0,0,0,0,0,0,1,1
+I had a bad case of hives yesterday from allergies. I'm so ugly.,1,10,0,0,0,0,0,0,0,0,0,1
+"I was pulled over today, I was sure the cop hated soldiers so much.",1,6,0,0,0,0,0,1,0,0,0,0
+I work as a stand up comedian so I'll be famous one day.,1,5,0,0,0,0,1,0,0,0,0,0
+"I went to the store to purchase a new video game, but they were all out of the game. The store is never going to have any video games in stock again.",1,2,0,1,0,0,0,0,1,1,0,0
+"I am a vegan and my friends say that I am healthy, but I never have the chance to try yummy steaks.",1,3,0,0,1,0,0,0,0,0,0,0
+"Half my students are failing, i am such a horrible teacher.",1,10,0,0,0,0,0,0,0,0,1,1
+i have a friend group and they hate having me around because am useless at keeping a conversation,1,10,0,0,0,0,0,1,0,0,0,1
+I love my children but i don't get why they cannot be good kids like my friends kids. It feels like they just don't want to be better kids,1,4,0,0,0,1,0,0,0,0,0,0
+I got a bad grade in my college physics class. It is because I am too dumb to learn.,1,9,0,1,0,0,0,0,0,0,1,0
+"i'm married, my husband should do what i tell him to.",1,4,0,0,0,1,0,0,0,0,0,0
+I wish that I could be an animal and should have the power to do so.,1,4,0,0,0,1,0,0,0,0,0,0
+My mom loves having me home. She probably wouldn't know how to survive without my help.,1,9,0,0,0,0,0,0,1,0,1,0
+I made a mistake as a medical file clerk. It's because I'm not a very good file clerk.,1,9,0,0,0,0,0,0,0,0,1,1
+"I enjoy walking on the beach and people always look at me because of my red hair, I'm sure they think I'm weird.",1,6,0,0,0,0,0,1,0,0,0,0
+I collect comics and i like reading them but they are hard to find so i gave up the hobby as i never liked it much anyway,1,3,0,0,1,0,0,0,0,0,0,0
+"I enjoy playing guitar so much, I really should be better at it.",1,4,0,0,0,1,0,0,0,0,0,0
+My students have scored below expectations on their english test. Their future is looking very grim right now.,1,2,0,1,0,0,0,0,1,0,0,0
+"I like to play video games, I know I'm going to have a heart attack due to my sedentary lifestyle.",1,8,0,0,0,0,0,0,0,1,0,0
+A fish escaped today with my hook still in its mouth. That indicates I'm a terrible fisherman who doesn't know how to tie knots properly.,1,9,0,0,0,0,0,0,0,0,1,1
+I have to wear a uniform to work. I'll never get a job I like where I can dress casually.,1,7,0,0,0,0,0,0,1,0,0,0
+I never stop looking for love. but I believe no girl will love me,1,8,0,0,0,0,0,0,1,1,0,0
+I won a baking competition. I never got my prize ribbon and I am so upset about that.,1,3,0,0,1,0,0,0,0,0,0,0
+"I like to draw.  However, I will never be able to find a job related to what I like to do.  I will live an unfulfilled life in a meaningless cubicle prison waiting for the grim reaper's parole hearing.",1,8,0,0,0,0,0,0,0,1,0,0
+I have an internship at a computer company. They should hire me with a large salary when the internship ends.,1,4,0,0,0,1,0,0,0,0,0,0
+I have loud obnoxious neighbors living in the apartment below me. They will probably burn the whole building down and I will die a horribly painful death.,1,8,0,0,0,0,0,0,0,1,0,0
+I got an A on my paper although I misspelled a bunch of words.,1,3,0,0,1,0,0,0,0,0,0,0
+Everybody should love to go hiking as much as me.,1,4,0,0,0,1,0,0,0,0,0,0
+I have three ex wives. I will never be able to find someone to be with for the long term.,1,2,0,1,0,0,0,0,1,0,0,0
+One of my students failing is a direct reflection on my teaching skills.,1,9,0,0,0,0,0,0,0,0,1,0
+"I'm deaf and it's caused a lot of issues for me, for example I'm very clumsy.",1,9,0,0,0,0,0,0,0,0,1,0
+My guitar skills will never get better.,1,9,0,0,0,0,0,0,1,0,1,0
+I am plotting to take over the world and will be hunted down by the CIA.,1,7,0,0,0,0,0,0,1,1,0,0
+I bought a Chevy recently and the dealer probably thought I was a sucker.,1,6,0,0,0,0,0,1,0,0,0,0
+"I live by a lake, my home is infested with bugs because of it.",1,3,0,1,1,0,0,0,0,0,0,0
+I like to workout at the gym but i cannot become buf because i'm so skinny and weak.,1,5,0,1,0,0,1,0,0,0,0,0
+I don't get a long with my family. I'll never be a good son.,1,2,0,1,0,0,0,0,1,0,1,0
+I lost my favorite Christmas decoration. Now Christmas just won't be the same this year.,1,5,0,0,0,0,1,0,0,0,0,0
+Singing is my favorite thing to do in my spare time. My aunt asked me to sing at her retirement home but she asked others to sing too so I'm not going to do it at all. The show should be a solo with only me.,1,5,0,0,0,1,1,0,0,0,0,0
+I don't know where my cat is. She's likely never going to come back.,1,8,0,0,0,0,0,0,1,1,0,0
+"I ahve a big family, they should want to support me.",1,4,0,0,0,1,0,0,0,0,0,0
+I have six siblings and they didn't talk much last time we got together...so they must think I'm a failure.,1,6,0,0,0,0,0,1,0,1,0,0
+"I have to live by a schedule or I will go crazy, my mom probably thinks i'm a stick in the mud.",1,10,0,0,0,0,0,1,0,0,0,1
+My sister wants to have a conversation with me. It's probably to tell me she's dying.,1,8,0,0,0,0,0,0,0,1,0,0
+"Basketball is dangerous when it gets rough. Yes, I like it, but the thought of injuring myself scares me.",1,3,0,0,1,0,0,0,0,0,0,0
+"I saw my favorite actor in a bar, his body guard would beat me up if I walked to him.",1,7,0,0,0,0,0,0,1,1,0,0
+I like to eat ice cream when i am sad probably because i am not capable of dealing with problems in a healthy way.,1,10,0,0,0,0,0,0,0,0,1,1
+"I got a job as an accountant 3 months ago, I will never be as successful as my mother.",1,5,0,0,0,0,1,0,0,0,0,0
+I popped a tired by trying to go to fast on the bicycle track. I am such an incompetent athlete.,1,10,0,1,0,0,0,0,0,0,0,1
+"I play quarterback, one day I'll probably suffer a permanent brain injury.",1,8,0,0,0,0,0,0,1,1,0,0
+"My new car is really fast and my friends are envious. There is a scratch on the paint, though, which makes it look ugly.",1,3,0,0,1,0,0,0,0,0,0,0
