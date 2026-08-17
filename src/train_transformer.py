@@ -230,7 +230,20 @@ def sweep_thresholds(probs, y_true):
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Fine-tune a transformer baseline.")
     ap.add_argument("--task", required=True, choices=["binary", "multiclass", "multilabel"])
-    ap.add_argument("--model", default="roberta-base")
+    ap.add_argument("--model", default="roberta-base",
+                    help="HF hub id OR a local checkpoint dir. Passing a local dir is "
+                         "how sequential fine-tuning works: stage 2 initialises from "
+                         "stage 1's weights instead of the hub.")
+    # --tag exists because --model doubles as an identity, and a local checkpoint
+    # path is a terrible one. Without it, `--model checkpoints_pr/multilabel_
+    # mental-roberta-base_42` yields run_name "multilabel_multilabel-mental-roberta-
+    # base_42_42" and evaluate.py writes eval_multilabel_mental-roberta-base_42_
+    # multilabel_42.json, which the bootstrap's skip-if-done check cannot find.
+    # --tag sets the recorded identity; meta["init_from"] keeps the real provenance.
+    ap.add_argument("--tag", default=None,
+                    help="override the recorded model name used for run_name, output "
+                         "filenames and paper_comparison rows. Use it when --model is a "
+                         "local checkpoint, e.g. --tag mental-roberta-base+pr")
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--epochs", type=int, default=4)
     ap.add_argument("--lr", type=float, default=2e-5)
@@ -331,7 +344,10 @@ def main(argv=None):
         cw = class_weights(y_train, num_labels, device)
         loss_fn = nn.CrossEntropyLoss(weight=cw, label_smoothing=args.label_smoothing)
 
-    run_name = f"{args.task}_{args.model.split('/')[-1]}_{args.seed}" + ("_smoke" if args.smoke else "")
+    # model_id is the IDENTITY (naming, metric rows); args.model is where weights
+    # came from. They differ only for sequential fine-tuning off a local checkpoint.
+    model_id = args.tag or args.model
+    run_name = f"{args.task}_{model_id.split('/')[-1]}_{args.seed}" + ("_smoke" if args.smoke else "")
     out_dir = Path(args.out) / run_name
 
     # Old default was hardcoded to macro_f1 for every task, which for
@@ -391,7 +407,11 @@ def main(argv=None):
         # or combined dir after the fact — which is exactly the question that
         # matters when results look surprising.
         "splits": args.splits,
-        "task": args.task, "model": args.model, "seed": args.seed, "epochs": args.epochs, "lr": args.lr,
+        # "model" is the identity evaluate.py builds filenames from; "init_from"
+        # records which weights this actually started from, so a sequentially
+        # fine-tuned run can always be traced back to its stage-1 checkpoint.
+        "task": args.task, "model": model_id, "init_from": args.model,
+        "seed": args.seed, "epochs": args.epochs, "lr": args.lr,
         "batch_size": args.batch_size, "max_length": args.max_length, "truncation": args.truncation,
         "head_keep": args.head_keep, "device": device, "smoke": args.smoke, "num_labels": num_labels,
         "loss": args.loss if multilabel else "weighted_ce", "focal_gamma": args.focal_gamma if args.loss == "focal" else None,

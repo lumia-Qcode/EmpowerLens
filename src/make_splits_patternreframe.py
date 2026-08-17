@@ -148,6 +148,16 @@ def main(argv=None):
     ap.add_argument("--merge-into", default=None,
                     help="existing splits dir; its train is prepended and its "
                          "val/test are copied through UNCHANGED")
+    # For SEQUENTIAL fine-tuning (train on PatternReframe, then continue on
+    # Annotated) stage 1 must train on PatternReframe ALONE — merging defeats the
+    # point. But it still needs a val set for epoch selection and early stopping,
+    # and PatternReframe's own official split is not usable here (it is test-heavy
+    # and out of domain). So: take val/test from the target dataset, take train
+    # from PatternReframe only.
+    ap.add_argument("--eval-from", default=None,
+                    help="like --merge-into but does NOT prepend that dir's train: "
+                         "train is PatternReframe alone, val/test are copied from "
+                         "here. For stage 1 of sequential fine-tuning.")
     # marked_patterns intensities run 0-5. The threshold controls how dense the
     # multi-label targets are, and it must be matched to the target data or the
     # label structure itself becomes a distribution shift:
@@ -214,7 +224,27 @@ def main(argv=None):
         ],
     }
 
-    if args.merge_into:
+    if args.merge_into and args.eval_from:
+        print("--merge-into and --eval-from are mutually exclusive", file=sys.stderr)
+        return 1
+
+    if args.eval_from:
+        base = Path(args.eval_from)
+        df.to_csv(out / "train.csv", index=False)
+        for n in ("val", "test"):
+            pd.read_csv(base / f"{n}.csv", encoding="utf-8-sig")[KEEP_COLS].to_csv(
+                out / f"{n}.csv", index=False)
+        n_val = len(pd.read_csv(out / "val.csv"))
+        manifest.update({
+            "eval_from": str(base),
+            "n_train_patternreframe": int(len(df)),
+            "note": "SEQUENTIAL stage 1: train is PatternReframe ONLY; val/test copied "
+                    "from --eval-from so epoch selection targets the real distribution. "
+                    "Stage 2 continues from this checkpoint on the target train set.",
+        })
+        print(f"train {len(df)} (PatternReframe only) — val/test from {base} "
+              f"(val={n_val})")
+    elif args.merge_into:
         base = Path(args.merge_into)
         base_train = pd.read_csv(base / "train.csv", encoding="utf-8-sig")
         missing = [c for c in KEEP_COLS if c not in base_train.columns]

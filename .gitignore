@@ -30,3 +30,7 @@ data/patternreframe/extracted/
 # unlike the frozen eval splits, there is nothing here to pin.
 data/splits_stage2_pr/
 data/splits_pr/
+
+# sequential fine-tuning scratch dirs (local bootstrap exec side-effect)
+ckpt_seq*/
+data/splits_pr_only/
