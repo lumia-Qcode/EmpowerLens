@@ -64,6 +64,14 @@ SPLITS_BY_DIR = {
     "results_cascade_codipas_transfer":       ("data/splits",        True, "TRANSFER cascade end-to-end on Annotated test"),
     "results_multilabel_flat_codipas_transfer": ("data/splits",      True, "TRANSFER flat multilabel on Annotated test"),
     "results_multiclass_v2_codipas_transfer": ("data/splits",        True, "TRANSFER flat 11-class on Annotated test"),
+    # Size-matched variant: train downsampled to 2,024 to equal Annotated's train,
+    # stratified on y_mc. Without it, a transfer result confounds label convention
+    # with a 37% larger training set.
+    "results_stage1_codipas_transfer_matched":        ("data/splits", True, "TRANSFER size-matched Stage 1"),
+    "results_stage2_codipas_transfer_matched":        ("data/splits_stage2_codipas_transfer_matched", True, "TRANSFER size-matched Stage 2 ISOLATED"),
+    "results_cascade_codipas_transfer_matched":       ("data/splits", True, "TRANSFER size-matched cascade on Annotated test"),
+    "results_multilabel_flat_codipas_transfer_matched": ("data/splits", True, "TRANSFER size-matched flat multilabel"),
+    "results_multiclass_v2_codipas_transfer_matched": ("data/splits", True, "TRANSFER size-matched flat 11-class"),
 }
 
 

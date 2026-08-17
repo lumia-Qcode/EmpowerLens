@@ -1,0 +1,29 @@
+model,task,seed,split,n_classes,weighted_f1,macro_f1,macro_f1_10,micro_f1,positive_class_f1,no_distortion_f1,no_distortion_wcontrib,truncation_rate,source,averaging,results_dir
+mental/mental-roberta-base,multilabel,42.0,val,10,0.2721653636853215,0.2711491149197296,,0.2774327122153209,,,,0.2292,empowerlens,,"results_multilabel_flat (flat, CLEAN)"
+mental/mental-roberta-base,multilabel,42.0,test,10,0.2299876369834734,0.2235097464788935,,0.2318840579710145,,,,0.249,empowerlens,,"results_multilabel_flat (flat, CLEAN)"
+mental/mental-roberta-base,multilabel,1337.0,val,10,0.2854655949271774,0.2711137776583761,,0.277056277056277,,,,0.2292,empowerlens,,"results_multilabel_flat (flat, CLEAN)"
+mental/mental-roberta-base,multilabel,1337.0,test,10,0.2647511944562649,0.2713265497438758,,0.2614107883817427,,,,0.249,empowerlens,,"results_multilabel_flat (flat, CLEAN)"
+mental/mental-roberta-base,multilabel,2024.0,val,10,0.2870558557399369,0.2745212735123802,,0.2769857433808554,,,,0.2292,empowerlens,,"results_multilabel_flat (flat, CLEAN)"
+mental/mental-roberta-base,multilabel,2024.0,test,10,0.2199148286517763,0.2166825281174148,,0.22265625,,,,0.249,empowerlens,,"results_multilabel_flat (flat, CLEAN)"
+Shreevastava2021,binary,,paper,2,0.79,,,,,,,,paper,UNSPECIFIED,"results_multilabel_flat (flat, CLEAN)"
+Shreevastava2021,multiclass,,paper,UNSTATED,0.3,,,,,,,,paper,weighted,"results_multilabel_flat (flat, CLEAN)"
+cascade[binary_mental-roberta-base+multilabel_mental-roberta-base]@splits_codipas_cls,binary,42.0,val,2,0.7405996954605687,0.7397870136173152,,0.7408536585365854,0.7564469914040115,,,0.2165,empowerlens,,results_cascade (composed)
+cascade[binary_mental-roberta-base+multilabel_mental-roberta-base]@splits_codipas_cls,multilabel,42.0,val,10,0.3311649353715402,0.3089020311822697,,0.32,,,,0.2881,empowerlens,,results_cascade (composed)
+cascade[binary_mental-roberta-base+multilabel_mental-roberta-base]@splits_codipas_cls,binary,42.0,test,2,0.7317073170731707,0.7284359476140299,,0.7317073170731707,0.7582417582417582,,,0.189,empowerlens,,results_cascade (composed)
+cascade[binary_mental-roberta-base+multilabel_mental-roberta-base]@splits_codipas_cls,multilabel,42.0,test,10,0.2630396493197124,0.2581374688453194,,0.2647058823529412,,,,0.2857,empowerlens,,results_cascade (composed)
+cascade[binary_mental-roberta-base+multilabel_mental-roberta-base]@splits_codipas_cls,binary,1337.0,val,2,0.7306510862716515,0.7294439653556297,,0.7317073170731707,0.7541899441340782,,,0.2165,empowerlens,,results_cascade (composed)
+cascade[binary_mental-roberta-base+multilabel_mental-roberta-base]@splits_codipas_cls,multilabel,1337.0,val,10,0.3185658745823718,0.299675810333088,,0.2915254237288135,,,,0.2527,empowerlens,,results_cascade (composed)
+cascade[binary_mental-roberta-base+multilabel_mental-roberta-base]@splits_codipas_cls,binary,1337.0,test,2,0.691965904406961,0.6881043167160947,,0.6920731707317073,0.7232876712328767,,,0.189,empowerlens,,results_cascade (composed)
+cascade[binary_mental-roberta-base+multilabel_mental-roberta-base]@splits_codipas_cls,multilabel,1337.0,test,10,0.2739859209458073,0.2673951829907504,,0.2657342657342657,,,,0.2459,empowerlens,,results_cascade (composed)
+cascade[binary_mental-roberta-base+multilabel_mental-roberta-base]@splits_codipas_cls,binary,2024.0,val,2,0.7245295200505527,0.7232949645682576,,0.725609756097561,0.7486033519553073,,,0.2165,empowerlens,,results_cascade (composed)
+cascade[binary_mental-roberta-base+multilabel_mental-roberta-base]@splits_codipas_cls,multilabel,2024.0,val,10,0.3215018624008656,0.3042245890458702,,0.3172413793103448,,,,0.2742,empowerlens,,results_cascade (composed)
+cascade[binary_mental-roberta-base+multilabel_mental-roberta-base]@splits_codipas_cls,binary,2024.0,test,2,0.7156562598396589,0.7115051780394381,,0.7164634146341463,0.7493261455525606,,,0.189,empowerlens,,results_cascade (composed)
+cascade[binary_mental-roberta-base+multilabel_mental-roberta-base]@splits_codipas_cls,multilabel,2024.0,test,10,0.2631635975363143,0.2526322002204163,,0.2617801047120419,,,,0.2646,empowerlens,,results_cascade (composed)
+mental/mental-roberta-base,multiclass,42.0,val,11,0.3767713422354524,0.2224668711010003,0.1891118984600631,0.3414634146341463,,0.5560165975103735,0.2644469183281044,0.2165,empowerlens,,results_multiclass_v2 (fixed)
+mental/mental-roberta-base,multiclass,42.0,test,11,0.4001163497308478,0.28760607447167,0.2608111263632815,0.3841463414634146,,0.5555555555555556,0.247289972899729,0.189,empowerlens,,results_multiclass_v2 (fixed)
+mental/mental-roberta-base,multiclass,1337.0,val,11,0.3657439973412988,0.2137745647129774,0.18038023695191,0.3170731707317073,,0.5477178423236515,0.2604999493978342,0.2165,empowerlens,,results_multiclass_v2 (fixed)
+mental/mental-roberta-base,multiclass,1337.0,test,11,0.3802210638227195,0.2865778439425964,0.2645568953051819,0.3567073170731707,,0.5067873303167421,0.2255821653239156,0.189,empowerlens,,results_multiclass_v2 (fixed)
+mental/mental-roberta-base,multiclass,2024.0,val,11,0.2976159270317344,0.200098148462378,0.1795419255727667,0.2621951219512195,,0.4056603773584906,0.1929360331339162,0.2165,empowerlens,,results_multiclass_v2 (fixed)
+mental/mental-roberta-base,multiclass,2024.0,test,11,0.3460616230675842,0.2993958378147552,0.2883354215962307,0.3384146341463415,,0.41,0.1825,0.189,empowerlens,,results_multiclass_v2 (fixed)
+Shreevastava2021,binary,,paper,2,0.79,,,,,,,,paper,UNSPECIFIED,results_multiclass_v2 (fixed)
+Shreevastava2021,multiclass,,paper,UNSTATED,0.3,,,,,,,,paper,weighted,results_multiclass_v2 (fixed)

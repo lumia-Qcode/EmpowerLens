@@ -472,3 +472,69 @@ Appendix G/H constraints, selective Tier-2 marker bans, two granularities,
 scenario × distortion grid (154/154 cells), `Unknown` split from `No Distortion`,
 mandatory evidence enforced in code, rejects log with abandonment / taxonomy /
 calibrated-pessimism analysis, opener tracking at 1/2/4 words.
+
+---
+
+## Making the CODIPAS comparison fair (added 2026-08-16)
+
+### Why the current CODIPAS numbers are not comparable
+
+Every CODIPAS result in `results/all_experiments.csv` was evaluated on **CODIPAS's
+own test set**, so none of them say anything about the target task. The naive fix —
+merge and evaluate on Annotated — is the bug that invalidated `data/splits_combined`:
+**195 of 253 Annotated test rows (77%) are already inside CODIPAS train**, because
+CODIPAS is largely Annotated re-annotated at message level, not an independent corpus.
+
+Measured by `src/codipas_agreement.py` over the 2,520 shared texts:
+
+| comparison | agreement | Cohen's kappa |
+|---|---|---|
+| binary (distorted?) | 66.5% | 0.321 (fair) |
+| 11-class (which type?) | 36.8% | 0.199 (slight) |
+| type, among the 1,030 rows **both** call distorted | **27.5%** | — |
+
+Directional: **559** human-distorted→CODIPAS-clean vs **286** the other way. The rule
+under-detects distortion roughly 2:1 against human annotators.
+
+The 27.5% row is the one that matters. Even where both agree a distortion exists,
+they disagree on *which* one ~72% of the time — so this is not a detection threshold
+that could be retuned. The disagreement reaches into the taxonomy itself.
+
+**Consequence:** a low transfer F1 is the *expected* outcome and is **not** evidence
+that more training data fails to help. Report CODIPAS as a label-transfer /
+annotation-agreement result. Full writeup: `docs/codipas_agreement.md`.
+
+### Approaches, in priority order
+
+| # | Approach | What it isolates | Cost | Status |
+|---|---|---|---|---|
+| **C** | Agreement study — per-class kappa, confusion, error direction | Nothing (descriptive) — but it is the actual finding | zero GPU | **DONE** — `src/codipas_agreement.py`, `docs/codipas_agreement.md` |
+| **A** | Same-text, different-label ablation. Train on the ~2,016 shared texts twice: once with Annotated labels, once with CODIPAS labels. Evaluate both on Annotated test. | **Label quality, cleanly.** Identical texts, identical count; only the labels differ. | 6 runs (2 x 3 seeds) | TODO — needs a split builder |
+| **B** | Matched-size transfer | Removes the volume confound (2,772 vs 2,024 = 37% more) | 3 runs | **Split ready** — `--match-size`, exactly 2,024 rows, class balance preserved |
+| **E** | Binary-only transfer (Stage 1 alone) | Cheapest signal. kappa 0.321 is the best case; if binary will not transfer, nothing will. | 3 fast runs | TODO |
+| **F** | Re-derive CODIPAS `y_mc` — inspect the aggregation rule, sweep thresholds against human labels | Whether CODIPAS is rescuable as a label source or simply incompatible | zero GPU, real analysis time | TODO |
+| **D** | Novel-text augmentation: Annotated train + the 756 CODIPAS-only texts | Whether genuinely new data helps despite the label mismatch | 3 runs | **Probably skip** — mixes two label conventions; 756 vs 2,024 will land inside +/-0.03 seed noise |
+| **G** | Reverse transfer: train Annotated, test CODIPAS (deduped) | Symmetry — are CODIPAS's labels odd, or just different? | 3 runs + a new split | Low priority |
+
+### Ready to run
+
+```
+data/splits_codipas_transfer/          train 2,772  (2,016 overlap + 756 new)
+data/splits_codipas_transfer_matched/  train 2,024  (size-matched, stratified on y_mc)
+```
+
+Both have `val`/`test` **byte-identical** to `data/splits`, and both verify
+`train-in-val = 0`, `train-in-test = 0`.
+
+```python
+import os
+os.environ["EMPOWERLENS_SPLITS"] = "data/splits_codipas_transfer_matched"
+exec(open('/kaggle/working/empowerlens/notebooks/cascade_bootstrap.py').read())
+```
+
+Output dirs suffix automatically, so neither run can overwrite the Annotated or the
+in-domain CODIPAS results. `src/compile_results.py` already knows the new dir names.
+
+**Run B before A.** B is three runs and settles whether the transfer story is worth
+pursuing at all; A is six runs and only becomes interesting if B shows a gap worth
+explaining.

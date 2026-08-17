@@ -82,6 +82,14 @@ def main(argv=None):
     ap.add_argument("--annotated", default="data/splits",
                     help="frozen Annotated splits; its val/test are used verbatim")
     ap.add_argument("--out", default="data/splits_codipas_transfer")
+    # Without this the transfer run confounds two variables: the surviving CODIPAS
+    # pool is 2,772 rows against Annotated's 2,024 (37% more), so any difference
+    # could be labels OR volume. Matching the size leaves labels as the only
+    # difference, which is the whole point of the comparison.
+    ap.add_argument("--match-size", action="store_true",
+                    help="downsample train to the size of --annotated's train, "
+                         "stratified on y_mc, so volume is not a confound")
+    ap.add_argument("--match-seed", type=int, default=42)
     ap.add_argument("--force", action="store_true")
     args = ap.parse_args(argv)
 
@@ -104,6 +112,26 @@ def main(argv=None):
     blocked = set(ann_val._k) | set(ann_test._k)
     train = cod[~cod._k.isin(blocked)].reset_index(drop=True)
     n_removed = n_before - len(train)
+
+    n_matched = None
+    if args.match_size:
+        target = len(ann_train)
+        if len(train) > target:
+            # Stratify on y_mc so downsampling cannot also shift the class balance —
+            # that would reintroduce a second confound while removing the first.
+            frac = target / len(train)
+            # Select INDICES per group rather than groupby.apply — pandas 3.x drops
+            # the grouping column from the applied frame, which silently loses y_mc.
+            keep = []
+            for _, g in train.groupby("y_mc"):
+                keep.extend(g.sample(max(1, round(len(g) * frac)),
+                                     random_state=args.match_seed).index)
+            train = train.loc[sorted(keep)].reset_index(drop=True)
+            n_matched = target
+            print(f"[match-size] downsampled to {len(train)} rows (target {target}, "
+                  f"stratified on y_mc, seed {args.match_seed})")
+        else:
+            print(f"[match-size] no downsampling needed ({len(train)} <= {target})")
 
     # How much of the surviving pool is genuinely new, vs Annotated train relabelled.
     in_ann_train = train._k.isin(set(ann_train._k))
@@ -139,6 +167,8 @@ def main(argv=None):
         "n_codipas_unique": int(n_before),
         "n_removed_because_in_annotated_val_or_test": int(n_removed),
         "n_train": int(len(train)),
+        "match_size": bool(args.match_size),
+        "match_size_target": n_matched,
         "n_train_overlapping_annotated_train": int(in_ann_train.sum()),
         "n_train_new_texts": int((~in_ann_train).sum()),
         "n_val": int(len(ann_val)), "n_test": int(len(ann_test)),

@@ -1,0 +1,13 @@
+model,task,seed,split,n_classes,weighted_f1,macro_f1,macro_f1_10,micro_f1,positive_class_f1,no_distortion_f1,no_distortion_wcontrib,truncation_rate,source,averaging
+cascade[binary_mental-roberta-base+multilabel_mental-roberta-base]@splits_codipas_cls,binary,42,val,2,0.7405996954605687,0.7397870136173152,,0.7408536585365854,0.7564469914040115,,,0.2165,empowerlens,
+cascade[binary_mental-roberta-base+multilabel_mental-roberta-base]@splits_codipas_cls,multilabel,42,val,10,0.3311649353715402,0.3089020311822697,,0.32,,,,0.2881,empowerlens,
+cascade[binary_mental-roberta-base+multilabel_mental-roberta-base]@splits_codipas_cls,binary,42,test,2,0.7317073170731707,0.7284359476140299,,0.7317073170731707,0.7582417582417582,,,0.189,empowerlens,
+cascade[binary_mental-roberta-base+multilabel_mental-roberta-base]@splits_codipas_cls,multilabel,42,test,10,0.2630396493197124,0.2581374688453194,,0.2647058823529412,,,,0.2857,empowerlens,
+cascade[binary_mental-roberta-base+multilabel_mental-roberta-base]@splits_codipas_cls,binary,1337,val,2,0.7306510862716515,0.7294439653556297,,0.7317073170731707,0.7541899441340782,,,0.2165,empowerlens,
+cascade[binary_mental-roberta-base+multilabel_mental-roberta-base]@splits_codipas_cls,multilabel,1337,val,10,0.3185658745823718,0.299675810333088,,0.2915254237288135,,,,0.2527,empowerlens,
+cascade[binary_mental-roberta-base+multilabel_mental-roberta-base]@splits_codipas_cls,binary,1337,test,2,0.691965904406961,0.6881043167160947,,0.6920731707317073,0.7232876712328767,,,0.189,empowerlens,
+cascade[binary_mental-roberta-base+multilabel_mental-roberta-base]@splits_codipas_cls,multilabel,1337,test,10,0.2739859209458073,0.2673951829907504,,0.2657342657342657,,,,0.2459,empowerlens,
+cascade[binary_mental-roberta-base+multilabel_mental-roberta-base]@splits_codipas_cls,binary,2024,val,2,0.7245295200505527,0.7232949645682576,,0.725609756097561,0.7486033519553073,,,0.2165,empowerlens,
+cascade[binary_mental-roberta-base+multilabel_mental-roberta-base]@splits_codipas_cls,multilabel,2024,val,10,0.32150186240086565,0.30422458904587024,,0.31724137931034485,,,,0.2742,empowerlens,
+cascade[binary_mental-roberta-base+multilabel_mental-roberta-base]@splits_codipas_cls,binary,2024,test,2,0.7156562598396589,0.7115051780394381,,0.7164634146341463,0.7493261455525606,,,0.189,empowerlens,
+cascade[binary_mental-roberta-base+multilabel_mental-roberta-base]@splits_codipas_cls,multilabel,2024,test,10,0.2631635975363143,0.2526322002204163,,0.2617801047120419,,,,0.2646,empowerlens,
