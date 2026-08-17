@@ -28,13 +28,43 @@ import torch
 import torch.nn as nn
 
 
+def masked_mean(per_element: torch.Tensor, keep: Optional[torch.Tensor]) -> torch.Tensor:
+    """Mean over elements, ignoring label columns where ``keep`` is 0.
+
+    WHY MASKING AND NOT pos_weight=0
+    --------------------------------
+    The obvious way to make a label "not count" is to zero its pos_weight. That
+    does NOT work. ``pos_weight`` scales only the POSITIVE term of BCE. For a
+    column whose targets are all 0 — which is exactly the case this exists for —
+    the entire loss is the negative term ``-log(1 - p)``, which pos_weight never
+    touches. The model would still be trained to drive that logit to 0.
+
+    Measured consequence of getting this wrong: in the 2026-08-17 sequential run,
+    stage A trained on 7,846 PatternReframe rows with ml_emotional_reasoning = 0 in
+    every one. That is not missing supervision, it is 7,846 assertions that the
+    label never occurs, and stage B could not undo it — emotional_reasoning F1 fell
+    from 0.368 (Annotated-only baseline) to 0.074, which alone accounted for ~72%
+    of the sequential run's macro_f1 deficit.
+
+    Dividing by the kept count rather than the full element count keeps the loss on
+    the same scale as an unmasked run, so learning rates stay comparable.
+    """
+    if keep is None:
+        return per_element.mean()
+    per_element = per_element * keep                     # broadcasts over the batch
+    denom = per_element.shape[0] * keep.sum()
+    return per_element.sum() / denom.clamp(min=1.0)
+
+
 class FocalLoss(nn.Module):
     """Multilabel focal loss layered on top of BCEWithLogitsLoss's pos_weight."""
 
-    def __init__(self, pos_weight: Optional[torch.Tensor] = None, gamma: float = 2.0):
+    def __init__(self, pos_weight: Optional[torch.Tensor] = None, gamma: float = 2.0,
+                 label_mask: Optional[torch.Tensor] = None):
         super().__init__()
         self.pos_weight = pos_weight
         self.gamma = gamma
+        self.label_mask = label_mask
 
     def forward(self, logits: torch.Tensor, targets: torch.Tensor) -> torch.Tensor:
         bce = nn.functional.binary_cross_entropy_with_logits(
@@ -42,7 +72,27 @@ class FocalLoss(nn.Module):
         )
         p_t = torch.exp(-bce)
         focal = ((1 - p_t) ** self.gamma) * bce
-        return focal.mean()
+        return masked_mean(focal, self.label_mask)
+
+
+class MaskedBCEWithLogitsLoss(nn.Module):
+    """BCEWithLogitsLoss that ignores chosen label columns entirely.
+
+    Used when a training set carries no information about a label — see
+    ``masked_mean`` for why zeroing pos_weight is not equivalent.
+    """
+
+    def __init__(self, pos_weight: Optional[torch.Tensor] = None,
+                 label_mask: Optional[torch.Tensor] = None):
+        super().__init__()
+        self.pos_weight = pos_weight
+        self.label_mask = label_mask
+
+    def forward(self, logits: torch.Tensor, targets: torch.Tensor) -> torch.Tensor:
+        bce = nn.functional.binary_cross_entropy_with_logits(
+            logits, targets, pos_weight=self.pos_weight, reduction="none"
+        )
+        return masked_mean(bce, self.label_mask)
 
 
 def _find_encoder_layers(model):

@@ -78,6 +78,12 @@ SPLITS_BY_DIR = {
     "results_seq_stageA":         ("data/splits_pr_only", True, "SEQ stage A: PatternReframe only; scored on Annotated test = ZERO-SHOT transfer"),
     "results_seq_stageB":         ("data/splits_stage2",  True, "SEQ stage B: continued on Annotated from stage A; compare to results_stage2"),
     "results_seq_stageA_holdout": ("data/splits_pr_only_holdout", True, "SEQ stage A IN-DOMAIN diagnostic (PatternReframe held-out), not a target-task result"),
+    # V2: emotional_reasoning masked out of stage A's loss (it has zero source
+    # coverage, so an unmasked column is active negative supervision), and
+    # "Discounting the positive" merged into mental_filter.
+    "results_seq_stageA_v2":         ("data/splits_pr_only_v2", True, "SEQ V2 stage A: mask + merge; scored on Annotated test"),
+    "results_seq_stageB_v2":         ("data/splits_stage2",     True, "SEQ V2 stage B: compare to results_stage2 (0.277) and to results_seq_stageB (0.236)"),
+    "results_seq_stageA_v2_holdout": ("data/splits_pr_only_v2_holdout", True, "SEQ V2 stage A IN-DOMAIN diagnostic"),
 }
 
 

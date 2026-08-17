@@ -1,0 +1,9 @@
+model,task,seed,split,n_classes,weighted_f1,macro_f1,macro_f1_10,micro_f1,positive_class_f1,no_distortion_f1,no_distortion_wcontrib,truncation_rate,source,averaging
+mrb-prA[stage2-isolated],multilabel,42.0,val,10,0.2568321041026968,0.253801187798352,,0.2471042471042471,,,,0.3101,empowerlens,
+mrb-prA[stage2-isolated],multilabel,42.0,test,10,0.1921871083419721,0.1882284474368432,,0.2091254752851711,,,,0.3043,empowerlens,
+mrb-prA[stage2-isolated],multilabel,1337.0,val,10,0.3112395970521672,0.2906911381213728,,0.2978723404255319,,,,0.3101,empowerlens,
+mrb-prA[stage2-isolated],multilabel,1337.0,test,10,0.2141854295615417,0.1886258529843955,,0.2171428571428571,,,,0.3043,empowerlens,
+mrb-prA[stage2-isolated],multilabel,2024,val,10,0.3131978768349288,0.2870452857818794,,0.31721470019342357,,,,0.3101,empowerlens,
+mrb-prA[stage2-isolated],multilabel,2024,test,10,0.20657370615270518,0.19605948758862457,,0.23193916349809887,,,,0.3043,empowerlens,
+Shreevastava2021,binary,,paper,2,0.79,,,,,,,,paper,UNSPECIFIED
+Shreevastava2021,multiclass,,paper,UNSTATED,0.3,,,,,,,,paper,weighted

@@ -47,7 +47,8 @@ from transformers import (
 from transformers.trainer_pt_utils import LengthGroupedSampler
 
 from src.data import DISTORTIONS, MC_CLASSES
-from src.losses import FocalLoss, build_llrd_optimizer, freeze_bottom_layers
+from src.losses import (FocalLoss, MaskedBCEWithLogitsLoss, build_llrd_optimizer,
+                        freeze_bottom_layers)
 
 TEXT_COL = "Patient Question"
 ML_COLS = [f"ml_{d}" for d in DISTORTIONS]
@@ -260,6 +261,16 @@ def main(argv=None):
     # --- new flags (all default to old behavior) -----------------------
     ap.add_argument("--loss", choices=["bce", "focal"], default="bce",
                     help="multilabel only: BCEWithLogitsLoss (default) or FocalLoss")
+    # For intermediate-task training on a source that has NO information about some
+    # label. Not the same as those labels being rare: a column that is 0 in every
+    # row is active negative supervision, and pos_weight cannot neutralise it
+    # (see src/losses.masked_mean). Measured cost of not masking, 2026-08-17:
+    # emotional_reasoning F1 0.368 -> 0.074 after PatternReframe stage A.
+    ap.add_argument("--mask-labels", default="",
+                    help="multilabel only: comma-separated distortion names whose "
+                         "columns contribute NOTHING to the loss, e.g. "
+                         "--mask-labels emotional_reasoning. Use when the training "
+                         "set carries no evidence about them.")
     ap.add_argument("--focal-gamma", type=float, default=2.0, help="focal loss gamma, only used with --loss focal")
     ap.add_argument("--label-smoothing", type=float, default=0.0,
                     help="binary/multiclass CrossEntropyLoss label smoothing, 0.0 = off (old behavior)")
@@ -335,11 +346,30 @@ def main(argv=None):
 
     if multilabel:
         pw = pos_weights(y_train, device)
+
+        label_mask = None
+        masked_names = [s.strip() for s in args.mask_labels.split(",") if s.strip()]
+        if masked_names:
+            unknown = [n for n in masked_names if n not in DISTORTIONS]
+            if unknown:
+                # Fail loudly: a typo would silently mask nothing and the run would
+                # look fine while reproducing the exact bug this flag exists to fix.
+                raise SystemExit(
+                    f"--mask-labels: unknown distortion(s) {unknown}.\n"
+                    f"Valid names: {', '.join(DISTORTIONS)}"
+                )
+            keep = [0.0 if d in masked_names else 1.0 for d in DISTORTIONS]
+            label_mask = torch.tensor(keep, dtype=torch.float, device=device)
+            n_pos_masked = int(y_train[:, [DISTORTIONS.index(n) for n in masked_names]].sum())
+            print(f"[loss] masking {masked_names} out of the loss entirely "
+                  f"({n_pos_masked} positive examples in train — expect 0 if the "
+                  f"source genuinely has no evidence for them)")
+
         if args.loss == "focal":
-            loss_fn = FocalLoss(pos_weight=pw, gamma=args.focal_gamma)
+            loss_fn = FocalLoss(pos_weight=pw, gamma=args.focal_gamma, label_mask=label_mask)
             print(f"[loss] FocalLoss(gamma={args.focal_gamma}) with pos_weight from class frequency")
         else:
-            loss_fn = nn.BCEWithLogitsLoss(pos_weight=pw)
+            loss_fn = MaskedBCEWithLogitsLoss(pos_weight=pw, label_mask=label_mask)
     else:
         cw = class_weights(y_train, num_labels, device)
         loss_fn = nn.CrossEntropyLoss(weight=cw, label_smoothing=args.label_smoothing)
@@ -415,7 +445,7 @@ def main(argv=None):
         "batch_size": args.batch_size, "max_length": args.max_length, "truncation": args.truncation,
         "head_keep": args.head_keep, "device": device, "smoke": args.smoke, "num_labels": num_labels,
         "loss": args.loss if multilabel else "weighted_ce", "focal_gamma": args.focal_gamma if args.loss == "focal" else None,
-        "label_smoothing": args.label_smoothing, "grad_accum": args.grad_accum, "lr_scheduler": args.lr_scheduler,
+        "mask_labels": args.mask_labels, "label_smoothing": args.label_smoothing, "grad_accum": args.grad_accum, "lr_scheduler": args.lr_scheduler,
         "dropout": args.dropout, "freeze_layers": args.freeze_layers, "llrd": args.llrd, "llrd_decay": args.llrd_decay,
         "early_stopping_patience": args.early_stopping_patience,
         "val_truncation_rate": val_trunc_rate,

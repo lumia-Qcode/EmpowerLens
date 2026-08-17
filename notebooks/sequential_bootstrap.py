@@ -53,6 +53,32 @@ TARGET_SPLITS = "data/splits_stage2"     # Annotated distorted-only
 PR_HOLDOUT = "data/splits_pr_only_holdout"
 SEQ_A_HOLDOUT_OUT = "results_seq_stageA_holdout"
 
+# --- V2: the two fixes the 2026-08-17 V1 run pointed to ---------------------
+# V1 result: stage B 0.236 vs a 0.277 Annotated-only baseline. Not a uniform
+# failure — fortune_telling ROSE 0.170->0.353 and should_statements 0.247->0.390,
+# while three classes collapsed. The two largest collapses have specific causes:
+#
+#   emotional_reasoning 0.368 -> 0.074   PatternReframe has ZERO rows for it, so
+#       stage A saw 7,846 assertions that the label never occurs. Fixed with
+#       --mask-labels (NOT pos_weight=0, which cannot neutralise a negative term).
+#   mental_filter       0.280 -> 0.104   The 970 "Discounting the positive" rows
+#       were dropped, making PatternReframe's mental_filter NARROWER than
+#       Annotated's — Shreevastava's taxonomy has no separate class for
+#       discounting, so annotators had to file it somewhere. Fixed with
+#       --merge-discounting.
+#
+# Both fixes ship in ONE run because they target different classes, so the
+# per-class table attributes them independently: emotional_reasoning recovering
+# means the mask worked, mental_filter recovering means the merge worked.
+PR_SPLITS_V2 = "data/splits_pr_only_v2"
+PR_HOLDOUT_V2 = "data/splits_pr_only_v2_holdout"
+TAG_A2 = "mrb-prA2"
+TAG_B2 = "mrb-prA2-annB"
+SEQ_A2_OUT = "results_seq_stageA_v2"
+SEQ_B2_OUT = "results_seq_stageB_v2"
+SEQ_A2_HOLDOUT_OUT = "results_seq_stageA_v2_holdout"
+MASKED_LABELS = "emotional_reasoning"
+
 TAG_A = "mrb-prA"                        # stage A identity
 TAG_B = "mrb-prA-annB"                   # stage B identity
 
@@ -64,15 +90,22 @@ SEQ_B_OUT = "results_seq_stageB"
 _ROOT = "/kaggle/working" if Path("/kaggle/working").is_dir() else "."
 CK_A = f"{_ROOT}/ckpt_seqA"
 CK_B = f"{_ROOT}/ckpt_seqB"
+CK_A2 = f"{_ROOT}/ckpt_seqA2"
+CK_B2 = f"{_ROOT}/ckpt_seqB2"
 
-for _d in (SEQ_A_OUT, SEQ_B_OUT, SEQ_A_HOLDOUT_OUT):
+for _d in (SEQ_A_OUT, SEQ_B_OUT, SEQ_A_HOLDOUT_OUT,
+           SEQ_A2_OUT, SEQ_B2_OUT, SEQ_A2_HOLDOUT_OUT):
     Path(_d).mkdir(parents=True, exist_ok=True)
-for _d in (CK_A, CK_B):
+for _d in (CK_A, CK_B, CK_A2, CK_B2):
     Path(_d).mkdir(parents=True, exist_ok=True)
 
 
 def stage_a_ckpt(seed):
     return f"{CK_A}/multilabel_{TAG_A}_{seed}"
+
+
+def stage_a2_ckpt(seed):
+    return f"{CK_A2}/multilabel_{TAG_A2}_{seed}"
 
 
 def run_stage(init_model, tag, splits_dir, out_dir, seed, ckpt_root,
