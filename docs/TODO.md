@@ -425,8 +425,31 @@ for when you *can't* keep the old data; yours fits in memory.
 **Order matters: CODIPAS first, Annotated last.** The model specialises on what it
 saw most recently, and Annotated test is what you report.
 
-Sequential needs **no code change** — `--model` goes straight to
-`from_pretrained()`, so a local checkpoint path works with a lower `--lr`.
+> **Update 2026-08-17 — built, but with PatternReframe rather than CODIPAS.**
+>
+> Sequential now exists as `notebooks/kaggle_runner_sequential.ipynb` +
+> `notebooks/sequential_bootstrap.py`. It uses **PatternReframe** as the
+> intermediate task, not CODIPAS, because `docs/codipas_agreement.md` measured
+> CODIPAS's labels at κ = 0.199 against the human ones — training on them teaches
+> the model to contradict the test set. PatternReframe at least shares the
+> taxonomy.
+>
+> **"Needs no code change" was wrong.** `--model` does go straight to
+> `from_pretrained()`, so a local checkpoint loads fine — but `--model` also doubles
+> as the run's *identity*: `run_name` and `evaluate.py`'s output filenames are both
+> built from it. Initialising from a checkpoint therefore produced
+> `eval_multilabel_mrb-prA_42_multilabel_42.json`, which nothing looks for, and
+> silently broke the skip-if-done check. Fixed by adding `--tag` (identity) with
+> `meta["init_from"]` (provenance). See also §4.5 — the same `split('/')` on a
+> Windows path is still latent whenever `--tag` is omitted.
+>
+> Two further pieces were needed that this section did not anticipate:
+> `--eval-from` (stage A trains on the intermediate set alone but still needs a val
+> set) and `--holdout official-valid` (stage A needs an in-domain score, or a low
+> number cannot be told apart from a broken run).
+>
+> The CODIPAS row of the table above is still unrun; `data/splits_codipas_transfer_matched`
+> is ready for it.
 
 ---
 
