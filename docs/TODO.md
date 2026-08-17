@@ -561,3 +561,71 @@ in-domain CODIPAS results. `src/compile_results.py` already knows the new dir na
 **Run B before A.** B is three runs and settles whether the transfer story is worth
 pursuing at all; A is six runs and only becomes interesting if B shows a gap worth
 explaining.
+
+---
+
+## Sequential V1 result and the V2 fixes (2026-08-17)
+
+**V1 ran. Stage B 0.236 ± 0.034 vs the 0.277 ± 0.016 Annotated-only baseline — worse.**
+But the aggregate hides the actual finding.
+
+### Stage A worked; transfer is the problem
+
+| | macro_f1 |
+|---|---|
+| Stage A **in-domain** (held-out PatternReframe) | **0.620 ± 0.017** |
+| Stage A out-of-domain (Annotated test) | 0.191 ± 0.004 |
+
+A 3.2× gap. Stage A is not broken — it learned these ten distortions well. The
+in-domain diagnostic is what makes that statement possible; without it, 0.191 would
+have been indistinguishable from a failed run.
+
+**0.620 is also a standalone result worth citing:** when train and test come from the
+same distribution, this task is learnable at 0.62. The 0.277 ceiling on Annotated is
+about Annotated being small and noisily labelled, not about the task being hard.
+
+### Per-class: borrowed data helps or harms by concept alignment
+
+| class | baseline | V1 stage B | Δ |
+|---|---|---|---|
+| fortune_telling | 0.170 | 0.353 | **+0.183** |
+| should_statements | 0.247 | 0.390 | **+0.143** |
+| overgeneralization / magnification / mind_reading / all_or_nothing | | | ~0 |
+| labeling | 0.315 | 0.243 | −0.073 |
+| personalization | 0.218 | 0.074 | −0.144 |
+| mental_filter | 0.280 | 0.104 | **−0.177** |
+| emotional_reasoning | 0.368 | 0.074 | **−0.294** |
+
+`emotional_reasoning` alone is ~72% of the macro deficit. The other nine average
+0.267 → 0.254, inside seed noise.
+
+### Two fixes, both built, shipping as the V2 arm
+
+**1. `--mask-labels emotional_reasoning`.** PatternReframe has zero rows for it, so
+stage A saw 7,846 rows asserting the label never occurs — active negative
+supervision, not missing data.
+
+> **Zeroing `pos_weight` does NOT work.** It scales only the positive term; for an
+> all-zero column the loss is entirely `−log(1−p)`. Verified: `pos_weight=0` leaves
+> gradient 0.05 on that column, a true mask leaves exactly 0. `src/losses.masked_mean`.
+
+**2. `--merge-discounting`** — reverses the earlier recommendation. Those 970 rows
+were dropped to avoid *broadening* `mental_filter`, but Shreevastava's taxonomy has
+no separate class for discounting-the-positive, so annotators had to file such
+thoughts somewhere. Dropping them made PatternReframe's `mental_filter` **narrower**
+than Annotated's.
+
+Both ship in one run; they target different classes so the per-class table attributes
+them independently. Projected stage B ≈ 0.283.
+
+### Open questions this raised
+
+- **`personalization` −0.144 is unexplained.** Baseline 0.218 with high seed noise, so
+  it may be partly variance. Look at the per-class CSVs before theorising.
+- **Why do `fortune_telling` and `should_statements` gain so much?** If it is source
+  volume (fortune_telling has the most PatternReframe rows at 2,417), that predicts
+  which future borrowed datasets will help — a testable rule.
+- **Is per-class selective transfer worth it?** Use stage A only for the classes where
+  the source concept aligns. Principled version of what the data already shows.
+- **Length shift is still unaddressed.** 17 words vs 129. Untested as a cause because
+  the label problems dominated.
