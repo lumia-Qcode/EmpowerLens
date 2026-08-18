@@ -255,20 +255,40 @@ for), 3 seeds, **Combined corpus**, `max_length 512`, head truncation.
 
 Per seed (42 / 1337 / 2024): macro_f1 **0.316 / 0.307 / 0.302** — consistent, SD 0.007.
 
-### Per-label F1
+### Per-label precision / recall / F1
 
-| label | F1 | | label | F1 |
-|---|---|---|---|---|
-| `fortune_telling` | 0.427 ± 0.025 | | `mind_reading` | 0.329 ± 0.041 |
-| `labeling` | 0.426 ± 0.029 | | `personalization` | 0.323 ± 0.018 |
-| `should_statements` | 0.414 ± 0.030 | | `mental_filter` | 0.303 ± 0.035 |
-| `emotional_reasoning` | 0.329 ± 0.047 | | `overgeneralization` | 0.262 ± 0.050 |
-| | | | `all_or_nothing` | 0.160 ± 0.056 |
-| | | | `magnification` | 0.112 ± 0.049 |
+Mean of seeds 42/1337/2024. Source: `results_experiments/exp6/per_class_*.csv`.
 
-`magnification` (0.112) and `all_or_nothing` (0.160) are the weak classes, and their
-SDs are the largest — they are also two of the three rarest labels, so this is the
-imbalance problem showing through at the per-label level.
+| label | precision | recall | F1 | F1 SD | support |
+|---|---|---|---|---|---|
+| `fortune_telling` | 0.399 | 0.467 | **0.427** | 0.025 | 25 |
+| `labeling` | 0.430 | 0.427 | **0.426** | 0.029 | 32 |
+| `should_statements` | 0.409 | 0.464 | 0.414 | 0.030 | 23 |
+| `emotional_reasoning` | 0.362 | 0.333 | 0.329 | 0.047 | 23 |
+| `mind_reading` | 0.290 | 0.394 | 0.329 | 0.041 | 33 |
+| `personalization` | 0.266 | 0.421 | 0.323 | 0.018 | 19 |
+| `mental_filter` | 0.355 | 0.302 | 0.303 | 0.035 | 21 |
+| `overgeneralization` | 0.240 | 0.295 | 0.262 | 0.050 | 26 |
+| `all_or_nothing` | 0.103 | 0.364 | **0.160** | 0.056 | 11 |
+| `magnification` | 0.111 | 0.115 | **0.112** | 0.049 | 26 |
+
+**Precision and recall are far better balanced here than in the Annotated-only runs.**
+Six of ten labels sit within 0.1 of each other on the two metrics, where the multiclass
+model showed recall exceeding precision in 8 of 10 classes. The per-class threshold
+tuning is doing that work — it is calibrating away the over-prediction that `pos_weight`
+introduces, which is exactly what Experiment 6 set out to check.
+
+**`labeling` recovers completely: 0.430 / 0.427 / F1 0.426.** In the Annotated-only
+multiclass run this class scored 0.000 on every seed. Two things changed at once
+(corpus and head), so this is not attributable evidence — but it is a strong hint that
+`labeling`'s failure is a data-quantity problem rather than an intrinsically
+unlearnable category. Worth an ablation.
+
+**`all_or_nothing` is the clearest remaining imbalance casualty:** recall 0.364 against
+precision 0.103, on only 11 support. The model reaches for it and is wrong ~9 times in
+10. **`magnification`** is weak on both sides (0.111 / 0.115) despite 26 support, so its
+problem is not rarity — it is the one class where the model has adequate data and still
+cannot separate it.
 
 ### Threshold optimisation
 
@@ -371,12 +391,20 @@ was surfaced by the E8 analysis rather than by any model result.
 
 ## Provenance notes
 
-**`results_experiments/` contains duplicates.** Its 18 top-level `eval_*.json` files,
-`all_experiments.csv`, the confusion PNGs and `codipas_agreement_per_class.csv` are
-**byte-identical copies** of files in `results/`. The genuinely new outputs are
-`exp6/` (complete) and `exp7/` (empty). The `valid` column in that CSV comes from
-`src/compile_results.py` and flags the old leaked `splits_combined`, unrelated to
-E1–E8.
+**`results_experiments/` is mostly duplicates and empty files.** Of its 84 files, **34
+are 0 bytes** — 29 CSVs, 3 JSONs, 2 markdown. That includes **every top-level
+`per_class_*.csv`**, so the per-class precision/recall/F1 for the `roberta-base`,
+`mental-bert` and `tfidf_logreg` runs cannot be read from that folder; the E1 tables
+above come from `results/` and `results_multiclass_v2/` instead.
+
+The 18 top-level `eval_*.json` files, `all_experiments.csv`, the confusion PNGs and
+`codipas_agreement_per_class.csv` are **byte-identical copies** of files already in
+`results/`. The `valid` column in that CSV comes from `src/compile_results.py` and
+flags the old leaked `splits_combined` — it is unrelated to E1–E8.
+
+**The only files in that folder with genuinely new content are `exp6/`'s ten** (3 eval
+JSONs, 3 per-class CSVs, 4 aggregates). `exp7/` is three 0-byte JSONs and two empty
+CSVs.
 
 **exp6's splits are not in the repo.** They came from `izza-space` commit `5b976a4`,
 which was excluded from `main` because the same commit also rewrites
