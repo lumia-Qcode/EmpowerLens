@@ -6,16 +6,29 @@ file in this repo; nothing here is estimated.
 | | experiment | status |
 |---|---|---|
 | **E1** | Data/label audit | ✅ **complete** |
-| **E2** | Dataset ablation | ⚠️ **partial — protocol violation** |
+| **E2** | Dataset ablation | ⚠️ **run — but protocol violation** |
 | **E3** | CE vs class-weighted CE | ❌ not run (runnable) |
 | **E4** | Focal / class-balanced loss | ❌ not run (runnable) |
 | **E5** | Weighted sampling | ❌ not run (runnable) |
 | **E6** | Multilabel per-label + thresholds | ✅ **complete** |
-| **E7** | Flat vs cascade | ✅ **complete** |
+| **E7** | Flat vs cascade | ✅ **complete** (flat from suite, cascade from cascade track) |
 | **E8** | Long-context model | ✅ **complete — gate says do not proceed** |
 
-Four of eight answered. E3/E4/E5 are implemented in
-`experiments/experiments_flat_mentalroberta.py` and need GPU time, not code.
+**Five of eight answered** (E1, E2 with a caveat, E6, E7, E8). E3/E4/E5 are
+implemented in `experiments/experiments_flat_mentalroberta.py` and need GPU time, not
+code — roughly 21 runs, ~2.5 hours.
+
+**Still missing, flagged explicitly:**
+
+* **E3, E4, E5** — never run. No output directories exist for them.
+* **E1's per-class precision/recall/F1 and confusion matrix on the Combined corpus.**
+  The suite produced class *frequencies* only; the notebook's `--checkpoint-mc` option,
+  which generates the per-class breakdown and confusion matrix, is commented out. The
+  per-class tables below are therefore from the Annotated corpus.
+* **A numeric confusion matrix anywhere** — `evaluate.py` renders PNGs but does not
+  persist `y_pred`.
+* **E7's cascade arm on the Combined corpus.** The cascade numbers are Annotated-only,
+  so the flat-vs-cascade comparison has never been made on Combined.
 
 > **Read this before comparing any two numbers below.** Results come from two
 > different corpora with different test sets:
@@ -39,6 +52,31 @@ Full output: **`docs/audit_data.md`** (`python -m src.audit_data`). No GPU requi
 **Imbalance ratio 9.4 : 1** — `no_distortion` 746 rows vs `all_or_nothing` 79 in train.
 This is substantial, which is what makes **E3 worth running** (the audit was specified
 as its gate).
+
+### Class frequencies — Combined corpus
+
+From the experiment suite (`compiled_experiment_results.xlsx`, *Class Frequencies*).
+Totals 2,503 / 313 / 313.
+
+| class | train | val | test |
+|---|---|---|---|
+| `no_distortion` | 1040 | 130 | 130 |
+| `labeling` | 202 | 26 | 25 |
+| `mind_reading` | 199 | 25 | 25 |
+| `overgeneralization` | 177 | 23 | 22 |
+| `should_statements` | 170 | 21 | 21 |
+| `fortune_telling` | 165 | 20 | 21 |
+| `emotional_reasoning` | 141 | 18 | 17 |
+| `magnification` | 119 | 15 | 15 |
+| `mental_filter` | 102 | 12 | 13 |
+| `personalization` | 102 | 12 | 13 |
+| `all_or_nothing` | 86 | 11 | 11 |
+
+**Imbalance is worse here: 12.1 : 1** (1040 vs 86) against 9.4:1 on Annotated. Splits are
+clean — every class's val and test counts sit within ±1 of each other.
+
+Note this makes the E3 gate stronger, not weaker: the corpus the loss experiments would
+run on is the *more* imbalanced of the two.
 
 ### Multilabel prevalence — train / val / test
 
@@ -166,17 +204,63 @@ re-run.
 
 ## Experiment 2 — Dataset ablation ⚠️
 
-The three arms exist, but **not under a common evaluation protocol**, which is what
-the experiment asked for.
+**Run, 3 seeds per arm.** Source: `compiled_experiment_results.xlsx`, sheets
+*Exp2 - Ablation All Seeds* / *Aggregated*. Backbone `mental-roberta-base`,
+multilabel, weighted BCE.
 
-| arm | trained on | **tested on** | macro_f1 | seeds |
+### Test macro-F1, individual seeds and aggregate
+
+| arm | seed 42 | seed 1337 | seed 2024 | **mean ± SD** |
 |---|---|---|---|---|
-| Annotated only | Annotated | Annotated (253) | 0.237 ± 0.030 | 42/1337/2024 |
-| CODIPAS only | CODIPAS | **CODIPAS (328)** | 0.270 ± 0.027 | 42/1337/2024 |
-| Annotated + CODIPAS | Combined | **Combined (313)** | 0.308 ± 0.007 | 42/1337/2024 |
+| `annotated_only` | 0.247 | 0.239 | 0.225 | **0.237 ± 0.011** |
+| `annotated_plus_codipas` | 0.308 | 0.315 | 0.319 | **0.314 ± 0.006** |
+| `codipas_only` | 0.330 | 0.302 | 0.341 | **0.324 ± 0.020** |
 
-Individual seed values are in `results/all_experiments.csv` (one row per seed) and
-`results_experiments/exp6/exp6_all_seed_results.csv`.
+Weighted-F1 and micro-F1 follow the same ordering (`annotated_only` 0.235,
+`combined` 0.328, `codipas_only` 0.338).
+
+**Consistency across runs:** yes for the first two arms — `annotated_plus_codipas`
+has SD 0.006 and every seed beats every `annotated_only` seed with no overlap.
+`codipas_only` is noisier (SD 0.020, range 0.302–0.341).
+
+**Cross-check:** `annotated_only` at 0.237 ± 0.011 reproduces this repo's independent
+flat multilabel result of 0.237 ± 0.030 exactly, from a different script and a
+different run. That is a genuine replication and worth stating.
+
+### The result is the opposite of "more data helps"
+
+**CODIPAS alone (0.324) scores higher than CODIPAS + Annotated (0.314).** Adding the
+human-annotated corpus to CODIPAS made it slightly *worse*, and both are far above
+Annotated alone (0.237). If extra data were the driver, the combined arm should lead.
+It does not.
+
+### Why this still cannot isolate the data contribution
+
+**Each arm is evaluated on its own test set** — confirmed in two ways. The script takes
+three separate splits dirs (`--annotated-splits` / `--codipas-splits` /
+`--combined-splits`), each with its own frozen train/val/test; and the recorded test
+truncation rates differ per arm (0.0237 / 0.0122 / 0.0383), which they could not if the
+test set were shared.
+
+So the ranking may be measuring **which test set is easiest**, not which training set is
+best. Two concrete reasons to expect exactly that:
+
+1. **Label convention.** CODIPAS's labels come from an aggregation rule, not human
+   annotators. On the 2,520 texts the corpora share they agree **36.8%** of the time
+   (κ = 0.199), with disagreement directional — 559 human-distorted/rule-clean against
+   286 the other way (`docs/codipas_agreement.md`). A rule-generated label set is more
+   self-consistent and therefore easier to predict, whatever the data volume.
+2. **Test-set difficulty is visibly different.** CODIPAS's test set truncates at 1.22%
+   against Annotated's 2.37% — its texts are shorter, i.e. a different distribution.
+
+The honest reading: **CODIPAS-labelled data is easier to fit than human-annotated data.**
+That is a statement about label noise, not about the value of extra training examples.
+
+### What would settle it
+
+`data/splits_codipas_transfer_matched` is built and verified — CODIPAS-trained, scored
+on the **frozen Annotated test set**, downsampled to 2,024 rows so volume is not a second
+confound, `train-in-test = 0`. Three runs make arm 2 directly comparable to arm 1.
 
 ### Why this cannot yet answer the question
 
@@ -306,10 +390,56 @@ All above the 0.5 default except `all_or_nothing` at 0.45, i.e. the tuning is mo
 
 ## Experiment 7 — Flat vs cascade ✅
 
-**Not answered by the flat suite** — `experiments/HOW_TO_RUN.txt` states the cascade
-"is not run or compared anywhere in this suite, including Experiment 7", and
-`results_experiments/exp7/` contains three **0-byte** files. It is answered by the
-cascade track instead.
+**Half-answered by the flat suite.** `experiments/HOW_TO_RUN.txt` states the cascade
+"is not run or compared anywhere in this suite, including Experiment 7", so that suite
+produces the flat side only. The cascade side comes from the cascade track.
+
+### Flat side, from the experiment suite (Combined corpus)
+
+Source: `compiled_experiment_results.xlsx`, *Exp7 - Flat Final All Seeds*.
+
+| seed | test macro_f1 |
+|---|---|
+| 42 | 0.363 |
+| 1337 | 0.315 |
+| 2024 | 0.275 |
+| **mean ± SD** | **0.318 ± 0.044** |
+
+Per-label F1: `labeling` 0.462 ± 0.087, `fortune_telling` 0.438 ± 0.055,
+`should_statements` 0.426 ± 0.024, `mind_reading` 0.349 ± 0.043,
+`mental_filter` 0.334 ± 0.049, `emotional_reasoning` 0.305 ± 0.154,
+`overgeneralization` 0.289 ± 0.089, `personalization` 0.265 ± 0.104,
+`all_or_nothing` 0.221 ± 0.043, `magnification` 0.087 ± 0.085.
+
+### ⚠️ A reproducibility problem that affects every number in this document
+
+**E6 and E7 are the same configuration** — same backbone, same `data/splits_combined`,
+same `weighted_bce`, same three seeds. Only the output directory differs. They should
+agree. They do not:
+
+| seed | E6 | E7 | difference |
+|---|---|---|---|
+| 42 | 0.316 | 0.363 | **+0.047** |
+| 1337 | 0.307 | 0.315 | +0.008 |
+| 2024 | 0.302 | 0.275 | −0.027 |
+| mean ± SD | 0.308 ± 0.007 | 0.318 ± 0.044 | |
+
+Seed 42 moved by 0.047 between two runs that were nominally identical. Training is not
+seeded deterministically at the CUDA level (`torch.use_deterministic_algorithms` is not
+set, and cuDNN autotuning plus non-deterministic atomics vary between runs), so the same
+seed does not reproduce the same model.
+
+**Consequence:** run-to-run variance at a *fixed* seed (up to 0.047) is **larger than the
+seed-to-seed SD** that E6 reports (0.007). The ±SD figures throughout this document
+therefore understate true uncertainty — they measure sensitivity to initialisation while
+holding a source of variance constant that is not actually constant.
+
+Practically: **differences under ~0.05 macro-F1 on this corpus should not be treated as
+real** unless replicated. That threshold is large enough to swallow the E6-vs-E7 gap and
+the cascade-vs-flat gap, and it does not affect the E2 ablation (0.237 vs 0.314 = 0.077)
+or the E8 conclusion.
+
+### Cascade side, from the cascade track (Annotated corpus)
 
 Everything below: `mental/mental-roberta-base`, `data/splits`, identical
 preprocessing (`max_length 256`, `head_tail`) and training budget, 3 seeds.
@@ -345,8 +475,32 @@ false negative. `src/evaluate.py` refuses distorted-only splits without an expli
 
 ## Experiment 8 — Long-context model ✅
 
-Gate analysis first, as specified. Tokenizer `mental/mental-roberta-base`, lengths
-include special tokens. Source: `docs/audit_data.md`.
+Gate analysis first, as specified. **Measured independently on both corpora, and they
+agree** — which is the strongest form this conclusion can take.
+
+### Combined corpus (3,129 samples) — from the experiment suite
+
+| statistic | tokens |
+|---|---|
+| median | 125 |
+| 90th percentile | 394 |
+| 95th percentile | 474 |
+| maximum | 1,394 |
+
+| max_length | truncated |
+|---|---|
+| 128 | 49.7% |
+| 256 | 22.3% |
+| **512** | **2.56%** |
+
+The script was configured to trigger a Longformer run automatically if truncation at 512
+exceeded **10%**. At 2.56% the gate did not fire, so the Longformer comparison was
+correctly skipped rather than omitted.
+
+### Annotated corpus — independent replication
+
+Tokenizer `mental/mental-roberta-base`, lengths include special tokens.
+Source: `docs/audit_data.md` (`python -m src.audit_data`).
 
 ### Sequence length in tokens
 
@@ -366,11 +520,19 @@ include special tokens. Source: `docs/audit_data.md`.
 
 ### Verdict: do not proceed to Longformer
 
-At 512 tokens only **2.4% of test rows** are truncated, and p95 is 476 — comfortably
-inside the window. The condition set for this experiment ("only if a substantial
-amount of information is being truncated") is **not met**. A Longformer would add
-cost and complexity to recover roughly one row in forty, most of which overrun by a
-short margin.
+Two independent measurements, two corpora, same answer:
+
+| corpus | p95 | truncated at 512 |
+|---|---|---|
+| Combined (3,129) | 474 | **2.56%** |
+| Annotated (test) | 476 | **2.4%** |
+
+The p95 figures agree to within 2 tokens. The condition set for this experiment ("only
+if a substantial amount of information is being truncated") is **not met** on either
+corpus. A Longformer would add cost and complexity to recover roughly one row in forty,
+most overrunning by a short margin.
+
+**This experiment is closed.** No further work needed.
 
 ### But this exposes a real problem in our own configuration
 
@@ -420,6 +582,11 @@ through in `docs/RESULTS.md`. Do not cite it.
 
 ## Suggested order for the remaining work
 
+0. **Establish the noise floor first.** Re-run one configuration 3x at a *fixed* seed.
+   E6-vs-E7 showed 0.047 movement between nominally identical runs, which is larger
+   than every seed-to-seed SD reported here. Until that number is known, no difference
+   under ~0.05 macro-F1 can be called real. 3 runs, ~25 min, and it changes how every
+   other result is read.
 1. **Re-run E7 at `max_length 512`** — removes the truncation confound from every
    cross-corpus comparison. 6 runs.
 2. **E2 properly** — CODIPAS arm on `data/splits_codipas_transfer_matched`, Combined
