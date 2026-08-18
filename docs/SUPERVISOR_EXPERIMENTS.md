@@ -76,11 +76,91 @@ distortion plus one optional *secondary*. So the multilabel head is modelling a 
 that is single-label 84% of the time. That caps how much a multilabel formulation can
 add over multiclass, and it is a fair criticism of the framing rather than of the models.
 
-### Per-class precision / recall / F1 and confusion matrices
+### Per-class precision / recall / F1 — multiclass (11-way)
 
-Produced per run: `results_*/per_class_<model>_<task>_<seed>.csv` and
-`results_*/confusion_<model>_<task>_<seed>.png`, with a `_no_nd` variant that drops
-`no_distortion` so it cannot dominate the picture.
+`mental-roberta-base`, `data/splits` test, mean of seeds 42/1337/2024.
+Source: `results_multiclass_v2/per_class_*.csv`.
+
+| class | precision | recall | F1 | F1 SD | support |
+|---|---|---|---|---|---|
+| `no_distortion` | 0.674 | 0.478 | **0.556** | 0.037 | 92 |
+| `mind_reading` | 0.260 | 0.286 | 0.265 | 0.056 | 28 |
+| `personalization` | 0.191 | 0.205 | 0.195 | 0.025 | 13 |
+| `emotional_reasoning` | 0.129 | 0.333 | 0.182 | 0.060 | 12 |
+| `mental_filter` | 0.134 | 0.231 | 0.169 | 0.048 | 13 |
+| `should_statements` | 0.105 | 0.364 | 0.163 | 0.010 | 11 |
+| `all_or_nothing` | 0.114 | 0.121 | 0.117 | 0.037 | 11 |
+| `fortune_telling` | 0.074 | 0.154 | 0.100 | 0.096 | 13 |
+| `magnification` | 0.092 | 0.037 | 0.050 | 0.045 | 18 |
+| `overgeneralization` | 0.067 | 0.038 | 0.049 | 0.084 | 26 |
+| `labeling` | 0.000 | 0.000 | **0.000** | 0.000 | 16 |
+
+**Two things here matter more than the averages.**
+
+**`labeling` scores exactly 0.000 across all three seeds** — the model never produces
+a correct `labeling` prediction, despite 16 test rows and 162 in train. A class that
+is never right is a different failure from a class that is merely weak, and it is
+invisible in the macro average.
+
+**Recall exceeds precision in 8 of 10 distortion classes** — `should_statements` 0.364
+vs 0.105, `emotional_reasoning` 0.333 vs 0.129. That is the signature of class-weighted
+CE over-predicting rare classes: the weighting buys recall and pays for it in precision,
+and macro-F1 charges for the trade. **This is direct evidence that E3 is worth running**,
+and it predicts unweighted CE will look competitive.
+
+### Per-class precision / recall / F1 — binary
+
+Source: `results_stage1/per_class_*.csv`.
+
+| class | precision | recall | F1 | F1 SD | support |
+|---|---|---|---|---|---|
+| `distorted` | 0.795 | 0.793 | **0.794** | 0.012 | 161 |
+| `non_distorted` | 0.639 | 0.641 | 0.640 | 0.012 | 92 |
+
+Balanced precision/recall on both sides — no systematic bias. The minority class
+(`non_distorted`, 92 rows) is ~0.15 F1 weaker, as expected.
+
+### Per-label precision / recall / F1 — multilabel (flat, Annotated)
+
+Source: `results_multilabel_flat/per_class_*.csv`.
+
+| label | precision | recall | F1 | F1 SD | support |
+|---|---|---|---|---|---|
+| `mind_reading` | 0.305 | 0.333 | 0.309 | 0.031 | 31 |
+| `all_or_nothing` | 0.256 | 0.385 | 0.307 | 0.019 | 13 |
+| `emotional_reasoning` | 0.232 | 0.333 | 0.270 | 0.102 | 17 |
+| `mental_filter` | 0.231 | 0.333 | 0.264 | 0.058 | 15 |
+| `labeling` | **0.532** | **0.175** | 0.252 | 0.046 | 21 |
+| `overgeneralization` | 0.163 | 0.357 | 0.224 | 0.013 | 28 |
+| `magnification` | 0.193 | 0.280 | 0.218 | 0.025 | 25 |
+| `personalization` | 0.161 | 0.267 | 0.200 | 0.043 | 20 |
+| `should_statements` | 0.129 | 0.282 | 0.177 | 0.044 | 13 |
+| `fortune_telling` | 0.165 | 0.143 | 0.151 | 0.066 | 21 |
+
+`labeling` inverts here: precision 0.532, recall 0.175 — the multilabel head predicts it
+rarely but is right half the time, where the multiclass head never gets it right at all.
+Same class, same data, opposite failure mode, purely from the head and loss. Worth
+raising when the multiclass-vs-multilabel framing is discussed.
+
+### Confusion matrices
+
+Written per run as PNGs, with a `_no_nd` variant that drops `no_distortion` so the
+majority class cannot dominate the plot:
+
+```
+results_multiclass_v2/confusion_mental-roberta-base_multiclass_{42,1337,2024}.png
+results_multiclass_v2/confusion_mental-roberta-base_multiclass_{seed}_no_nd.png
+results_stage1/confusion_mental-roberta-base_binary_{42,1337,2024}.png
+```
+
+Row-normalised, so each row shows where that true class's predictions went.
+
+**Limitation, stated plainly:** `src/evaluate.py` renders the matrix to PNG but does
+not persist `y_pred`, so a *numeric* confusion matrix cannot be recovered from the
+saved artefacts — it would require re-running evaluation from a checkpoint, and
+checkpoints are gitignored. If the numeric matrix is wanted for the writeup, the fix
+is one line in `evaluate.py` to save predictions alongside the per-class CSV, then a
+re-run.
 
 ---
 
@@ -124,8 +204,9 @@ arm needs re-running at matched `max_length`.
 
 ## Experiment 3 — Multiclass imbalance ❌
 
-**Not run.** The audit gate is satisfied — 9.4:1 imbalance is substantial, so the
-comparison is warranted.
+**Not run.** The audit gate is satisfied twice over: 9.4:1 imbalance, **and** the E1
+per-class table shows recall exceeding precision in 8 of 10 distortion classes, which
+is class weighting over-predicting rare classes in the current models.
 
 Implemented in `experiments/experiments_flat_mentalroberta.py` as `--loss ce` vs
 `--loss weighted_ce` (`--experiment 3`). Every existing multiclass result uses
