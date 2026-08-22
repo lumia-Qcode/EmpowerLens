@@ -544,6 +544,11 @@ def run_one_seed(args, seed: int, out_root: Path) -> dict:
         save_total_limit=1,
         fp16=(device == "cuda"),
         use_cpu=(device == "cpu"),
+        # Per-step bars are the bulk of the output; epoch metrics survive both
+        # ways. logging_steps=0 is rejected by TrainingArguments, so quiet mode
+        # switches the strategy to per-epoch rather than trying to disable it.
+        disable_tqdm=args.quiet,
+        logging_strategy=("epoch" if args.quiet else "steps"),
         logging_steps=25,
         report_to="none",
         seed=seed,
@@ -858,9 +863,21 @@ def main(argv=None):
     ap.add_argument("--device", default="auto")
     ap.add_argument("--smoke", action="store_true",
                     help="64 rows / 1 epoch - checks the code runs, not the science")
+    ap.add_argument("--quiet", action="store_true",
+                    help="drop the per-step progress bars and the HF load "
+                         "reports; keeps the per-epoch metrics. A 12-run "
+                         "ablation emits tens of thousands of tqdm lines "
+                         "otherwise, which can hang a notebook front-end.")
     ap.add_argument("--no-demo", action="store_true",
                     help="skip the inference demo on the tutorial's three sentences")
     args = ap.parse_args(argv)
+
+    if args.quiet:
+        # The "LOAD REPORT" table transformers prints on every from_pretrained
+        # is ~15 lines; across a 12-run ablation that alone is 180 lines of noise
+        # before any training output. Errors and warnings still surface.
+        from transformers.utils import logging as hf_logging
+        hf_logging.set_verbosity_error()
 
     seeds = [int(s) for s in args.seeds.split(",") if s.strip()]
     tasks = ([t.strip() for t in args.tasks.split(",") if t.strip()]
