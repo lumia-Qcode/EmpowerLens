@@ -143,6 +143,14 @@ TASK_LOSSES = {
 # The loss each task's "as published" baseline uses.
 TASK_DEFAULT_LOSS = {"multilabel": "bce", "binary": "ce", "multiclass": "ce"}
 
+# A row carries a dominant distortion plus at most one optional secondary, so no
+# row in the corpus has more than 2 labels. Measured on the frozen splits:
+#   train  0:746  1:949  2:329      val  0:95  1:114  2:44
+#   test   0:92   1:118  2:43
+# src/evaluate.py already caps test predictions at 2 for this reason; the demo
+# uses the same cap so what it prints matches what is actually scored.
+MAX_LABELS_PER_ROW = 2
+
 # id2label / label2id, exactly the mapping the tutorial builds from its CSV
 # header — here it comes from the canonical DISTORTIONS order instead.
 ID2LABEL = {i: name for i, name in enumerate(DISTORTIONS)}
@@ -719,6 +727,17 @@ def summarize(records, out_root: Path, threshold: float) -> pd.DataFrame:
                .mean().reindex(class_names(task)))
     pc_mean.to_csv(out_root / f"per_class_val_mean_{key}.csv")
     _plot(pc_mean, out_root, threshold, key, records[0]["loss"], task)
+
+    # The same table at the swept thresholds. Without this, the only per-class
+    # view is the flat-0.5 one, which on an under-firing model is all zeros —
+    # and it looks like the threshold sweep never happened, when in fact it did
+    # and its numbers were simply never averaged or shown.
+    tuned_files = [out_root / f"per_class_val_tuned_{r['tag']}.csv" for r in records]
+    if all(f.exists() for f in tuned_files):
+        pct = pd.concat([pd.read_csv(f) for f in tuned_files])
+        cols = ["precision", "recall", "f1", "support", "threshold"]
+        pct_mean = (pct.groupby("class")[cols].mean().reindex(class_names(task)))
+        pct_mean.to_csv(out_root / f"per_class_val_mean_tuned_{key}.csv")
     return summary
 
 
@@ -748,27 +767,44 @@ def _plot(pc_mean: pd.DataFrame, out_root: Path, threshold: float,
     plt.close(fig)
 
 
-def demo(checkpoint: Path, threshold: float, out_root: Path) -> pd.DataFrame:
-    """The tutorial's predict.py step, on the checkpoint we just trained."""
+def demo(checkpoint: Path, threshold: float, out_root: Path,
+         top_k: int = MAX_LABELS_PER_ROW) -> pd.DataFrame:
+    """The tutorial's predict.py step, on the checkpoint we just trained.
+
+    Shows the top ``top_k`` labels rather than only those above the threshold.
+    Two reasons:
+
+    * **The data caps at 2.** A row carries at most a dominant plus one optional
+      secondary distortion — measured max is 2 in train, val and test alike, and
+      ``src/evaluate.py`` already defaults to ``--max-labels 2``. Printing more
+      than two would show the model doing something the labels never do.
+    * **The tutorial prints nothing when the model under-fires.** Its version
+      lists only labels above 0.5; on a model whose probabilities collapse below
+      that (the exact failure this project measures) it emits a blank result that
+      reads like a crash. Ranking is informative even when confidence is not, so
+      the ranked top-2 is always shown, with the threshold marked separately.
+    """
     from transformers import pipeline
     clf = pipeline("text-classification", model=str(checkpoint),
                    tokenizer=str(checkpoint), top_k=None,  # 5.x for return_all_scores
                    device=0 if torch.cuda.is_available() else -1)
     rows = []
-    print("\n--- demo predictions (tutorial's three sentences) ---")
+    print(f"\n--- demo predictions: top {top_k} labels per text ---")
+    print(f"    (the data allows at most {MAX_LABELS_PER_ROW} labels per row; "
+          f"[fired] = above the {threshold} threshold)")
     for text in DEMO_TEXTS:
-        scores = clf(text, truncation=True)[0]
-        scores = sorted(scores, key=lambda d: d["score"], reverse=True)
-        fired = [s for s in scores if s["score"] > threshold]
+        scores = sorted(clf(text, truncation=True)[0],
+                        key=lambda d: d["score"], reverse=True)
         print(f"\nText: {text!r}")
-        if fired:
-            for s in fired:
-                print(f"  - {s['label']}: {s['score']:.4f}")
-        else:
-            print(f"  (nothing above {threshold}; top guess "
-                  f"{scores[0]['label']} at {scores[0]['score']:.4f})")
-        for s in scores:
-            rows.append({"text": text, "label": s["label"], "score": s["score"],
+        for rank, s in enumerate(scores[:top_k], start=1):
+            mark = "[fired]" if s["score"] > threshold else "       "
+            print(f"  {mark} {rank}. {s['label']:<22} {s['score']:.4f}")
+        if not any(s["score"] > threshold for s in scores[:top_k]):
+            print(f"         nothing crossed {threshold} — the ranking is still "
+                  f"informative, the confidence is not")
+        for rank, s in enumerate(scores, start=1):
+            rows.append({"text": text, "rank": rank, "label": s["label"],
+                         "score": s["score"], "in_top_k": rank <= top_k,
                          "fired": s["score"] > threshold})
     df = pd.DataFrame(rows)
     df.to_csv(out_root / "demo_predictions.csv", index=False, encoding="utf-8")
@@ -870,6 +906,13 @@ def main(argv=None):
         print(f"\nPer-class val F1 (mean over seeds, {thr}):")
         print(pd.read_csv(out_root / f"per_class_val_mean_{key}.csv")
                 .round(3).to_string(index=False))
+
+        tuned_pc = out_root / f"per_class_val_mean_tuned_{key}.csv"
+        if tuned_pc.exists():
+            print(f"\nPer-class val F1 at the SWEPT thresholds (same model, same "
+                  f"probabilities,\nonly the cut point moved — the column shows "
+                  f"where it landed per class):")
+            print(pd.read_csv(tuned_pc).round(3).to_string(index=False))
 
         # Multi-label gets two scorings of the same probabilities; single-label
         # has only one, because argmax has no threshold to move.
