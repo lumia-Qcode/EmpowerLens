@@ -793,24 +793,50 @@ def demo(checkpoint: Path, threshold: float, out_root: Path,
     clf = pipeline("text-classification", model=str(checkpoint),
                    tokenizer=str(checkpoint), top_k=None,  # 5.x for return_all_scores
                    device=0 if torch.cuda.is_available() else -1)
+    # The per-label thresholds swept on val, saved alongside the weights. The
+    # demo shows BOTH cut points because on an under-firing model the flat 0.5
+    # column is empty, and "nothing fired" invites the wrong conclusion — the
+    # model has an opinion, it is the threshold that is refusing to report it.
+    tuned = None
+    meta_path = checkpoint / "meta.json"
+    if meta_path.exists():
+        tuned = json.loads(meta_path.read_text(encoding="utf-8")).get("thresholds_tuned")
+
     rows = []
     print(f"\n--- demo predictions: top {top_k} labels per text ---")
-    print(f"    (the data allows at most {MAX_LABELS_PER_ROW} labels per row; "
-          f"[fired] = above the {threshold} threshold)")
+    print(f"    (the data allows at most {MAX_LABELS_PER_ROW} labels per row)")
+    if tuned:
+        print(f"    @{threshold} = the tutorial's flat threshold | "
+              f"@tuned = per-label cut point swept on val")
     for text in DEMO_TEXTS:
         scores = sorted(clf(text, truncation=True)[0],
                         key=lambda d: d["score"], reverse=True)
         print(f"\nText: {text!r}")
         for rank, s in enumerate(scores[:top_k], start=1):
-            mark = "[fired]" if s["score"] > threshold else "       "
-            print(f"  {mark} {rank}. {s['label']:<22} {s['score']:.4f}")
-        if not any(s["score"] > threshold for s in scores[:top_k]):
-            print(f"         nothing crossed {threshold} — the ranking is still "
-                  f"informative, the confidence is not")
+            fixed_hit = s["score"] > threshold
+            line = (f"  {rank}. {s['label']:<22} {s['score']:.4f}   "
+                    f"@{threshold} {'FIRES' if fixed_hit else '  -  '}")
+            if tuned and s["label"] in DISTORTIONS:
+                t = tuned[DISTORTIONS.index(s["label"])]
+                line += f"   @tuned {t:.2f} {'FIRES' if s['score'] >= t else '  -  '}"
+            print(line)
+        if tuned and not any(s["score"] > threshold for s in scores[:top_k]):
+            fired_tuned = [s for s in scores[:top_k] if s["label"] in DISTORTIONS
+                           and s["score"] >= tuned[DISTORTIONS.index(s["label"])]]
+            if fired_tuned:
+                print(f"     -> nothing at {threshold}, but "
+                      f"{len(fired_tuned)} label(s) fire at the tuned cut points. "
+                      f"Same model,\n        same probabilities — only the line moved.")
+            else:
+                print(f"     -> nothing fires at either threshold.")
         for rank, s in enumerate(scores, start=1):
-            rows.append({"text": text, "rank": rank, "label": s["label"],
-                         "score": s["score"], "in_top_k": rank <= top_k,
-                         "fired": s["score"] > threshold})
+            r = {"text": text, "rank": rank, "label": s["label"],
+                 "score": s["score"], "in_top_k": rank <= top_k,
+                 "fired_fixed": s["score"] > threshold}
+            if tuned and s["label"] in DISTORTIONS:
+                t = tuned[DISTORTIONS.index(s["label"])]
+                r.update(tuned_threshold=t, fired_tuned=s["score"] >= t)
+            rows.append(r)
     df = pd.DataFrame(rows)
     df.to_csv(out_root / "demo_predictions.csv", index=False, encoding="utf-8")
     return df
@@ -974,7 +1000,10 @@ def main(argv=None):
     print("For TEST-set numbers (the only module allowed to read test.csv):")
     for r in all_records:
         ck = Path(args.checkpoints) / f"tutorial_{r['tag']}"
-        cap = " --max-labels 0" if r["task"] == "multilabel" else ""
+        # 2 = the corpus cap and evaluate.py's default, so the number is
+        # comparable with every other model in results/. The tutorial is
+        # uncapped; use --max-labels 0 to reproduce that exactly.
+        cap = " --max-labels 2" if r["task"] == "multilabel" else ""
         print(f"  python -m src.evaluate --checkpoint {ck}{cap}")
     return 0
 
