@@ -74,6 +74,21 @@ MODEL = "mental/mental-roberta-base"
 TAG = MODEL.split("/")[-1]
 SEEDS = (42, 1337, 2024)
 
+# ONE recipe, used by Stage 1, Stage 2, the flat comparator and the multiclass
+# track alike. Matches experiments/kaggle_runner_flat_experiments.ipynb exactly.
+#
+# Previously each arm carried different flags - Stage 2 had focal loss, LLRD,
+# lr 3e-5 and a cosine schedule while the flat comparator got bare defaults and
+# a different epoch count. A flat-vs-cascade difference measured under those
+# conditions cannot be attributed to the architecture, which is the only thing
+# Experiment 7 is trying to measure.
+#
+#   512 tokens   truncates 2.4% of test rows; 256 truncated 24.9%
+#   8 epochs     4 was never validated and no run saved a curve to check
+#   bs 16        matches the experiment suite
+#   deterministic  same-seed runs have differed by 0.047 macro-F1 without it
+RECIPE = "--max-length 512 --batch-size 16 --epochs 8 --deterministic"
+
 TRAIN_TIMEOUT = 3600
 EVAL_TIMEOUT = 3600
 
@@ -111,11 +126,16 @@ _SUF = "" if _DS == "splits" else "_" + _DS.replace("splits_", "")
 
 STAGE2_SPLITS = f"data/splits_stage2{_SUF}"   # distorted-only, derived from PARENT_SPLITS
 
-STAGE1_OUT = f"results_stage1{_SUF}"
-MULTICLASS_OUT = f"results_multiclass_v2{_SUF}"
-STAGE2_OUT = f"results_stage2{_SUF}"
-CASCADE_OUT = f"results_cascade{_SUF}"
-FLAT_OUT = f"results_multilabel_flat{_SUF}"
+# Every result this bootstrap writes lands under RUN2. RUN1 is the frozen
+# pre-rerun history (no determinism, some leaked splits); a rerun must never
+# land on top of numbers the thesis already cites. Override only if you know why.
+RUN_ROOT = os.environ.get("EMPOWERLENS_RUN_ROOT", "results_RUN2")
+
+STAGE1_OUT = f"{RUN_ROOT}/results_stage1{_SUF}"
+MULTICLASS_OUT = f"{RUN_ROOT}/results_multiclass_v2{_SUF}"
+STAGE2_OUT = f"{RUN_ROOT}/results_stage2{_SUF}"
+CASCADE_OUT = f"{RUN_ROOT}/results_cascade{_SUF}"
+FLAT_OUT = f"{RUN_ROOT}/results_multilabel_flat{_SUF}"
 
 # Checkpoints live OUTSIDE the repo clone.
 #

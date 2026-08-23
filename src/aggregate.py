@@ -1,7 +1,8 @@
 """
 Aggregate all per-checkpoint eval JSONs into the Month-1 summary tables.
 
-Reads every ``results/eval_*.json`` (written by evaluate.py) and emits:
+Reads every ``<results dir>/eval_*.json`` (written by evaluate.py) and emits, in
+that same dir:
 
   * ``results/month1_summary.csv``          — one row per (model, task, seed,
     split): the headline metrics, machine-readable.
@@ -13,7 +14,7 @@ Reads every ``results/eval_*.json`` (written by evaluate.py) and emits:
 
 Usage
 -----
-    python -m src.aggregate [--results results]
+    python -m src.aggregate [--results results_RUN2/results]
 """
 
 from __future__ import annotations
@@ -120,7 +121,7 @@ def build_no_distortion_md(df: pd.DataFrame) -> str:
 
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Aggregate eval JSONs into Month-1 tables.")
-    ap.add_argument("--results", default="results")
+    ap.add_argument("--results", default="results_RUN2/results")
     args = ap.parse_args(argv)
 
     df = load_eval_rows(args.results)

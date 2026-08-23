@@ -81,7 +81,7 @@ Usage
     venv\\Scripts\\python.exe -m src.tutorial_distilbert --loss pos_bce
     venv\\Scripts\\python.exe -m src.tutorial_distilbert --ablation --seeds 42,1337,2024
 
-Outputs land in ``results_tutorial_distilbert/`` (metrics JSON, per-class CSVs,
+Outputs land in ``results_RUN2/results_tutorial_distilbert/`` (metrics JSON, per-class CSVs,
 seed summary, learning curve, F1 bar chart, demo predictions) and checkpoints
 in ``checkpoints/tutorial_<model>_<seed>/`` with a ``meta.json`` that
 ``src.evaluate`` can consume for the test-set numbers.
@@ -884,7 +884,7 @@ def main(argv=None):
                          "i.e. what src/evaluate.py applies on test")
     # --- plumbing ---
     ap.add_argument("--splits", default="data/splits")
-    ap.add_argument("--out", default="results_tutorial_distilbert")
+    ap.add_argument("--out", default="results_RUN2/results_tutorial_distilbert")
     ap.add_argument("--checkpoints", default="checkpoints")
     ap.add_argument("--device", default="auto")
     ap.add_argument("--smoke", action="store_true",

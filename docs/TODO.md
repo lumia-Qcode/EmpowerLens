@@ -1,20 +1,88 @@
 # TODO — everything flagged, ranked
 
-Written 2026-08-15, updated 2026-08-16 after the first successful cascade run.
+Written 2026-08-15. Updated 2026-08-23: the leakage is fixed, the experiment
+suite is rebuilt, and the run order below has changed.
 
 Priority key: **P0** blocks other work · **P1** correctness, will corrupt results
 if ignored · **P2** improvement, safe to defer.
 
 ---
 
-## Start here (in this order)
+## RUN ORDER — do these in sequence
 
-1. **P0** — Tell Lumia about the `splits_combined` leakage (§4.1). Her committed
-   results are affected, and you now have a number for how much it inflated them.
-2. **P1** — Train a flat multilabel baseline on `data/splits` (§2.2). Without it
-   the flat-vs-cascade comparison is unanswerable. ~5 minutes.
-3. **P1** — Decide the synth critic-panel question (§3.2) **before** spending
-   anything on calibration, or the rates you measure won't transfer.
+### 1. DistilBERT replication  ← START HERE
+`notebooks/wellally_distilbert_tutorial.ipynb`
+
+The wellally.tech tutorial recipe on real data, plus the loss ablation.
+
+- [ ] Multilabel, 3 seeds, `--ablation` (4 losses × 3 seeds = 12 runs, ~3 hr)
+- [ ] Read the threshold × cap grid — does tuning help, or just spray labels?
+- [ ] Binary and multiclass, 2 losses each (~1.5 hr each)
+- [ ] Test-set pass, **once**, at the end
+- [ ] Regenerate `docs/RERUN_EXPERIMENTS.md` (currently holds smoke data)
+
+Seed 42 multilabel is already run: **macro-F1 0.029, ROC-AUC 0.709**. The model
+ranks correctly and never crosses 0.5 — under-firing at 0.047 labels/row against
+a true rate of 0.798. Its `subset_accuracy` of 0.379 is +0.004 above predicting
+nothing at all. That contrast is a thesis figure on its own.
+
+### 2. Cascade — Experiment 7  ← THEN THIS
+`docs/E7_PROTOCOL.md`. **Yours**, both arms, one session, one GPU.
+
+- [ ] Regenerate Stage 2 splits from `data/splits` (the shipped
+      `data/splits_stage2` came from the leaked combined dir)
+- [ ] Determinism check must PASS first
+- [ ] 3 seeds × {Stage 1 binary, Stage 2 multilabel, **flat comparator**}
+- [ ] Cascade end-to-end evaluation
+- [ ] Record GPU name + commit hash with the results
+
+The flat arm is not optional: determinism reproduces on the same GPU, not across
+a T4 and a P100, so Izza's flat number is a replication check rather than the
+comparator.
+
+### In parallel — Izza: Experiments 1-6 and 8
+`experiments/kaggle_runner_flat_experiments.ipynb`, see
+`experiments/HOW_TO_RUN.txt` for the two-track split. Does not block either of
+the above.
+
+### 3. Still outstanding, unchanged
+- **P1** — Decide the synth critic-panel question (§3.2) **before** spending
+  anything on calibration, or the rates you measure won't transfer.
+- **P1** — Rebuild the seed set after form collection (§3.9).
+
+---
+
+## 2026-08-23 — what changed
+
+**The leakage is fixed** (§4.1 was P0, now resolved). `src/make_splits_clean.py`
+writes leak-free copies and re-audits itself:
+
+| dir | train before | after | leaked |
+|---|---|---|---|
+| `data/splits_combined_clean` | 4,645 | 2,623 | 396 → **0** |
+| `data/splits_codipas_clean` | 2,621 | 2,224 | 396 → **0** |
+| `data/splits_combined_matched` | — | 2,024 | **0** (volume-matched) |
+
+The originals are kept unedited so old results stay traceable. Note the leak was
+worse than §4.1 recorded: 396 training rows covering **195 of 253 test rows
+(77%)**, and on those the two corpora agree on the label only **36%** of the
+time — so the model mostly saw the test text with the *wrong* answer.
+
+**Three further problems found and fixed:**
+
+1. **Runs did not reproduce.** E6 and E7 were the same configuration and
+   disagreed by 0.047 macro-F1 at seed 42, against reported error bars of 0.007.
+   `src/determinism.py` pins it; `--check` proves it.
+2. **Epoch budget never validated.** `--epochs 4` was an untested default and no
+   run saved a curve. Now 8 epochs, and every run writes `epoch_history.csv`.
+3. **Multiclass selected on the wrong metric.** `macro_f1` includes
+   `no_distortion` (36.9% of rows); now `macro_f1_10`. Measured 0.053 vs 0.008,
+   six times apart.
+
+**New:** `roc_auc` as a diagnostic column, `src/eval_two_exams.py` (home vs
+yardstick + transfer gap), `src/eval_thresholds.py` (threshold × cap grid),
+`docs/RERUN_PLAN.md`, `docs/E7_PROTOCOL.md`. `src/experiments_flat_mentalroberta.py`
+deleted as a byte-identical duplicate.
 
 ---
 
@@ -166,7 +234,13 @@ seeds**; participant text never goes to an API. Cheap test: 20 rows at `k=4` vs
 
 ## 4. Repo-wide issues
 
-### 4.1 `data/splits_combined` has ~75% train/test leakage — P0, tell Lumia
+### 4.1 `data/splits_combined` has ~75% train/test leakage — ✅ RESOLVED 2026-08-23
+
+Fixed by `src/make_splits_clean.py`; see the changelog at the top. Measured
+precisely: 396 train rows, 195 of 253 test rows (77%), label agreement 36%
+on the overlap. Lumia still needs telling — her committed results are affected.
+Original section kept below for the record.
+
 ```
 data/splits (original):  train-in-val 0    train-in-test 0     <- clean
 data/splits_combined:    train-in-val 194  train-in-test 189

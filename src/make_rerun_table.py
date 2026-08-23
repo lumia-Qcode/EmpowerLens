@@ -214,7 +214,7 @@ def load_test(results_dir: Path) -> pd.DataFrame:
 
 def load_prior(task_set, dataset_set) -> pd.DataFrame:
     """Prior runs already in this repo, for context. Never mixed into our rows."""
-    p = Path("results/all_experiments.csv")
+    p = Path("results_RUN2/all_experiments.csv")
     if not p.exists():
         return pd.DataFrame()
     d = pd.read_csv(p)
@@ -511,7 +511,7 @@ def build(results_dir: Path, out_path: Path, include_prior: bool = True) -> str:
 def main(argv=None):
     ap = argparse.ArgumentParser(
         description="Generate docs/RERUN_EXPERIMENTS.md from a results dir.")
-    ap.add_argument("--results", default="results_tutorial_distilbert")
+    ap.add_argument("--results", default="results_RUN2/results_tutorial_distilbert")
     ap.add_argument("--out", default="docs/RERUN_EXPERIMENTS.md")
     ap.add_argument("--no-prior", action="store_true",
                     help="omit the context tables of prior runs from "

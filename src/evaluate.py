@@ -112,7 +112,7 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description="Evaluate a checkpoint on val + test.")
     ap.add_argument("--checkpoint", required=True, help="checkpoint dir with meta.json")
     ap.add_argument("--splits", default="data/splits")
-    ap.add_argument("--out", default="results")
+    ap.add_argument("--out", default="results_RUN2/results")
     ap.add_argument("--device", default="auto")
     ap.add_argument("--batch-size", type=int, default=16)
     ap.add_argument("--reference", action="store_true", help="append literature rows")

@@ -35,8 +35,8 @@ deliberately contaminated number with a loud marker in the output.
 
 Usage
 -----
-    python -m src.eval_two_exams --checkpoint checkpoints/foo --out results/exp2
-    python -m src.eval_two_exams --checkpoint checkpoints/foo --out results/exp2 \\
+    python -m src.eval_two_exams --checkpoint checkpoints/foo --out results_RUN2/exp2
+    python -m src.eval_two_exams --checkpoint checkpoints/foo --out results_RUN2/exp2 \\
         --home-splits data/splits_codipas_clean
 """
 

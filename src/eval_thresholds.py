@@ -44,7 +44,7 @@ Multilabel only — binary and multiclass use argmax and have no threshold.
 Usage
 -----
     python -m src.eval_thresholds --checkpoint checkpoints/tutorial_multilabel_... \\
-        --out results_tutorial_distilbert
+        --out results_RUN2/results_tutorial_distilbert
 """
 
 from __future__ import annotations
