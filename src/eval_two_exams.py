@@ -51,10 +51,69 @@ from pathlib import Path
 import pandas as pd
 
 from src.make_splits_clean import audit
+from src.train_transformer import TEXT_COL
 
 YARDSTICK = "data/splits"
 METRICS = ["weighted_f1", "macro_f1", "macro_f1_10", "micro_f1",
            "positive_class_f1", "no_distortion_f1"]
+
+
+def recalibrate_on(checkpoint: Path, splits: str):
+    """Re-sweep this checkpoint's thresholds on ``splits``' VAL set.
+
+    Writes them into meta.json so the next ``src.evaluate`` call picks them up,
+    and stashes the originals under ``thresholds_home`` so
+    :func:`restore_thresholds` can put the checkpoint back exactly as it was.
+
+    Val only. Sweeping on test would fit the thresholds to the very rows the
+    score is meant to be held out from.
+    """
+    import numpy as np
+    import torch
+    from transformers import AutoModelForSequenceClassification, AutoTokenizer
+
+    # Reuses evaluate.py's own predictor and train_transformer's tokenisation, so
+    # the probabilities here are produced exactly as the scoring pass produces
+    # them - a threshold swept on differently-tokenised probabilities would not
+    # transfer to the pass that uses it.
+    from src.evaluate import predict_logits
+    from src.train_transformer import (encode_texts, get_labels, load_split,
+                                       resolve_device, sweep_thresholds)
+
+    meta_path = checkpoint / "meta.json"
+    meta = json.loads(meta_path.read_text(encoding="utf-8"))
+    if meta.get("task") != "multilabel":
+        return None
+
+    device = resolve_device("auto")
+    tok = AutoTokenizer.from_pretrained(str(checkpoint))
+    model = AutoModelForSequenceClassification.from_pretrained(str(checkpoint))
+    model.to(device).eval()
+
+    val_df = load_split(splits, "val")
+    y_val = get_labels(val_df, "multilabel")
+    enc, _ = encode_texts(val_df[TEXT_COL], tok, meta.get("max_length", 512),
+                          meta.get("truncation", "head"), meta.get("head_keep", 128))
+    logits = predict_logits(model, enc, tok.pad_token_id, device)
+    probs = 1 / (1 + np.exp(-logits))
+
+    meta.setdefault("thresholds_home", meta.get("thresholds"))
+    meta["thresholds"] = sweep_thresholds(probs, y_val)
+    meta_path.write_text(json.dumps(meta, indent=2), encoding="utf-8")
+
+    del model
+    if device == "cuda":
+        torch.cuda.empty_cache()
+    return meta["thresholds"]
+
+
+def restore_thresholds(checkpoint: Path) -> None:
+    """Undo :func:`recalibrate_on` so the checkpoint matches its own meta."""
+    meta_path = checkpoint / "meta.json"
+    meta = json.loads(meta_path.read_text(encoding="utf-8"))
+    if "thresholds_home" in meta:
+        meta["thresholds"] = meta.pop("thresholds_home")
+        meta_path.write_text(json.dumps(meta, indent=2), encoding="utf-8")
 
 
 def run_evaluate(checkpoint: Path, splits: str, out_dir: Path,
@@ -95,6 +154,10 @@ def main(argv=None):
     ap.add_argument("--max-labels", type=int, default=0,
                     help="multilabel prediction cap; 0 = uncapped")
     ap.add_argument("--tag", default=None, help="label for this run in the CSV")
+    ap.add_argument("--no-recalibrate", action="store_true",
+                    help="report only the zero-shot yardstick number (home "
+                         "thresholds applied as-is) and skip re-sweeping on the "
+                         "yardstick's val")
     ap.add_argument("--allow-leak", action="store_true",
                     help="score anyway when the training data contaminates the "
                          "yardstick, marking the row leaked=True")
@@ -135,11 +198,43 @@ def main(argv=None):
         print(f"[yardstick] same as home ({home}) — evaluated once")
         rows.append({"exam": "yardstick", "test_set": args.yardstick_splits, **hm})
     else:
-        print(f"[yardstick] {args.yardstick_splits}")
+        # A multilabel checkpoint carries thresholds swept on its HOME val set.
+        # Applying those to the yardstick means using cut points fitted to one
+        # distribution on another — which understates transfer, because the
+        # calibration is wrong rather than the model. So the yardstick pass is
+        # scored two ways:
+        #
+        #   zero_shot   home thresholds applied as-is. "Does it work off the
+        #               shelf on our task?" - the strict transfer number.
+        #   calibrated  thresholds re-swept on the YARDSTICK's val (never its
+        #               test). "Does it work once tuned for our task?" - the
+        #               fair architecture comparison.
+        #
+        # Both are legitimate and they answer different questions, so reporting
+        # only one would misrepresent the result either way.
+        print(f"[yardstick] {args.yardstick_splits}  (zero-shot: home thresholds)")
         yj = run_evaluate(ckpt, args.yardstick_splits, out_dir / "yardstick",
                           args.max_labels)
         ym, _ = read_metrics(yj)
-        rows.append({"exam": "yardstick", "test_set": args.yardstick_splits, **ym})
+        rows.append({"exam": "yardstick_zero_shot",
+                     "test_set": args.yardstick_splits, **ym})
+
+        if task == "multilabel" and not args.no_recalibrate:
+            recal = recalibrate_on(ckpt, args.yardstick_splits)
+            if recal is not None:
+                print(f"[yardstick] {args.yardstick_splits}  (calibrated: "
+                      f"thresholds re-swept on its val)")
+                yj2 = run_evaluate(ckpt, args.yardstick_splits,
+                                   out_dir / "yardstick_calibrated", args.max_labels)
+                ym2, _ = read_metrics(yj2)
+                rows.append({"exam": "yardstick_calibrated",
+                             "test_set": args.yardstick_splits, **ym2})
+                restore_thresholds(ckpt)
+        # The headline "yardstick" row is the calibrated one when it exists,
+        # since that is the like-for-like comparison; zero-shot stays alongside.
+        head = next((r for r in rows if r["exam"] == "yardstick_calibrated"),
+                    next(r for r in rows if r["exam"] == "yardstick_zero_shot"))
+        rows.append({**head, "exam": "yardstick"})
 
     tag = args.tag or ckpt.name
     for r in rows:

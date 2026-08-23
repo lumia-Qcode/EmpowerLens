@@ -176,10 +176,97 @@ def clean_one(source: str, dest: str, reference: str = "data/splits",
     return manifest
 
 
+def match_rows(source: str, dest: str, target: str, seed: int = 42,
+               force: bool = False) -> dict:
+    """Downsample ``source``'s train to the same row count as ``target``'s.
+
+    WHY THIS EXISTS
+    ---------------
+    Comparing ``annotated_only`` (2,024 rows, human labels) against
+    ``combined_clean`` (2,623 rows, mixed labels) changes **two** things at once:
+    the amount of data and the labelling convention. Whichever way that
+    comparison lands, it cannot say which factor caused it.
+
+    Downsampling combined to 2,024 rows gives the missing cell:
+
+        annotated_only vs combined_matched -> label convention, volume FIXED
+        combined_matched vs combined_clean -> volume, convention FIXED
+
+    Val and test are copied unchanged — the exam must not move, only the amount
+    the model is allowed to study.
+
+    The subset is **stratified on y_mc** and drawn with a fixed seed, so the
+    label distribution is preserved and the draw is reproducible. An unstratified
+    sample would introduce a third confound: a lucky or unlucky class balance.
+    """
+    dest_p = Path(dest)
+    if dest_p.exists() and not force:
+        raise SystemExit(f"{dest} exists — pass --force to regenerate.")
+
+    tr = read(source, "train")
+    n_target = len(read(target, "train"))
+    if n_target >= len(tr):
+        raise SystemExit(
+            f"{target} train ({n_target}) is not smaller than {source} train "
+            f"({len(tr)}) — nothing to match down to.")
+
+    # Proportional stratified draw, done by hand rather than with
+    # train_test_split: CLAUDE.md reserves that call for make_splits.py, and
+    # this is a subset of an existing split, not a new split.
+    frac = n_target / len(tr)
+    parts = []
+    for _, grp in tr.groupby("y_mc", sort=True):
+        k = max(1, int(round(len(grp) * frac)))
+        parts.append(grp.sample(n=min(k, len(grp)), random_state=seed))
+    kept = pd.concat(parts).sort_index()
+
+    # Rounding per class can overshoot or undershoot; trim/top-up deterministically.
+    if len(kept) > n_target:
+        kept = kept.sample(n=n_target, random_state=seed).sort_index()
+    elif len(kept) < n_target:
+        spare = tr.drop(kept.index)
+        kept = pd.concat([kept, spare.sample(n=n_target - len(kept),
+                                             random_state=seed)]).sort_index()
+    kept = kept.reset_index(drop=True)
+
+    dest_p.mkdir(parents=True, exist_ok=True)
+    kept.to_csv(dest_p / "train.csv", index=False, encoding="utf-8")
+    for name in ("val", "test"):
+        shutil.copyfile(Path(source) / f"{name}.csv", dest_p / f"{name}.csv")
+
+    manifest = {
+        "created_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "generated_by": "src/make_splits_clean.py --match-to",
+        "source": source, "matched_to": target, "dest": dest, "seed": seed,
+        "rule": ("train downsampled to the target's row count, stratified on "
+                 "y_mc with a fixed seed; val/test copied unchanged"),
+        "train_rows_before": int(len(tr)),
+        "train_rows_after": int(len(kept)),
+        "target_train_rows": int(n_target),
+        "class_balance_before": {str(k): int(v) for k, v in
+                                 tr["y_mc"].value_counts().sort_index().items()},
+        "class_balance_after": {str(k): int(v) for k, v in
+                                kept["y_mc"].value_counts().sort_index().items()},
+        "verified_after": audit(dest, "data/splits"),
+    }
+    (dest_p / "clean_manifest.json").write_text(
+        json.dumps(manifest, indent=2), encoding="utf-8")
+
+    v = manifest["verified_after"]
+    if v["train_rows_in_reference_val_or_test"]:
+        raise SystemExit(f"MATCH FAILED — {dest} leaks: {v}")
+    return manifest
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[1])
     ap.add_argument("--source", default=None)
     ap.add_argument("--dest", default=None)
+    ap.add_argument("--match-to", default=None,
+                    help="downsample --source's train to this dir's train size, "
+                         "stratified on y_mc, so a comparison against it varies "
+                         "labels without also varying volume")
+    ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--reference", default="data/splits",
                     help="the yardstick whose val/test must never be trained on")
     ap.add_argument("--check", action="store_true",
@@ -187,6 +274,18 @@ def main(argv=None):
     ap.add_argument("--force", action="store_true",
                     help="overwrite an existing destination dir")
     args = ap.parse_args(argv)
+
+    if args.match_to:
+        if not (args.source and args.dest):
+            raise SystemExit("--match-to needs both --source and --dest")
+        m = match_rows(args.source, args.dest, args.match_to, args.seed, args.force)
+        print(f"{args.source} -> {args.dest}")
+        print(f"  train {m['train_rows_before']} -> {m['train_rows_after']} "
+              f"(matched to {args.match_to}'s {m['target_train_rows']})")
+        print(f"  stratified on y_mc, seed {args.seed}; val/test unchanged")
+        print(f"  leak check after: "
+              f"{m['verified_after']['train_rows_in_reference_val_or_test']} rows")
+        return 0
 
     pairs = ([(args.source, args.dest)] if args.source
              else [p for p in DEFAULT_PAIRS if Path(p[0]).exists()])

@@ -50,6 +50,16 @@ import subprocess
 import sys
 from pathlib import Path
 
+# Determinism is opt-in via --deterministic, but CUBLAS_WORKSPACE_CONFIG has
+# to be in the environment BEFORE CUDA initialises, so the env var is set at
+# import time and the torch-level flags are flipped in main().
+import os
+os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
+
+# Overwritten by main() when --deterministic is passed; recorded in every
+# checkpoint's meta.json so a result carries the settings it was made under.
+DETERMINISM_INFO = {"deterministic": False}
+
 import numpy as np
 import pandas as pd
 import torch
@@ -66,7 +76,8 @@ from transformers import (
 )
 
 from src.data import DISTORTIONS, MC_CLASSES
-from src.metrics import BINARY_CLASSES, metric_bundle, per_class_table
+from src.metrics import (BINARY_CLASSES, metric_bundle, per_class_table,
+                         roc_auc_from_logits)
 from src.train_transformer import (
     ML_COLS,
     TASK_NUM_LABELS,
@@ -331,7 +342,10 @@ def run_training(task: str, model_name: str, seed: int, splits_dir: str, out_dir
         output_dir=str(ckpt_dir), num_train_epochs=epochs, per_device_train_batch_size=batch_size,
         per_device_eval_batch_size=batch_size, learning_rate=lr, warmup_ratio=0.1, weight_decay=0.01,
         eval_strategy="epoch", save_strategy="epoch", load_best_model_at_end=True,
-        metric_for_best_model="macro_f1", greater_is_better=True, save_total_limit=1,
+        # multiclass selects on macro_f1_10 so no_distortion cannot carry the
+        # score; the other tasks have no such majority class to exclude.
+        metric_for_best_model=("macro_f1_10" if task == "multiclass" else "macro_f1"),
+        greater_is_better=True, save_total_limit=1,
         fp16=(device == "cuda"), logging_steps=10, report_to="none", seed=seed,
         use_cpu=(device == "cpu"),
     )
@@ -340,11 +354,23 @@ def run_training(task: str, model_name: str, seed: int, splits_dir: str, out_dir
         logits, labels = eval_pred
         if isinstance(logits, tuple):
             logits = logits[0]
+        # roc_auc rides along as a diagnostic: it ignores the threshold, so a low
+        # F1 beside a high AUC says the fault is calibration, not learning.
+        out = {"roc_auc": roc_auc_from_logits(task, labels, logits) or float("nan")}
         if multilabel:
             preds = (1 / (1 + np.exp(-logits)) >= 0.5).astype(int)
-            return {"macro_f1": f1_score(labels, preds, average="macro", zero_division=0)}
+            out["macro_f1"] = f1_score(labels, preds, average="macro", zero_division=0)
+            return out
         preds = np.argmax(logits, axis=1)
-        return {"macro_f1": f1_score(labels, preds, average="macro", zero_division=0)}
+        out["macro_f1"] = f1_score(labels, preds, average="macro", zero_division=0)
+        if task == "multiclass":
+            # macro over the TEN distortion classes, no_distortion dropped.
+            # Plain macro_f1 here averages in no_distortion, which is 36.9% of
+            # rows and by far the easiest class - selecting on it partly rewards
+            # the model for the one thing that was never hard.
+            out["macro_f1_10"] = f1_score(labels, preds, labels=list(range(1, 11)),
+                                          average="macro", zero_division=0)
+        return out
 
     trainer = FlatTrainer(
         model=model, args=targs, train_dataset=train_ds, eval_dataset=val_ds,
@@ -358,6 +384,22 @@ def run_training(task: str, model_name: str, seed: int, splits_dir: str, out_dir
     ckpt_dir.mkdir(parents=True, exist_ok=True)
     trainer.save_model(str(ckpt_dir))
     tokenizer.save_pretrained(str(ckpt_dir))
+
+    # Per-epoch curve. Without this nobody can tell whether the epoch budget was
+    # enough: --epochs 4 with load_best_model_at_end means "best of the first 4",
+    # and if the peak lies beyond 4 it is silently never seen. No previous run in
+    # this repo saved one, so the question could not even be asked in hindsight.
+    sel_key = "eval_macro_f1_10" if task == "multiclass" else "eval_macro_f1"
+    hist = [h for h in trainer.state.log_history if sel_key in h]
+    if hist:
+        hist_df = pd.DataFrame(hist)
+        hist_df.to_csv(ckpt_dir / "epoch_history.csv", index=False)
+        best_row = hist_df.loc[hist_df[sel_key].idxmax()]
+        best_epoch = float(best_row.get("epoch", float("nan")))
+        print(f"  best epoch {best_epoch:.0f} of {epochs} "
+              f"(val {sel_key[5:]}={best_row[sel_key]:.3f})"
+              + ("  <-- peaked at the budget limit; budget may be too small"
+                 if best_epoch >= epochs else ""))
 
     thresholds = None
     if multilabel:
@@ -376,6 +418,12 @@ def run_training(task: str, model_name: str, seed: int, splits_dir: str, out_dir
         "loss": loss_name, "sampler": sampler_name, "gamma": gamma, "cb_beta": cb_beta,
         "val_metrics": {k: float(v) for k, v in val_metrics.items() if isinstance(v, (int, float))},
         "thresholds": thresholds,
+        # A result is only as reproducible as the settings it was made under, so
+        # they travel with it.
+        "determinism": DETERMINISM_INFO,
+        "best_epoch": (float(hist_df.loc[hist_df[sel_key].idxmax(), "epoch"])
+                       if hist else None),
+        "selection_metric": sel_key[5:],
     }
     (ckpt_dir / "meta.json").write_text(json.dumps(meta, indent=2))
     print(f"  -> saved {ckpt_dir} (val macro_f1={val_metrics.get('eval_macro_f1', float('nan')):.3f})")
@@ -891,6 +939,11 @@ def build_arg_parser() -> argparse.ArgumentParser:
     ap.add_argument("--head-keep", type=int, default=128)
     ap.add_argument("--device", default="auto")
     ap.add_argument("--max-labels", type=int, default=2, help="multilabel prediction cap, passed to src.evaluate")
+    ap.add_argument("--deterministic", action="store_true",
+                    help="pin algorithm choice so the same seed reproduces "
+                         "exactly. ~10-30%% slower. Without it, same-seed runs "
+                         "in this project have differed by up to 0.047 macro-F1 "
+                         "-- larger than the seed-to-seed SD being reported.")
     ap.add_argument("--smoke", action="store_true")
     # Experiment 1
     ap.add_argument("--checkpoint-mc", default=None, help="optional trained multiclass checkpoint for audit")
@@ -915,6 +968,20 @@ def build_arg_parser() -> argparse.ArgumentParser:
 def main(argv=None):
     ap = build_arg_parser()
     args = ap.parse_args(argv)
+
+    if args.deterministic:
+        global DETERMINISM_INFO
+        from src.determinism import enable_determinism
+        DETERMINISM_INFO = enable_determinism()
+        print(f"[determinism] on - same seed will now reproduce exactly "
+              f"(warn_only={DETERMINISM_INFO['warn_only']}; a warning about a "
+              f"non-deterministic op means that op is still not pinned).")
+    else:
+        print("[determinism] OFF - same-seed runs in this project have differed "
+              "by up to 0.047 macro-F1,")
+        print("              which is larger than the seed-to-seed SD being "
+              "reported. Pass --deterministic to fix.")
+
     args.seeds = [int(s) for s in args.seeds.split(",")]
     args.experiment_num_str = str(args.experiment)
 
