@@ -13,10 +13,21 @@ put side by side.
 > both. Splitting the arms across sessions would leave architecture and hardware
 > varying together, with no way to attribute a 0.003 difference to either.
 >
-> Izza's E6 run produces a flat multilabel number too. Treat it as a
-> **replication check**, not as the comparator. If it lands close to yours that
-> is reassuring; if it diverges, that is itself worth reporting as evidence of
-> cross-machine variance.
+> Izza's E6 run also produces a flat multilabel number. It is **not** a
+> replication of the flat arm below and must not be quoted as one. Three
+> settings differ, and each moves macro-F1 on its own:
+>
+> | | E6 (Track A) | E7 flat (here) |
+> |---|---|---|
+> | loss | `weighted_bce` - BCE with `pos_weight` | `bce` - plain, no `pos_weight` |
+> | truncation | `head` (the script default) | `head_tail`, `--head-keep 128` |
+> | code path | `experiments_flat_mentalroberta.py` | `src/train_transformer.py` |
+>
+> Both are worth having, because they answer different questions: E6 asks what
+> per-label thresholds plus a class-weighted loss buy on this corpus, E7 asks
+> whether the cascade beats a flat model held at identical settings. What you
+> cannot do is read the gap between them as cross-machine variance - most of it
+> is the loss and the truncation, not the GPU.
 
 ## Why the previous comparison did not count
 
@@ -121,26 +132,27 @@ one the noise floor swallows.
 # Stage 1 — binary, on the full splits dir
 python -m src.train_transformer --task binary --splits data/splits \
     --model mental/mental-roberta-base --seed 42 --epochs 8 \
-    --max-length 512 --truncation head_tail --batch-size 16
+    --max-length 512 --truncation head_tail --batch-size 16 --deterministic
 
 # Stage 2 — multilabel, on the distorted-only dir
 python -m src.train_transformer --task multilabel --splits data/splits_stage2_annotated \
     --model mental/mental-roberta-base --seed 42 --epochs 8 \
-    --max-length 512 --truncation head_tail --batch-size 16
+    --max-length 512 --truncation head_tail --batch-size 16 --deterministic
 
 # End-to-end
 python -m src.evaluate_cascade \
     --stage1-checkpoint checkpoints/binary_mental-roberta-base_42 \
     --stage2-checkpoint checkpoints/multilabel_mental-roberta-base_42 \
-    --splits data/splits --out results_rerun/exp7 --max-labels 2
+    --splits data/splits --out results_RUN2/results_experiments/exp7 --max-labels 2
 
 # Flat, the comparator — identical settings, SAME session, SAME GPU.
-# Not optional: Izza's copy of this was produced on different hardware.
+# Not optional. E6 is NOT a substitute: different loss (weighted_bce vs bce),
+# different truncation (head vs head_tail), different code path, different GPU.
 python -m src.train_transformer --task multilabel --splits data/splits \
     --model mental/mental-roberta-base --seed 42 --epochs 8 \
-    --max-length 512 --truncation head_tail --batch-size 16
+    --max-length 512 --truncation head_tail --batch-size 16 --deterministic
 python -m src.evaluate --checkpoint checkpoints/multilabel_mental-roberta-base_42 \
-    --splits data/splits --out results_rerun/exp7 --max-labels 2
+    --splits data/splits --out results_RUN2/results_experiments/exp7 --max-labels 2
 ```
 
 Repeat for seeds 1337 and 2024 — **9 training runs total** (3 seeds × {Stage 1

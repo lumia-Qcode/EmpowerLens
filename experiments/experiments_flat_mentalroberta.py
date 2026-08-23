@@ -55,6 +55,11 @@ from pathlib import Path
 # import time and the torch-level flags are flipped in main().
 import os
 os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
+# Windows + torch CPU aborts with 0xC0000005 (exit 3221225477) on two OpenMP
+# runtimes being loaded. src.train_transformer sets this, but `import torch`
+# below runs BEFORE that import, so the workaround arrived too late and every
+# local --smoke run crashed. Harmless on Linux/Kaggle.
+os.environ.setdefault("KMP_DUPLICATE_LIB_OK", "TRUE")
 
 # Overwritten by main() when --deterministic is passed; recorded in every
 # checkpoint's meta.json so a result carries the settings it was made under.

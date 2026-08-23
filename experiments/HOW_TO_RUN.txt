@@ -16,6 +16,32 @@ Every command below is already inside a cell — you do not type them. They are
 listed so you know what you are looking at.
 
 
+READ THIS IF YOU CLONED BEFORE 2026-08-23
+-----------------------------------------
+RE-CLONE. Cell 0 does that for you; just run the notebook from the top. Four
+things changed and two of them would have wasted a whole session:
+
+  1. Every multi-seed experiment crashed. The per-seed subprocess was spawned
+     against a module path that no longer exists, so E2-E7 died instantly.
+     E1 and E8 do not spawn subprocesses, so the session looked healthy through
+     both gates and both audits before failing at the first training cell.
+
+  2. Half the recipe never reached the runs. --epochs 8, --deterministic and
+     --truncation silently did not survive into the per-seed subprocess, which
+     re-parses its arguments from scratch and fell back to argparse defaults.
+     Every run would have trained for 4 epochs with determinism OFF, and
+     nothing would have warned: the section 2 gate tests the flag on its own,
+     not inside a run.
+
+  3. E2 produced no yardstick column. Section 7f looked for checkpoints one
+     directory level too shallow, found none, and skipped its loop in silence —
+     so the heaviest experiment in the suite (15 runs, ~3 hr) contributed
+     nothing to the section 10 table. It now asserts instead of shrugging.
+
+  4. Output moved to results_RUN2/results_experiments/ (was results_rerun/).
+     results_RUN1/ holds the frozen pre-rerun history and is never written to.
+
+
 WHO RUNS WHAT
 =============
 The work splits into two tracks that can run in parallel, on two Kaggle
@@ -38,10 +64,19 @@ flat and another ran cascade, architecture and hardware would vary together and 
 0.003 difference could not be attributed to either.
 
 Therefore BOTH E7 arms — flat AND cascade — are run by one person, in one
-session, on one GPU. Track A also produces a flat multilabel number (E6); treat
-that as a REPLICATION CHECK of Track B's flat arm, not as its comparator. If the
-two land close, that is reassuring. If they diverge, that divergence is itself
-worth reporting as cross-machine variance.
+session, on one GPU.
+
+Track A also produces a flat multilabel number (E6). It is NOT a replication of
+Track B's flat arm and must not be quoted as one. Three settings differ:
+
+                   E6 (Track A)              E7 flat (Track B)
+   loss            weighted_bce              bce (plain, no pos_weight)
+   truncation      head                      head_tail, head-keep 128
+   code path       experiments_flat_...py    src/train_transformer.py
+
+Each of those moves macro-F1 on its own, so the gap between E6 and E7-flat is
+mostly loss and truncation, not hardware. They answer different questions and
+both are worth having — just never subtract one from the other.
 
 
 TRACK A — IZZA: the notebook (sections 0-11)
@@ -105,8 +140,11 @@ ALL OF IT IN ONE SESSION, ON ONE GPU.
 
 MERGING THE TWO TRACKS
 ----------------------
-Both write into results_rerun/ using the same naming, so unzip Track B's output
+Both write into results_RUN2/ using the same naming, so unzip Track B's output
 over Track A's and the section 10 table picks up everything.
+
+results_RUN1/ is the frozen pre-rerun history. Nothing writes there, ever. If a
+zip you unpack puts files under results_RUN1/, you unpacked an old archive.
 
 Two numbers from different tracks are comparable if they are both on the
 yardstick exam, same task, leaked = False, and post-determinism — the same rule
@@ -162,10 +200,17 @@ These frozen split dirs must be committed (they are):
    data/splits/                          Annotated, the yardstick. 2,024/253/253
    data/splits_codipas_transfer_matched/ CODIPAS, 2,024 rows, Annotated test set
 
-These are BUILT BY THE NOTEBOOK, do not commit them by hand:
+These are COMMITTED **and** rebuilt by the notebook's preflight (section 1),
+which passes --force. Generation is deterministic - fixed seed, stratified on
+y_mc - so the rebuilt dirs are byte-identical to the committed ones, and the
+preflight re-audits its own output either way:
    data/splits_codipas_clean/            leak removed
    data/splits_combined_clean/           leak removed
    data/splits_combined_matched/         downsampled to 2,024 rows
+
+   (They are committed so a result stays traceable to the exact rows that
+   produced it, per CLAUDE.md's rule that splits are frozen and version
+   controlled. Do not hand-edit them; change the generator and re-run it.)
 
 These are KEPT BUT NEVER TRAINED ON — they are the contaminated originals, left
 unedited so older results stay traceable:
@@ -337,7 +382,8 @@ TIME AND SESSION PLANNING
    Session 1   sections 1-7  (preflight -> E2)          ~4 hr, then zip
    Session 2   section 8, then 10-11                    ~4 hr, then zip
 
-Results accumulate in results_rerun/ across sessions, so splitting is fine.
+Results accumulate in results_RUN2/results_experiments/ across sessions, so
+splitting is fine.
 
 THIS IS AN ESTIMATE, NOT MEASURED. Time your first E6 run and scale from it.
 
@@ -364,8 +410,9 @@ NOT comparable, by design:
    - home-exam scores from different corpora
    - zero-shot vs calibrated yardstick numbers (different questions)
    - val against test
-   - anything in results_experiments/ or results_combined/, which came from the
-     contaminated splits
+   - anything under results_RUN1/, which is the whole pre-rerun history: it
+     predates determinism, and results_RUN1/results_combined/ came from the
+     contaminated splits. See results_RUN1/README.md for the three reasons.
 
 METRICS
    Headline is macro-F1: it averages the ten labels equally, so a class the
@@ -407,6 +454,6 @@ A run peaked at "best epoch 8 of 8"
     The epoch budget is too small and that run is under-trained. Raise EPOCHS.
 
 Session died mid-run
-    Results already written to results_rerun/ survive only if you zipped them.
+    Results already written to results_RUN2/ survive only if you zipped them.
     Otherwise re-run from the last completed section — the notebook is
     section-by-section restartable, apart from the clone cell.

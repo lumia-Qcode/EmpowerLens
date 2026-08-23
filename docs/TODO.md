@@ -576,7 +576,7 @@ calibrated-pessimism analysis, opener tracking at 1/2/4 words.
 
 ### Why the current CODIPAS numbers are not comparable
 
-Every CODIPAS result in `results/all_experiments.csv` was evaluated on **CODIPAS's
+Every CODIPAS result in `results_RUN1/results/all_experiments.csv` was evaluated on **CODIPAS's
 own test set**, so none of them say anything about the target task. The naive fix —
 merge and evaluate on Annotated — is the bug that invalidated `data/splits_combined`:
 **195 of 253 Annotated test rows (77%) are already inside CODIPAS train**, because

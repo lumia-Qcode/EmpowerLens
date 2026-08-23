@@ -175,7 +175,8 @@ scores **micro 0.582, macro 0.300**.
 
 Single copy at `experiments/experiments_flat_mentalroberta.py` (the `src/` twin
 is deleted). Notebook clones `nayab-space` and checks the file exists first.
-Everything writes under `results_rerun/expN/`.
+Everything writes under `results_RUN2/results_experiments/expN/`. `results_RUN1/`
+is the frozen pre-rerun history and is never written to.
 
 ---
 
