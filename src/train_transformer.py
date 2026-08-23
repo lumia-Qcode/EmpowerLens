@@ -23,6 +23,9 @@
 
 import os
 os.environ.setdefault("KMP_DUPLICATE_LIB_OK", "TRUE")
+# Needed for deterministic cuBLAS GEMMs; must precede CUDA init, so it is set
+# unconditionally and the torch-level flags are flipped only with --deterministic.
+os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
 
 import argparse
 import functools
@@ -255,6 +258,10 @@ def main(argv=None):
     ap.add_argument("--device", default="auto")
     ap.add_argument("--splits", default="data/splits")
     ap.add_argument("--out", default="checkpoints")
+    ap.add_argument("--deterministic", action="store_true",
+                    help="pin algorithm choice so the same seed reproduces exactly. "
+                         "~10-30%% slower. Without it, same-seed runs in this project "
+                         "have differed by up to 0.047 macro-F1.")
     ap.add_argument("--smoke", action="store_true", help="100 rows execution check")
     ap.add_argument("--wandb", action="store_true", help="enable W&B")
 
@@ -296,6 +303,12 @@ def main(argv=None):
     else:
         os.environ["WANDB_DISABLED"] = "true"
         report_to = "none"
+
+    determinism_info = {"deterministic": False}
+    if args.deterministic:
+        from src.determinism import enable_determinism
+        determinism_info = enable_determinism()
+        print("[determinism] on - same seed reproduces exactly")
 
     device = resolve_device(args.device)
     set_seed(args.seed)
@@ -431,6 +444,20 @@ def main(argv=None):
         val_metrics["eval_macro_f1"] = float(f1_score(y_val, best_preds, average="macro", zero_division=0))
         val_metrics["eval_micro_f1"] = float(f1_score(y_val, best_preds, average="micro", zero_division=0))
 
+    # Per-epoch curve, so "was the budget enough" is answerable afterwards rather
+    # than assumed. No previous run in this repo saved one.
+    hist = [h for h in trainer.state.log_history if f"eval_{metric_key}" in h]
+    if hist:
+        hist_df = pd.DataFrame(hist)
+        out_dir.mkdir(parents=True, exist_ok=True)
+        hist_df.to_csv(out_dir / "epoch_history.csv", index=False)
+        best_epoch = float(hist_df.loc[hist_df[f"eval_{metric_key}"].idxmax(), "epoch"])
+        print(f"  best epoch {best_epoch:.0f} of {args.epochs} (on {metric_key})"
+              + ("  <-- peaked at the budget limit; budget may be too small"
+                 if best_epoch >= args.epochs else ""))
+    else:
+        best_epoch = None
+
     meta = {
         # Record WHICH splits this was trained on. Without it there is no way to
         # tell a checkpoint trained on data/splits from one trained on a leaked
@@ -451,6 +478,10 @@ def main(argv=None):
         "val_truncation_rate": val_trunc_rate,
         "val_metrics": {k: float(v) for k, v in val_metrics.items() if isinstance(v, (int, float))},
         "thresholds": thresholds,
+        # A result is only as reproducible as the settings it was made under.
+        "determinism": determinism_info,
+        "best_epoch": best_epoch,
+        "selection_metric": metric_key,
     }
     (out_dir / "meta.json").write_text(json.dumps(meta, indent=2))
 

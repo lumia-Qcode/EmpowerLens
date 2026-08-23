@@ -459,13 +459,65 @@ def run_single_seed(experiment_tag: str, task: str, model_name: str, seed: int, 
     return run_evaluation(ckpt, splits_dir, out_dir, max_labels=args.max_labels)
 
 
-def orchestrate_all_seeds(experiment_num: int, seeds: list[int], base_argv: list[str]) -> None:
+# Flags describing the TRAINING RECIPE rather than the experiment's identity.
+# Every one of these has to survive into the per-seed subprocess, because the
+# child re-parses argv from scratch and argparse silently substitutes its own
+# default for anything missing.
+#
+# This is not hypothetical. Until this existed, each base_argv below carried only
+# the experiment's own flags, so `--epochs 8 --deterministic` reached the parent
+# and then evaporated: every seed actually trained for 4 epochs, with determinism
+# OFF and head (not head_tail) truncation. Nothing failed and nothing warned -
+# the notebook's determinism gate still printed PASS, because it tests the flag
+# separately from the runs. The entire point of the re-run (comparable,
+# reproducible numbers at a validated budget) was defeated by an argv omission.
+RECIPE_FLAGS = ("--model", "--epochs", "--lr", "--batch-size", "--max-length",
+                "--truncation", "--head-keep", "--max-labels", "--device",
+                "--deterministic", "--smoke")
+
+
+def recipe_argv(args) -> list[str]:
+    """The recipe flags rendered for a subprocess, exactly as this run has them."""
+    argv = [
+        "--model", args.model,
+        "--epochs", str(args.epochs),
+        "--lr", str(args.lr),
+        "--batch-size", str(args.batch_size),
+        "--max-length", str(args.max_length),
+        "--truncation", args.truncation,
+        "--head-keep", str(args.head_keep),
+        "--max-labels", str(args.max_labels),
+        "--device", args.device,
+    ]
+    if args.deterministic:
+        argv.append("--deterministic")
+    if args.smoke:
+        argv.append("--smoke")
+    return argv
+
+
+def orchestrate_all_seeds(experiment_num: int, seeds: list[int],
+                          base_argv: list[str], args) -> None:
     """Spawn one subprocess per seed (same pattern as
     notebooks/kaggle_runner.ipynb's `for seed in (42, 1337, 2024): !python ...`
     loop) so each seed gets a fresh CUDA context."""
+    # Re-invoke THIS module, whatever it is called. The name used to be
+    # hardcoded as "src.experiments_flat_mentalroberta"; when that duplicate copy
+    # was deleted the hardcode survived, so every multi-seed run died with
+    # "No module named src.experiments_flat_mentalroberta" — after the notebook
+    # had already spent GPU time getting there. __spec__.name cannot drift.
+    self_module = (__spec__.name if __spec__ is not None
+                   else "experiments.experiments_flat_mentalroberta")
+    # A caller that set a recipe flag itself would be silently overridden below.
+    # Fail loudly instead; no call site does this today.
+    clash = sorted(set(base_argv) & set(RECIPE_FLAGS))
+    if clash:
+        raise ValueError(f"base_argv must not set recipe flags {clash} - "
+                         f"they come from recipe_argv(args)")
+    recipe = recipe_argv(args)
     for seed in seeds:
-        cmd = [sys.executable, "-m", "src.experiments_flat_mentalroberta",
-               *base_argv, "--seed", str(seed)]
+        cmd = [sys.executable, "-m", self_module,
+               *base_argv, *recipe, "--seed", str(seed)]
         print(f"\n=== orchestrating seed {seed}: {' '.join(cmd)} ===")
         subprocess.run(cmd, check=True)
 
@@ -598,7 +650,7 @@ def experiment2_dataset_ablation(args):
                          "--codipas-splits", args.codipas_splits,
                          "--combined-splits", args.combined_splits,
                          "--only-config", name]
-            orchestrate_all_seeds(2, args.seeds, base_argv)
+            orchestrate_all_seeds(2, args.seeds, base_argv, args)
         if not args.only_config:
             _aggregate_experiment2(args)
         return
@@ -660,7 +712,7 @@ def _loss_sampler_experiment(args, experiment_tag: str, loss_name: str, sampler_
         base_argv = ["--experiment", args.experiment_num_str, "--task", args.task,
                      "--splits", args.splits, "--out", args.out, "--loss", loss_name,
                      "--sampler", sampler_name, "--gamma", str(args.gamma), "--cb-beta", str(args.cb_beta)]
-        orchestrate_all_seeds(int(args.experiment_num_str), args.seeds, base_argv)
+        orchestrate_all_seeds(int(args.experiment_num_str), args.seeds, base_argv, args)
         _aggregate_generic(out, f"{summary_prefix}_all_seed_results.csv",
                            f"{summary_prefix}_mean_std.csv", group_cols=["loss", "sampler"])
         return
@@ -702,7 +754,7 @@ def experiment3_ce_vs_weighted_ce(args):
         for loss_name in ("ce", "weighted_ce"):
             base_argv = ["--experiment", "3", "--task", args.task, "--splits", args.splits,
                          "--out", args.out, "--loss", loss_name]
-            orchestrate_all_seeds(3, args.seeds, base_argv)
+            orchestrate_all_seeds(3, args.seeds, base_argv, args)
         _aggregate_generic(out, "exp3_all_seed_results.csv", "exp3_mean_std.csv", ["loss"])
         return
     _loss_sampler_experiment(args, "exp3", args.loss, "none", "exp3")
@@ -718,7 +770,7 @@ def experiment4_focal_vs_class_balanced(args):
             base_argv = ["--experiment", "4", "--task", args.task, "--splits", args.splits,
                          "--out", args.out, "--loss", loss_name, "--gamma", str(args.gamma),
                          "--cb-beta", str(args.cb_beta)]
-            orchestrate_all_seeds(4, args.seeds, base_argv)
+            orchestrate_all_seeds(4, args.seeds, base_argv, args)
         _aggregate_generic(out, "exp4_all_seed_results.csv", "exp4_mean_std.csv", ["loss"])
         return
     _loss_sampler_experiment(args, "exp4", args.loss, "none", "exp4")
@@ -734,7 +786,7 @@ def experiment5_weighted_sampling(args):
         for sampler_name in ("none", "weighted"):
             base_argv = ["--experiment", "5", "--task", args.task, "--splits", args.splits,
                          "--out", args.out, "--loss", best_loss, "--sampler", sampler_name]
-            orchestrate_all_seeds(5, args.seeds, base_argv)
+            orchestrate_all_seeds(5, args.seeds, base_argv, args)
         _aggregate_generic(out, "exp5_all_seed_results.csv", "exp5_mean_std.csv", ["loss", "sampler"])
         return
     _loss_sampler_experiment(args, "exp5", best_loss, args.sampler, "exp5")
@@ -757,7 +809,7 @@ def experiment6_multilabel(args):
     if args.seed is None:
         base_argv = ["--experiment", "6", "--task", args.task, "--splits", args.splits,
                      "--out", args.out, "--loss", loss_name, "--gamma", str(args.gamma)]
-        orchestrate_all_seeds(6, args.seeds, base_argv)
+        orchestrate_all_seeds(6, args.seeds, base_argv, args)
         _report_experiment6(out)
         return
 
@@ -807,7 +859,7 @@ def experiment7_flat_report(args):
     if args.seed is None:
         base_argv = ["--experiment", "7", "--task", args.task, "--splits", args.splits,
                      "--out", args.out, "--loss", loss_name]
-        orchestrate_all_seeds(7, args.seeds, base_argv)
+        orchestrate_all_seeds(7, args.seeds, base_argv, args)
         _report_experiment7(out)
         return
 
@@ -922,7 +974,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
                          "(see EXPERIMENT_DEFAULT_TASK) — e.g. Experiment 6/7 default to "
                          "multilabel, Experiment 3/4/5 default to multiclass")
     ap.add_argument("--splits", default="data/splits_combined")
-    ap.add_argument("--out", default="results/experiments")
+    ap.add_argument("--out", default="results_RUN2/results_experiments")
     ap.add_argument("--seed", type=int, default=None, help="omit to orchestrate all --seeds via subprocess")
     ap.add_argument("--seeds", default="42,1337,2024")
     ap.add_argument("--loss", default="weighted_ce",
