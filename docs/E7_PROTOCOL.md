@@ -1,9 +1,22 @@
 # Experiment 7 — flat vs cascade: the protocol contract
 
-**Owner: Izza.** Both arms — flat *and* cascade — are run by one person so they
-share one configuration. This document is the contract; if the two arms differ in
-anything listed here, the comparison is not valid and the numbers cannot be put
-side by side.
+**Owner: Nayab.** Both arms — flat *and* cascade — are run by **one person, in
+one session, on one GPU**. This document is the contract; if the two arms differ
+in anything listed here, the comparison is not valid and the numbers cannot be
+put side by side.
+
+> **Why one person and one session.** The gap being measured is tiny — the last
+> (confounded) comparison gave **+0.003**. Determinism pins the *algorithm
+> choice*, which makes a re-run on the **same** machine reproducible; it does not
+> make two different GPUs agree. A T4 and a P100 select different kernels and
+> different mixed-precision paths (`fp16=True` on CUDA), and Kaggle hands out
+> both. Splitting the arms across sessions would leave architecture and hardware
+> varying together, with no way to attribute a 0.003 difference to either.
+>
+> Izza's E6 run produces a flat multilabel number too. Treat it as a
+> **replication check**, not as the comparator. If it lands close to yours that
+> is reassuring; if it diverges, that is itself worth reporting as evidence of
+> cross-machine variance.
 
 ## Why the previous comparison did not count
 
@@ -121,7 +134,8 @@ python -m src.evaluate_cascade \
     --stage2-checkpoint checkpoints/multilabel_mental-roberta-base_42 \
     --splits data/splits --out results_rerun/exp7 --max-labels 2
 
-# Flat, for comparison — identical settings
+# Flat, the comparator — identical settings, SAME session, SAME GPU.
+# Not optional: Izza's copy of this was produced on different hardware.
 python -m src.train_transformer --task multilabel --splits data/splits \
     --model mental/mental-roberta-base --seed 42 --epochs 8 \
     --max-length 512 --truncation head_tail --batch-size 16
@@ -129,4 +143,32 @@ python -m src.evaluate --checkpoint checkpoints/multilabel_mental-roberta-base_4
     --splits data/splits --out results_rerun/exp7 --max-labels 2
 ```
 
-Repeat each for seeds 1337 and 2024.
+Repeat for seeds 1337 and 2024 — **9 training runs total** (3 seeds × {Stage 1
+binary, Stage 2 multilabel, flat multilabel}), plus 3 cascade evaluations that
+train nothing. Budget roughly **2–2.5 hours** on a T4.
+
+## Record these alongside the results
+
+A discrepancy that surfaces later is unattributable without them:
+
+```python
+import torch, transformers, subprocess
+print("gpu         :", torch.cuda.get_device_name(0))
+print("torch       :", torch.__version__)
+print("transformers:", transformers.__version__)
+print("commit      :", subprocess.run(["git", "rev-parse", "HEAD"],
+                                      capture_output=True, text=True).stdout.strip())
+```
+
+## Reading the result
+
+Report the gap **against the noise floor**, never on its own:
+
+    flat macro_f1 − cascade end-to-end macro_f1    vs    the seed SD of each
+
+If the gap is smaller than the SDs, the honest finding is **"indistinguishable at
+this data scale"** — a result, not a failure. The previous comparison gave +0.003
+against SDs of 0.030 and 0.012, and a CODIPAS replication gave cascade
+0.259 ± 0.007 vs flat 0.270 ± 0.027 — overlapping, if anything favouring flat.
+With determinism on and both arms on one machine, that conclusion becomes
+defensible rather than something the noise swallows.

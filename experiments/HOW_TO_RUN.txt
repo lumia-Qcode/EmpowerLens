@@ -16,6 +16,104 @@ Every command below is already inside a cell — you do not type them. They are
 listed so you know what you are looking at.
 
 
+WHO RUNS WHAT
+=============
+The work splits into two tracks that can run in parallel, on two Kaggle
+accounts, at the same time.
+
+  TRACK A — IZZA        the notebook, Experiments 1-6 and 8
+  TRACK B — NAYAB       Experiment 7 only (flat vs cascade), by hand
+
+They do not depend on each other and can be done in either order.
+
+WHY E7 IS SPLIT OUT AND RUN BY ONE PERSON
+-----------------------------------------
+E7 compares flat against cascade, and that gap is tiny — the previous
+(confounded) comparison gave +0.003.
+
+--deterministic makes a re-run reproduce EXACTLY on the SAME machine. It does
+NOT make two different GPUs agree: a T4 and a P100 pick different kernels and
+different mixed-precision paths, and Kaggle hands out both. So if one person ran
+flat and another ran cascade, architecture and hardware would vary together and a
+0.003 difference could not be attributed to either.
+
+Therefore BOTH E7 arms — flat AND cascade — are run by one person, in one
+session, on one GPU. Track A also produces a flat multilabel number (E6); treat
+that as a REPLICATION CHECK of Track B's flat arm, not as its comparator. If the
+two land close, that is reassuring. If they diverge, that divergence is itself
+worth reporting as cross-machine variance.
+
+
+TRACK A — IZZA: the notebook (sections 0-11)
+---------------------------------------------
+Order is fixed. Sections 1-2 are gates; 3-4 are cheap audits that decide what is
+worth running afterwards.
+
+   SESSION 1  (~4 hr)
+     0.  Setup — clone + install. RUN ONCE, it starts with rm -rf.
+     1.  Preflight — must report 0 leaked rows.
+     2.  Determinism — must say PASS.
+     3.  E1 pass 1 — data audit. Decides whether E3/E4/E5 are worth GPU time.
+     4.  E8 — truncation. Confirms 512 tokens.
+     5.  E6 — multilabel + thresholds.        3 runs, ~40 min
+     6.  E1 pass 2 — per-class + confusion, using E6's checkpoints.
+     7.  E2 — dataset ablation, 5 arms.      15 runs, ~3 hr
+     11. Zip.  <-- DO THIS BEFORE THE SESSION ENDS
+
+   SESSION 2  (~4 hr)
+     0.  Setup again (new session = new clone).
+     8.  E3 -> E4 -> E5, in that order.      21 runs, ~4 hr
+         Set BEST_LOSS in the E5 cell from the E3/E4 tables.
+     10. Comparable table.
+     11. Zip.
+
+   Skip section 9 — that is Track B's, and the cell only prints the protocol.
+   Skip section 8 entirely if E1 showed the imbalance is mild.
+
+
+TRACK B — NAYAB: Experiment 7 (docs/E7_PROTOCOL.md)
+----------------------------------------------------
+Not in the notebook. Run these by hand in Kaggle cells, prefixed with `!`.
+ALL OF IT IN ONE SESSION, ON ONE GPU.
+
+   ONE SESSION  (~2-2.5 hr)
+     1. Clone the repo, same as the notebook's cell 0.
+     2. Print and record the provenance:
+            gpu, torch version, transformers version, commit hash
+     3. Verify determinism:
+            python -m src.determinism --check          -> must say PASS
+     4. Regenerate the Stage 2 splits from the CLEAN source:
+            python -m src.make_splits_cascade
+                --source data/splits --out data/splits_stage2_annotated
+            python -m src.make_splits_clean --check
+                --source data/splits_stage2_annotated --dest /tmp/x
+        (one line each — wrapped here for readability)
+        The second must report 0 leaked rows. The shipped data/splits_stage2
+        came from the leaked combined dir — do not use it.
+     5. For each seed in 42, 1337, 2024:
+            a. train Stage 1 (binary, full splits)
+            b. train Stage 2 (multilabel, distorted-only splits)
+            c. train flat  (multilabel, full splits)   <-- the comparator
+            d. evaluate the cascade end to end
+        9 training runs plus 3 cascade evaluations.
+     6. Zip and download.
+
+   Exact commands: docs/E7_PROTOCOL.md
+   Step 5c is NOT optional. It is the comparator, and Track A's copy of it was
+   produced on different hardware.
+
+
+MERGING THE TWO TRACKS
+----------------------
+Both write into results_rerun/ using the same naming, so unzip Track B's output
+over Track A's and the section 10 table picks up everything.
+
+Two numbers from different tracks are comparable if they are both on the
+yardstick exam, same task, leaked = False, and post-determinism — the same rule
+as everywhere else. The ONE comparison that must stay within a single track is
+flat-vs-cascade, for the hardware reason above.
+
+
 WHY THIS REPLACED THE PREVIOUS SUITE
 ------------------------------------
 Measured on the data in this repo, not estimated:
