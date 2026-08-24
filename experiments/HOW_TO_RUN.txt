@@ -70,13 +70,22 @@ Track A also produces a flat multilabel number (E6). It is NOT a replication of
 Track B's flat arm and must not be quoted as one. Three settings differ:
 
                    E6 (Track A)              E7 flat (Track B)
+   epochs          8                         12
    loss            weighted_bce              bce (plain, no pos_weight)
-   truncation      head                      head_tail, head-keep 128
    code path       experiments_flat_...py    src/train_transformer.py
 
-Each of those moves macro-F1 on its own, so the gap between E6 and E7-flat is
-mostly loss and truncation, not hardware. They answer different questions and
-both are worth having — just never subtract one from the other.
+Truncation is `head` on BOTH sides now (the parser default; neither notebook
+passes --truncation). An earlier version of docs/E7_PROTOCOL.md asked Track B for
+head_tail; at max_length 512 only 2.4% of rows truncate at all, so matching costs
+nothing measurable and removes an axis.
+
+The loss difference is not a choice: src/train_transformer.py's --loss offers only
+{bce, focal}, so weighted_bce is unreachable from Track B's code path.
+
+Each of the remaining differences moves macro-F1 on its own, so the gap between
+E6 and E7-flat is mostly loss and epoch budget, not hardware. They answer
+different questions and both are worth having — just never subtract one from the
+other.
 
 
 TRACK A — IZZA: the notebook (sections 0-11)
@@ -108,10 +117,14 @@ worth running afterwards.
 
 TRACK B — NAYAB: Experiment 7 (docs/E7_PROTOCOL.md)
 ----------------------------------------------------
-Not in the notebook. Run these by hand in Kaggle cells, prefixed with `!`.
-ALL OF IT IN ONE SESSION, ON ONE GPU.
+Not in Track A's notebook — it has its own: notebooks/kaggle_runner_cascade.ipynb.
+Open that on Kaggle and run it top to bottom; every command below is already in a
+cell. ALL OF IT IN ONE SESSION, ON ONE GPU.
 
-   ONE SESSION  (~2-2.5 hr)
+Its config lives in notebooks/cascade_bootstrap.py, not in the cells, so a kernel
+restart cannot wipe it. Change the recipe there, not in the notebook.
+
+   ONE SESSION  (~3-3.75 hr at 12 epochs; it was 2-2.5 at 8)
      1. Clone the repo, same as the notebook's cell 0.
      2. Print and record the provenance:
             gpu, torch version, transformers version, commit hash
@@ -140,8 +153,20 @@ ALL OF IT IN ONE SESSION, ON ONE GPU.
 
 MERGING THE TWO TRACKS
 ----------------------
-Both write into results_RUN2/ using the same naming, so unzip Track B's output
-over Track A's and the section 10 table picks up everything.
+Both write into results_RUN2/, so unzip Track B's output over Track A's.
+
+For Track B's runs to APPEAR in the section 10 table, the cascade notebook's
+Step 3c must have run: section 10 globs
+results_RUN2/results_experiments/exp*/two_exams.csv, and only src.eval_two_exams
+writes that file. The cascade notebook's other cells write eval_*.json into
+results_stage1/, results_multilabel_flat/ and results_cascade/, which section 10
+does not read. Step 3c re-scores the Stage 1 and flat checkpoints into
+results_experiments/exp7/ specifically to close that gap.
+
+Two Track B numbers never reach that table, by design: Stage 2 (trained on
+distorted-only rows, no comparable exam) and the cascade end-to-end figure
+(eval_two_exams takes one --checkpoint; the cascade is two models composed).
+Report those by hand from results_stage2/ and results_cascade/.
 
 results_RUN1/ is the frozen pre-rerun history. Nothing writes there, ever. If a
 zip you unpack puts files under results_RUN1/, you unpacked an old archive.

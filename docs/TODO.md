@@ -37,8 +37,9 @@ nothing at all. That contrast is a thesis figure on its own.
 - [ ] Record GPU name + commit hash with the results
 
 The flat arm is not optional: determinism reproduces on the same GPU, not across
-a T4 and a P100, so Izza's flat number is a replication check rather than the
-comparator.
+a T4 and a P100. Izza's E6 flat number is **not** a replication of it either — it
+differs in epochs (8 vs 12), loss (`weighted_bce` vs `bce`) and code path, so it
+is a separate result, not a cross-check. See the table in `docs/E7_PROTOCOL.md`.
 
 ### In parallel — Izza: Experiments 1-6 and 8
 `experiments/kaggle_runner_flat_experiments.ipynb`, see

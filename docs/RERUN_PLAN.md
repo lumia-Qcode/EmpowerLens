@@ -190,7 +190,7 @@ is the frozen pre-rerun history and is never written to.
 | **E4** | focal / class-balanced vs E3's winner? | Annotated | yardstick | moved off leaked splits |
 | **E5** | weighted sampling vs E3/E4's winner? | Annotated | yardstick | moved off leaked splits |
 | **E6** | which labels fail; do per-label thresholds help? | Annotated | yardstick | 512 tokens, 8 epochs |
-| **E7** | flat vs cascade | — | — | **owned by Izza** — see `docs/E7_PROTOCOL.md` |
+| **E7** | flat vs cascade | — | — | **owned by Nayab** (Track B) — see `docs/E7_PROTOCOL.md` |
 | **E8** | are we losing information to truncation? | — | — | already correct |
 
 ### E1 runs twice
@@ -253,9 +253,11 @@ CODIPAS reproduces the human label as rarely as 5.7%. Two schemes agreeing at
 κ = 0.199 are not labelling the same thing. **A clear negative result on a fixed
 test set is a real finding** and more defensible than a marginal win.
 
-### E7 is Izza's, and needs a contract
+### E7 is Nayab's, and needs a contract
 
-Both arms — flat and cascade — will be run by Izza so they share one protocol.
+Both arms — flat and cascade — are run by Nayab (Track B) so they share one
+protocol and one GPU. `experiments/HOW_TO_RUN.txt` splits the work the same way;
+an earlier version of this file assigned E7 to Izza, which contradicted both.
 `docs/E7_PROTOCOL.md` pins the exact configuration both sides must use.
 
 The old comparison was not valid: cascade ran at `max_length 256` where **24.9%
@@ -287,7 +289,7 @@ The script already emits median, p90, p95, max and percent-truncated at each
 7. **E2** — the four-arm ablation. Heaviest: 4 arms × 3 seeds.
 8. **E3 → E4 → E5** — the imbalance chain, in order; each reads the previous
    winner.
-9. **E7** — Izza, per the protocol contract.
+9. **E7** — Nayab, per the protocol contract.
 
 ### Budget
 
