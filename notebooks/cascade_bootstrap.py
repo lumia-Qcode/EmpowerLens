@@ -107,7 +107,20 @@ SEEDS = (42, 1337, 2024)
 #                                   --loss offers only {bce, focal}, so
 #                                   weighted_bce is not reachable from here)
 #     experiments_flat_...py        src/train_transformer.py
+#   early stopping  OFF (patience 0), which is what every run in results_RUN2/
+#                   used. src/train_transformer.py supports
+#                   --early-stopping-patience, but turning it on here would
+#                   make new Stage 1/2/flat numbers differ in provenance from
+#                   the ones already in the tables. With load_best_model_at_end
+#                   the kept weights are identical either way - patience only
+#                   stops paying for the epochs after the peak. Set the env var
+#                   EMPOWERLENS_EARLY_STOPPING=3 before the exec to enable it,
+#                   and re-run every arm if you do.
 RECIPE = "--max-length 512 --batch-size 16 --epochs 12 --deterministic"
+
+_ESP = int(os.environ.get("EMPOWERLENS_EARLY_STOPPING", "0"))
+if _ESP > 0:
+    RECIPE += f" --early-stopping-patience {_ESP}"
 
 TRAIN_TIMEOUT = 3600
 EVAL_TIMEOUT = 3600

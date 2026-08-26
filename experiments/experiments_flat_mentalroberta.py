@@ -75,6 +75,7 @@ from torch.utils.data import DataLoader, WeightedRandomSampler
 from transformers import (
     AutoModelForSequenceClassification,
     AutoTokenizer,
+    EarlyStoppingCallback,
     Trainer,
     TrainingArguments,
     set_seed,
@@ -303,7 +304,8 @@ def run_training(task: str, model_name: str, seed: int, splits_dir: str, out_dir
                   loss_name: str, sampler_name: str = "none", epochs: int = 4, lr: float = 2e-5,
                   batch_size: int = 16, max_length: int = 512, truncation: str = "head",
                   head_keep: int = 128, device_choice: str = "auto", gamma: float = 2.0,
-                  cb_beta: float = 0.999, run_tag: str = "run", smoke: bool = False) -> Path:
+                  cb_beta: float = 0.999, run_tag: str = "run", smoke: bool = False,
+                  early_stopping_patience: int = 0) -> Path:
     """Train one flat Mental-RoBERTa run with a configurable loss/sampler
     and save a checkpoint whose meta.json is fully compatible with
     src/evaluate.py (task, model, seed, max_length, truncation, head_keep,
@@ -377,11 +379,24 @@ def run_training(task: str, model_name: str, seed: int, splits_dir: str, out_dir
                                           average="macro", zero_division=0)
         return out
 
+    # Off by default (0), which is exactly what every run in results_RUN2/ was
+    # trained under - turning it on would change the provenance of numbers that
+    # are already in the tables. With load_best_model_at_end the final weights
+    # are the same either way; patience only stops paying for epochs after the
+    # peak. Safe to attach only because load_best_model_at_end and
+    # metric_for_best_model are set above; EarlyStoppingCallback raises without
+    # them.
+    callbacks = ([EarlyStoppingCallback(early_stopping_patience=early_stopping_patience)]
+                 if early_stopping_patience > 0 else None)
+    if callbacks:
+        print(f"  early stopping: patience {early_stopping_patience} eval(s) "
+              f"with no gain on {'macro_f1_10' if task == 'multiclass' else 'macro_f1'}")
+
     trainer = FlatTrainer(
         model=model, args=targs, train_dataset=train_ds, eval_dataset=val_ds,
         data_collator=functools.partial(collate, pad_id=tokenizer.pad_token_id, multilabel=multilabel),
         compute_metrics=compute_metrics, processing_class=tokenizer,
-        loss_fn=loss_fn, custom_sampler=sampler,
+        loss_fn=loss_fn, custom_sampler=sampler, callbacks=callbacks,
     )
     trainer.train()
     val_metrics = trainer.evaluate()
@@ -421,6 +436,7 @@ def run_training(task: str, model_name: str, seed: int, splits_dir: str, out_dir
         "head_keep": head_keep, "device": device, "smoke": smoke, "num_labels": num_labels,
         "val_truncation_rate": val_trunc_rate,
         "loss": loss_name, "sampler": sampler_name, "gamma": gamma, "cb_beta": cb_beta,
+        "early_stopping_patience": early_stopping_patience,
         "val_metrics": {k: float(v) for k, v in val_metrics.items() if isinstance(v, (int, float))},
         "thresholds": thresholds,
         # A result is only as reproducible as the settings it was made under, so
@@ -460,6 +476,7 @@ def run_single_seed(experiment_tag: str, task: str, model_name: str, seed: int, 
         batch_size=args.batch_size, max_length=args.max_length, truncation=args.truncation,
         head_keep=args.head_keep, device_choice=args.device, gamma=args.gamma, cb_beta=args.cb_beta,
         run_tag=experiment_tag, smoke=args.smoke,
+        early_stopping_patience=args.early_stopping_patience,
     )
     return run_evaluation(ckpt, splits_dir, out_dir, max_labels=args.max_labels)
 
@@ -478,7 +495,7 @@ def run_single_seed(experiment_tag: str, task: str, model_name: str, seed: int, 
 # reproducible numbers at a validated budget) was defeated by an argv omission.
 RECIPE_FLAGS = ("--model", "--epochs", "--lr", "--batch-size", "--max-length",
                 "--truncation", "--head-keep", "--max-labels", "--device",
-                "--deterministic", "--smoke")
+                "--deterministic", "--smoke", "--early-stopping-patience")
 
 
 def recipe_argv(args) -> list[str]:
@@ -493,6 +510,7 @@ def recipe_argv(args) -> list[str]:
         "--head-keep", str(args.head_keep),
         "--max-labels", str(args.max_labels),
         "--device", args.device,
+        "--early-stopping-patience", str(args.early_stopping_patience),
     ]
     if args.deterministic:
         argv.append("--deterministic")
@@ -995,6 +1013,11 @@ def build_arg_parser() -> argparse.ArgumentParser:
     ap.add_argument("--truncation", choices=["head", "head_tail"], default="head")
     ap.add_argument("--head-keep", type=int, default=128)
     ap.add_argument("--device", default="auto")
+    ap.add_argument("--early-stopping-patience", type=int, default=0,
+                    help="stop after N evals with no gain on the selection "
+                         "metric; 0 = off, which is what every run currently in "
+                         "results_RUN2/ used. load_best_model_at_end already "
+                         "restores the peak, so this only saves GPU time.")
     ap.add_argument("--max-labels", type=int, default=2, help="multilabel prediction cap, passed to src.evaluate")
     ap.add_argument("--deterministic", action="store_true",
                     help="pin algorithm choice so the same seed reproduces "

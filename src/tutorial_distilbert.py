@@ -110,7 +110,9 @@ from sklearn.metrics import (accuracy_score, f1_score, hamming_loss,
 from transformers import (
     AutoModelForSequenceClassification,
     AutoTokenizer,
+    EarlyStoppingCallback,
     Trainer,
+    TrainerCallback,
     TrainingArguments,
     set_seed,
 )
@@ -469,6 +471,129 @@ def selection_metric(task: str) -> str:
 
 
 # --------------------------------------------------------------------------
+# under/overfitting diagnostics
+# --------------------------------------------------------------------------
+
+class TrainSetEvalCallback(TrainerCallback):
+    """Score a fixed slice of the TRAINING set every time val is scored.
+
+    Overfitting is a *gap*, not a level: the model doing well on rows it has
+    seen and badly on rows it has not. A val curve alone cannot show that - a
+    val F1 stuck at 0.35 looks identical whether the model memorised the train
+    set (overfit) or never learned anything (underfit). The train series is the
+    only thing that separates the two.
+
+    The Trainer's own per-epoch ``loss`` is not a substitute. That is a running
+    mean collected *during* the epoch, with dropout on and the weights still
+    moving, so it is measured differently from the val number and the two
+    cannot honestly be subtracted. This runs a real eval pass - dropout off,
+    one fixed set of weights, the same metric code - on training rows.
+    """
+
+    def __init__(self, trainer, train_eval_ds):
+        self._trainer = trainer
+        self._ds = train_eval_ds
+        self._busy = False
+
+    def on_evaluate(self, args, state, control, **kwargs):
+        # evaluate() fires on_evaluate again; without this guard it recurses
+        # until the stack runs out.
+        if self._busy or self._ds is None:
+            return
+        self._busy = True
+        try:
+            self._trainer.evaluate(self._ds, metric_key_prefix="trainset")
+        finally:
+            self._busy = False
+
+
+def build_epoch_history(log_history, sel_key: str) -> pd.DataFrame:
+    """One row per epoch, val and train side by side.
+
+    The previous version kept only the rows carrying ``sel_key`` - the val
+    evals - and silently dropped every train-side row. That is why no run in
+    this repo could be checked for overfitting after the fact: the evidence was
+    thrown away at write time.
+    """
+    eval_rows, trainset_rows, loss_rows = [], [], []
+    for h in log_history:
+        if "train_runtime" in h:
+            continue                      # end-of-training summary, not an epoch
+        if sel_key in h:
+            eval_rows.append(h)
+        elif any(k.startswith("trainset_") for k in h):
+            trainset_rows.append(h)
+        elif "loss" in h and "epoch" in h:
+            loss_rows.append(h)
+    if not eval_rows:
+        return pd.DataFrame()
+
+    df = pd.DataFrame(eval_rows)
+    df["_ep"] = df["epoch"].round().astype(int)
+
+    if trainset_rows:
+        t = pd.DataFrame(trainset_rows)
+        t["_ep"] = t["epoch"].round().astype(int)
+        drop = ("trainset_runtime", "trainset_samples", "trainset_steps")
+        keep = ["_ep"] + [c for c in t.columns
+                          if c.startswith("trainset_") and not c.startswith(drop)]
+        df = df.merge(t[keep].drop_duplicates("_ep"), on="_ep", how="left")
+
+    if loss_rows:
+        # --quiet logs one loss row per epoch; without it, one every 25 steps.
+        # Averaging inside the epoch turns both shapes into one column.
+        lr = pd.DataFrame(loss_rows)[["epoch", "loss"]].copy()
+        lr["_ep"] = np.ceil(lr["epoch"] - 1e-9).astype(int).clip(lower=1)
+        lr = (lr.groupby("_ep", as_index=False)["loss"].mean()
+                .rename(columns={"loss": "train_loss_running"}))
+        df = df.merge(lr, on="_ep", how="left")
+
+    return df.drop(columns="_ep")
+
+
+def fit_verdict(hist: pd.DataFrame, sel_key: str, epochs: int) -> str:
+    """Read underfit / overfit / neither off one run's curve.
+
+    Deliberately blunt and rule-based. The point is not a clever diagnosis, it
+    is that the question gets asked at all - every run in this repo until now
+    reported one number and left "was it still improving?" unanswerable.
+    """
+    if hist.empty or sel_key not in hist:
+        return "  [fit] no epoch history - cannot judge under/overfitting"
+    val = hist[sel_key]
+    best_i = int(val.idxmax())
+    best_ep = int(round(float(hist["epoch"].iloc[best_i])))
+    lines = [f"  [fit] best epoch {best_ep} of {epochs} "
+             f"(val {sel_key[5:]}={val.iloc[best_i]:.3f})"]
+
+    tr_key = sel_key.replace("eval_", "trainset_", 1)
+    if tr_key in hist and hist[tr_key].notna().any():
+        tr_at_best = float(hist[tr_key].iloc[best_i])
+        gap = tr_at_best - float(val.iloc[best_i])
+        lines.append(f"        train {tr_at_best:.3f} vs val "
+                     f"{val.iloc[best_i]:.3f}  ->  gap {gap:+.3f}")
+        if tr_at_best < 0.55 and gap < 0.15:
+            lines.append("        UNDERFIT: it cannot even fit the rows it "
+                         "trained on. The fix is more capacity/epochs/LR,")
+            lines.append("        not more regularisation.")
+        elif gap > 0.25:
+            lines.append("        OVERFIT: it fits train far better than val, "
+                         "so the later epochs are memorising.")
+            lines.append("        load_best_model_at_end already discards "
+                         "them; early stopping would stop paying for them.")
+        else:
+            lines.append("        Gap is moderate - neither diagnosis is "
+                         "clear-cut on this run.")
+    if best_ep >= epochs:
+        lines.append("        Peak sits at the LAST epoch, so the budget may "
+                     "be too small - the curve had not turned over yet.")
+    elif best_ep <= max(1, epochs // 4):
+        lines.append(f"        Peaked at epoch {best_ep} and spent the "
+                     f"remaining {epochs - best_ep} epoch(s) past the peak.")
+    return "\n".join(lines)
+
+
+# --------------------------------------------------------------------------
 # one run
 # --------------------------------------------------------------------------
 
@@ -485,6 +610,17 @@ def run_one_seed(args, seed: int, out_root: Path) -> dict:
         train_df = train_df.head(64).reset_index(drop=True)
         val_df = val_df.head(64).reset_index(drop=True)
         epochs = 1
+
+    # --train-frac is the data-size axis of the learning curve. A model that is
+    # underfitting is not short of data: its val score barely moves when given
+    # more. One that is data-limited keeps climbing. Val is never touched - the
+    # exam has to stay the same size, or the curve measures two things at once.
+    n_train_full = len(train_df)
+    if args.train_frac < 1.0:
+        n_keep = max(1, int(round(n_train_full * args.train_frac)))
+        train_df = train_df.sample(n=n_keep, random_state=seed).reset_index(drop=True)
+        print(f"  --train-frac {args.train_frac}: training on {n_keep} of "
+              f"{n_train_full} train rows (val kept whole at {len(val_df)})")
 
     task = args.task
     multilabel = task == "multilabel"
@@ -519,13 +655,28 @@ def run_one_seed(args, seed: int, out_root: Path) -> dict:
     val_ds = TextDataset(va_enc, list(y_val))
     print(f"  val rows truncated at {args.max_length} tokens: {val_trunc_rate:.1%}")
 
+    # A fixed slice of train, scored every epoch alongside val. Sampled rather
+    # than using all of train because this is a diagnostic, not a result: 512
+    # rows is already twice the val set, so the gap is not noise, and it keeps
+    # the extra forward passes to roughly a fifth of an epoch.
+    train_eval_ds = None
+    if args.train_eval_rows > 0:
+        y_train_list = list(y_train)
+        k = min(args.train_eval_rows, len(train_ds))
+        idx = np.random.RandomState(seed).choice(len(train_ds), k, replace=False)
+        train_eval_ds = TextDataset([tr_enc[i] for i in idx],
+                                    [y_train_list[i] for i in idx])
+        print(f"  train-set diagnostic slice: {k} rows scored each epoch")
+
     loss_fn, loss_desc = build_loss(args.loss, y_train, device, args.focal_gamma, task)
     print(f"  loss: {loss_desc}")
 
     # Task and loss are both part of the run identity: without them an ablation's
     # arms — and the three tasks — would overwrite each other's checkpoints.
     suffix = ("" if args.loss == TASK_DEFAULT_LOSS[task] else f"_{args.loss}") \
-             + ("_smoke" if args.smoke else "")
+             + ("_smoke" if args.smoke else "") \
+             + ("" if args.train_frac >= 1.0
+                else f"_frac{int(round(args.train_frac * 100))}")
     run_name = f"tutorial_{task}_{args.model.split('/')[-1]}_{seed}{suffix}"
     ckpt_dir = Path(args.checkpoints) / run_name
 
@@ -565,6 +716,18 @@ def run_one_seed(args, seed: int, out_root: Path) -> dict:
         processing_class=tokenizer,     # transformers 5.x name for tokenizer=
         loss_fn=loss_fn,
     )
+
+    # Added after construction: TrainSetEvalCallback needs the trainer itself,
+    # which does not exist yet inside the Trainer(...) call.
+    if train_eval_ds is not None:
+        trainer.add_callback(TrainSetEvalCallback(trainer, train_eval_ds))
+    if args.early_stopping_patience > 0:
+        # Safe only because load_best_model_at_end and metric_for_best_model are
+        # already set above; without them EarlyStoppingCallback raises.
+        trainer.add_callback(EarlyStoppingCallback(
+            early_stopping_patience=args.early_stopping_patience))
+        print(f"  early stopping: patience {args.early_stopping_patience} "
+              f"eval(s) with no gain on {selection_metric(task)}")
 
     trainer.train()
 
@@ -607,8 +770,14 @@ def run_one_seed(args, seed: int, out_root: Path) -> dict:
     # Per-epoch learning curve, so a run that peaked at epoch 3 and then
     # overfit for seven more is visible rather than hidden behind one number.
     sel = f"eval_{selection_metric(task)}"
-    history = [h for h in trainer.state.log_history if sel in h]
-    pd.DataFrame(history).to_csv(out_root / f"epoch_history_{tag}.csv", index=False)
+    hist_df = build_epoch_history(trainer.state.log_history, sel)
+    hist_df.to_csv(out_root / f"epoch_history_{tag}.csv", index=False)
+    epochs_run = (int(round(float(hist_df["epoch"].max())))
+                  if not hist_df.empty else epochs)
+    print(fit_verdict(hist_df, sel, epochs))
+    if epochs_run < epochs:
+        print(f"        early stopping ended the run at epoch {epochs_run} "
+              f"of {epochs}")
 
     record = {
         "model": args.model, "seed": seed, "split": "val", "task": task,
@@ -617,6 +786,11 @@ def run_one_seed(args, seed: int, out_root: Path) -> dict:
         "source": "wellally_tutorial", "epochs": epochs, "lr": args.lr,
         "batch_size": args.batch_size, "weight_decay": args.weight_decay,
         "max_length": args.max_length, "threshold": args.threshold,
+        # A result is only reproducible alongside the knobs that produced it.
+        "train_frac": args.train_frac, "n_train_full": n_train_full,
+        "train_eval_rows": args.train_eval_rows,
+        "early_stopping_patience": args.early_stopping_patience,
+        "epochs_run": epochs_run,
         "loss": args.loss, "loss_desc": loss_desc,
         "device": device, "smoke": args.smoke,
         "val_truncation_rate": val_trunc_rate,
@@ -642,6 +816,9 @@ def run_one_seed(args, seed: int, out_root: Path) -> dict:
         "batch_size": args.batch_size, "max_length": args.max_length,
         "truncation": "head", "head_keep": 128, "device": device,
         "smoke": args.smoke, "num_labels": num_labels,
+        "train_frac": args.train_frac,
+        "early_stopping_patience": args.early_stopping_patience,
+        "epochs_run": epochs_run,
         "loss": args.loss, "val_truncation_rate": val_trunc_rate,
         "val_metrics": {f"eval_{k}": v for k, v in metrics.items()},
         # What src/evaluate.py will apply on test. Default "fixed" keeps the
@@ -883,6 +1060,20 @@ def main(argv=None):
                     help="which thresholds go into the checkpoint's meta.json, "
                          "i.e. what src/evaluate.py applies on test")
     # --- plumbing ---
+    # --- under/overfitting diagnostics -------------------------------------
+    ap.add_argument("--train-eval-rows", type=int, default=512,
+                    help="score this many TRAIN rows every epoch alongside val, "
+                         "so the train-vs-val gap is recorded; 0 = off")
+    ap.add_argument("--train-frac", type=float, default=1.0,
+                    help="train on this fraction of train.csv (val untouched). "
+                         "Sweep it to draw the data-size learning curve. "
+                         "Results land under a _frac<NN> suffix so they cannot "
+                         "overwrite the full-data run.")
+    ap.add_argument("--early-stopping-patience", type=int, default=0,
+                    help="stop after N evals with no gain on the selection "
+                         "metric; 0 = off (the tutorial's behaviour: always run "
+                         "--epochs and let load_best_model_at_end restore the "
+                         "peak)")
     ap.add_argument("--splits", default="data/splits")
     ap.add_argument("--out", default="results_RUN2/results_tutorial_distilbert")
     ap.add_argument("--checkpoints", default="checkpoints")
@@ -904,6 +1095,9 @@ def main(argv=None):
         # before any training output. Errors and warnings still surface.
         from transformers.utils import logging as hf_logging
         hf_logging.set_verbosity_error()
+
+    if not 0.0 < args.train_frac <= 1.0:
+        raise SystemExit(f"--train-frac must be in (0, 1], got {args.train_frac}")
 
     seeds = [int(s) for s in args.seeds.split(",") if s.strip()]
     tasks = ([t.strip() for t in args.tasks.split(",") if t.strip()]

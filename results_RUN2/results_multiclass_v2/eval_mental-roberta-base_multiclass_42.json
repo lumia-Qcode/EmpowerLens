@@ -1,0 +1,275 @@
+{
+  "meta": {
+    "splits": "data/splits",
+    "task": "multiclass",
+    "model": "mental/mental-roberta-base",
+    "init_from": "mental/mental-roberta-base",
+    "seed": 42,
+    "epochs": 12,
+    "lr": 2e-05,
+    "batch_size": 16,
+    "max_length": 512,
+    "truncation": "head",
+    "head_keep": 128,
+    "device": "cuda",
+    "smoke": false,
+    "num_labels": 11,
+    "loss": "weighted_ce",
+    "focal_gamma": null,
+    "mask_labels": "",
+    "label_smoothing": 0.0,
+    "grad_accum": 1,
+    "lr_scheduler": "linear",
+    "dropout": null,
+    "freeze_layers": 0,
+    "llrd": false,
+    "llrd_decay": 0.9,
+    "early_stopping_patience": 0,
+    "val_truncation_rate": 0.02766798418972332,
+    "val_metrics": {
+      "eval_loss": 2.237075090408325,
+      "eval_macro_f1": 0.27288927986009087,
+      "eval_macro_f1_10": 0.2338798653046635,
+      "eval_runtime": 1.7122,
+      "eval_samples_per_second": 147.765,
+      "eval_steps_per_second": 9.345,
+      "epoch": 12.0
+    },
+    "thresholds": null,
+    "determinism": {
+      "deterministic": true,
+      "warn_only": true,
+      "cudnn_deterministic": true,
+      "cudnn_benchmark": false,
+      "cublas_workspace_config": ":4096:8",
+      "torch_version": "2.10.0+cu128",
+      "seed": null
+    },
+    "best_epoch": 5.0,
+    "selection_metric": "macro_f1_10"
+  },
+  "splits": {
+    "val": {
+      "metrics": {
+        "model": "mental/mental-roberta-base",
+        "task": "multiclass",
+        "seed": 42.0,
+        "split": "val",
+        "n_classes": 11.0,
+        "weighted_f1": 0.40559971648987153,
+        "macro_f1": 0.27288927986009087,
+        "macro_f1_10": 0.2338798653046635,
+        "micro_f1": 0.39920948616600793,
+        "positive_class_f1": "",
+        "no_distortion_f1": 0.6629834254143646,
+        "no_distortion_wcontrib": 0.2489463455113227,
+        "truncation_rate": 0.0277,
+        "roc_auc": 0.7380739046846031,
+        "source": "empowerlens",
+        "averaging": ""
+      },
+      "per_class": [
+        {
+          "class": "no_distortion",
+          "precision": 0.6976744186046512,
+          "recall": 0.631578947368421,
+          "f1": 0.6629834254143646,
+          "support": 95,
+          "weighted_contribution": 0.2489463455113227
+        },
+        {
+          "class": "emotional_reasoning",
+          "precision": 0.07692307692307693,
+          "recall": 0.07692307692307693,
+          "f1": 0.07692307692307693,
+          "support": 13,
+          "weighted_contribution": 0.003952569169960475
+        },
+        {
+          "class": "overgeneralization",
+          "precision": 0.15384615384615385,
+          "recall": 0.16666666666666666,
+          "f1": 0.16,
+          "support": 24,
+          "weighted_contribution": 0.01517786561264822
+        },
+        {
+          "class": "mental_filter",
+          "precision": 0.125,
+          "recall": 0.15384615384615385,
+          "f1": 0.13793103448275862,
+          "support": 13,
+          "weighted_contribution": 0.007087365408204989
+        },
+        {
+          "class": "should_statements",
+          "precision": 0.06666666666666667,
+          "recall": 0.09090909090909091,
+          "f1": 0.07692307692307693,
+          "support": 11,
+          "weighted_contribution": 0.0033444816053511705
+        },
+        {
+          "class": "all_or_nothing",
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 10,
+          "weighted_contribution": 0.0
+        },
+        {
+          "class": "mind_reading",
+          "precision": 0.2962962962962963,
+          "recall": 0.4,
+          "f1": 0.3404255319148936,
+          "support": 20,
+          "weighted_contribution": 0.02691110924228408
+        },
+        {
+          "class": "fortune_telling",
+          "precision": 0.6153846153846154,
+          "recall": 0.5,
+          "f1": 0.5517241379310345,
+          "support": 16,
+          "weighted_contribution": 0.03489164508654763
+        },
+        {
+          "class": "magnification",
+          "precision": 0.19047619047619047,
+          "recall": 0.21052631578947367,
+          "f1": 0.2,
+          "support": 19,
+          "weighted_contribution": 0.015019762845849802
+        },
+        {
+          "class": "personalization",
+          "precision": 0.5,
+          "recall": 0.3125,
+          "f1": 0.38461538461538464,
+          "support": 16,
+          "weighted_contribution": 0.024323502584372148
+        },
+        {
+          "class": "labeling",
+          "precision": 0.34782608695652173,
+          "recall": 0.5,
+          "f1": 0.41025641025641024,
+          "support": 16,
+          "weighted_contribution": 0.02594506942333029
+        }
+      ],
+      "truncation_rate": 0.0277
+    },
+    "test": {
+      "metrics": {
+        "model": "mental/mental-roberta-base",
+        "task": "multiclass",
+        "seed": 42.0,
+        "split": "test",
+        "n_classes": 11.0,
+        "weighted_f1": 0.35085688100278234,
+        "macro_f1": 0.24418448845473853,
+        "macro_f1_10": 0.21057824594218771,
+        "micro_f1": 0.33992094861660077,
+        "positive_class_f1": "",
+        "no_distortion_f1": 0.5802469135802469,
+        "no_distortion_wcontrib": 0.21099887766554434,
+        "truncation_rate": 0.0237,
+        "roc_auc": 0.722673534818743,
+        "source": "empowerlens",
+        "averaging": ""
+      },
+      "per_class": [
+        {
+          "class": "no_distortion",
+          "precision": 0.6714285714285714,
+          "recall": 0.5108695652173914,
+          "f1": 0.5802469135802469,
+          "support": 92,
+          "weighted_contribution": 0.21099887766554434
+        },
+        {
+          "class": "emotional_reasoning",
+          "precision": 0.26666666666666666,
+          "recall": 0.3333333333333333,
+          "f1": 0.2962962962962963,
+          "support": 12,
+          "weighted_contribution": 0.014053579270970574
+        },
+        {
+          "class": "overgeneralization",
+          "precision": 0.2,
+          "recall": 0.23076923076923078,
+          "f1": 0.21428571428571427,
+          "support": 26,
+          "weighted_contribution": 0.0220214568040655
+        },
+        {
+          "class": "mental_filter",
+          "precision": 0.07692307692307693,
+          "recall": 0.07692307692307693,
+          "f1": 0.07692307692307693,
+          "support": 13,
+          "weighted_contribution": 0.003952569169960475
+        },
+        {
+          "class": "should_statements",
+          "precision": 0.375,
+          "recall": 0.2727272727272727,
+          "f1": 0.3157894736842105,
+          "support": 11,
+          "weighted_contribution": 0.013729977116704805
+        },
+        {
+          "class": "all_or_nothing",
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 11,
+          "weighted_contribution": 0.0
+        },
+        {
+          "class": "mind_reading",
+          "precision": 0.28125,
+          "recall": 0.32142857142857145,
+          "f1": 0.3,
+          "support": 28,
+          "weighted_contribution": 0.03320158102766798
+        },
+        {
+          "class": "fortune_telling",
+          "precision": 0.35714285714285715,
+          "recall": 0.38461538461538464,
+          "f1": 0.37037037037037035,
+          "support": 13,
+          "weighted_contribution": 0.019030888596105987
+        },
+        {
+          "class": "magnification",
+          "precision": 0.13793103448275862,
+          "recall": 0.2222222222222222,
+          "f1": 0.1702127659574468,
+          "support": 18,
+          "weighted_contribution": 0.012109999159027838
+        },
+        {
+          "class": "personalization",
+          "precision": 0.125,
+          "recall": 0.07692307692307693,
+          "f1": 0.09523809523809523,
+          "support": 13,
+          "weighted_contribution": 0.004893657067570111
+        },
+        {
+          "class": "labeling",
+          "precision": 0.20689655172413793,
+          "recall": 0.375,
+          "f1": 0.26666666666666666,
+          "support": 16,
+          "weighted_contribution": 0.01686429512516469
+        }
+      ],
+      "truncation_rate": 0.0237
+    }
+  }
+}
