@@ -1,0 +1,99 @@
+{
+  "created_utc": "2026-08-03T07:22:31.213171+00:00",
+  "source_json": "CODIPAS.json",
+  "source_sha256": "edce0fd9345950d16d5bc54e1506eb06a82eedf9d6c9f668dc93f2b1b428b26a",
+  "split_unit": "group_id (Id_Patient_Question), aggregated to one row per message",
+  "random_state": 42,
+  "n_total_span_rows": 5055,
+  "n_total_messages": 3277,
+  "y_mc_derivation": "mode of non-no_distortion dominant labels per message, tie-broken by DISTORTIONS order; no_distortion if the message has zero distorted spans",
+  "splits": {
+    "train": {
+      "n_messages": 2621,
+      "n_distorted": 1416,
+      "per_class_y_mc": {
+        "no_distortion": 1205,
+        "emotional_reasoning": 170,
+        "overgeneralization": 171,
+        "mental_filter": 83,
+        "should_statements": 189,
+        "all_or_nothing": 87,
+        "mind_reading": 178,
+        "fortune_telling": 159,
+        "magnification": 88,
+        "personalization": 66,
+        "labeling": 225
+      },
+      "ml_positive_per_distortion": {
+        "emotional_reasoning": 212,
+        "overgeneralization": 209,
+        "mental_filter": 119,
+        "should_statements": 216,
+        "all_or_nothing": 143,
+        "mind_reading": 233,
+        "fortune_telling": 222,
+        "magnification": 140,
+        "personalization": 92,
+        "labeling": 325
+      }
+    },
+    "val": {
+      "n_messages": 328,
+      "n_distorted": 172,
+      "per_class_y_mc": {
+        "no_distortion": 156,
+        "emotional_reasoning": 22,
+        "overgeneralization": 21,
+        "mental_filter": 10,
+        "should_statements": 23,
+        "all_or_nothing": 11,
+        "mind_reading": 20,
+        "fortune_telling": 22,
+        "magnification": 13,
+        "personalization": 7,
+        "labeling": 23
+      },
+      "ml_positive_per_distortion": {
+        "emotional_reasoning": 24,
+        "overgeneralization": 29,
+        "mental_filter": 15,
+        "should_statements": 28,
+        "all_or_nothing": 18,
+        "mind_reading": 28,
+        "fortune_telling": 27,
+        "magnification": 21,
+        "personalization": 10,
+        "labeling": 36
+      }
+    },
+    "test": {
+      "n_messages": 328,
+      "n_distorted": 182,
+      "per_class_y_mc": {
+        "no_distortion": 146,
+        "emotional_reasoning": 22,
+        "overgeneralization": 21,
+        "mental_filter": 10,
+        "should_statements": 23,
+        "all_or_nothing": 11,
+        "mind_reading": 24,
+        "fortune_telling": 20,
+        "magnification": 14,
+        "personalization": 8,
+        "labeling": 29
+      },
+      "ml_positive_per_distortion": {
+        "emotional_reasoning": 22,
+        "overgeneralization": 27,
+        "mental_filter": 16,
+        "should_statements": 25,
+        "all_or_nothing": 20,
+        "mind_reading": 32,
+        "fortune_telling": 25,
+        "magnification": 19,
+        "personalization": 16,
+        "labeling": 35
+      }
+    }
+  }
+}

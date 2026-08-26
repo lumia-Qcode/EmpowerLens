@@ -1,9 +1,16 @@
 """
-Compile every experiment run so far into ONE table: results/all_experiments.csv.
+Compile every experiment run so far into ONE table: all_experiments.csv.
 
-Walks every ``results*/`` directory, reads each ``eval_*.json``, and emits one row
-per (run, task, split) with the model, the dataset it was trained on, and whether
-the numbers are trustworthy.
+Walks every ``results*/`` directory **under each run root** (``results_RUN1/`` =
+the pre-rerun history, ``results_RUN2/`` = everything produced after the
+determinism/leakage fixes), reads each ``eval_*.json``, and emits one row per
+(run, task, split) with the model, the dataset it was trained on, and whether the
+numbers are trustworthy.
+
+The ``run`` column says which root a row came from. RUN1 and RUN2 numbers are
+**not** interchangeable: RUN1 predates determinism being enabled, so its
+same-seed reruns drift by up to 0.047 macro-F1, and several RUN1 dirs were
+produced from leaked splits. Compare within a run, or state the caveat.
 
 Why a separate compiler: the runs are scattered across seven directories written at
 different times by two scripts with two different JSON shapes, and — critically —
@@ -17,8 +24,9 @@ recorded value exists it always wins.
 
 Usage
 -----
-    python -m src.compile_results
-    python -m src.compile_results --out results/all_experiments.csv
+    python -m src.compile_results                       # both roots
+    python -m src.compile_results --roots results_RUN2   # the new run only
+    python -m src.compile_results --out results_RUN2/all_experiments.csv
 """
 
 from __future__ import annotations
@@ -39,6 +47,10 @@ METRICS = [
 # Which splits dir each results dir was produced from, for runs whose meta.json
 # predates the `splits` field. `valid=False` means the numbers are inflated by
 # train/test leakage and must not be compared against anything.
+#
+# Keys are directory *basenames*, deliberately unchanged by the RUN1/RUN2 move —
+# the same folder name means the same experiment in either root, so one registry
+# serves both.
 SPLITS_BY_DIR = {
     "results":               ("data/splits",             True,  "Annotated_data only, frozen 80/10/10"),
     "results_codipas":       ("data/splits_codipas_cls", True,  "CODIPAS message-level; y_mc is DERIVED not annotated"),
@@ -87,7 +99,10 @@ SPLITS_BY_DIR = {
 }
 
 
-def _rows_from_eval(path: str, folder: str):
+RUN_ROOTS = ["results_RUN1", "results_RUN2"]
+
+
+def _rows_from_eval(path: str, folder: str, run: str):
     d = json.loads(Path(path).read_text(encoding="utf-8"))
     meta = d.get("meta", {})
     splits_dir, valid, note = SPLITS_BY_DIR.get(folder, ("?", None, ""))
@@ -101,6 +116,7 @@ def _rows_from_eval(path: str, folder: str):
             if not (isinstance(m, dict) and block.endswith("metrics")):
                 continue
             row = {
+                "run": run,
                 "results_dir": folder,
                 "splits": splits_dir,
                 "valid": valid,
@@ -120,20 +136,30 @@ def _rows_from_eval(path: str, folder: str):
 
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Compile every results*/ dir into one CSV.")
-    ap.add_argument("--out", default="results/all_experiments.csv")
-    ap.add_argument("--summary", default="results/all_experiments_summary.csv",
+    ap.add_argument("--roots", default=",".join(RUN_ROOTS),
+                    help="comma-separated run roots to scan (default: both)")
+    ap.add_argument("--out", default="results_RUN2/all_experiments.csv")
+    ap.add_argument("--summary", default="results_RUN2/all_experiments_summary.csv",
                     help="mean +/- std across seeds, test split only")
     args = ap.parse_args(argv)
 
+    roots = [r.strip() for r in args.roots.split(",") if r.strip()]
     rows = []
-    for folder in sorted(SPLITS_BY_DIR):
-        files = sorted(glob.glob(os.path.join(folder, "eval_*.json")))
-        if not files:
-            print(f"[skip] {folder}/ — no eval_*.json (results not downloaded?)")
+    for root in roots:
+        if not Path(root).is_dir():
+            print(f"[skip] {root}/ — run root does not exist yet")
             continue
-        for f in files:
-            rows.extend(_rows_from_eval(f, folder))
-        print(f"[ok]   {folder}/ — {len(files)} eval files")
+        found_any = False
+        for folder in sorted(SPLITS_BY_DIR):
+            files = sorted(glob.glob(os.path.join(root, folder, "eval_*.json")))
+            if not files:
+                continue
+            for f in files:
+                rows.extend(_rows_from_eval(f, folder, root))
+            print(f"[ok]   {root}/{folder}/ — {len(files)} eval files")
+            found_any = True
+        if not found_any:
+            print(f"[skip] {root}/ — no eval_*.json anywhere under it")
 
     if not rows:
         print("\nNothing to compile.")
@@ -147,15 +173,15 @@ def main(argv=None):
         df[c] = pd.to_numeric(df[c], errors="coerce")
 
     df = df.sort_values(
-        ["valid", "results_dir", "task", "model", "split", "seed"],
-        ascending=[False, True, True, True, True, True],
+        ["valid", "run", "results_dir", "task", "model", "split", "seed"],
+        ascending=[False, True, True, True, True, True, True],
     )
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     df.to_csv(args.out, index=False)
 
     # Mean +/- std across seeds, test only — the shape you actually cite.
     test = df[df["split"] == "test"]
-    agg = (test.groupby(["valid", "results_dir", "splits", "task", "model"])[METRICS]
+    agg = (test.groupby(["valid", "run", "results_dir", "splits", "task", "model"])[METRICS]
                 .agg(["mean", "std"]).round(3))
     agg.to_csv(args.summary)
 

@@ -40,6 +40,12 @@ PAPER_COMPARISON_COLUMNS = [
     "positive_class_f1",
     "no_distortion_f1", "no_distortion_wcontrib",
     "truncation_rate",
+    # Diagnostic, never a headline. F1 cannot distinguish "the model has not
+    # learned the class" from "it ranks the class correctly but the threshold is
+    # wrong" — those need opposite fixes. AUC ignores the threshold entirely, so
+    # a low F1 beside a high AUC localises the fault to calibration. Measured
+    # once already: a DistilBERT run scored macro-F1 0.029 with ROC-AUC 0.709.
+    "roc_auc",
     "source", "averaging",
 ]
 
@@ -74,12 +80,44 @@ def per_class_table(task: str, y_true, y_pred) -> pd.DataFrame:
     return df
 
 
+def roc_auc_from_logits(task, y_true, logits) -> float | str:
+    """Threshold-free ranking quality, computed on probabilities not predictions.
+
+    Returns "" when it is undefined — a class present or absent in every row of
+    the split has no ROC curve. Never raises: a diagnostic that can abort an
+    evaluation is worse than one that is occasionally blank.
+    """
+    from sklearn.metrics import roc_auc_score
+
+    def _clean(v):
+        # sklearn returns nan (with a warning) rather than raising when a class
+        # is single-valued. Blank is the honest cell; nan silently poisons any
+        # mean taken over the column later.
+        return "" if v is None or np.isnan(v) else float(v)
+
+    try:
+        logits = np.asarray(logits, dtype=float)
+        if task == "multilabel":
+            probs = 1.0 / (1.0 + np.exp(-logits))
+            return _clean(roc_auc_score(y_true, probs, average="macro"))
+        # Softmax for the single-label tasks: the classes compete, so the
+        # probabilities must sum to 1 per row.
+        z = logits - logits.max(axis=1, keepdims=True)
+        probs = np.exp(z) / np.exp(z).sum(axis=1, keepdims=True)
+        if task == "binary":
+            return _clean(roc_auc_score(y_true, probs[:, 1]))
+        return _clean(roc_auc_score(y_true, probs, multi_class="ovr",
+                                    average="macro"))
+    except (ValueError, IndexError):
+        return ""
+
+
 def metric_bundle(task, y_true, y_pred, model, seed, split,
-                  truncation_rate=0.0, source="empowerlens") -> dict:
+                  truncation_rate=0.0, source="empowerlens", roc_auc="") -> dict:
     """Build one paper_comparison row (blank cells for fields N/A to the task)."""
     row = {c: "" for c in PAPER_COMPARISON_COLUMNS}
     row.update(model=model, task=task, seed=seed, split=split,
-               truncation_rate=truncation_rate, source=source)
+               truncation_rate=truncation_rate, source=source, roc_auc=roc_auc)
 
     if task == "binary":
         row["n_classes"] = 2

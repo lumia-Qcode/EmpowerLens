@@ -76,7 +76,7 @@ def main(argv=None):
     ap.add_argument("--annotated", default="data/splits")
     ap.add_argument("--codipas", default="data/splits_codipas_cls")
     ap.add_argument("--out-md", default="docs/codipas_agreement.md")
-    ap.add_argument("--out-csv", default="results/codipas_agreement_per_class.csv")
+    ap.add_argument("--out-csv", default="results_RUN2/results/codipas_agreement_per_class.csv")
     args = ap.parse_args(argv)
 
     ann = pd.concat([_read(Path(args.annotated) / f"{s}.csv") for s in ("train", "val", "test")],

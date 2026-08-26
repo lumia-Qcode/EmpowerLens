@@ -92,7 +92,7 @@ def main(argv=None):
     ap.add_argument("--seeds", default="42,1337,2024",
                     help="comma-separated seeds (default 42,1337,2024)")
     ap.add_argument("--splits", default="data/splits")
-    ap.add_argument("--out", default="results")
+    ap.add_argument("--out", default="results_RUN2/results")
     args = ap.parse_args(argv)
 
     seeds = [int(s) for s in args.seeds.split(",")]

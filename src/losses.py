@@ -1,6 +1,9 @@
 """
 Optional loss functions and optimizer builders for src/train_transformer.py.
 
+AsymmetricLoss: a third imbalance strategy (asymmetric focusing +
+probability shifting) that replaces pos_weight rather than stacking on it.
+
 FocalLoss: alternative to plain weighted BCE for multilabel Stage 2, where a
 few classes (all_or_nothing, mental_filter, personalization) have very few
 positive examples relative to the rest. Focal loss down-weights the gradient
@@ -93,6 +96,59 @@ class MaskedBCEWithLogitsLoss(nn.Module):
             logits, targets, pos_weight=self.pos_weight, reduction="none"
         )
         return masked_mean(bce, self.label_mask)
+
+
+class AsymmetricLoss(nn.Module):
+    """Asymmetric loss for multilabel imbalance (Ridnik et al., ICCV 2021).
+
+    A third way of handling the negative flood, mechanically different from
+    both pos_weight and focal:
+
+    * **Asymmetric focusing** — separate gamma for positives and negatives
+      (``gamma_neg`` > ``gamma_pos``), so confident negatives are damped hard
+      while positives keep their full gradient. FocalLoss uses one gamma for
+      both and therefore also damps the rare positives it is meant to protect.
+    * **Probability shifting** — ``clip`` discards negatives the model already
+      scores below that probability. On this corpus most negatives are trivially
+      negative (``all_or_nothing`` is 5.0% positive in train), and those
+      already-solved rows otherwise dominate the gradient sum.
+
+    Needs no ``pos_weight``: the asymmetry IS the class balancing. Passing both
+    would double-count, so the caller should choose one.
+
+    Reduction is ``masked_mean`` rather than the paper's ``sum`` so the loss
+    stays on the same scale as the other losses here and --lr is comparable
+    across an ablation.
+    """
+
+    def __init__(self, gamma_neg: float = 4.0, gamma_pos: float = 1.0,
+                 clip: float = 0.05, eps: float = 1e-8,
+                 label_mask: Optional[torch.Tensor] = None):
+        super().__init__()
+        self.gamma_neg = gamma_neg
+        self.gamma_pos = gamma_pos
+        self.clip = clip
+        self.eps = eps
+        self.label_mask = label_mask
+
+    def forward(self, logits: torch.Tensor, targets: torch.Tensor) -> torch.Tensor:
+        p = torch.sigmoid(logits)
+        p_pos, p_neg = p, 1.0 - p
+        if self.clip > 0:
+            # Shift negatives down; anything already below `clip` contributes nothing.
+            p_neg = (p_neg + self.clip).clamp(max=1.0)
+
+        loss = (targets * torch.log(p_pos.clamp(min=self.eps))
+                + (1 - targets) * torch.log(p_neg.clamp(min=self.eps)))
+
+        # Asymmetric focusing weight, computed with the gradient detached so the
+        # modulating term scales the loss without contributing gradient of its own
+        # (this is what the reference implementation does).
+        with torch.no_grad():
+            pt = p_pos * targets + p_neg * (1 - targets)
+            gamma = self.gamma_pos * targets + self.gamma_neg * (1 - targets)
+            w = torch.pow(1 - pt, gamma)
+        return masked_mean(-loss * w, self.label_mask)
 
 
 def _find_encoder_layers(model):

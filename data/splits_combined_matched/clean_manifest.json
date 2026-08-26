@@ -1,0 +1,50 @@
+{
+  "created_utc": "2026-08-23T11:40:45+00:00",
+  "generated_by": "src/make_splits_clean.py --match-to",
+  "source": "data/splits_combined_clean",
+  "matched_to": "data/splits",
+  "dest": "data/splits_combined_matched",
+  "seed": 42,
+  "rule": "train downsampled to the target's row count, stratified on y_mc with a fixed seed; val/test copied unchanged",
+  "train_rows_before": 2623,
+  "train_rows_after": 2024,
+  "target_train_rows": 2024,
+  "class_balance_before": {
+    "0": 1069,
+    "1": 130,
+    "2": 184,
+    "3": 115,
+    "4": 178,
+    "5": 92,
+    "6": 213,
+    "7": 185,
+    "8": 131,
+    "9": 115,
+    "10": 211
+  },
+  "class_balance_after": {
+    "0": 825,
+    "1": 100,
+    "2": 142,
+    "3": 89,
+    "4": 137,
+    "5": 71,
+    "6": 164,
+    "7": 143,
+    "8": 101,
+    "9": 89,
+    "10": 163
+  },
+  "verified_after": {
+    "source": "data/splits_combined_matched",
+    "reference": "data/splits",
+    "train_rows": 2024,
+    "train_unique_texts": 2024,
+    "duplicate_rows_within_train": 0,
+    "train_rows_in_reference_val_or_test": 0,
+    "train_rows_in_own_val_or_test": 0,
+    "reference_test_rows_leaked": 0,
+    "reference_test_size": 253,
+    "reference_test_pct_leaked": 0.0
+  }
+}

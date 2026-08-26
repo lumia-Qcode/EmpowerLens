@@ -34,3 +34,6 @@ data/splits_pr/
 # sequential fine-tuning scratch dirs (local bootstrap exec side-effect)
 ckpt_seq*/
 data/splits_pr_only/
+
+# Smoke-run scratch output (--smoke): never a real result, never committed
+results_*_smoke/
