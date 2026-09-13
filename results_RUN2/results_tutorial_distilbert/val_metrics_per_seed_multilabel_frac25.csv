@@ -1,0 +1,2 @@
+seed,macro_precision,macro_recall,micro_precision,micro_recall,micro_f1,macro_f1,weighted_f1,samples_f1,roc_auc_micro,roc_auc_macro,roc_auc_micro_tutorial,subset_accuracy,hamming_loss,mean_labels_predicted,mean_labels_true,accuracy,roc_auc
+42,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.5654345718076963,0.5095871886306407,0.5,0.37549407114624506,0.07984189723320158,0.0,0.7984189987182617,0.37549407114624506,0.5654345718076963

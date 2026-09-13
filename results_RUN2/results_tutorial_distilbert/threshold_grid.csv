@@ -1,0 +1,9 @@
+checkpoint,model,seed,loss,trained_on,split,threshold_mode,threshold,max_labels,macro_f1,micro_f1,weighted_f1
+tutorial_multilabel_distilbert-base-uncased_42,tutorial-distilbert-base-uncased,42,bce,data/splits,val,fixed,0.5 flat,2,0.06869210733165851,0.14107883817427386,0.0988389535283846
+tutorial_multilabel_distilbert-base-uncased_42,tutorial-distilbert-base-uncased,42,bce,data/splits,test,fixed,0.5 flat,2,0.061578947368421046,0.10655737704918032,0.081484348125215
+tutorial_multilabel_distilbert-base-uncased_42,tutorial-distilbert-base-uncased,42,bce,data/splits,val,fixed,0.5 flat,uncapped,0.06869210733165851,0.14107883817427386,0.0988389535283846
+tutorial_multilabel_distilbert-base-uncased_42,tutorial-distilbert-base-uncased,42,bce,data/splits,test,fixed,0.5 flat,uncapped,0.061578947368421046,0.10655737704918032,0.081484348125215
+tutorial_multilabel_distilbert-base-uncased_42,tutorial-distilbert-base-uncased,42,bce,data/splits,val,tuned,swept 0.05-0.35,2,0.21732141106011849,0.23700623700623702,0.24612204109303748
+tutorial_multilabel_distilbert-base-uncased_42,tutorial-distilbert-base-uncased,42,bce,data/splits,test,tuned,swept 0.05-0.35,2,0.1683062368102936,0.19665271966527198,0.17778868472625184
+tutorial_multilabel_distilbert-base-uncased_42,tutorial-distilbert-base-uncased,42,bce,data/splits,val,tuned,swept 0.05-0.35,uncapped,0.2648814328626064,0.2591549295774648,0.2834943615661625
+tutorial_multilabel_distilbert-base-uncased_42,tutorial-distilbert-base-uncased,42,bce,data/splits,test,tuned,swept 0.05-0.35,uncapped,0.19273140831771854,0.218705035971223,0.19835528105984732
