@@ -22,6 +22,7 @@ from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 from src.data import DISTORTIONS, MC_CLASSES
 from src.metrics import (
+    roc_auc_from_logits,
     BINARY_CLASSES,
     PAPER_COMPARISON_COLUMNS,
     metric_bundle,
@@ -111,7 +112,7 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description="Evaluate a checkpoint on val + test.")
     ap.add_argument("--checkpoint", required=True, help="checkpoint dir with meta.json")
     ap.add_argument("--splits", default="data/splits")
-    ap.add_argument("--out", default="results")
+    ap.add_argument("--out", default="results_RUN2/results")
     ap.add_argument("--device", default="auto")
     ap.add_argument("--batch-size", type=int, default=16)
     ap.add_argument("--reference", action="store_true", help="append literature rows")
@@ -202,7 +203,11 @@ def main(argv=None):
             test_y_true_saved = y_true
             test_y_pred_saved = y_pred
 
-        row = metric_bundle(task, y_true, y_pred, model_name, seed, split, truncation_rate=round(trunc_rate, 4))
+        # AUC comes from the logits, before thresholding — the whole point is
+        # that it does not depend on where the cut point sits.
+        row = metric_bundle(task, y_true, y_pred, model_name, seed, split,
+                            truncation_rate=round(trunc_rate, 4),
+                            roc_auc=roc_auc_from_logits(task, y_true, logits))
         rows.append(row)
         pc = per_class_table(task, y_true, y_pred)
         per_class_by_split[split] = pc

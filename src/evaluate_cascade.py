@@ -82,7 +82,7 @@ def main(argv=None):
     ap.add_argument("--stage2-checkpoint", required=True)
     ap.add_argument("--splits", default="data/splits_combined",
                     help="dir with FULL val/test.csv (must include no_distortion rows)")
-    ap.add_argument("--out", default="results_cascade")
+    ap.add_argument("--out", default="results_RUN2/results_cascade")
     ap.add_argument("--device", default="auto")
     ap.add_argument("--batch-size", type=int, default=16)
     ap.add_argument("--max-labels", type=int, default=2)

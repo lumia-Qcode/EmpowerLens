@@ -1,0 +1,11 @@
+loss,class,mean,std
+weighted_bce,all_or_nothing,0.16,0.056
+weighted_bce,emotional_reasoning,0.329,0.047
+weighted_bce,fortune_telling,0.427,0.025
+weighted_bce,labeling,0.426,0.029
+weighted_bce,magnification,0.112,0.049
+weighted_bce,mental_filter,0.303,0.035
+weighted_bce,mind_reading,0.329,0.041
+weighted_bce,overgeneralization,0.262,0.05
+weighted_bce,personalization,0.323,0.018
+weighted_bce,should_statements,0.414,0.03

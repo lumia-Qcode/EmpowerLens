@@ -23,6 +23,9 @@
 
 import os
 os.environ.setdefault("KMP_DUPLICATE_LIB_OK", "TRUE")
+# Needed for deterministic cuBLAS GEMMs; must precede CUDA init, so it is set
+# unconditionally and the torch-level flags are flipped only with --deterministic.
+os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
 
 import argparse
 import functools
@@ -47,7 +50,8 @@ from transformers import (
 from transformers.trainer_pt_utils import LengthGroupedSampler
 
 from src.data import DISTORTIONS, MC_CLASSES
-from src.losses import FocalLoss, build_llrd_optimizer, freeze_bottom_layers
+from src.losses import (FocalLoss, MaskedBCEWithLogitsLoss, build_llrd_optimizer,
+                        freeze_bottom_layers)
 
 TEXT_COL = "Patient Question"
 ML_COLS = [f"ml_{d}" for d in DISTORTIONS]
@@ -230,7 +234,20 @@ def sweep_thresholds(probs, y_true):
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Fine-tune a transformer baseline.")
     ap.add_argument("--task", required=True, choices=["binary", "multiclass", "multilabel"])
-    ap.add_argument("--model", default="roberta-base")
+    ap.add_argument("--model", default="roberta-base",
+                    help="HF hub id OR a local checkpoint dir. Passing a local dir is "
+                         "how sequential fine-tuning works: stage 2 initialises from "
+                         "stage 1's weights instead of the hub.")
+    # --tag exists because --model doubles as an identity, and a local checkpoint
+    # path is a terrible one. Without it, `--model checkpoints_pr/multilabel_
+    # mental-roberta-base_42` yields run_name "multilabel_multilabel-mental-roberta-
+    # base_42_42" and evaluate.py writes eval_multilabel_mental-roberta-base_42_
+    # multilabel_42.json, which the bootstrap's skip-if-done check cannot find.
+    # --tag sets the recorded identity; meta["init_from"] keeps the real provenance.
+    ap.add_argument("--tag", default=None,
+                    help="override the recorded model name used for run_name, output "
+                         "filenames and paper_comparison rows. Use it when --model is a "
+                         "local checkpoint, e.g. --tag mental-roberta-base+pr")
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--epochs", type=int, default=4)
     ap.add_argument("--lr", type=float, default=2e-5)
@@ -241,12 +258,26 @@ def main(argv=None):
     ap.add_argument("--device", default="auto")
     ap.add_argument("--splits", default="data/splits")
     ap.add_argument("--out", default="checkpoints")
+    ap.add_argument("--deterministic", action="store_true",
+                    help="pin algorithm choice so the same seed reproduces exactly. "
+                         "~10-30%% slower. Without it, same-seed runs in this project "
+                         "have differed by up to 0.047 macro-F1.")
     ap.add_argument("--smoke", action="store_true", help="100 rows execution check")
     ap.add_argument("--wandb", action="store_true", help="enable W&B")
 
     # --- new flags (all default to old behavior) -----------------------
     ap.add_argument("--loss", choices=["bce", "focal"], default="bce",
                     help="multilabel only: BCEWithLogitsLoss (default) or FocalLoss")
+    # For intermediate-task training on a source that has NO information about some
+    # label. Not the same as those labels being rare: a column that is 0 in every
+    # row is active negative supervision, and pos_weight cannot neutralise it
+    # (see src/losses.masked_mean). Measured cost of not masking, 2026-08-17:
+    # emotional_reasoning F1 0.368 -> 0.074 after PatternReframe stage A.
+    ap.add_argument("--mask-labels", default="",
+                    help="multilabel only: comma-separated distortion names whose "
+                         "columns contribute NOTHING to the loss, e.g. "
+                         "--mask-labels emotional_reasoning. Use when the training "
+                         "set carries no evidence about them.")
     ap.add_argument("--focal-gamma", type=float, default=2.0, help="focal loss gamma, only used with --loss focal")
     ap.add_argument("--label-smoothing", type=float, default=0.0,
                     help="binary/multiclass CrossEntropyLoss label smoothing, 0.0 = off (old behavior)")
@@ -272,6 +303,12 @@ def main(argv=None):
     else:
         os.environ["WANDB_DISABLED"] = "true"
         report_to = "none"
+
+    determinism_info = {"deterministic": False}
+    if args.deterministic:
+        from src.determinism import enable_determinism
+        determinism_info = enable_determinism()
+        print("[determinism] on - same seed reproduces exactly")
 
     device = resolve_device(args.device)
     set_seed(args.seed)
@@ -322,16 +359,38 @@ def main(argv=None):
 
     if multilabel:
         pw = pos_weights(y_train, device)
+
+        label_mask = None
+        masked_names = [s.strip() for s in args.mask_labels.split(",") if s.strip()]
+        if masked_names:
+            unknown = [n for n in masked_names if n not in DISTORTIONS]
+            if unknown:
+                # Fail loudly: a typo would silently mask nothing and the run would
+                # look fine while reproducing the exact bug this flag exists to fix.
+                raise SystemExit(
+                    f"--mask-labels: unknown distortion(s) {unknown}.\n"
+                    f"Valid names: {', '.join(DISTORTIONS)}"
+                )
+            keep = [0.0 if d in masked_names else 1.0 for d in DISTORTIONS]
+            label_mask = torch.tensor(keep, dtype=torch.float, device=device)
+            n_pos_masked = int(y_train[:, [DISTORTIONS.index(n) for n in masked_names]].sum())
+            print(f"[loss] masking {masked_names} out of the loss entirely "
+                  f"({n_pos_masked} positive examples in train — expect 0 if the "
+                  f"source genuinely has no evidence for them)")
+
         if args.loss == "focal":
-            loss_fn = FocalLoss(pos_weight=pw, gamma=args.focal_gamma)
+            loss_fn = FocalLoss(pos_weight=pw, gamma=args.focal_gamma, label_mask=label_mask)
             print(f"[loss] FocalLoss(gamma={args.focal_gamma}) with pos_weight from class frequency")
         else:
-            loss_fn = nn.BCEWithLogitsLoss(pos_weight=pw)
+            loss_fn = MaskedBCEWithLogitsLoss(pos_weight=pw, label_mask=label_mask)
     else:
         cw = class_weights(y_train, num_labels, device)
         loss_fn = nn.CrossEntropyLoss(weight=cw, label_smoothing=args.label_smoothing)
 
-    run_name = f"{args.task}_{args.model.split('/')[-1]}_{args.seed}" + ("_smoke" if args.smoke else "")
+    # model_id is the IDENTITY (naming, metric rows); args.model is where weights
+    # came from. They differ only for sequential fine-tuning off a local checkpoint.
+    model_id = args.tag or args.model
+    run_name = f"{args.task}_{model_id.split('/')[-1]}_{args.seed}" + ("_smoke" if args.smoke else "")
     out_dir = Path(args.out) / run_name
 
     # Old default was hardcoded to macro_f1 for every task, which for
@@ -385,22 +444,44 @@ def main(argv=None):
         val_metrics["eval_macro_f1"] = float(f1_score(y_val, best_preds, average="macro", zero_division=0))
         val_metrics["eval_micro_f1"] = float(f1_score(y_val, best_preds, average="micro", zero_division=0))
 
+    # Per-epoch curve, so "was the budget enough" is answerable afterwards rather
+    # than assumed. No previous run in this repo saved one.
+    hist = [h for h in trainer.state.log_history if f"eval_{metric_key}" in h]
+    if hist:
+        hist_df = pd.DataFrame(hist)
+        out_dir.mkdir(parents=True, exist_ok=True)
+        hist_df.to_csv(out_dir / "epoch_history.csv", index=False)
+        best_epoch = float(hist_df.loc[hist_df[f"eval_{metric_key}"].idxmax(), "epoch"])
+        print(f"  best epoch {best_epoch:.0f} of {args.epochs} (on {metric_key})"
+              + ("  <-- peaked at the budget limit; budget may be too small"
+                 if best_epoch >= args.epochs else ""))
+    else:
+        best_epoch = None
+
     meta = {
         # Record WHICH splits this was trained on. Without it there is no way to
         # tell a checkpoint trained on data/splits from one trained on a leaked
         # or combined dir after the fact — which is exactly the question that
         # matters when results look surprising.
         "splits": args.splits,
-        "task": args.task, "model": args.model, "seed": args.seed, "epochs": args.epochs, "lr": args.lr,
+        # "model" is the identity evaluate.py builds filenames from; "init_from"
+        # records which weights this actually started from, so a sequentially
+        # fine-tuned run can always be traced back to its stage-1 checkpoint.
+        "task": args.task, "model": model_id, "init_from": args.model,
+        "seed": args.seed, "epochs": args.epochs, "lr": args.lr,
         "batch_size": args.batch_size, "max_length": args.max_length, "truncation": args.truncation,
         "head_keep": args.head_keep, "device": device, "smoke": args.smoke, "num_labels": num_labels,
         "loss": args.loss if multilabel else "weighted_ce", "focal_gamma": args.focal_gamma if args.loss == "focal" else None,
-        "label_smoothing": args.label_smoothing, "grad_accum": args.grad_accum, "lr_scheduler": args.lr_scheduler,
+        "mask_labels": args.mask_labels, "label_smoothing": args.label_smoothing, "grad_accum": args.grad_accum, "lr_scheduler": args.lr_scheduler,
         "dropout": args.dropout, "freeze_layers": args.freeze_layers, "llrd": args.llrd, "llrd_decay": args.llrd_decay,
         "early_stopping_patience": args.early_stopping_patience,
         "val_truncation_rate": val_trunc_rate,
         "val_metrics": {k: float(v) for k, v in val_metrics.items() if isinstance(v, (int, float))},
         "thresholds": thresholds,
+        # A result is only as reproducible as the settings it was made under.
+        "determinism": determinism_info,
+        "best_epoch": best_epoch,
+        "selection_metric": metric_key,
     }
     (out_dir / "meta.json").write_text(json.dumps(meta, indent=2))
 

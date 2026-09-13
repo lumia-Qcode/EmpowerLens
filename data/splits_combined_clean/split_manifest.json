@@ -1,0 +1,83 @@
+{
+  "created_utc": "2026-08-04T16:20:28.585248+00:00",
+  "purpose": "train = Annotated_data.csv train + CODIPAS-cls train (concatenated, shuffled); val/test = Annotated_data.csv only (frozen benchmark, unchanged)",
+  "annotated_source_dir": "data\\splits",
+  "codipas_source_dir": "data\\splits_codipas_cls",
+  "shuffle_seed": 42,
+  "n_train_annotated": 2024,
+  "n_train_codipas": 2621,
+  "n_train_combined": 4645,
+  "n_val": 253,
+  "n_test": 253,
+  "train_per_class_annotated": {
+    "no_distortion": 746,
+    "emotional_reasoning": 109,
+    "overgeneralization": 189,
+    "mental_filter": 96,
+    "should_statements": 85,
+    "all_or_nothing": 79,
+    "mind_reading": 191,
+    "fortune_telling": 114,
+    "magnification": 158,
+    "personalization": 124,
+    "labeling": 133
+  },
+  "train_per_class_codipas": {
+    "no_distortion": 1205,
+    "emotional_reasoning": 170,
+    "overgeneralization": 171,
+    "mental_filter": 83,
+    "should_statements": 189,
+    "all_or_nothing": 87,
+    "mind_reading": 178,
+    "fortune_telling": 159,
+    "magnification": 88,
+    "personalization": 66,
+    "labeling": 225
+  },
+  "train_per_class_combined": {
+    "no_distortion": 1951,
+    "emotional_reasoning": 279,
+    "overgeneralization": 360,
+    "mental_filter": 179,
+    "should_statements": 274,
+    "all_or_nothing": 166,
+    "mind_reading": 369,
+    "fortune_telling": 273,
+    "magnification": 246,
+    "personalization": 190,
+    "labeling": 358
+  },
+  "val_per_class": {
+    "no_distortion": 95,
+    "emotional_reasoning": 13,
+    "overgeneralization": 24,
+    "mental_filter": 13,
+    "should_statements": 11,
+    "all_or_nothing": 10,
+    "mind_reading": 20,
+    "fortune_telling": 16,
+    "magnification": 19,
+    "personalization": 16,
+    "labeling": 16
+  },
+  "test_per_class": {
+    "no_distortion": 92,
+    "emotional_reasoning": 12,
+    "overgeneralization": 26,
+    "mental_filter": 13,
+    "should_statements": 11,
+    "all_or_nothing": 11,
+    "mind_reading": 28,
+    "fortune_telling": 13,
+    "magnification": 18,
+    "personalization": 13,
+    "labeling": 16
+  },
+  "source_file_sha256": {
+    "annotated_train": "2410e1d640c698898cbae334d74a53cc6313a4029e1c88ff5f942c7ae9a024d4",
+    "codipas_train": "20e8296bc9da55d7834da8da8652544038449a6fadb5a93768c48aa6d56afcdc",
+    "annotated_val": "82510ce7acab58d58cc8d9397ff214fcb2beef7a6bae235a2b7dff12a366b9ec",
+    "annotated_test": "1013562d7c8887746689959d38724a3adb7d29ab07cc9e71782d85276282d1e0"
+  }
+}

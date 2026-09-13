@@ -1,20 +1,89 @@
 # TODO — everything flagged, ranked
 
-Written 2026-08-15, updated 2026-08-16 after the first successful cascade run.
+Written 2026-08-15. Updated 2026-08-23: the leakage is fixed, the experiment
+suite is rebuilt, and the run order below has changed.
 
 Priority key: **P0** blocks other work · **P1** correctness, will corrupt results
 if ignored · **P2** improvement, safe to defer.
 
 ---
 
-## Start here (in this order)
+## RUN ORDER — do these in sequence
 
-1. **P0** — Tell Lumia about the `splits_combined` leakage (§4.1). Her committed
-   results are affected, and you now have a number for how much it inflated them.
-2. **P1** — Train a flat multilabel baseline on `data/splits` (§2.2). Without it
-   the flat-vs-cascade comparison is unanswerable. ~5 minutes.
-3. **P1** — Decide the synth critic-panel question (§3.2) **before** spending
-   anything on calibration, or the rates you measure won't transfer.
+### 1. DistilBERT replication  ← START HERE
+`notebooks/wellally_distilbert_tutorial.ipynb`
+
+The wellally.tech tutorial recipe on real data, plus the loss ablation.
+
+- [ ] Multilabel, 3 seeds, `--ablation` (4 losses × 3 seeds = 12 runs, ~3 hr)
+- [ ] Read the threshold × cap grid — does tuning help, or just spray labels?
+- [ ] Binary and multiclass, 2 losses each (~1.5 hr each)
+- [ ] Test-set pass, **once**, at the end
+- [ ] Regenerate `docs/RERUN_EXPERIMENTS.md` (currently holds smoke data)
+
+Seed 42 multilabel is already run: **macro-F1 0.029, ROC-AUC 0.709**. The model
+ranks correctly and never crosses 0.5 — under-firing at 0.047 labels/row against
+a true rate of 0.798. Its `subset_accuracy` of 0.379 is +0.004 above predicting
+nothing at all. That contrast is a thesis figure on its own.
+
+### 2. Cascade — Experiment 7  ← THEN THIS
+`docs/E7_PROTOCOL.md`. **Yours**, both arms, one session, one GPU.
+
+- [ ] Regenerate Stage 2 splits from `data/splits` (the shipped
+      `data/splits_stage2` came from the leaked combined dir)
+- [ ] Determinism check must PASS first
+- [ ] 3 seeds × {Stage 1 binary, Stage 2 multilabel, **flat comparator**}
+- [ ] Cascade end-to-end evaluation
+- [ ] Record GPU name + commit hash with the results
+
+The flat arm is not optional: determinism reproduces on the same GPU, not across
+a T4 and a P100. Izza's E6 flat number is **not** a replication of it either — it
+differs in epochs (8 vs 12), loss (`weighted_bce` vs `bce`) and code path, so it
+is a separate result, not a cross-check. See the table in `docs/E7_PROTOCOL.md`.
+
+### In parallel — Izza: Experiments 1-6 and 8
+`experiments/kaggle_runner_flat_experiments.ipynb`, see
+`experiments/HOW_TO_RUN.txt` for the two-track split. Does not block either of
+the above.
+
+### 3. Still outstanding, unchanged
+- **P1** — Decide the synth critic-panel question (§3.2) **before** spending
+  anything on calibration, or the rates you measure won't transfer.
+- **P1** — Rebuild the seed set after form collection (§3.9).
+
+---
+
+## 2026-08-23 — what changed
+
+**The leakage is fixed** (§4.1 was P0, now resolved). `src/make_splits_clean.py`
+writes leak-free copies and re-audits itself:
+
+| dir | train before | after | leaked |
+|---|---|---|---|
+| `data/splits_combined_clean` | 4,645 | 2,623 | 396 → **0** |
+| `data/splits_codipas_clean` | 2,621 | 2,224 | 396 → **0** |
+| `data/splits_combined_matched` | — | 2,024 | **0** (volume-matched) |
+
+The originals are kept unedited so old results stay traceable. Note the leak was
+worse than §4.1 recorded: 396 training rows covering **195 of 253 test rows
+(77%)**, and on those the two corpora agree on the label only **36%** of the
+time — so the model mostly saw the test text with the *wrong* answer.
+
+**Three further problems found and fixed:**
+
+1. **Runs did not reproduce.** E6 and E7 were the same configuration and
+   disagreed by 0.047 macro-F1 at seed 42, against reported error bars of 0.007.
+   `src/determinism.py` pins it; `--check` proves it.
+2. **Epoch budget never validated.** `--epochs 4` was an untested default and no
+   run saved a curve. Now 8 epochs, and every run writes `epoch_history.csv`.
+3. **Multiclass selected on the wrong metric.** `macro_f1` includes
+   `no_distortion` (36.9% of rows); now `macro_f1_10`. Measured 0.053 vs 0.008,
+   six times apart.
+
+**New:** `roc_auc` as a diagnostic column, `src/eval_two_exams.py` (home vs
+yardstick + transfer gap), `src/eval_thresholds.py` (threshold × cap grid),
+`docs/RERUN_PLAN.md`, `docs/E7_PROTOCOL.md`. `src/experiments_flat_mentalroberta.py`
+deleted as a byte-identical duplicate.
 
 ---
 
@@ -166,7 +235,13 @@ seeds**; participant text never goes to an API. Cheap test: 20 rows at `k=4` vs
 
 ## 4. Repo-wide issues
 
-### 4.1 `data/splits_combined` has ~75% train/test leakage — P0, tell Lumia
+### 4.1 `data/splits_combined` has ~75% train/test leakage — ✅ RESOLVED 2026-08-23
+
+Fixed by `src/make_splits_clean.py`; see the changelog at the top. Measured
+precisely: 396 train rows, 195 of 253 test rows (77%), label agreement 36%
+on the overlap. Lumia still needs telling — her committed results are affected.
+Original section kept below for the record.
+
 ```
 data/splits (original):  train-in-val 0    train-in-test 0     <- clean
 data/splits_combined:    train-in-val 194  train-in-test 189
@@ -425,8 +500,31 @@ for when you *can't* keep the old data; yours fits in memory.
 **Order matters: CODIPAS first, Annotated last.** The model specialises on what it
 saw most recently, and Annotated test is what you report.
 
-Sequential needs **no code change** — `--model` goes straight to
-`from_pretrained()`, so a local checkpoint path works with a lower `--lr`.
+> **Update 2026-08-17 — built, but with PatternReframe rather than CODIPAS.**
+>
+> Sequential now exists as `notebooks/kaggle_runner_sequential.ipynb` +
+> `notebooks/sequential_bootstrap.py`. It uses **PatternReframe** as the
+> intermediate task, not CODIPAS, because `docs/codipas_agreement.md` measured
+> CODIPAS's labels at κ = 0.199 against the human ones — training on them teaches
+> the model to contradict the test set. PatternReframe at least shares the
+> taxonomy.
+>
+> **"Needs no code change" was wrong.** `--model` does go straight to
+> `from_pretrained()`, so a local checkpoint loads fine — but `--model` also doubles
+> as the run's *identity*: `run_name` and `evaluate.py`'s output filenames are both
+> built from it. Initialising from a checkpoint therefore produced
+> `eval_multilabel_mrb-prA_42_multilabel_42.json`, which nothing looks for, and
+> silently broke the skip-if-done check. Fixed by adding `--tag` (identity) with
+> `meta["init_from"]` (provenance). See also §4.5 — the same `split('/')` on a
+> Windows path is still latent whenever `--tag` is omitted.
+>
+> Two further pieces were needed that this section did not anticipate:
+> `--eval-from` (stage A trains on the intermediate set alone but still needs a val
+> set) and `--holdout official-valid` (stage A needs an in-domain score, or a low
+> number cannot be told apart from a broken run).
+>
+> The CODIPAS row of the table above is still unrun; `data/splits_codipas_transfer_matched`
+> is ready for it.
 
 ---
 
@@ -479,7 +577,7 @@ calibrated-pessimism analysis, opener tracking at 1/2/4 words.
 
 ### Why the current CODIPAS numbers are not comparable
 
-Every CODIPAS result in `results/all_experiments.csv` was evaluated on **CODIPAS's
+Every CODIPAS result in `results_RUN1/results/all_experiments.csv` was evaluated on **CODIPAS's
 own test set**, so none of them say anything about the target task. The naive fix —
 merge and evaluate on Annotated — is the bug that invalidated `data/splits_combined`:
 **195 of 253 Annotated test rows (77%) are already inside CODIPAS train**, because
@@ -538,3 +636,71 @@ in-domain CODIPAS results. `src/compile_results.py` already knows the new dir na
 **Run B before A.** B is three runs and settles whether the transfer story is worth
 pursuing at all; A is six runs and only becomes interesting if B shows a gap worth
 explaining.
+
+---
+
+## Sequential V1 result and the V2 fixes (2026-08-17)
+
+**V1 ran. Stage B 0.236 ± 0.034 vs the 0.277 ± 0.016 Annotated-only baseline — worse.**
+But the aggregate hides the actual finding.
+
+### Stage A worked; transfer is the problem
+
+| | macro_f1 |
+|---|---|
+| Stage A **in-domain** (held-out PatternReframe) | **0.620 ± 0.017** |
+| Stage A out-of-domain (Annotated test) | 0.191 ± 0.004 |
+
+A 3.2× gap. Stage A is not broken — it learned these ten distortions well. The
+in-domain diagnostic is what makes that statement possible; without it, 0.191 would
+have been indistinguishable from a failed run.
+
+**0.620 is also a standalone result worth citing:** when train and test come from the
+same distribution, this task is learnable at 0.62. The 0.277 ceiling on Annotated is
+about Annotated being small and noisily labelled, not about the task being hard.
+
+### Per-class: borrowed data helps or harms by concept alignment
+
+| class | baseline | V1 stage B | Δ |
+|---|---|---|---|
+| fortune_telling | 0.170 | 0.353 | **+0.183** |
+| should_statements | 0.247 | 0.390 | **+0.143** |
+| overgeneralization / magnification / mind_reading / all_or_nothing | | | ~0 |
+| labeling | 0.315 | 0.243 | −0.073 |
+| personalization | 0.218 | 0.074 | −0.144 |
+| mental_filter | 0.280 | 0.104 | **−0.177** |
+| emotional_reasoning | 0.368 | 0.074 | **−0.294** |
+
+`emotional_reasoning` alone is ~72% of the macro deficit. The other nine average
+0.267 → 0.254, inside seed noise.
+
+### Two fixes, both built, shipping as the V2 arm
+
+**1. `--mask-labels emotional_reasoning`.** PatternReframe has zero rows for it, so
+stage A saw 7,846 rows asserting the label never occurs — active negative
+supervision, not missing data.
+
+> **Zeroing `pos_weight` does NOT work.** It scales only the positive term; for an
+> all-zero column the loss is entirely `−log(1−p)`. Verified: `pos_weight=0` leaves
+> gradient 0.05 on that column, a true mask leaves exactly 0. `src/losses.masked_mean`.
+
+**2. `--merge-discounting`** — reverses the earlier recommendation. Those 970 rows
+were dropped to avoid *broadening* `mental_filter`, but Shreevastava's taxonomy has
+no separate class for discounting-the-positive, so annotators had to file such
+thoughts somewhere. Dropping them made PatternReframe's `mental_filter` **narrower**
+than Annotated's.
+
+Both ship in one run; they target different classes so the per-class table attributes
+them independently. Projected stage B ≈ 0.283.
+
+### Open questions this raised
+
+- **`personalization` −0.144 is unexplained.** Baseline 0.218 with high seed noise, so
+  it may be partly variance. Look at the per-class CSVs before theorising.
+- **Why do `fortune_telling` and `should_statements` gain so much?** If it is source
+  volume (fortune_telling has the most PatternReframe rows at 2,417), that predicts
+  which future borrowed datasets will help — a testable rule.
+- **Is per-class selective transfer worth it?** Use stage A only for the classes where
+  the source concept aligns. Principled version of what the data already shows.
+- **Length shift is still unaddressed.** 17 words vs 129. Untested as a cause because
+  the label problems dominated.

@@ -1,0 +1,252 @@
+{
+  "stage1_checkpoint": "/kaggle/working/checkpoints/binary_mental-roberta-base_42",
+  "stage2_checkpoint": "/kaggle/working/checkpoints/multilabel_mental-roberta-base_42",
+  "splits_dir": "data/splits",
+  "model_name": "cascade[binary_mental-roberta-base+multilabel_mental-roberta-base]@splits",
+  "splits": {
+    "val": {
+      "binary_metrics": {
+        "model": "cascade[binary_mental-roberta-base+multilabel_mental-roberta-base]@splits",
+        "task": "binary",
+        "seed": 42.0,
+        "split": "val",
+        "n_classes": 2.0,
+        "weighted_f1": 0.8043411320537088,
+        "macro_f1": 0.7940007816571131,
+        "macro_f1_10": "",
+        "micro_f1": 0.8023715415019763,
+        "positive_class_f1": 0.8355263157894737,
+        "no_distortion_f1": "",
+        "no_distortion_wcontrib": "",
+        "truncation_rate": 0.0277,
+        "roc_auc": "",
+        "source": "empowerlens",
+        "averaging": ""
+      },
+      "multilabel_metrics": {
+        "model": "cascade[binary_mental-roberta-base+multilabel_mental-roberta-base]@splits",
+        "task": "multilabel",
+        "seed": 42.0,
+        "split": "val",
+        "n_classes": 10.0,
+        "weighted_f1": 0.34904741950029383,
+        "macro_f1": 0.3254709233379492,
+        "macro_f1_10": "",
+        "micro_f1": 0.3311827956989247,
+        "positive_class_f1": "",
+        "no_distortion_f1": "",
+        "no_distortion_wcontrib": "",
+        "truncation_rate": 0.0479,
+        "roc_auc": "",
+        "source": "empowerlens",
+        "averaging": ""
+      },
+      "multilabel_per_class": [
+        {
+          "class": "emotional_reasoning",
+          "precision": 0.11538461538461539,
+          "recall": 0.35294117647058826,
+          "f1": 0.17391304347826086,
+          "support": 17,
+          "weighted_contribution": 0.014636246233318984
+        },
+        {
+          "class": "overgeneralization",
+          "precision": 0.36363636363636365,
+          "recall": 0.2962962962962963,
+          "f1": 0.32653061224489793,
+          "support": 27,
+          "weighted_contribution": 0.04364518084461507
+        },
+        {
+          "class": "mental_filter",
+          "precision": 0.21428571428571427,
+          "recall": 0.2,
+          "f1": 0.20689655172413793,
+          "support": 15,
+          "weighted_contribution": 0.015363605326049846
+        },
+        {
+          "class": "should_statements",
+          "precision": 0.36363636363636365,
+          "recall": 0.2857142857142857,
+          "f1": 0.32,
+          "support": 14,
+          "weighted_contribution": 0.02217821782178218
+        },
+        {
+          "class": "all_or_nothing",
+          "precision": 0.2,
+          "recall": 0.08333333333333333,
+          "f1": 0.11764705882352941,
+          "support": 12,
+          "weighted_contribution": 0.0069889341875364
+        },
+        {
+          "class": "mind_reading",
+          "precision": 0.5,
+          "recall": 0.5625,
+          "f1": 0.5294117647058824,
+          "support": 32,
+          "weighted_contribution": 0.08386721025043681
+        },
+        {
+          "class": "fortune_telling",
+          "precision": 0.47058823529411764,
+          "recall": 0.38095238095238093,
+          "f1": 0.42105263157894735,
+          "support": 21,
+          "weighted_contribution": 0.04377279833246482
+        },
+        {
+          "class": "magnification",
+          "precision": 0.13559322033898305,
+          "recall": 0.3333333333333333,
+          "f1": 0.1927710843373494,
+          "support": 24,
+          "weighted_contribution": 0.02290349516879399
+        },
+        {
+          "class": "personalization",
+          "precision": 0.4,
+          "recall": 0.6,
+          "f1": 0.48,
+          "support": 20,
+          "weighted_contribution": 0.047524752475247525
+        },
+        {
+          "class": "labeling",
+          "precision": 0.5294117647058824,
+          "recall": 0.45,
+          "f1": 0.4864864864864865,
+          "support": 20,
+          "weighted_contribution": 0.04816697886004817
+        }
+      ],
+      "n_flagged_distorted_by_stage1": 146,
+      "n_total": 253
+    },
+    "test": {
+      "binary_metrics": {
+        "model": "cascade[binary_mental-roberta-base+multilabel_mental-roberta-base]@splits",
+        "task": "binary",
+        "seed": 42.0,
+        "split": "test",
+        "n_classes": 2.0,
+        "weighted_f1": 0.7319684545062188,
+        "macro_f1": 0.707362969356927,
+        "macro_f1_10": "",
+        "micro_f1": 0.7351778656126482,
+        "positive_class_f1": 0.797583081570997,
+        "no_distortion_f1": "",
+        "no_distortion_wcontrib": "",
+        "truncation_rate": 0.0237,
+        "roc_auc": "",
+        "source": "empowerlens",
+        "averaging": ""
+      },
+      "multilabel_metrics": {
+        "model": "cascade[binary_mental-roberta-base+multilabel_mental-roberta-base]@splits",
+        "task": "multilabel",
+        "seed": 42.0,
+        "split": "test",
+        "n_classes": 10.0,
+        "weighted_f1": 0.17861456788818103,
+        "macro_f1": 0.16607262442209722,
+        "macro_f1_10": "",
+        "micro_f1": 0.18875502008032127,
+        "positive_class_f1": "",
+        "no_distortion_f1": "",
+        "no_distortion_wcontrib": "",
+        "truncation_rate": 0.0353,
+        "roc_auc": "",
+        "source": "empowerlens",
+        "averaging": ""
+      },
+      "multilabel_per_class": [
+        {
+          "class": "emotional_reasoning",
+          "precision": 0.14814814814814814,
+          "recall": 0.47058823529411764,
+          "f1": 0.22535211267605634,
+          "support": 17,
+          "weighted_contribution": 0.018779342723004695
+        },
+        {
+          "class": "overgeneralization",
+          "precision": 0.09523809523809523,
+          "recall": 0.07142857142857142,
+          "f1": 0.08163265306122448,
+          "support": 28,
+          "weighted_contribution": 0.011204481792717087
+        },
+        {
+          "class": "mental_filter",
+          "precision": 0.13333333333333333,
+          "recall": 0.13333333333333333,
+          "f1": 0.13333333333333333,
+          "support": 15,
+          "weighted_contribution": 0.00980392156862745
+        },
+        {
+          "class": "should_statements",
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 13,
+          "weighted_contribution": 0.0
+        },
+        {
+          "class": "all_or_nothing",
+          "precision": 0.1,
+          "recall": 0.07692307692307693,
+          "f1": 0.08695652173913043,
+          "support": 13,
+          "weighted_contribution": 0.005541346973572037
+        },
+        {
+          "class": "mind_reading",
+          "precision": 0.2903225806451613,
+          "recall": 0.2903225806451613,
+          "f1": 0.2903225806451613,
+          "support": 31,
+          "weighted_contribution": 0.044117647058823525
+        },
+        {
+          "class": "fortune_telling",
+          "precision": 0.25806451612903225,
+          "recall": 0.38095238095238093,
+          "f1": 0.3076923076923077,
+          "support": 21,
+          "weighted_contribution": 0.03167420814479638
+        },
+        {
+          "class": "magnification",
+          "precision": 0.10989010989010989,
+          "recall": 0.4,
+          "f1": 0.1724137931034483,
+          "support": 25,
+          "weighted_contribution": 0.021129141311697092
+        },
+        {
+          "class": "personalization",
+          "precision": 0.21052631578947367,
+          "recall": 0.2,
+          "f1": 0.20512820512820512,
+          "support": 20,
+          "weighted_contribution": 0.02011060834590246
+        },
+        {
+          "class": "labeling",
+          "precision": 0.17647058823529413,
+          "recall": 0.14285714285714285,
+          "f1": 0.15789473684210525,
+          "support": 21,
+          "weighted_contribution": 0.016253869969040245
+        }
+      ],
+      "n_flagged_distorted_by_stage1": 170,
+      "n_total": 253
+    }
+  }
+}
