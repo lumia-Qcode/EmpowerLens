@@ -141,6 +141,19 @@ def main(argv=None):
     probs = np.load(Path(args.oof_dir) / "oof_probs.npy")
     assert probs.shape == y_ml.shape, "oof_probs.npy shape must match the corpus — re-run reannotate_oof_predict.py"
 
+    # --- sanity check on the OOF model itself, before trusting it for triage ---
+    avg_pos_per_row = (probs > 0.5).sum(axis=1).mean()
+    per_class_std = probs.std(axis=0)
+    if avg_pos_per_row > 2.0 or per_class_std.mean() < 0.15:
+        print("!" * 68)
+        print("WARNING: oof_probs.npy looks undertrained / over-predicting.")
+        print(f"  avg predicted positives/row @0.5 thr = {avg_pos_per_row:.2f} (true corpus avg ~0.8)")
+        print(f"  mean per-class prob std              = {per_class_std.mean():.3f} (want > ~0.15)")
+        print("  Bucketing will likely flag most of the corpus as bucket A for the wrong reason.")
+        print("  Consider re-running reannotate_oof_predict.py with a lower --max-pos-weight,")
+        print("  more --epochs, or checking the printed per-fold inner-val macro_f1 there.")
+        print("!" * 68)
+
     scores = compute_scores(y_ml, probs)
     cleanlab_issue, cleanlab_quality = try_cleanlab_quality(y_ml, probs)
     bucket = bucket_rows(scores, cleanlab_issue, args.conf_low, args.entropy_quantile)
