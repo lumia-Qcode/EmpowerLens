@@ -34,14 +34,6 @@ B (ambiguous)           : not in A, but entropy is in the top
                           "right" answer is.
 C (leave alone)         : everything else — model agrees, confidently.
 
-NOTE: this script's own sanity check (avg_pos_per_row / per-class std) is a
-necessary check but not sufficient — a run can pass it while still being
-systematically miscalibrated (raw probs biased high across the board from
-pos_weight-reweighted training), which silently floods bucket A. As of
-reannotate_oof_predict.py v3, OOF probs are Platt-calibrated by default; the
-config block printed below (read from oof_meta.json) tells you whether the
-run you're looking at actually had calibration on.
-
 Usage
 -----
     python -m src.reannotate_triage --queue-size 400
@@ -55,7 +47,6 @@ Usage
 from __future__ import annotations
 
 import argparse
-import json
 from pathlib import Path
 
 import numpy as np
@@ -150,15 +141,6 @@ def main(argv=None):
     probs = np.load(Path(args.oof_dir) / "oof_probs.npy")
     assert probs.shape == y_ml.shape, "oof_probs.npy shape must match the corpus — re-run reannotate_oof_predict.py"
 
-    # --- surface the OOF run's own config, so a bad triage run is easy to
-    #     trace back to (e.g.) calibration having been off ---
-    meta_path = Path(args.oof_dir) / "oof_meta.json"
-    if meta_path.exists():
-        meta = json.loads(meta_path.read_text())
-        print(f"OOF run config: folds={meta.get('folds')} epochs={meta.get('epochs')} "
-              f"max_pos_weight={meta.get('max_pos_weight')} "
-              f"calibrated={meta.get('calibrated', 'n/a (pre-v3 run)')}")
-
     # --- sanity check on the OOF model itself, before trusting it for triage ---
     avg_pos_per_row = (probs > 0.5).sum(axis=1).mean()
     per_class_std = probs.std(axis=0)
@@ -168,10 +150,8 @@ def main(argv=None):
         print(f"  avg predicted positives/row @0.5 thr = {avg_pos_per_row:.2f} (true corpus avg ~0.8)")
         print(f"  mean per-class prob std              = {per_class_std.mean():.3f} (want > ~0.15)")
         print("  Bucketing will likely flag most of the corpus as bucket A for the wrong reason.")
-        print("  If 'calibrated' above is False or missing, re-run reannotate_oof_predict.py (v3+) —")
-        print("  per-class Platt calibration fixes this without needing to touch pos_weight/epochs.")
-        print("  If it's already True and this still fires, THEN try a lower --max-pos-weight, more")
-        print("  --epochs, or check the printed per-fold inner-val macro_f1 there.")
+        print("  Consider re-running reannotate_oof_predict.py with a lower --max-pos-weight,")
+        print("  more --epochs, or checking the printed per-fold inner-val macro_f1 there.")
         print("!" * 68)
 
     scores = compute_scores(y_ml, probs)

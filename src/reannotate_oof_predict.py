@@ -1,6 +1,6 @@
 """
 src/reannotate_oof_predict.py — Stage 1 of model-assisted re-annotation.
-(v3 — adds per-class calibration; v2 still over-predicted after its pos_weight fix)
+(v2 — fixes the undertraining/over-prediction bug from the first run)
 
 Produces OUT-OF-FOLD multilabel probabilities for every row in
 Annotated_data.csv, using K-fold CV over the *entire* corpus (not the frozen
@@ -13,7 +13,7 @@ you're trying to find. Every row here is predicted by a model that never saw
 it during training — same logic as Northcutt et al.'s confident learning
 (2021), which explicitly requires out-of-sample predicted probabilities.
 
-WHAT CHANGED FROM v1 -> v2 (why the first run over-predicted ~4x):
+WHAT CHANGED FROM v1 (why the first run over-predicted ~4x):
 1. `pos_weight` is now clamped (--max-pos-weight, default 10.0). Uncapped
    inverse-frequency weighting on rare classes (e.g. all_or_nothing at ~5%
    positive rate) produces weights near 19x, which combined with few epochs
@@ -40,26 +40,6 @@ WHAT CHANGED FROM v1 -> v2 (why the first run over-predicted ~4x):
    Keep it OFF (default) until the base fix is confirmed working via the
    smoke test, then A/B it as its own documented experiment.
 
-WHAT CHANGED IN v3 (this version):
-v2's fixes addressed genuine undertraining, but a run can still come back
-with avg_pos_per_row well above the ~0.8 true rate (e.g. 2.61) even with a
-clamped pos_weight and a healthy per-class std. That's because
-BCEWithLogitsLoss(pos_weight=...) doesn't just help rare classes get
-learned — it systematically shifts the RAW LOGITS upward for whichever
-classes got the heaviest weight. The model's *ranking* of examples within a
-class can be perfectly fine while its *absolute* probabilities are biased
-high across the board — a calibration problem, not a "no signal learned"
-problem, and the two failure modes look similar in the top-line sanity
-numbers but need different fixes.
-
-v3 fits a per-class 1-D logistic (Platt) recalibration on each fold's
-INNER-VAL split (same split used for early stopping, never the outer fold
-being scored — so no leakage) and applies it to the outer-fold logits before
-converting them to probabilities. This corrects the systematic bias while
-leaving the model's relative ranking (what self_confidence/entropy in
-Stage 2 actually depend on) intact. Disable with --no-calibrate if you want
-the raw sigmoid probs for comparison.
-
 Usage
 -----
     # 1. Smoke test first — 2 folds, 1 epoch, verify the sanity numbers
@@ -85,7 +65,6 @@ import numpy as np
 import torch
 import torch.nn as nn
 from iterstrat.ml_stratifiers import MultilabelStratifiedKFold, MultilabelStratifiedShuffleSplit
-from sklearn.linear_model import LogisticRegression
 from transformers import (
     AutoModelForSequenceClassification,
     AutoTokenizer,
@@ -136,17 +115,12 @@ def main(argv=None):
     ap.add_argument("--max-pos-weight", type=float, default=10.0,
                      help="cap on BCEWithLogitsLoss pos_weight — prevents rare-class over-prediction")
     ap.add_argument("--inner-val-frac", type=float, default=0.10,
-                     help="fraction of each fold's TRAIN portion held out for early stopping AND "
-                          "per-class calibration (never used for the actual OOF prediction — avoids "
-                          "checkpoint-selection / calibration leakage into the scored rows)")
+                     help="fraction of each fold's TRAIN portion held out for early stopping only "
+                          "(never used for the actual OOF prediction — avoids checkpoint-selection leakage)")
     ap.add_argument("--use-distorted-part", action="store_true",
                      help="concatenate the annotator-highlighted 'Distorted part' span onto the input text. "
                           "OFF by default — see module docstring for why this is a separate experiment, "
                           "not a bugfix, and correlates with the label by construction.")
-    ap.add_argument("--no-calibrate", dest="calibrate", action="store_false",
-                     help="disable per-class Platt-scaling calibration and use raw sigmoid probs instead "
-                          "(calibration is ON by default — see 'WHAT CHANGED IN v3' in the module docstring)")
-    ap.set_defaults(calibrate=True)
     args = ap.parse_args(argv)
 
     device = resolve_device(args.device)
@@ -171,9 +145,8 @@ def main(argv=None):
         print(f"\n=== Fold {fold + 1}/{args.folds} — train={len(train_idx)} held_out={len(val_idx)} ===")
         fold_of_row[val_idx] = fold
 
-        # Carve an INNER validation split out of TRAIN only, for early stopping
-        # AND for calibration. The outer held-out fold (val_idx) is never
-        # touched until the final predict + calibrate pass.
+        # Carve an INNER validation split out of TRAIN only, for early stopping.
+        # The outer held-out fold (val_idx) is never touched until final predict.
         y_train_full = y_ml[train_idx]
         inner = MultilabelStratifiedShuffleSplit(
             n_splits=1, test_size=args.inner_val_frac, random_state=args.seed
@@ -221,40 +194,12 @@ def main(argv=None):
         print(f"[fold {fold}] best inner-val macro_f1 = {inner_metrics.get('eval_macro_f1', float('nan')):.3f} "
               f"(watch this — near 0 or NaN means this fold didn't learn anything usable)")
 
-        # --- per-class Platt-scale calibration -----------------------------
-        # pos_weight-reweighted BCE systematically shifts RAW LOGITS upward
-        # for heavily-weighted classes, which biases the outer-fold sigmoid
-        # probs high even when the model's ranking is fine. Fit a 1-D
-        # logistic recalibration per class on the INNER-VAL split (never the
-        # outer fold being scored) and apply it to the outer-fold logits.
         with torch.no_grad():
-            inner_logits = trainer.predict(inner_val_ds).predictions
-            if isinstance(inner_logits, tuple):
-                inner_logits = inner_logits[0]
-            outer_logits = trainer.predict(predict_ds).predictions
-            if isinstance(outer_logits, tuple):
-                outer_logits = outer_logits[0]
-
-        calibrated = np.zeros_like(outer_logits, dtype=np.float32)
-        n_degenerate = 0
-        for c in range(n_classes):
-            y_c = y_inner_va[:, c]
-            if args.calibrate and len(np.unique(y_c)) == 2:
-                lr = LogisticRegression(C=1.0, solver="lbfgs")
-                lr.fit(inner_logits[:, c].reshape(-1, 1), y_c)
-                calibrated[:, c] = lr.predict_proba(outer_logits[:, c].reshape(-1, 1))[:, 1]
-            else:
-                if args.calibrate:
-                    n_degenerate += 1
-                # too few positives (or negatives) in the inner-val split to
-                # fit a calibrator for this class this fold, or calibration
-                # disabled entirely -> fall back to a plain sigmoid
-                calibrated[:, c] = 1 / (1 + np.exp(-outer_logits[:, c]))
-        if args.calibrate and n_degenerate:
-            print(f"[fold {fold}] {n_degenerate}/{n_classes} classes had a single-label inner-val "
-                  f"split (too few positives to calibrate) — used raw sigmoid for those")
-
-        oof_probs[val_idx] = calibrated
+            logits = trainer.predict(predict_ds).predictions
+            if isinstance(logits, tuple):
+                logits = logits[0]
+        probs = 1 / (1 + np.exp(-logits))
+        oof_probs[val_idx] = probs.astype(np.float32)
 
         del model, trainer
         if device == "cuda":
@@ -270,10 +215,9 @@ def main(argv=None):
         "seed": args.seed, "n_rows": int(n), "distortions": DISTORTIONS,
         "max_pos_weight": args.max_pos_weight, "inner_val_frac": args.inner_val_frac,
         "use_distorted_part": args.use_distorted_part,
-        "calibrated": args.calibrate,
         "note": "out-of-fold probs; each row predicted by a model that never trained on it "
-                "(inner-val split used for early stopping AND per-class Platt calibration is drawn "
-                "from TRAIN only, never from the held-out fold being predicted)",
+                "(inner-val split used for early stopping is drawn from TRAIN only, never from "
+                "the held-out fold being predicted)",
     }
     (out_dir / "oof_meta.json").write_text(json.dumps(meta, indent=2))
     np.save(out_dir / "fold_of_row.npy", fold_of_row)
@@ -288,7 +232,6 @@ def main(argv=None):
     print(f"  per-class prob std (min / mean / max): "
           f"{per_class_std.min():.3f} / {per_class_std.mean():.3f} / {per_class_std.max():.3f}  "
           f"(values under ~0.15 mean that class barely varies row-to-row — no real signal learned)")
-    print(f"  calibration                          : {'ON' if args.calibrate else 'OFF'}")
     print("=" * 60)
     print(f"\nWrote oof_probs.npy {oof_probs.shape} + oof_meta.json to {out_dir}/")
     return 0
