@@ -14,10 +14,11 @@ it during training — same logic as Northcutt et al.'s confident learning
 (2021), which explicitly requires out-of-sample predicted probabilities.
 
 WHAT CHANGED FROM v1 (why the first run over-predicted ~4x):
-1. `pos_weight` is now clamped (--max-pos-weight, default 10.0). Uncapped
-   inverse-frequency weighting on rare classes (e.g. all_or_nothing at ~5%
-   positive rate) produces weights near 19x, which combined with few epochs
-   and zero monitoring pushed the model to "always guess positive."
+1. `pos_weight` is now clamped (--max-pos-weight, default 3.0 as of v3 — see
+   below). Uncapped inverse-frequency weighting on rare classes (e.g.
+   all_or_nothing at ~5% positive rate) produces weights near 19x, which
+   combined with few epochs and zero monitoring pushed the model to
+   "always guess positive."
 2. Each fold now carves a small INTERNAL validation split out of its own
    TRAIN portion (--inner-val-frac, default 0.1) purely for early
    stopping / best-checkpoint selection. The true held-out outer fold
@@ -39,6 +40,27 @@ WHAT CHANGED FROM v1 (why the first run over-predicted ~4x):
    have a highlighted span) — so this is a second lever, not a bugfix.
    Keep it OFF (default) until the base fix is confirmed working via the
    smoke test, then A/B it as its own documented experiment.
+
+WHAT CHANGED FROM v2 (why avg positives/row was still 2.54 vs a ~0.8 true
+average, despite training converging cleanly — inner-val macro_f1 climbing
+to 0.23-0.28 and plateauing, not degenerate):
+`pos_weight` in BCEWithLogitsLoss doesn't calibrate probabilities to true
+base rates — it deliberately shifts the decision boundary to trade precision
+for recall. A cap of 10.0 is still large for classes sitting at 5-10% base
+rate, so probabilities get pushed up corpus-wide even though training itself
+is healthy. Two changes:
+6. `--max-pos-weight` default lowered 10.0 -> 3.0. This is a starting point,
+   not a tuned value — watch the sanity block (target: avg positives/row
+   closer to 1.0-1.5, per-class std still above ~0.15) and adjust down
+   further (e.g. 2.0) if it's still over-predicting, or up if per-class std
+   collapses (a sign some class stopped varying row-to-row).
+7. The sanity check now also prints a PER-CLASS breakdown (true rate vs.
+   predicted-positive rate @0.5, sorted worst-over-prediction-first) and
+   writes it to oof_per_class_stats.csv. The aggregate avg-positives number
+   can look only mildly off while 1-2 rare classes are doing most of the
+   damage — this makes that visible instead of averaging it away, and tells
+   you whether the next lever should be a lower global cap or a per-class
+   one.
 
 Usage
 -----
@@ -62,6 +84,7 @@ import json
 from pathlib import Path
 
 import numpy as np
+import pandas as pd
 import torch
 import torch.nn as nn
 from iterstrat.ml_stratifiers import MultilabelStratifiedKFold, MultilabelStratifiedShuffleSplit
@@ -97,7 +120,7 @@ def build_texts(df, use_distorted_part: bool):
         f"{t} [SEP] Distorted part: {s}" if isinstance(s, str) and s.strip() else t
         for t, s in zip(base, span)
     ]
-    return __import__("pandas").Series(combined).reset_index(drop=True)
+    return pd.Series(combined).reset_index(drop=True)
 
 
 def main(argv=None):
@@ -112,8 +135,11 @@ def main(argv=None):
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--out", default="results/reannotation")
     ap.add_argument("--device", default="auto")
-    ap.add_argument("--max-pos-weight", type=float, default=10.0,
-                     help="cap on BCEWithLogitsLoss pos_weight — prevents rare-class over-prediction")
+    ap.add_argument("--max-pos-weight", type=float, default=3.0,
+                     help="cap on BCEWithLogitsLoss pos_weight — prevents rare-class over-prediction. "
+                          "Lowered from the v2 default of 10.0 after a real run at 10.0 still showed "
+                          "2.54 avg predicted positives/row vs a ~0.8 true corpus average; re-tune from "
+                          "here using the per-class breakdown printed at the end of this script.")
     ap.add_argument("--inner-val-frac", type=float, default=0.10,
                      help="fraction of each fold's TRAIN portion held out for early stopping only "
                           "(never used for the actual OOF prediction — avoids checkpoint-selection leakage)")
@@ -233,7 +259,36 @@ def main(argv=None):
           f"{per_class_std.min():.3f} / {per_class_std.mean():.3f} / {per_class_std.max():.3f}  "
           f"(values under ~0.15 mean that class barely varies row-to-row — no real signal learned)")
     print("=" * 60)
-    print(f"\nWrote oof_probs.npy {oof_probs.shape} + oof_meta.json to {out_dir}/")
+
+    # --- per-class breakdown: the aggregate avg-positives number can look only
+    # mildly off while 1-2 rare classes carry most of the over-prediction. Sorted
+    # worst-first so the offending classes are visible without opening the CSV. ---
+    true_rate = y_ml.mean(axis=0)
+    pred_rate = (oof_probs > 0.5).mean(axis=0)
+    mean_prob = oof_probs.mean(axis=0)
+    diff = pred_rate - true_rate
+    order = np.argsort(-diff)
+
+    per_class_df = pd.DataFrame({
+        "distortion": [DISTORTIONS[i] for i in range(n_classes)],
+        "true_rate": true_rate.round(3),
+        "pred_rate_at_0.5": pred_rate.round(3),
+        "over_prediction": diff.round(3),
+        "mean_prob": mean_prob.round(3),
+        "prob_std": per_class_std.round(3),
+    }).sort_values("over_prediction", ascending=False).reset_index(drop=True)
+    per_class_df.to_csv(out_dir / "oof_per_class_stats.csv", index=False)
+
+    print("\nPER-CLASS BREAKDOWN (worst over-prediction first — see oof_per_class_stats.csv):")
+    print(f"{'class':<28}{'true_rate':>10}{'pred@0.5':>10}{'over-pred':>11}{'mean_prob':>11}{'std':>8}")
+    for i in order:
+        flag = "  <-- check" if diff[i] > 0.15 else ""
+        print(f"{DISTORTIONS[i]:<28}{true_rate[i]:>10.3f}{pred_rate[i]:>10.3f}"
+              f"{diff[i]:>11.3f}{mean_prob[i]:>11.3f}{per_class_std[i]:>8.3f}{flag}")
+    print("(over-pred well above 0 for most classes at once = lower --max-pos-weight further;\n"
+          " concentrated in 1-2 rare classes = consider per-class weighting instead of a single cap)")
+
+    print(f"\nWrote oof_probs.npy {oof_probs.shape} + oof_meta.json + oof_per_class_stats.csv to {out_dir}/")
     return 0
 
 

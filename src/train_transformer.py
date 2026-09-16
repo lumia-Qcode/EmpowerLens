@@ -260,6 +260,12 @@ def main(argv=None):
     ap.add_argument("--llrd-decay", type=float, default=0.9, help="per-layer LR multiplier, only used with --llrd")
     ap.add_argument("--early-stopping-patience", type=int, default=0,
                     help="stop after N eval epochs with no improvement, 0 = off (old behavior: always run --epochs)")
+    ap.add_argument("--max-pos-weight", type=float, default=None,
+                    help="multilabel only: cap on BCEWithLogitsLoss pos_weight. None = uncapped (old behavior). "
+                         "Uncapped inverse-frequency weighting on rare classes can push predicted probabilities "
+                         "up corpus-wide (a real run on this corpus at pos_weight~10 for a ~5%% base-rate class "
+                         "showed ~3x over-prediction); pass e.g. --max-pos-weight 3 if val metrics look skewed "
+                         "toward recall at precision's expense.")
     args = ap.parse_args(argv)
 
     if args.truncation == "head_tail" and args.max_length <= args.head_keep:
@@ -322,6 +328,10 @@ def main(argv=None):
 
     if multilabel:
         pw = pos_weights(y_train, device)
+        if args.max_pos_weight is not None:
+            pw = torch.clamp(pw, max=args.max_pos_weight)
+            print(f"[pos_weight] capped at {args.max_pos_weight} (uncapped max was "
+                  f"{pos_weights(y_train, device).max().item():.2f})")
         if args.loss == "focal":
             loss_fn = FocalLoss(pos_weight=pw, gamma=args.focal_gamma)
             print(f"[loss] FocalLoss(gamma={args.focal_gamma}) with pos_weight from class frequency")
@@ -395,6 +405,7 @@ def main(argv=None):
         "batch_size": args.batch_size, "max_length": args.max_length, "truncation": args.truncation,
         "head_keep": args.head_keep, "device": device, "smoke": args.smoke, "num_labels": num_labels,
         "loss": args.loss if multilabel else "weighted_ce", "focal_gamma": args.focal_gamma if args.loss == "focal" else None,
+        "max_pos_weight": args.max_pos_weight if multilabel else None,
         "label_smoothing": args.label_smoothing, "grad_accum": args.grad_accum, "lr_scheduler": args.lr_scheduler,
         "dropout": args.dropout, "freeze_layers": args.freeze_layers, "llrd": args.llrd, "llrd_decay": args.llrd_decay,
         "early_stopping_patience": args.early_stopping_patience,

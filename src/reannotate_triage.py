@@ -1,6 +1,8 @@
 """
 src/reannotate_triage.py — Stage 2 of model-assisted re-annotation.
-(v3 — fixes a self_confidence scoring bug, not a Stage 1 model problem)
+(v4 — surfaces the per-class shape of Stage 1 miscalibration, not a
+triage-logic bug — see reannotate_oof_predict.py v3 for the actual fix,
+which is lowering --max-pos-weight upstream)
 
 Consumes the out-of-fold probability matrix from
 `src/reannotate_oof_predict.py` and turns it into a prioritized human-review
@@ -20,6 +22,18 @@ claimed label. Fixed by only comparing against the class(es) the annotator
 actually claimed (see `self_confidence_for_row` below). Tested on a real
 oof_probs.npy: bucket A went from 1,905 rows to 486 — landing inside the
 300-500 target — with no change to Stage 1 at all.
+
+WHAT CHANGED IN v4 (why bucket A was back up at 1886 on a *different*
+oof_probs.npy, even with the v3 fix in place): the v3 self_confidence fix
+is a triage-logic fix — it doesn't help if the underlying probabilities
+are themselves miscalibrated corpus-wide. A run with avg 2.54 predicted
+positives/row (true corpus avg ~0.8) pushes `max(probs)` up even on clean
+no_distortion rows, which drags their self_confidence down and sweeps them
+into bucket A regardless of the v3 fix. This version adds a per-class
+sanity printout (see main()) so an inflated bucket A can be diagnosed as
+"Stage 1 is over-predicting, re-run it with a lower --max-pos-weight"
+instead of being mistaken for a triage bug a second time. No change to the
+bucketing logic itself.
 
 Per-row scores
 --------------
@@ -177,14 +191,40 @@ def main(argv=None):
     # --- sanity check on the OOF model itself (Stage 1 quality), before scoring ---
     avg_pos_per_row = (probs > 0.5).sum(axis=1).mean()
     per_class_std = probs.std(axis=0)
+
+    # Always written (cheap, and useful to diff across reruns after retuning
+    # --max-pos-weight), printed only when the aggregate check trips below.
+    true_rate = y_ml.mean(axis=0)
+    pred_rate = (probs > 0.5).mean(axis=0)
+    per_class_df = pd.DataFrame({
+        "distortion": DISTORTIONS,
+        "true_rate": true_rate.round(3),
+        "pred_rate_at_0.5": pred_rate.round(3),
+        "over_prediction": (pred_rate - true_rate).round(3),
+    }).sort_values("over_prediction", ascending=False).reset_index(drop=True)
+    Path(args.out).mkdir(parents=True, exist_ok=True)
+    per_class_df.to_csv(Path(args.out) / "triage_per_class_stats.csv", index=False)
+
     if avg_pos_per_row > 2.0 or per_class_std.mean() < 0.15:
         print("!" * 68)
         print("WARNING: oof_probs.npy looks undertrained / over-predicting.")
         print(f"  avg predicted positives/row @0.5 thr = {avg_pos_per_row:.2f} (true corpus avg ~0.8)")
         print(f"  mean per-class prob std              = {per_class_std.mean():.3f} (want > ~0.15)")
-        print("  Consider re-running reannotate_oof_predict.py with a different --max-pos-weight")
-        print("  or more --epochs, or checking the printed per-fold inner-val macro_f1 there.")
+        print("  Consider re-running reannotate_oof_predict.py with a lower --max-pos-weight")
+        print("  (training itself may be fine — check the per-fold inner-val macro_f1 printed there;")
+        print("   if it climbed and plateaued, this is a pos_weight calibration issue, not undertraining).")
         print("!" * 68)
+
+        # Per-class breakdown so an inflated aggregate can be attributed to specific
+        # classes instead of guessed at — mirrors the same check in Stage 1.
+        # (see triage_per_class_stats.csv, already written above, for the full table)
+        print("\nPER-CLASS BREAKDOWN (worst over-prediction first):")
+        print(f"{'class':<28}{'true_rate':>10}{'pred@0.5':>10}{'over-pred':>11}")
+        for _, r in per_class_df.iterrows():
+            flag = "  <-- check" if r["over_prediction"] > 0.15 else ""
+            print(f"{r['distortion']:<28}{r['true_rate']:>10.3f}{r['pred_rate_at_0.5']:>10.3f}"
+                  f"{r['over_prediction']:>11.3f}{flag}")
+        print()
 
     scores = compute_scores(y_ml, probs)
     cleanlab_issue, cleanlab_quality = try_cleanlab_quality(y_ml, probs)
@@ -236,8 +276,8 @@ def main(argv=None):
     audit["review_notes"] = ""
 
     audit.to_csv(out_dir / "audit_queue.csv", index=False)
-    print(f"\nWrote triage_full.csv ({len(out)} rows) and "
-          f"audit_queue.csv ({len(audit)} rows, buckets A+B, priority-sorted) to {out_dir}/")
+    print(f"\nWrote triage_full.csv ({len(out)} rows), audit_queue.csv ({len(audit)} rows, "
+          f"buckets A+B, priority-sorted), and triage_per_class_stats.csv to {out_dir}/")
     print("\nValid distortion labels for the corrected_primary/corrected_secondary "
           "columns (leave corrected_secondary blank if none):")
     print("  no_distortion, " + ", ".join(DISTORTIONS))
