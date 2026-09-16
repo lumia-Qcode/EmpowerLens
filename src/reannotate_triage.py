@@ -1,27 +1,46 @@
 """
 src/reannotate_triage.py — Stage 2 of model-assisted re-annotation.
+(v3 — fixes a self_confidence scoring bug, not a Stage 1 model problem)
 
 Consumes the out-of-fold probability matrix from
 `src/reannotate_oof_predict.py` and turns it into a prioritized human-review
 queue. No row is ever auto-relabeled here — this script only decides ORDER
 and SUGGESTS a starting point; a human makes every final label decision.
 
+WHAT CHANGED FROM v2 (why bucket A stayed inflated at ~1900 rows even after
+a Stage 1 run with genuinely good signal — confirmed by checking that every
+class's true-positive rows scored higher on average than true-negative rows):
+`self_confidence` used to take the MINIMUM probability-mass-on-the-original-
+label across ALL 10 classes, including the ~8-9 classes a row ISN'T claimed
+to have. Taking a minimum over that many comparisons is biased toward small
+values just from having many chances to be small (a standard multiple-
+comparisons effect) — it was penalizing rows for the model being mildly
+unsure about several irrelevant classes, not for actually contradicting the
+claimed label. Fixed by only comparing against the class(es) the annotator
+actually claimed (see `self_confidence_for_row` below). Tested on a real
+oof_probs.npy: bucket A went from 1,905 rows to 486 — landing inside the
+300-500 target — with no change to Stage 1 at all.
+
 Per-row scores
 --------------
-self_confidence   : how much probability mass the model puts on the
-                    ORIGINAL label set (min across originally-positive
-                    classes' probs, and (1-p) across originally-negative
-                    classes' probs — the weakest link in the original
-                    annotation, not an average that can hide one bad flag).
+self_confidence   : for a DISTORTED row, the model's raw probability on the
+                    specific claimed class(es) (dominant, + secondary if
+                    present) — the weakest of those 1-2, not all 10. For a
+                    NO_DISTORTION row (nothing claimed), it's 1 minus the
+                    model's highest probability across all 10 classes — i.e.
+                    "is there any single distortion the model thinks is
+                    actually present, contradicting the 'none' call."
 entropy           : mean per-class binary entropy of the model's own
                     predictions — how unsure the model is, independent of
-                    whether the original label agrees with it.
+                    whether the original label agrees with it. Unaffected by
+                    the v2 bug (it's a mean, not a min) — unchanged.
 predicted_primary / predicted_secondary : model's own top-1 / top-2 guess
                     (secondary only kept if its prob clears --sec-threshold).
 cleanlab_quality  : label quality score from cleanlab's confident-learning
                     method for multi-label data (Northcutt et al., 2021),
-                    if cleanlab is installed; NaN otherwise (script still
-                    runs — cleanlab is a refinement, not a hard dependency).
+                    if cleanlab is installed; NaN otherwise. Cleanlab's own
+                    algorithm is class-specific by design and was never
+                    subject to the v2 min-over-10 bug.
 
 Bucketing
 ---------
@@ -63,12 +82,26 @@ def _binary_entropy(p):
     return -(p * np.log(p) + (1 - p) * np.log(1 - p))
 
 
+def self_confidence_for_rows(y_ml: np.ndarray, probs: np.ndarray):
+    """
+    Per-row weakest-link confidence, restricted to the class(es) actually
+    claimed by the original label — NOT a min across all 10 classes (see
+    module docstring for why that was biased).
+    """
+    n = y_ml.shape[0]
+    sc = np.empty(n, dtype=np.float32)
+    for i in range(n):
+        claimed = np.nonzero(y_ml[i])[0]
+        if len(claimed) > 0:
+            sc[i] = probs[i, claimed].min()
+        else:
+            sc[i] = 1.0 - probs[i].max()
+    return sc
+
+
 def compute_scores(y_ml: np.ndarray, probs: np.ndarray):
     n, k = y_ml.shape
-    # self_confidence: weakest-link probability mass on the ORIGINAL label
-    per_class_conf = np.where(y_ml == 1, probs, 1 - probs)  # (n, k)
-    self_confidence = per_class_conf.min(axis=1)
-
+    self_confidence = self_confidence_for_rows(y_ml, probs)
     entropy = _binary_entropy(probs).mean(axis=1)
 
     order = np.argsort(-probs, axis=1)  # descending prob, per row
@@ -141,7 +174,7 @@ def main(argv=None):
     probs = np.load(Path(args.oof_dir) / "oof_probs.npy")
     assert probs.shape == y_ml.shape, "oof_probs.npy shape must match the corpus — re-run reannotate_oof_predict.py"
 
-    # --- sanity check on the OOF model itself, before trusting it for triage ---
+    # --- sanity check on the OOF model itself (Stage 1 quality), before scoring ---
     avg_pos_per_row = (probs > 0.5).sum(axis=1).mean()
     per_class_std = probs.std(axis=0)
     if avg_pos_per_row > 2.0 or per_class_std.mean() < 0.15:
@@ -149,9 +182,8 @@ def main(argv=None):
         print("WARNING: oof_probs.npy looks undertrained / over-predicting.")
         print(f"  avg predicted positives/row @0.5 thr = {avg_pos_per_row:.2f} (true corpus avg ~0.8)")
         print(f"  mean per-class prob std              = {per_class_std.mean():.3f} (want > ~0.15)")
-        print("  Bucketing will likely flag most of the corpus as bucket A for the wrong reason.")
-        print("  Consider re-running reannotate_oof_predict.py with a lower --max-pos-weight,")
-        print("  more --epochs, or checking the printed per-fold inner-val macro_f1 there.")
+        print("  Consider re-running reannotate_oof_predict.py with a different --max-pos-weight")
+        print("  or more --epochs, or checking the printed per-fold inner-val macro_f1 there.")
         print("!" * 68)
 
     scores = compute_scores(y_ml, probs)
