@@ -29,9 +29,17 @@ What this script does and does NOT give you
   Annotated_data.csv reflections are a median of 129. Training on one-liners and
   testing on paragraphs is a real distribution shift, and it is the most likely
   reason this fails to help. Report that if it does.
-* The official train/valid/test split is test-heavy (1,920 / 961 / 6,807) and is
-  **ignored** — everything is emitted as training data. Evaluation stays on the
-  untouched Annotated test set ("train augmented, test natural").
+* The official train/valid/test split is test-heavy (1,920 / 961 / 6,807). By
+  default everything becomes training data and evaluation stays on the untouched
+  Annotated test set ("train augmented, test natural").
+
+  The official splits ARE meaningful in one respect: they are **persona-disjoint**
+  (231 / 115 / 812 personas, zero pairwise overlap). Since each thought is written
+  *from* its persona, any in-domain holdout must respect that boundary or the model
+  can match persona-specific phrasing instead of distortion structure. Hence
+  ``--holdout official-valid``, which reserves their valid split (961 rows) and
+  costs only those rows; reserving their *test* split would cost 6,807 and leave
+  less training data than Annotated already provides.
 
 The 2.4 MB tarball is COMMITTED at data/patternreframe/, so none of the below needs
 network access. It is extracted on demand to data/patternreframe/extracted/, which
@@ -148,6 +156,16 @@ def main(argv=None):
     ap.add_argument("--merge-into", default=None,
                     help="existing splits dir; its train is prepended and its "
                          "val/test are copied through UNCHANGED")
+    # For SEQUENTIAL fine-tuning (train on PatternReframe, then continue on
+    # Annotated) stage 1 must train on PatternReframe ALONE — merging defeats the
+    # point. But it still needs a val set for epoch selection and early stopping,
+    # and PatternReframe's own official split is not usable here (it is test-heavy
+    # and out of domain). So: take val/test from the target dataset, take train
+    # from PatternReframe only.
+    ap.add_argument("--eval-from", default=None,
+                    help="like --merge-into but does NOT prepend that dir's train: "
+                         "train is PatternReframe alone, val/test are copied from "
+                         "here. For stage 1 of sequential fine-tuning.")
     # marked_patterns intensities run 0-5. The threshold controls how dense the
     # multi-label targets are, and it must be matched to the target data or the
     # label structure itself becomes a distribution shift:
@@ -155,6 +173,40 @@ def main(argv=None):
     # Annotated_data.csv averages 1.3 (dominant + optional secondary, capped at 2),
     # so 3 is the closest match. The primary label is forced on regardless, so no
     # row can end up with zero labels.
+    # An IN-DOMAIN diagnostic set. Without one, stage A is scored only on the
+    # Annotated test set, and a low number is ambiguous: stage A may have learned
+    # nothing, or it may have learned PatternReframe well and simply not transferred.
+    # Those call for opposite responses (fix the run vs report a negative result).
+    #
+    # The official split is NOT used for this: it is test-heavy (1,920/961/6,807),
+    # so honouring it would cut training data from 8,712 to 1,920 and destroy the
+    # premise of the experiment. A random slice costs ~870 training rows instead.
+    # The official splits are PERSONA-DISJOINT — 231/115/812 personas with zero
+    # pairwise overlap — and each thought is written FROM its persona, so a random
+    # holdout puts the same persona on both sides and lets the model match
+    # persona-specific phrasing rather than distortion structure. Default respects
+    # that boundary.
+    ap.add_argument("--holdout", choices=["none", "official-valid", "random"],
+                    default="none",
+                    help="in-domain diagnostic set. 'official-valid' uses the authors' "
+                         "valid split (961 rows, persona-disjoint, the correct choice); "
+                         "'random' takes a stratified --holdout-frac slice and is NOT "
+                         "persona-disjoint, so it reads optimistically.")
+    ap.add_argument("--holdout-frac", type=float, default=0.1,
+                    help="fraction used only by --holdout random")
+    ap.add_argument("--holdout-out", default=None,
+                    help="where to write the in-domain diagnostic dir "
+                         "(default: <out>_holdout)")
+    ap.add_argument("--holdout-seed", type=int, default=42)
+    # "Discounting the positive" is a whole class of 970 rows with no counterpart in
+    # this taxonomy. Merging it into mental_filter is ABLATION-ONLY, off by default:
+    # mental_filter has 936 rows, so the merge doubles it to 1,906 and makes it twice
+    # the size of every other class, with half of it a different CBT concept. See the
+    # note in PATTERN_MAP.
+    ap.add_argument("--merge-discounting", action="store_true",
+                    help="ABLATION: map 'Discounting the positive' onto mental_filter "
+                         "instead of dropping it. Broadens the class definition away "
+                         "from the one the test set is annotated with.")
     ap.add_argument("--min-intensity", type=int, default=3,
                     help="marked_patterns intensity at or above which a pattern counts "
                          "as present (0-5 scale; default 3 ~= 1.3 labels/row, matching "
@@ -168,13 +220,19 @@ def main(argv=None):
         return 1
     src = _resolve_source(Path(args.source))
 
+    pattern_map = dict(PATTERN_MAP)
+    if args.merge_discounting:
+        pattern_map["Discounting the positive"] = "mental_filter"
+        print("[ablation] 'Discounting the positive' -> mental_filter "
+              "(broadens the class beyond the test set's annotation)")
+
     rows, skipped = [], 0
     for name in ("train", "valid", "test"):
         p = src / f"{name}.txt"
         if not p.exists():
             raise FileNotFoundError(f"missing {p} — point --source at the extracted dir")
         for r in _load_jsonl(p):
-            canon = PATTERN_MAP.get(r["pattern"])
+            canon = pattern_map.get(r["pattern"])
             if canon is None:            # "Discounting the positive" etc.
                 skipped += 1
                 continue
@@ -183,7 +241,7 @@ def main(argv=None):
             # thoughts carry 2+ patterns with a graded intensity, which matches the
             # multilabel task far better than a single label does.
             for k, v in (r.get("marked_patterns") or {}).items():
-                m = PATTERN_MAP.get(k)
+                m = pattern_map.get(k)
                 if m and str(v).isdigit() and int(v) >= args.min_intensity:
                     ml[f"ml_{m}"] = 1
             ml[f"ml_{canon}"] = 1        # the primary is always present
@@ -192,10 +250,70 @@ def main(argv=None):
                 "y_bin": 1,               # every PatternReframe row is distorted
                 "y_mc": MC_CLASSES.index(canon),
                 **ml,
+                # Provenance, needed for a persona-disjoint holdout. The official
+                # splits share ZERO personas (231/115/812, no pairwise overlap), and
+                # thoughts are written FROM the persona, so a holdout that ignores
+                # this boundary lets the model match persona-specific phrasing
+                # instead of distortion structure. Dropped before writing.
+                "_src_split": name,
             })
 
-    df = pd.DataFrame(rows)[KEEP_COLS].drop_duplicates(subset=[TEXT_COL]).reset_index(drop=True)
+    df = pd.DataFrame(rows).drop_duplicates(subset=[TEXT_COL]).reset_index(drop=True)
     out.mkdir(parents=True, exist_ok=True)
+
+    holdout_info = None
+    if args.holdout != "none":
+        if args.holdout == "official-valid":
+            # The authors' own valid split: 961 rows over 115 personas, disjoint from
+            # every other split. Costs 961 training rows. Their TEST split would be
+            # the more conventional choice but costs 6,807 — that would cut training
+            # data to ~1,900 and leave no more than the Annotated set already has,
+            # destroying the premise of the experiment.
+            #
+            # Training on rows the authors called "test" is deliberate and safe here
+            # because no PatternReframe benchmark number is reported: this is
+            # borrowed training data plus an in-domain sanity check, not a
+            # leaderboard entry.
+            mask = df["_src_split"] == "valid"
+            hold = df[mask].reset_index(drop=True)
+            df = df[~mask].reset_index(drop=True)
+        else:
+            # Random stratified slice. NOT persona-disjoint — the same persona can
+            # land on both sides, so the diagnostic reads optimistically. Kept only
+            # as a comparison point for the official-valid holdout.
+            keep = []
+            for _, g in df.groupby("y_mc"):
+                n = max(1, round(len(g) * args.holdout_frac))
+                keep.extend(g.sample(n, random_state=args.holdout_seed).index)
+            hold = df.loc[sorted(keep)].reset_index(drop=True)
+            df = df.drop(index=keep).reset_index(drop=True)
+
+        # Halve it into val/test so the dir is a normal splits dir that evaluate.py
+        # can read without special-casing.
+        h_out = Path(args.holdout_out or f"{args.out}_holdout")
+        h_out.mkdir(parents=True, exist_ok=True)
+        mid = len(hold) // 2
+        df[KEEP_COLS].to_csv(h_out / "train.csv", index=False)
+        hold[KEEP_COLS].iloc[:mid].to_csv(h_out / "val.csv", index=False)
+        hold[KEEP_COLS].iloc[mid:].to_csv(h_out / "test.csv", index=False)
+        holdout_info = {
+            "dir": str(h_out),
+            "mode": args.holdout,
+            "persona_disjoint": args.holdout == "official-valid",
+            "frac": args.holdout_frac if args.holdout == "random" else None,
+            "seed": args.holdout_seed,
+            "n_holdout": int(len(hold)),
+            "n_val": int(mid), "n_test": int(len(hold) - mid),
+            "purpose": "IN-DOMAIN diagnostic for stage A. A high score here with a low "
+                       "score on the Annotated test set means the domain gap is the "
+                       "problem; low on both means stage A itself failed.",
+        }
+        (h_out / "split_manifest.json").write_text(json.dumps(holdout_info, indent=2),
+                                                   encoding="utf-8")
+        print(f"[holdout] {len(hold)} rows -> {h_out} "
+              f"(val={mid}, test={len(hold) - mid}); train reduced to {len(df)}")
+
+    df = df[KEEP_COLS]          # drop _src_split; provenance never reaches a CSV
 
     manifest = {
         "created_utc": datetime.now(timezone.utc).isoformat(),
@@ -205,6 +323,8 @@ def main(argv=None):
                    "train/valid/test split is ignored; everything becomes train.",
         "n_rows": int(len(df)),
         "n_skipped_unmappable_pattern": skipped,
+        "merge_discounting": bool(args.merge_discounting),
+        "holdout": holdout_info,
         "per_class": {c.replace("ml_", ""): int(df[c].sum()) for c in ML_COLS},
         "median_words": int(df[TEXT_COL].str.split().str.len().median()),
         "caveats": [
@@ -214,7 +334,27 @@ def main(argv=None):
         ],
     }
 
-    if args.merge_into:
+    if args.merge_into and args.eval_from:
+        print("--merge-into and --eval-from are mutually exclusive", file=sys.stderr)
+        return 1
+
+    if args.eval_from:
+        base = Path(args.eval_from)
+        df.to_csv(out / "train.csv", index=False)
+        for n in ("val", "test"):
+            pd.read_csv(base / f"{n}.csv", encoding="utf-8-sig")[KEEP_COLS].to_csv(
+                out / f"{n}.csv", index=False)
+        n_val = len(pd.read_csv(out / "val.csv"))
+        manifest.update({
+            "eval_from": str(base),
+            "n_train_patternreframe": int(len(df)),
+            "note": "SEQUENTIAL stage 1: train is PatternReframe ONLY; val/test copied "
+                    "from --eval-from so epoch selection targets the real distribution. "
+                    "Stage 2 continues from this checkpoint on the target train set.",
+        })
+        print(f"train {len(df)} (PatternReframe only) — val/test from {base} "
+              f"(val={n_val})")
+    elif args.merge_into:
         base = Path(args.merge_into)
         base_train = pd.read_csv(base / "train.csv", encoding="utf-8-sig")
         missing = [c for c in KEEP_COLS if c not in base_train.columns]

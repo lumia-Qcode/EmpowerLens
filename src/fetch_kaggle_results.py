@@ -22,8 +22,14 @@ The slug is the tail of the notebook URL:
                                  ^^^^^^^^^^^^^^ ^^^^^^^^^^^^^
                                  username       slug
 
-Downloads into the repo root, so `results_*/` land where `src/compile_results.py`
-expects them, then runs the compiler unless --no-compile is passed.
+Downloads into `results_RUN2/`, so the `results_*/` folders a notebook wrote land
+under the RUN2 root where `src/compile_results.py` looks for them, then runs the
+compiler unless --no-compile is passed.
+
+RUN2 is the default because RUN1 is history: it holds every result produced before
+determinism was switched on and before the leaked splits were rebuilt. Downloading
+a fresh Kaggle run on top of it would silently overwrite numbers the thesis
+already cites. Pass `--dest` only if you deliberately mean to land somewhere else.
 """
 
 from __future__ import annotations
@@ -33,9 +39,13 @@ import subprocess
 import sys
 from pathlib import Path
 
+RUN2_ROOT = "results_RUN2"
+
 RESULT_DIRS = (
     "results_stage1", "results_stage2", "results_cascade",
     "results_multiclass_v2", "results_multilabel_flat",
+    "results_experiments", "results_tutorial_distilbert",
+    "results_model_selection",
 )
 
 
@@ -43,7 +53,8 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description="Fetch Kaggle notebook outputs into the repo.")
     ap.add_argument("--kernel", required=True,
                     help="<username>/<notebook-slug>, e.g. nayabshahbaz/cascade-run-v1")
-    ap.add_argument("--dest", default=".", help="download target (default: repo root)")
+    ap.add_argument("--dest", default=RUN2_ROOT,
+                    help=f"download target (default: {RUN2_ROOT}/)")
     ap.add_argument("--no-compile", action="store_true",
                     help="skip the src.compile_results step")
     args = ap.parse_args(argv)

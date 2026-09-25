@@ -50,6 +50,21 @@ import subprocess
 import sys
 from pathlib import Path
 
+# Determinism is opt-in via --deterministic, but CUBLAS_WORKSPACE_CONFIG has
+# to be in the environment BEFORE CUDA initialises, so the env var is set at
+# import time and the torch-level flags are flipped in main().
+import os
+os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
+# Windows + torch CPU aborts with 0xC0000005 (exit 3221225477) on two OpenMP
+# runtimes being loaded. src.train_transformer sets this, but `import torch`
+# below runs BEFORE that import, so the workaround arrived too late and every
+# local --smoke run crashed. Harmless on Linux/Kaggle.
+os.environ.setdefault("KMP_DUPLICATE_LIB_OK", "TRUE")
+
+# Overwritten by main() when --deterministic is passed; recorded in every
+# checkpoint's meta.json so a result carries the settings it was made under.
+DETERMINISM_INFO = {"deterministic": False}
+
 import numpy as np
 import pandas as pd
 import torch
@@ -60,13 +75,15 @@ from torch.utils.data import DataLoader, WeightedRandomSampler
 from transformers import (
     AutoModelForSequenceClassification,
     AutoTokenizer,
+    EarlyStoppingCallback,
     Trainer,
     TrainingArguments,
     set_seed,
 )
 
 from src.data import DISTORTIONS, MC_CLASSES
-from src.metrics import BINARY_CLASSES, metric_bundle, per_class_table
+from src.metrics import (BINARY_CLASSES, metric_bundle, per_class_table,
+                         roc_auc_from_logits)
 from src.train_transformer import (
     ML_COLS,
     TASK_NUM_LABELS,
@@ -287,7 +304,8 @@ def run_training(task: str, model_name: str, seed: int, splits_dir: str, out_dir
                   loss_name: str, sampler_name: str = "none", epochs: int = 4, lr: float = 2e-5,
                   batch_size: int = 16, max_length: int = 512, truncation: str = "head",
                   head_keep: int = 128, device_choice: str = "auto", gamma: float = 2.0,
-                  cb_beta: float = 0.999, run_tag: str = "run", smoke: bool = False) -> Path:
+                  cb_beta: float = 0.999, run_tag: str = "run", smoke: bool = False,
+                  early_stopping_patience: int = 0) -> Path:
     """Train one flat Mental-RoBERTa run with a configurable loss/sampler
     and save a checkpoint whose meta.json is fully compatible with
     src/evaluate.py (task, model, seed, max_length, truncation, head_keep,
@@ -331,7 +349,10 @@ def run_training(task: str, model_name: str, seed: int, splits_dir: str, out_dir
         output_dir=str(ckpt_dir), num_train_epochs=epochs, per_device_train_batch_size=batch_size,
         per_device_eval_batch_size=batch_size, learning_rate=lr, warmup_ratio=0.1, weight_decay=0.01,
         eval_strategy="epoch", save_strategy="epoch", load_best_model_at_end=True,
-        metric_for_best_model="macro_f1", greater_is_better=True, save_total_limit=1,
+        # multiclass selects on macro_f1_10 so no_distortion cannot carry the
+        # score; the other tasks have no such majority class to exclude.
+        metric_for_best_model=("macro_f1_10" if task == "multiclass" else "macro_f1"),
+        greater_is_better=True, save_total_limit=1,
         fp16=(device == "cuda"), logging_steps=10, report_to="none", seed=seed,
         use_cpu=(device == "cpu"),
     )
@@ -340,17 +361,42 @@ def run_training(task: str, model_name: str, seed: int, splits_dir: str, out_dir
         logits, labels = eval_pred
         if isinstance(logits, tuple):
             logits = logits[0]
+        # roc_auc rides along as a diagnostic: it ignores the threshold, so a low
+        # F1 beside a high AUC says the fault is calibration, not learning.
+        out = {"roc_auc": roc_auc_from_logits(task, labels, logits) or float("nan")}
         if multilabel:
             preds = (1 / (1 + np.exp(-logits)) >= 0.5).astype(int)
-            return {"macro_f1": f1_score(labels, preds, average="macro", zero_division=0)}
+            out["macro_f1"] = f1_score(labels, preds, average="macro", zero_division=0)
+            return out
         preds = np.argmax(logits, axis=1)
-        return {"macro_f1": f1_score(labels, preds, average="macro", zero_division=0)}
+        out["macro_f1"] = f1_score(labels, preds, average="macro", zero_division=0)
+        if task == "multiclass":
+            # macro over the TEN distortion classes, no_distortion dropped.
+            # Plain macro_f1 here averages in no_distortion, which is 36.9% of
+            # rows and by far the easiest class - selecting on it partly rewards
+            # the model for the one thing that was never hard.
+            out["macro_f1_10"] = f1_score(labels, preds, labels=list(range(1, 11)),
+                                          average="macro", zero_division=0)
+        return out
+
+    # Off by default (0), which is exactly what every run in results_RUN2/ was
+    # trained under - turning it on would change the provenance of numbers that
+    # are already in the tables. With load_best_model_at_end the final weights
+    # are the same either way; patience only stops paying for epochs after the
+    # peak. Safe to attach only because load_best_model_at_end and
+    # metric_for_best_model are set above; EarlyStoppingCallback raises without
+    # them.
+    callbacks = ([EarlyStoppingCallback(early_stopping_patience=early_stopping_patience)]
+                 if early_stopping_patience > 0 else None)
+    if callbacks:
+        print(f"  early stopping: patience {early_stopping_patience} eval(s) "
+              f"with no gain on {'macro_f1_10' if task == 'multiclass' else 'macro_f1'}")
 
     trainer = FlatTrainer(
         model=model, args=targs, train_dataset=train_ds, eval_dataset=val_ds,
         data_collator=functools.partial(collate, pad_id=tokenizer.pad_token_id, multilabel=multilabel),
         compute_metrics=compute_metrics, processing_class=tokenizer,
-        loss_fn=loss_fn, custom_sampler=sampler,
+        loss_fn=loss_fn, custom_sampler=sampler, callbacks=callbacks,
     )
     trainer.train()
     val_metrics = trainer.evaluate()
@@ -358,6 +404,22 @@ def run_training(task: str, model_name: str, seed: int, splits_dir: str, out_dir
     ckpt_dir.mkdir(parents=True, exist_ok=True)
     trainer.save_model(str(ckpt_dir))
     tokenizer.save_pretrained(str(ckpt_dir))
+
+    # Per-epoch curve. Without this nobody can tell whether the epoch budget was
+    # enough: --epochs 4 with load_best_model_at_end means "best of the first 4",
+    # and if the peak lies beyond 4 it is silently never seen. No previous run in
+    # this repo saved one, so the question could not even be asked in hindsight.
+    sel_key = "eval_macro_f1_10" if task == "multiclass" else "eval_macro_f1"
+    hist = [h for h in trainer.state.log_history if sel_key in h]
+    if hist:
+        hist_df = pd.DataFrame(hist)
+        hist_df.to_csv(ckpt_dir / "epoch_history.csv", index=False)
+        best_row = hist_df.loc[hist_df[sel_key].idxmax()]
+        best_epoch = float(best_row.get("epoch", float("nan")))
+        print(f"  best epoch {best_epoch:.0f} of {epochs} "
+              f"(val {sel_key[5:]}={best_row[sel_key]:.3f})"
+              + ("  <-- peaked at the budget limit; budget may be too small"
+                 if best_epoch >= epochs else ""))
 
     thresholds = None
     if multilabel:
@@ -374,8 +436,15 @@ def run_training(task: str, model_name: str, seed: int, splits_dir: str, out_dir
         "head_keep": head_keep, "device": device, "smoke": smoke, "num_labels": num_labels,
         "val_truncation_rate": val_trunc_rate,
         "loss": loss_name, "sampler": sampler_name, "gamma": gamma, "cb_beta": cb_beta,
+        "early_stopping_patience": early_stopping_patience,
         "val_metrics": {k: float(v) for k, v in val_metrics.items() if isinstance(v, (int, float))},
         "thresholds": thresholds,
+        # A result is only as reproducible as the settings it was made under, so
+        # they travel with it.
+        "determinism": DETERMINISM_INFO,
+        "best_epoch": (float(hist_df.loc[hist_df[sel_key].idxmax(), "epoch"])
+                       if hist else None),
+        "selection_metric": sel_key[5:],
     }
     (ckpt_dir / "meta.json").write_text(json.dumps(meta, indent=2))
     print(f"  -> saved {ckpt_dir} (val macro_f1={val_metrics.get('eval_macro_f1', float('nan')):.3f})")
@@ -407,17 +476,71 @@ def run_single_seed(experiment_tag: str, task: str, model_name: str, seed: int, 
         batch_size=args.batch_size, max_length=args.max_length, truncation=args.truncation,
         head_keep=args.head_keep, device_choice=args.device, gamma=args.gamma, cb_beta=args.cb_beta,
         run_tag=experiment_tag, smoke=args.smoke,
+        early_stopping_patience=args.early_stopping_patience,
     )
     return run_evaluation(ckpt, splits_dir, out_dir, max_labels=args.max_labels)
 
 
-def orchestrate_all_seeds(experiment_num: int, seeds: list[int], base_argv: list[str]) -> None:
+# Flags describing the TRAINING RECIPE rather than the experiment's identity.
+# Every one of these has to survive into the per-seed subprocess, because the
+# child re-parses argv from scratch and argparse silently substitutes its own
+# default for anything missing.
+#
+# This is not hypothetical. Until this existed, each base_argv below carried only
+# the experiment's own flags, so `--epochs 8 --deterministic` reached the parent
+# and then evaporated: every seed actually trained for 4 epochs, with determinism
+# OFF and head (not head_tail) truncation. Nothing failed and nothing warned -
+# the notebook's determinism gate still printed PASS, because it tests the flag
+# separately from the runs. The entire point of the re-run (comparable,
+# reproducible numbers at a validated budget) was defeated by an argv omission.
+RECIPE_FLAGS = ("--model", "--epochs", "--lr", "--batch-size", "--max-length",
+                "--truncation", "--head-keep", "--max-labels", "--device",
+                "--deterministic", "--smoke", "--early-stopping-patience")
+
+
+def recipe_argv(args) -> list[str]:
+    """The recipe flags rendered for a subprocess, exactly as this run has them."""
+    argv = [
+        "--model", args.model,
+        "--epochs", str(args.epochs),
+        "--lr", str(args.lr),
+        "--batch-size", str(args.batch_size),
+        "--max-length", str(args.max_length),
+        "--truncation", args.truncation,
+        "--head-keep", str(args.head_keep),
+        "--max-labels", str(args.max_labels),
+        "--device", args.device,
+        "--early-stopping-patience", str(args.early_stopping_patience),
+    ]
+    if args.deterministic:
+        argv.append("--deterministic")
+    if args.smoke:
+        argv.append("--smoke")
+    return argv
+
+
+def orchestrate_all_seeds(experiment_num: int, seeds: list[int],
+                          base_argv: list[str], args) -> None:
     """Spawn one subprocess per seed (same pattern as
     notebooks/kaggle_runner.ipynb's `for seed in (42, 1337, 2024): !python ...`
     loop) so each seed gets a fresh CUDA context."""
+    # Re-invoke THIS module, whatever it is called. The name used to be
+    # hardcoded as "src.experiments_flat_mentalroberta"; when that duplicate copy
+    # was deleted the hardcode survived, so every multi-seed run died with
+    # "No module named src.experiments_flat_mentalroberta" — after the notebook
+    # had already spent GPU time getting there. __spec__.name cannot drift.
+    self_module = (__spec__.name if __spec__ is not None
+                   else "experiments.experiments_flat_mentalroberta")
+    # A caller that set a recipe flag itself would be silently overridden below.
+    # Fail loudly instead; no call site does this today.
+    clash = sorted(set(base_argv) & set(RECIPE_FLAGS))
+    if clash:
+        raise ValueError(f"base_argv must not set recipe flags {clash} - "
+                         f"they come from recipe_argv(args)")
+    recipe = recipe_argv(args)
     for seed in seeds:
-        cmd = [sys.executable, "-m", "src.experiments_flat_mentalroberta",
-               *base_argv, "--seed", str(seed)]
+        cmd = [sys.executable, "-m", self_module,
+               *base_argv, *recipe, "--seed", str(seed)]
         print(f"\n=== orchestrating seed {seed}: {' '.join(cmd)} ===")
         subprocess.run(cmd, check=True)
 
@@ -550,7 +673,7 @@ def experiment2_dataset_ablation(args):
                          "--codipas-splits", args.codipas_splits,
                          "--combined-splits", args.combined_splits,
                          "--only-config", name]
-            orchestrate_all_seeds(2, args.seeds, base_argv)
+            orchestrate_all_seeds(2, args.seeds, base_argv, args)
         if not args.only_config:
             _aggregate_experiment2(args)
         return
@@ -612,7 +735,7 @@ def _loss_sampler_experiment(args, experiment_tag: str, loss_name: str, sampler_
         base_argv = ["--experiment", args.experiment_num_str, "--task", args.task,
                      "--splits", args.splits, "--out", args.out, "--loss", loss_name,
                      "--sampler", sampler_name, "--gamma", str(args.gamma), "--cb-beta", str(args.cb_beta)]
-        orchestrate_all_seeds(int(args.experiment_num_str), args.seeds, base_argv)
+        orchestrate_all_seeds(int(args.experiment_num_str), args.seeds, base_argv, args)
         _aggregate_generic(out, f"{summary_prefix}_all_seed_results.csv",
                            f"{summary_prefix}_mean_std.csv", group_cols=["loss", "sampler"])
         return
@@ -654,7 +777,7 @@ def experiment3_ce_vs_weighted_ce(args):
         for loss_name in ("ce", "weighted_ce"):
             base_argv = ["--experiment", "3", "--task", args.task, "--splits", args.splits,
                          "--out", args.out, "--loss", loss_name]
-            orchestrate_all_seeds(3, args.seeds, base_argv)
+            orchestrate_all_seeds(3, args.seeds, base_argv, args)
         _aggregate_generic(out, "exp3_all_seed_results.csv", "exp3_mean_std.csv", ["loss"])
         return
     _loss_sampler_experiment(args, "exp3", args.loss, "none", "exp3")
@@ -670,7 +793,7 @@ def experiment4_focal_vs_class_balanced(args):
             base_argv = ["--experiment", "4", "--task", args.task, "--splits", args.splits,
                          "--out", args.out, "--loss", loss_name, "--gamma", str(args.gamma),
                          "--cb-beta", str(args.cb_beta)]
-            orchestrate_all_seeds(4, args.seeds, base_argv)
+            orchestrate_all_seeds(4, args.seeds, base_argv, args)
         _aggregate_generic(out, "exp4_all_seed_results.csv", "exp4_mean_std.csv", ["loss"])
         return
     _loss_sampler_experiment(args, "exp4", args.loss, "none", "exp4")
@@ -686,7 +809,7 @@ def experiment5_weighted_sampling(args):
         for sampler_name in ("none", "weighted"):
             base_argv = ["--experiment", "5", "--task", args.task, "--splits", args.splits,
                          "--out", args.out, "--loss", best_loss, "--sampler", sampler_name]
-            orchestrate_all_seeds(5, args.seeds, base_argv)
+            orchestrate_all_seeds(5, args.seeds, base_argv, args)
         _aggregate_generic(out, "exp5_all_seed_results.csv", "exp5_mean_std.csv", ["loss", "sampler"])
         return
     _loss_sampler_experiment(args, "exp5", best_loss, args.sampler, "exp5")
@@ -709,7 +832,7 @@ def experiment6_multilabel(args):
     if args.seed is None:
         base_argv = ["--experiment", "6", "--task", args.task, "--splits", args.splits,
                      "--out", args.out, "--loss", loss_name, "--gamma", str(args.gamma)]
-        orchestrate_all_seeds(6, args.seeds, base_argv)
+        orchestrate_all_seeds(6, args.seeds, base_argv, args)
         _report_experiment6(out)
         return
 
@@ -759,7 +882,7 @@ def experiment7_flat_report(args):
     if args.seed is None:
         base_argv = ["--experiment", "7", "--task", args.task, "--splits", args.splits,
                      "--out", args.out, "--loss", loss_name]
-        orchestrate_all_seeds(7, args.seeds, base_argv)
+        orchestrate_all_seeds(7, args.seeds, base_argv, args)
         _report_experiment7(out)
         return
 
@@ -874,7 +997,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
                          "(see EXPERIMENT_DEFAULT_TASK) — e.g. Experiment 6/7 default to "
                          "multilabel, Experiment 3/4/5 default to multiclass")
     ap.add_argument("--splits", default="data/splits_combined")
-    ap.add_argument("--out", default="results/experiments")
+    ap.add_argument("--out", default="results_RUN2/results_experiments")
     ap.add_argument("--seed", type=int, default=None, help="omit to orchestrate all --seeds via subprocess")
     ap.add_argument("--seeds", default="42,1337,2024")
     ap.add_argument("--loss", default="weighted_ce",
@@ -890,7 +1013,17 @@ def build_arg_parser() -> argparse.ArgumentParser:
     ap.add_argument("--truncation", choices=["head", "head_tail"], default="head")
     ap.add_argument("--head-keep", type=int, default=128)
     ap.add_argument("--device", default="auto")
+    ap.add_argument("--early-stopping-patience", type=int, default=0,
+                    help="stop after N evals with no gain on the selection "
+                         "metric; 0 = off, which is what every run currently in "
+                         "results_RUN2/ used. load_best_model_at_end already "
+                         "restores the peak, so this only saves GPU time.")
     ap.add_argument("--max-labels", type=int, default=2, help="multilabel prediction cap, passed to src.evaluate")
+    ap.add_argument("--deterministic", action="store_true",
+                    help="pin algorithm choice so the same seed reproduces "
+                         "exactly. ~10-30%% slower. Without it, same-seed runs "
+                         "in this project have differed by up to 0.047 macro-F1 "
+                         "-- larger than the seed-to-seed SD being reported.")
     ap.add_argument("--smoke", action="store_true")
     # Experiment 1
     ap.add_argument("--checkpoint-mc", default=None, help="optional trained multiclass checkpoint for audit")
@@ -915,6 +1048,20 @@ def build_arg_parser() -> argparse.ArgumentParser:
 def main(argv=None):
     ap = build_arg_parser()
     args = ap.parse_args(argv)
+
+    if args.deterministic:
+        global DETERMINISM_INFO
+        from src.determinism import enable_determinism
+        DETERMINISM_INFO = enable_determinism()
+        print(f"[determinism] on - same seed will now reproduce exactly "
+              f"(warn_only={DETERMINISM_INFO['warn_only']}; a warning about a "
+              f"non-deterministic op means that op is still not pinned).")
+    else:
+        print("[determinism] OFF - same-seed runs in this project have differed "
+              "by up to 0.047 macro-F1,")
+        print("              which is larger than the seed-to-seed SD being "
+              "reported. Pass --deterministic to fix.")
+
     args.seeds = [int(s) for s in args.seeds.split(",")]
     args.experiment_num_str = str(args.experiment)
 

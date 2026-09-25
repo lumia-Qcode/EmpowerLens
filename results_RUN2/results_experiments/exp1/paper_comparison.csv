@@ -1,0 +1,3 @@
+model,task,seed,split,n_classes,weighted_f1,macro_f1,macro_f1_10,micro_f1,positive_class_f1,no_distortion_f1,no_distortion_wcontrib,truncation_rate,roc_auc,source,averaging
+mental/mental-roberta-base,multilabel,1337,val,10,0.34687433145407953,0.3324277063686564,,0.3374485596707819,,,,0.0277,0.7474357721938006,empowerlens,
+mental/mental-roberta-base,multilabel,1337,test,10,0.27340959705836093,0.26562302357954526,,0.2661290322580645,,,,0.0237,0.7297225913049403,empowerlens,

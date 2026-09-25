@@ -260,3 +260,59 @@ synthetic data needs to be.
 val/test so `splits_combined` becomes usable (and tell Lumia — her committed
 results depend on it); fix the corrupted `CLAUDE.md` on main; verify the paper's
 F1 variant and the 33.7% agreement figure.
+
+---
+
+## E8 — Sequential fine-tuning: PatternReframe → Annotated (2026-08-17, **not yet run**)
+
+`notebooks/kaggle_runner_sequential.ipynb` + `notebooks/sequential_bootstrap.py`.
+
+The alternative to #3 above. #3 **merges** PatternReframe into Stage 2's training
+set; E8 trains on the two **one after the other**. Same data, different combination.
+
+| stage | trains on | splits dir | learns |
+|---|---|---|---|
+| A | PatternReframe alone, 7,846 | `data/splits_pr_only` | what the ten patterns look like |
+| B | Annotated alone, 1,278, from A's weights | `data/splits_stage2` | this dataset's convention + real lengths |
+
+Merging puts 8,712 borrowed rows and 1,278 target rows in the same batches, so the
+model averages two label conventions and two length distributions with the target
+outnumbered 7:1. Sequential separates them. The classifier head is **kept, not
+reinitialised** — both stages are 10-way multilabel over the same `ml_*` columns in
+the same order — so stage B refines the head A already trained. That head reuse is
+the actual advantage over merging, and it only works because the label spaces align.
+
+Intermediate-task transfer: Phang et al. 2018 (STILTs), Pruksachatkun et al. 2020.
+See `docs/REFERENCES.md`.
+
+**Comparison point: E6's Stage 2 isolated, `macro_f1` 0.277 ± 0.016.** Both stages
+are distorted-only, so these numbers are ISOLATED and must never be set against a
+flat or cascade result.
+
+| stage B vs 0.277 | reading |
+|---|---|
+| above | borrowed data helped |
+| ≈ equal | stage A was forgotten — lower the LR before concluding |
+| below | stage A's representations hurt; a reportable negative result |
+
+**Stage A is scored twice** — on the Annotated test set (zero-shot transfer, the
+number that matters) and on 866 held-out PatternReframe rows (in-domain). Without
+the second, a low stage-A score cannot be told apart from a broken run. The held-out
+rows are the authors' own **valid** split, because the official splits are
+persona-disjoint (231/115/812 personas, zero pairwise overlap) and each thought is
+written *from* its persona — a random slice would put the same persona on both sides
+and read optimistically. Verified: 1,043 train personas vs 115 holdout, 0 shared.
+
+**Control:** `emotional_reasoning` per-class F1. It is the one class PatternReframe
+cannot pretrain, so if the other nine improve and it does not, the gain came from the
+borrowed data rather than from extra training steps.
+
+**Ablation available, off by default:** `--merge-discounting` maps PatternReframe's
+"Discounting the positive" onto `mental_filter` instead of dropping it. All 970
+currently-dropped rows are that single class, so merging takes `mental_filter` from
+1,141 to 2,237 — roughly double every other class, half of it a different CBT
+concept the test set is not annotated for. Exposed as an experiment rather than
+adopted as a default, given what E5 and `docs/codipas_agreement.md` cost.
+
+Results land in `results_seq_stageA/`, `results_seq_stageB/`,
+`results_seq_stageA_holdout/`, all registered in `src/compile_results.py`.

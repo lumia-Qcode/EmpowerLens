@@ -1,0 +1,37 @@
+{
+  "created_utc": "2026-08-22T16:54:51+00:00",
+  "generated_by": "src/make_splits_clean.py",
+  "source": "data/splits_combined",
+  "reference": "data/splits",
+  "dest": "data/splits_combined_clean",
+  "rule": "train rows whose normalized text appears in the reference val/test or the source's own val/test are dropped; exact duplicate texts within train are collapsed; val/test copied unchanged",
+  "before": {
+    "source": "data/splits_combined",
+    "reference": "data/splits",
+    "train_rows": 4645,
+    "train_unique_texts": 3019,
+    "duplicate_rows_within_train": 1626,
+    "train_rows_in_reference_val_or_test": 396,
+    "train_rows_in_own_val_or_test": 396,
+    "reference_test_rows_leaked": 195,
+    "reference_test_size": 253,
+    "reference_test_pct_leaked": 77.1
+  },
+  "after": {
+    "train_rows": 2623,
+    "rows_removed": 2022,
+    "removed_pct": 43.5
+  },
+  "verified_after": {
+    "source": "data/splits_combined_clean",
+    "reference": "data/splits",
+    "train_rows": 2623,
+    "train_unique_texts": 2623,
+    "duplicate_rows_within_train": 0,
+    "train_rows_in_reference_val_or_test": 0,
+    "train_rows_in_own_val_or_test": 0,
+    "reference_test_rows_leaked": 0,
+    "reference_test_size": 253,
+    "reference_test_pct_leaked": 0.0
+  }
+}

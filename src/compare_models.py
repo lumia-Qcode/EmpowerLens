@@ -137,7 +137,7 @@ def per_class_delta(results_dir: Path, task: str, model_a: str, model_b: str,
 
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Compare fine-tuned model tags head-to-head.")
-    ap.add_argument("--results", default="results")
+    ap.add_argument("--results", default="results_RUN2/results")
     ap.add_argument("--models", default="roberta-base,mental/mental-bert-base-uncased",
                      help="comma-separated HF model ids/tags exactly as passed to --model in train_transformer.py")
     ap.add_argument("--split", default="test", choices=["val", "test"],

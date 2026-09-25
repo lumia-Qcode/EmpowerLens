@@ -1,244 +1,484 @@
-EmpowerLens — Flat Mental-RoBERTa Experiment Suite
-How to run Experiments 1-8 end to end
-=====================================
+EmpowerLens — Experiments 1-8
+How to run the re-run suite end to end
+======================================
 
 FOLDER CONTENTS
 ---------------
 experiments_flat_mentalroberta.py    - the experiment script (Experiments 1-8)
-kaggle_runner_flat_experiments.ipynb - Kaggle GPU notebook that runs all 8 experiments
+kaggle_runner_flat_experiments.ipynb - Kaggle GPU notebook, runs the whole suite
 HOW_TO_RUN.txt                       - this file
 
-SCOPE NOTE: every experiment here uses the FLAT architecture only (one
-Mental-RoBERTa head per task). Cascade (Stage 1 binary gate -> Stage 2
-multilabel)  separate track on Kaggle and is not run or compared
-anywhere in this suite, including Experiment 7.
+Full reasoning:  docs/RERUN_PLAN.md
+Experiment 7:    docs/E7_PROTOCOL.md  (run separately, see STEP 5)
 
-TASK GATING (--task binary / multiclass / multilabel)
--------------------------------------------------------
-Each experiment only makes sense for certain tasks, and the script enforces
-this — pass a mismatched --task and it exits immediately with a message
-telling you which experiment number to use instead, rather than silently
-training the wrong kind of head.
-
-  Experiment 1 (audit)                 -> any task (binary/multiclass/multilabel)
-  Experiment 2 (dataset ablation)      -> any task; defaults to multilabel
-  Experiment 3 (CE vs weighted CE)     -> binary or multiclass only
-  Experiment 4 (focal vs class-bal.)   -> binary or multiclass only
-  Experiment 5 (weighted sampling)     -> binary or multiclass only
-  Experiment 6 (multilabel per-label)  -> multilabel only
-  Experiment 7 (flat report)           -> multilabel only
-  Experiment 8 (sequence length)       -> any task
-
-If you omit --task entirely, each experiment falls back to whichever task
-it's built around (Experiment 3/4/5 -> multiclass, Experiment 6/7 -> multi-
-label, Experiment 1/2/8 -> multiclass unless you say otherwise) — so
-`--experiment 3 --task binary` runs the binary version of that comparison,
-`--experiment 3` alone runs the multiclass version, and `--experiment 3
---task multilabel` fails fast with a pointer to Experiment 6.
+THE SHORT VERSION: open the notebook on Kaggle, run the cells top to bottom.
+Every command below is already inside a cell — you do not type them. They are
+listed so you know what you are looking at.
 
 
-STEP 0 — Commit the script to the repo (one-time, do this first)
-------------------------------------------------------------------
-The notebook clones your repo and runs the script as a module
-(`python -m src.experiments_flat_mentalroberta`), so it has to live inside
-the repo, next to the other src/ files.
+READ THIS IF YOU CLONED BEFORE 2026-08-23
+-----------------------------------------
+RE-CLONE. Cell 0 does that for you; just run the notebook from the top. Four
+things changed and two of them would have wasted a whole session:
 
-  1. Copy experiments_flat_mentalroberta.py into your local clone of
-     EmpowerLens, at: EmpowerLens/src/experiments_flat_mentalroberta.py
-  2. From the repo root:
-        git checkout lumia-space
-        git add src/experiments_flat_mentalroberta.py
-        git commit -m "Add flat Mental-RoBERTa experiment suite (Exp 1-8)"
-        git push
-  3. Confirm your frozen splits are already committed and pushed too:
-        data/splits/            (Annotated only)
-        data/splits_codipas_cls/ (CODIPAS only)
-        data/splits_combined/    (Annotated + CODIPAS)
-     If any of these are missing, generate/commit them first (see
-     src/make_splits.py and CLAUDE.md) — the script refuses to invent
-     splits itself, by design (no-leakage discipline).
+  1. Every multi-seed experiment crashed. The per-seed subprocess was spawned
+     against a module path that no longer exists, so E2-E7 died instantly.
+     E1 and E8 do not spawn subprocesses, so the session looked healthy through
+     both gates and both audits before failing at the first training cell.
 
-You only need to redo Step 0 when the script itself changes.
+  2. Half the recipe never reached the runs. --epochs 8, --deterministic and
+     --truncation silently did not survive into the per-seed subprocess, which
+     re-parses its arguments from scratch and fell back to argparse defaults.
+     Every run would have trained for 4 epochs with determinism OFF, and
+     nothing would have warned: the section 2 gate tests the flag on its own,
+     not inside a run.
 
+  3. E2 produced no yardstick column. Section 7f looked for checkpoints one
+     directory level too shallow, found none, and skipped its loop in silence —
+     so the heaviest experiment in the suite (15 runs, ~3 hr) contributed
+     nothing to the section 10 table. It now asserts instead of shrugging.
 
-STEP 1 — Open the notebook on Kaggle
---------------------------------------
-  1. Upload kaggle_runner_flat_experiments.ipynb as a new Kaggle notebook
-     (File -> Upload Notebook), or paste its cells into a new notebook.
-  2. Settings (right sidebar):
-       Accelerator: GPU T4 x2 (the notebook pins itself to GPU 0, so a
-                    single T4 also works fine, just slower)
-       Internet:    On (needed for pip installs + the HF model downloads)
-  3. Run the "Clone the repo, install deps, pin to a single GPU" cell.
-     It clones lumia-space, installs requirements-transformer.txt, and
-     sets CUDA_VISIBLE_DEVICES=0 (avoids the known T4x2 deadlock).
-  4. Run the sanity-check cell — it should print "Found
-     src/experiments_flat_mentalroberta.py". If it doesn't, go back to
-     Step 0.
+  4. Output moved to results_RUN2/results_experiments/ (was results_rerun/).
+     results_RUN1/ holds the frozen pre-rerun history and is never written to.
 
 
-STEP 2 — Run Experiment 1 first (data/label audit)
-------------------------------------------------------
-This one is cheap (no training) and its output decides whether you need
-Experiments 3, 4, and 5 at all.
+WHO RUNS WHAT
+=============
+The work splits into two tracks that can run in parallel, on two Kaggle
+accounts, at the same time.
 
-  Run the "Experiment 1" cell. It writes to results/exp1/:
-    exp1_multiclass_frequencies.csv       - class counts per split
-    exp1_multilabel_prevalence.csv        - per-label prevalence per split
-    exp1_label_cooccurrence_counts_train.csv
-    exp1_label_cooccurrence_jaccard_train.csv
-    exp1_imbalance_flags.md               - rare-class warnings
+  TRACK A — IZZA        the notebook, Experiments 1-6 and 8
+  TRACK B — NAYAB       Experiment 7 only (flat vs cascade), by hand
 
-  Read exp1_imbalance_flags.md:
-    - If it lists several distortions with low support (e.g. all_or_nothing,
-      personalization), imbalance is real -> proceed to Experiment 3.
-    - If nothing is flagged, you can skip straight to Experiment 6/7/8 and
-      treat 3/4/5 as optional confirmation runs.
+They do not depend on each other and can be done in either order.
 
-  Optional: if you already have trained checkpoints and want per-class
-  F1 + a confusion matrix, uncomment the second command in the notebook
-  cell and point --checkpoint-mc / --checkpoint-ml at them.
+WHY E7 IS SPLIT OUT AND RUN BY ONE PERSON
+-----------------------------------------
+E7 compares flat against cascade, and that gap is tiny — the previous
+(confounded) comparison gave +0.003.
 
+--deterministic makes a re-run reproduce EXACTLY on the SAME machine. It does
+NOT make two different GPUs agree: a T4 and a P100 pick different kernels and
+different mixed-precision paths, and Kaggle hands out both. So if one person ran
+flat and another ran cascade, architecture and hardware would vary together and a
+0.003 difference could not be attributed to either.
 
-STEP 3 — Experiment 2 (dataset ablation)
---------------------------------------------
-Task is **multilabel**. Unlike the other experiments, this cell is split into
-four separate cells so exactly ONE dataset trains at a time (never in
-parallel) — you can run them back to back, or spread them across separate
-Kaggle sessions if you're tight on time:
+Therefore BOTH E7 arms — flat AND cascade — are run by one person, in one
+session, on one GPU.
 
-  2a. Annotated only        -> trains 3 seeds, evaluates, writes results
-  2b. CODIPAS only           -> same, for the CODIPAS-only splits
-  2c. Annotated + CODIPAS    -> same, for the combined splits
-  2d. Aggregate              -> --aggregate-only, does NOT retrain anything;
-                                 just re-reads the CSVs written by 2a/2b/2c
-                                 and rebuilds the mean +/- SD summary
+Track A also produces a flat multilabel number (E6). It is NOT a replication of
+Track B's flat arm and must not be quoted as one. Three settings differ:
 
-  All output goes to result_experiment/exp2/ (not results/exp2/):
-    exp2_all_seed_results.csv     - every individual (config, seed) row,
-                                     appended to as each of 2a/2b/2c finishes
-    exp2_mean_std_by_config.csv   - mean +/- SD per config (written by 2d)
+                   E6 (Track A)              E7 flat (Track B)
+   epochs          8                         12
+   loss            weighted_bce              bce (plain, no pos_weight)
+   code path       experiments_flat_...py    src/train_transformer.py
 
-  Run order doesn't matter as long as 2d runs last. If a session times out
-  partway through, just re-run whichever of 2a/2b/2c didn't finish, then 2d
-  — already-completed configs won't be retrained since each cell only
-  touches its own --only-config.
+Truncation is `head` on BOTH sides now (the parser default; neither notebook
+passes --truncation). An earlier version of docs/E7_PROTOCOL.md asked Track B for
+head_tail; at max_length 512 only 2.4% of rows truncate at all, so matching costs
+nothing measurable and removes an axis.
 
-  Read this to answer: "is the improvement coming from more data, and is
-  it consistent across seeds?" — check that the combined config beats
-  both single-source configs on most/all seeds, not just on average.
+The loss difference is not a choice: src/train_transformer.py's --loss offers only
+{bce, focal}, so weighted_bce is unreachable from Track B's code path.
 
-  Note: re-running the SAME 2a/2b/2c cell twice (e.g. after it already
-  succeeded) will append duplicate rows to exp2_all_seed_results.csv for
-  that config's seeds — delete result_experiment/exp2/ first if you want a
-  clean re-run, or dedupe in pandas by (config, seed) afterwards.
+Each of the remaining differences moves macro-F1 on its own, so the gap between
+E6 and E7-flat is mostly loss and epoch budget, not hardware. They answer
+different questions and both are worth having — just never subtract one from the
+other.
 
 
-STEP 4 — Experiment 3 (only if Experiment 1 showed imbalance)
--------------------------------------------------------------------
-Run the "Experiment 3" cell: standard CE vs class-weighted CE, multiclass,
-3 seeds each.
+TRACK A — IZZA: the notebook (sections 0-11)
+---------------------------------------------
+Order is fixed. Sections 1-2 are gates; 3-4 are cheap audits that decide what is
+worth running afterwards.
 
-  Output: results/exp3/exp3_all_seed_results.csv, exp3_mean_std.csv
+   SESSION 1  (~4 hr)
+     0.  Setup — clone + install. RUN ONCE, it starts with rm -rf.
+     1.  Preflight — must report 0 leaked rows.
+     2.  Determinism — must say PASS.
+     3.  E1 pass 1 — data audit. Decides whether E3/E4/E5 are worth GPU time.
+     4.  E8 — truncation. Confirms 512 tokens.
+     5.  E6 — multilabel + thresholds.        3 runs, ~40 min
+     6.  E1 pass 2 — per-class + confusion, using E6's checkpoints.
+     7.  E2 — dataset ablation, 5 arms.      15 runs, ~3 hr
+     11. Zip.  <-- DO THIS BEFORE THE SESSION ENDS
 
-  Decision rule: if weighted_ce's mean macro_f1_10 clearly beats plain ce
-  (more than ~1 SD), stop here and use weighted_ce going forward — skip to
-  Experiment 6. If the gain is small/inconsistent, continue to Experiment 4.
+   SESSION 2  (~4 hr)
+     0.  Setup again (new session = new clone).
+     8.  E3 -> E4 -> E5, in that order.      21 runs, ~4 hr
+         Set BEST_LOSS in the E5 cell from the E3/E4 tables.
+     10. Comparable table.
+     11. Zip.
+
+   Skip section 9 — that is Track B's, and the cell only prints the protocol.
+   Skip section 8 entirely if E1 showed the imbalance is mild.
 
 
-STEP 5 — Experiment 4 (only if Experiment 3's gain is insufficient)
--------------------------------------------------------------------------
-Run the "Experiment 4" cell: weighted_ce vs focal vs class_balanced,
-multiclass, 3 seeds each.
+TRACK B — NAYAB: Experiment 7 (docs/E7_PROTOCOL.md)
+----------------------------------------------------
+Not in Track A's notebook — it has its own: notebooks/kaggle_runner_cascade.ipynb.
+Open that on Kaggle and run it top to bottom; every command below is already in a
+cell. ALL OF IT IN ONE SESSION, ON ONE GPU.
 
-  Output: results/exp4/exp4_all_seed_results.csv, exp4_mean_std.csv
+Its config lives in notebooks/cascade_bootstrap.py, not in the cells, so a kernel
+restart cannot wipe it. Change the recipe there, not in the notebook.
 
-  Pick whichever loss has the best mean macro_f1_10 with the smallest SD
-  across seeds — that's your "best loss" for Experiment 5.
+   ONE SESSION  (~3-3.75 hr at 12 epochs; it was 2-2.5 at 8)
+     1. Clone the repo, same as the notebook's cell 0.
+     2. Print and record the provenance:
+            gpu, torch version, transformers version, commit hash
+     3. Verify determinism:
+            python -m src.determinism --check          -> must say PASS
+     4. Regenerate the Stage 2 splits from the CLEAN source:
+            python -m src.make_splits_cascade
+                --source data/splits --out data/splits_stage2_annotated
+            python -m src.make_splits_clean --check
+                --source data/splits_stage2_annotated --dest /tmp/x
+        (one line each — wrapped here for readability)
+        The second must report 0 leaked rows. The shipped data/splits_stage2
+        came from the leaked combined dir — do not use it.
+     5. For each seed in 42, 1337, 2024:
+            a. train Stage 1 (binary, full splits)
+            b. train Stage 2 (multilabel, distorted-only splits)
+            c. train flat  (multilabel, full splits)   <-- the comparator
+            d. evaluate the cascade end to end
+        9 training runs plus 3 cascade evaluations.
+     6. Zip and download.
+
+   Exact commands: docs/E7_PROTOCOL.md
+   Step 5c is NOT optional. It is the comparator, and Track A's copy of it was
+   produced on different hardware.
 
 
-STEP 6 — Experiment 5 (weighted sampling vs best loss)
+MERGING THE TWO TRACKS
+----------------------
+Both write into results_RUN2/, so unzip Track B's output over Track A's.
+
+For Track B's runs to APPEAR in the section 10 table, the cascade notebook's
+Step 3c must have run: section 10 globs
+results_RUN2/results_experiments/exp*/two_exams.csv, and only src.eval_two_exams
+writes that file. The cascade notebook's other cells write eval_*.json into
+results_stage1/, results_multilabel_flat/ and results_cascade/, which section 10
+does not read. Step 3c re-scores the Stage 1 and flat checkpoints into
+results_experiments/exp7/ specifically to close that gap.
+
+Two Track B numbers never reach that table, by design: Stage 2 (trained on
+distorted-only rows, no comparable exam) and the cascade end-to-end figure
+(eval_two_exams takes one --checkpoint; the cascade is two models composed).
+Report those by hand from results_stage2/ and results_cascade/.
+
+results_RUN1/ is the frozen pre-rerun history. Nothing writes there, ever. If a
+zip you unpack puts files under results_RUN1/, you unpacked an old archive.
+
+Two numbers from different tracks are comparable if they are both on the
+yardstick exam, same task, leaked = False, and post-determinism — the same rule
+as everywhere else. The ONE comparison that must stay within a single track is
+flat-vs-cascade, for the hardware reason above.
+
+
+WHY THIS REPLACED THE PREVIOUS SUITE
+------------------------------------
+Measured on the data in this repo, not estimated:
+
+1. THE TRAINING DATA CONTAINED THE TEST SET.
+   data/splits_combined/train.csv holds 396 rows whose text also appears in the
+   Annotated val/test — 195 of the 253 test rows, 77% of the test set. Every
+   Experiment 3-8 cell in the old notebook pointed at --splits
+   data/splits_combined, so all of those numbers came from models that had
+   already seen three-quarters of their own exam.
+
+   Worse: on those 195 shared texts the two corpora agree on the label only 36%
+   of the time, so the model mostly saw the test passage with the WRONG answer
+   attached. The numbers are wrong by an unknown amount in an unknown direction.
+
+2. DUPLICATE ROWS RE-WEIGHTED TRAINING.
+   4,645 train rows, only 3,019 unique texts — 1,626 duplicates.
+
+3. EVERY EXPERIMENT SAT A DIFFERENT EXAM.
+   E2 scored each corpus on its own test set, E3-E8 on Combined, Month-1 on
+   Annotated. A higher number in one says nothing about another.
+
+4. RUNS DID NOT REPRODUCE.
+   E6 and E7 were the same configuration and disagreed by 0.047 macro-F1 at seed
+   42, while reporting a seed-to-seed SD of 0.007. Run-to-run noise was seven
+   times the published error bar.
+
+5. E1's MODEL HALF NEVER RAN.
+   --checkpoint-mc / --checkpoint-ml were commented out, so no per-class
+   precision/recall/F1 and no confusion matrices were ever produced.
+
+6. NOBODY VALIDATED THE EPOCH BUDGET.
+   --epochs 4 was a default nobody tested, and no run saved a per-epoch curve,
+   so it could not even be checked afterwards.
+
+
+STEP 0 — PREREQUISITES
+----------------------
+The script lives at experiments/experiments_flat_mentalroberta.py and runs as
+   python -m experiments.experiments_flat_mentalroberta
+The duplicate copy that used to sit in src/ has been deleted; there is one file.
+
+Branch: nayab-space.  The notebook clones it in its first cell.
+
+These frozen split dirs must be committed (they are):
+   data/splits/                          Annotated, the yardstick. 2,024/253/253
+   data/splits_codipas_transfer_matched/ CODIPAS, 2,024 rows, Annotated test set
+
+These are COMMITTED **and** rebuilt by the notebook's preflight (section 1),
+which passes --force. Generation is deterministic - fixed seed, stratified on
+y_mc - so the rebuilt dirs are byte-identical to the committed ones, and the
+preflight re-audits its own output either way:
+   data/splits_codipas_clean/            leak removed
+   data/splits_combined_clean/           leak removed
+   data/splits_combined_matched/         downsampled to 2,024 rows
+
+   (They are committed so a result stays traceable to the exact rows that
+   produced it, per CLAUDE.md's rule that splits are frozen and version
+   controlled. Do not hand-edit them; change the generator and re-run it.)
+
+These are KEPT BUT NEVER TRAINED ON — they are the contaminated originals, left
+unedited so older results stay traceable:
+   data/splits_combined/
+   data/splits_codipas_cls/
+   data/splits_stage2/                   derived from splits_combined, inherits
+                                         the leak — regenerate for E7
+
+
+STEP 1 — KAGGLE SETUP
+---------------------
+Settings -> Accelerator: GPU T4.  Internet: On.
+
+Run the first cell ONCE per session. It starts with `rm -rf`, so re-running it
+deletes every result and checkpoint trained so far. If you need to restart,
+begin from the second cell.
+
+The notebook sets CUDA_VISIBLE_DEVICES=0. Kaggle's "T4 x2" deadlocks this stack
+across devices, and it hangs rather than erroring.
+
+
+STEP 2 — THE TWO GATES (sections 1-2, under a minute)
+-----------------------------------------------------
+Nothing below is trustworthy until both pass.
+
+  Section 1  Preflight. Rebuilds the derived split dirs with the contamination
+             removed, then re-audits its own output and fails if any leak
+             survives. Also builds the volume-matched arms.
+
+                 python -m src.make_splits_clean --force
+                 python -m src.make_splits_clean --check
+
+             Expected: splits_*_clean and splits_combined_matched all show
+             0 leaked rows. The pre-fix dirs still show 396 — that is correct,
+             they are kept unedited and nothing trains on them.
+
+  Section 2  Determinism. Trains a tiny model twice at the same seed and checks
+             the results are bit-identical.
+
+                 python -m src.determinism --check
+
+             Expected: "PASS - bit-identical."
+
+             If it says FAIL, stop. Every +/- SD from this machine would be
+             meaningless. warn_only=True means an op with no deterministic
+             kernel warns instead of crashing, which is exactly why this check
+             is not optional — it turns "determinism requested" into
+             "determinism demonstrated".
+
+
+STEP 3 — THE AUDIT GATES (sections 3-4, ~2 minutes, no GPU)
 ------------------------------------------------------------
-In the "Experiment 5" cell, set BEST_LOSS to whatever won in Step 4 (or
-Step 3 if you skipped Step 5), then run it.
+  Section 3  E1 pass 1 — class frequencies, per-label prevalence split by
+             train/val/test, and label co-occurrence (counts + Jaccard).
+             THIS DECIDES whether E3/E4/E5 are worth GPU time at all.
 
-  Output: results/exp5/exp5_all_seed_results.csv, exp5_mean_std.csv
-
-  Compares --sampler none vs --sampler weighted with that loss fixed.
-
-
-STEP 7 — Experiment 6 (multilabel per-label + thresholds)
-----------------------------------------------------------------
-Run the "Experiment 6" cell (default loss weighted_bce; the commented
-alternative below it tries focal label-wise weighting instead — run both
-if you want to compare).
-
-  Output: results/exp6/
-    exp6_per_label_all_seeds.csv    - per-label P/R/F1/support, every seed
-    exp6_per_label_mean_std.csv     - per-label F1 mean +/- SD across seeds
-    exp6_all_seed_results.csv, exp6_mean_std.csv  - overall macro/micro F1
-
-  Thresholds are swept on val only (existing sweep_thresholds function)
-  and then frozen for the test-set numbers you see here — no extra work
-  needed, this is already how train_transformer.py / evaluate.py work.
+  Section 4  E8 — median, p90, p95 token length and percent truncated at 128 /
+             256 / 512. Confirms 512 is the right budget. This is what exposed
+             the previous suite's worst configuration error: the cascade ran at
+             256 where 24.9% of test rows truncate, against 2.4% at 512.
 
 
-STEP 8 — Experiment 7 (flat multilabel report)
----------------------------------------------------
-Run the "Experiment 7" cell.
+STEP 4 — THE TRAINING RUNS
+--------------------------
+Protocol, identical everywhere (set once in the Section 0 config cell):
 
-  Output: results/exp7/
-    exp7_flat_all_seed_results.csv        - macro/micro F1, every seed
-    exp7_flat_per_label_all_seeds.csv     - per-label F1, every seed
-    exp7_flat_per_label_mean_std.csv      - per-label F1 mean +/- SD
+   model        mental/mental-roberta-base
+   epochs       8      (4 was never validated; every run now saves its curve)
+   max_length   512    (2.4% truncation vs 24.9% at 256)
+   batch_size   16
+   lr           2e-5
+   seeds        42, 1337, 2024
+   determinism  on
 
-  This is FLAT-architecture-only, as noted above. When Izza's cascade
-  numbers are ready, put them next to this table — this script does not
-  produce or estimate cascade numbers itself.
+  Section 5  E6 — multilabel per-label + thresholds.        3 runs, ~40 min
+             Thresholds are swept on VAL only, then frozen for test.
+             Run this before E2: it produces the checkpoints E1 pass 2 needs.
+             It also prints, per run, "best epoch N of 8". If the peak is
+             consistently 8 of 8, the budget is still too small and everything
+             is under-trained — raise EPOCHS and re-run.
+
+  Section 6  E1 pass 2 — per-class precision/recall/F1 and confusion matrices,
+             using E6's checkpoints. This is the half that never ran before.
+             Confusion matrices exist for binary and multiclass only; multilabel
+             has no single predicted class per row to cross-tabulate.
+
+  Section 7  E2 — dataset ablation, FIVE arms.             15 runs, ~3 hr
+
+                arm                 train rows   labels
+                annotated_only          2,024    human
+                codipas_clean           2,224    rule
+                codipas_matched         2,024    rule
+                combined_clean          2,623    mixed
+                combined_matched        2,024    mixed
+
+             The two matched arms are what make this answerable:
+                annotated_only vs combined_matched -> LABEL CONVENTION,
+                                                      volume held fixed
+                combined_matched vs combined_clean -> VOLUME,
+                                                      convention held fixed
+
+             Every arm is scored on BOTH its own test set (home) and always
+             data/splits/test.csv (yardstick). Only yardstick numbers are
+             comparable across experiments.
+
+             Expected result: merging HURTS the fine-grained task. The two label
+             sets agree at Cohen's kappa 0.199 on the 11-class question (36.8%
+             raw), and among rows both call distorted they disagree about which
+             one 73% of the time. A clear negative result on a fixed test set is
+             a real finding, and more defensible than a marginal win.
+
+  Section 8  E3 -> E4 -> E5, IN ORDER.                     21 runs, ~4 hr
+             Each reads the previous winner. E4 is only worth running if E3's
+             weighted CE did not close the gap; E5 pairs sampling with whichever
+             loss won. Set BEST_LOSS in the E5 cell from the E3/E4 tables.
+
+             All three train on Annotated (previously they pointed at the leaked
+             combined dir), so home == yardstick and they compare directly to
+             each other, to E6, and to the Month-1 baselines.
+
+             SKIP THIS WHOLE SECTION if E1 showed the imbalance is mild.
 
 
-STEP 9 — Experiment 8 (sequence length / truncation)
------------------------------------------------------------
-Run the "Experiment 8" cell.
+STEP 5 — EXPERIMENT 7 (separate, see docs/E7_PROTOCOL.md)
+----------------------------------------------------------
+Section 9 does not train anything; it prints the protocol.
 
-  Output: results/exp8/exp8_sequence_length_stats.json
-    - median, p90, p95, max token length (pooled across train/val/test)
-    - % truncated at 128 / 256 / 512 / 1024 tokens
+Both arms — flat AND cascade — are run by one person so they share one
+configuration. The previous comparison was not valid because the cascade ran at
+max_length 256 (24.9% truncation) against the flat side's 512 (2.4%), and
+because data/splits_stage2 was derived from the leaked combined dir.
 
-  If "pct_truncated_at_512" is above 10% (the default threshold), the
-  cell tells you to re-run with --run-longformer. Uncomment the second
-  command in that cell, adjust --longformer-model if you want a
-  domain-specific long-context checkpoint instead of the generic
-  allenai/longformer-base-4096, and run it. If truncation is below 10%,
-  the script skips the long-context run automatically — no wasted GPU time.
+Before running E7, regenerate the Stage 2 splits from the clean source:
+
+   python -m src.make_splits_cascade --source data/splits \
+       --out data/splits_stage2_annotated
+   python -m src.make_splits_clean --check \
+       --source data/splits_stage2_annotated --dest /tmp/x
+
+The second must report 0 leaked rows.
+
+Report three numbers SEPARATELY:
+   1. Stage 1 (binary)                positive_class_f1
+   2. Stage 2 (multilabel, isolated)  macro_f1 on distorted-only rows
+   3. End-to-end                      macro_f1, Stage 1 gating Stage 2
+
+Number 2 IS NOT A CASCADE RESULT and must never be quoted as one — it is
+measured only on rows already known to be distorted, so it hides every Stage 1
+false negative. src/evaluate.py refuses distorted-only splits without an
+explicit --allow-distorted-only flag to stop exactly that mistake.
 
 
-STEP 10 — Download results
--------------------------------
-Run the last cell ("Copy everything to /kaggle/working"). This copies the
-entire results/ tree (all experiments) to /kaggle/working/results, which
-Kaggle lets you download from the notebook's Output tab once the session
-ends (or via "Save Version" -> "Save & Run All").
+STEP 6 — COLLECT (sections 10-11)
+---------------------------------
+  Section 10  Rolls every two_exams.csv into one table and applies the
+              comparability rule. Rows failing it are shown separately rather
+              than silently mixed in.
+
+  Section 11  Copies results into /kaggle/working and zips them.
+              RUN THIS BEFORE THE SESSION ENDS. Kaggle reclaims the working
+              directory on teardown; anything not copied out is gone.
+
+
+TIME AND SESSION PLANNING
+-------------------------
+39 training runs total. At roughly 12-14 min per run on a T4 that is about
+8-9 hours — over Kaggle's 9-hour session cap, so plan two sessions:
+
+   Session 1   sections 1-7  (preflight -> E2)          ~4 hr, then zip
+   Session 2   section 8, then 10-11                    ~4 hr, then zip
+
+Results accumulate in results_RUN2/results_experiments/ across sessions, so
+splitting is fine.
+
+THIS IS AN ESTIMATE, NOT MEASURED. Time your first E6 run and scale from it.
+
+If short on GPU time, cut in this order:
+   1. E4 and E5 (15 runs) — both are conditional on E3's outcome
+   2. Drop to 1 seed for a first pass, then 3 seeds on whatever looks worth
+      reporting. Nothing single-seed goes in the write-up.
+Do NOT cut E6 (it produces the checkpoints E1 pass 2 needs) or E2's first three
+arms (that is the experiment with an actual finding in it).
+
+
+WHAT YOU CAN AND CANNOT CLAIM
+-----------------------------
+Two numbers may sit in the same column only if ALL FOUR hold:
+   1. from the YARDSTICK exam (data/splits/test.csv, the same 253 rows)
+   2. on the SAME TASK (2, 11 and 10 classes are three different exams)
+   3. marked leaked = False
+   4. produced AFTER the determinism check passed
+
+All four are recorded per row in all_runs_two_exams.csv, so this is checkable
+rather than remembered.
+
+NOT comparable, by design:
+   - home-exam scores from different corpora
+   - zero-shot vs calibrated yardstick numbers (different questions)
+   - val against test
+   - anything under results_RUN1/, which is the whole pre-rerun history: it
+     predates determinism, and results_RUN1/results_combined/ came from the
+     contaminated splits. See results_RUN1/README.md for the three reasons.
+
+METRICS
+   Headline is macro-F1: it averages the ten labels equally, so a class the
+   model never predicts drags it down. Micro-F1 pools all labels into one count
+   and lets the frequent ones dominate — a model that perfectly predicts the 3
+   commonest labels and ignores the other 7 scores micro 0.582, macro 0.300 on
+   this val set.
+
+   Multiclass selects on macro_f1_10 (the ten distortions, no_distortion
+   dropped). Plain macro_f1 there includes no_distortion, which is 36.9% of rows
+   and by far the easiest class.
+
+   roc_auc is a DIAGNOSTIC, never a headline. F1 cannot tell "has not learned
+   the class" apart from "ranks it correctly but the threshold is wrong" — those
+   need opposite fixes. A low F1 beside a high AUC localises the fault to
+   calibration.
+
+   Accuracy is never a headline anywhere in this project.
 
 
 TROUBLESHOOTING
-----------------
-- "src/experiments_flat_mentalroberta.py not found" at the sanity check:
-  you skipped Step 0, or pushed to the wrong branch. Check BRANCH in the
-  first code cell matches where you committed it.
+---------------
+"No module named src"
+    You are not in the repo directory. Re-run the clone cell (which does
+    %cd empowerlens), or %cd into it manually.
 
-- KeyError on a column like 'y_mc' or 'ml_<label>' during Experiment 2's
-  CODIPAS-only run: data/splits_codipas_cls must use the exact same
-  column schema as data/splits (Patient Question, y_bin, y_mc, ml_*).
-  Regenerate it with the same target-derivation logic as
-  src/make_splits.py / src/data.py if it doesn't.
+"experiments/experiments_flat_mentalroberta.py not found"
+    Wrong branch. The notebook clones nayab-space.
 
-- Training hangs / silently stalls on T4 x2: confirm the
-  CUDA_VISIBLE_DEVICES=0 cell actually ran before any training cell (a
-  fresh Kaggle session resets environment variables).
+Preflight reports a leak in a *_clean dir
+    Should be impossible — the builder re-audits itself and raises. If you see
+    it, the source dirs changed; regenerate with --force and report it.
 
-- Re-running a cell after a partial failure: all *_all_seed_results.csv
-  files are append-only, so a re-run will duplicate rows for any
-  (config/loss/sampler, seed) pair that already succeeded. Delete the
-  relevant results/<expN>/ folder before re-running if you want a clean
-  file, or dedupe afterwards in pandas by (relevant key columns, seed).
+Determinism check says FAIL
+    Stop. Do not quote any +/- SD from that machine. Check that
+    CUBLAS_WORKSPACE_CONFIG=:4096:8 is set before torch is imported.
+
+A run peaked at "best epoch 8 of 8"
+    The epoch budget is too small and that run is under-trained. Raise EPOCHS.
+
+Session died mid-run
+    Results already written to results_RUN2/ survive only if you zipped them.
+    Otherwise re-run from the last completed section — the notebook is
+    section-by-section restartable, apart from the clone cell.

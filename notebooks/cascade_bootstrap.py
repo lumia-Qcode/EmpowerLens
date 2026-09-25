@@ -74,6 +74,54 @@ MODEL = "mental/mental-roberta-base"
 TAG = MODEL.split("/")[-1]
 SEEDS = (42, 1337, 2024)
 
+# ONE recipe, used by Stage 1, Stage 2, the flat comparator and the multiclass
+# track alike. This is what makes Experiment 7 answerable: the two arms differ in
+# ARCHITECTURE and nothing else.
+#
+# Previously each arm carried different flags - Stage 2 had focal loss, LLRD,
+# lr 3e-5 and a cosine schedule while the flat comparator got bare defaults and
+# a different epoch count. A flat-vs-cascade difference measured under those
+# conditions cannot be attributed to the architecture, which is the only thing
+# Experiment 7 is trying to measure.
+#
+#   512 tokens   truncates 2.4% of test rows; 256 truncated 24.9%
+#   12 epochs    4 was never validated; 8 was the suite's budget; 12 gives the
+#                peak more room. Every run saves epoch_history.csv, so check the
+#                best epoch afterwards - if runs still peak at 12 of 12, raise it.
+#   bs 16        matches the experiment suite
+#   head trunc   the parser default, and what Izza's suite uses (no --truncation
+#                flag there either). At 512 only 2.4% of rows truncate at all, so
+#                head vs head_tail moves almost nothing - the reason to match is
+#                to keep one fewer axis varying between the tracks.
+#   deterministic  same-seed runs have differed by 0.047 macro-F1 without it
+#
+# NOT identical to experiments/kaggle_runner_flat_experiments.ipynb, and it does
+# not need to be - the ONE comparison that must stay inside a single track is
+# flat vs cascade, and both of those arms are here. Three things differ from
+# Izza's E6, so E6 is not a replication of the flat arm below and the two must
+# never be subtracted from each other:
+#
+#     E6 (Track A)                  E7 here (Track B)
+#     8 epochs                      12 epochs
+#     --loss weighted_bce           bce (plain; src/train_transformer.py's
+#                                   --loss offers only {bce, focal}, so
+#                                   weighted_bce is not reachable from here)
+#     experiments_flat_...py        src/train_transformer.py
+#   early stopping  OFF (patience 0), which is what every run in results_RUN2/
+#                   used. src/train_transformer.py supports
+#                   --early-stopping-patience, but turning it on here would
+#                   make new Stage 1/2/flat numbers differ in provenance from
+#                   the ones already in the tables. With load_best_model_at_end
+#                   the kept weights are identical either way - patience only
+#                   stops paying for the epochs after the peak. Set the env var
+#                   EMPOWERLENS_EARLY_STOPPING=3 before the exec to enable it,
+#                   and re-run every arm if you do.
+RECIPE = "--max-length 512 --batch-size 16 --epochs 12 --deterministic"
+
+_ESP = int(os.environ.get("EMPOWERLENS_EARLY_STOPPING", "0"))
+if _ESP > 0:
+    RECIPE += f" --early-stopping-patience {_ESP}"
+
 TRAIN_TIMEOUT = 3600
 EVAL_TIMEOUT = 3600
 
@@ -109,13 +157,40 @@ COMBINED_SPLITS = PARENT_SPLITS               # back-compat alias for older cell
 _DS = Path(PARENT_SPLITS).name                          # "splits" | "splits_codipas_cls"
 _SUF = "" if _DS == "splits" else "_" + _DS.replace("splits_", "")
 
-STAGE2_SPLITS = f"data/splits_stage2{_SUF}"   # distorted-only, derived from PARENT_SPLITS
+# Distorted-only, derived from PARENT_SPLITS by Step 1.
+#
+# NOT "data/splits_stage2" for the default dataset. That path is COMMITTED and was
+# derived from data/splits_combined, so it carries the 396-row leak (77% of the
+# Annotated test set). Writing over it in the clone would destroy the provenance of
+# every older Stage 2 result and leave no way to tell a regenerated dir from the
+# contaminated original. docs/E7_PROTOCOL.md names splits_stage2_annotated for
+# exactly this reason; keep the two dirs distinct.
+_STAGE2_SUF = "_annotated" if _SUF == "" else _SUF
+STAGE2_SPLITS = f"data/splits_stage2{_STAGE2_SUF}"
 
-STAGE1_OUT = f"results_stage1{_SUF}"
-MULTICLASS_OUT = f"results_multiclass_v2{_SUF}"
-STAGE2_OUT = f"results_stage2{_SUF}"
-CASCADE_OUT = f"results_cascade{_SUF}"
-FLAT_OUT = f"results_multilabel_flat{_SUF}"
+# Every result this bootstrap writes lands under RUN2. RUN1 is the frozen
+# pre-rerun history (no determinism, some leaked splits); a rerun must never
+# land on top of numbers the thesis already cites. Override only if you know why.
+RUN_ROOT = os.environ.get("EMPOWERLENS_RUN_ROOT", "results_RUN2")
+
+STAGE1_OUT = f"{RUN_ROOT}/results_stage1{_SUF}"
+MULTICLASS_OUT = f"{RUN_ROOT}/results_multiclass_v2{_SUF}"
+STAGE2_OUT = f"{RUN_ROOT}/results_stage2{_SUF}"
+CASCADE_OUT = f"{RUN_ROOT}/results_cascade{_SUF}"
+FLAT_OUT = f"{RUN_ROOT}/results_multilabel_flat{_SUF}"
+
+# Where Track B's rows join Track A's comparable table. Izza's section 10 globs
+# results_RUN2/results_experiments/exp*/two_exams.csv, so anything not written
+# here is invisible to it no matter how the zips are merged.
+# Defined in the bootstrap rather than in the cell that uses it so the zip and
+# verify cells still know the path after a kernel restart.
+E7_OUT = f"{RUN_ROOT}/results_experiments/exp7"
+
+# Per-epoch curves. src/train_transformer.py writes epoch_history.csv into each
+# CHECKPOINT dir, and checkpoints live outside the repo and are never zipped -
+# so without copying them into a results dir, the evidence for "was 12 epochs
+# enough" is destroyed when the session ends.
+EPOCH_HIST_OUT = f"{E7_OUT}/epoch_history"
 
 # Checkpoints live OUTSIDE the repo clone.
 #
@@ -129,7 +204,10 @@ CKPT_DIR = (f"/kaggle/working/checkpoints{_SUF}" if Path("/kaggle/working").is_d
             else f"checkpoints{_SUF}")
 Path(CKPT_DIR).mkdir(parents=True, exist_ok=True)
 
-for _d in (STAGE1_OUT, MULTICLASS_OUT, STAGE2_OUT, CASCADE_OUT, FLAT_OUT):
+ALL_OUT = (STAGE1_OUT, MULTICLASS_OUT, STAGE2_OUT, CASCADE_OUT, FLAT_OUT,
+           E7_OUT, EPOCH_HIST_OUT)
+
+for _d in ALL_OUT:
     Path(_d).mkdir(parents=True, exist_ok=True)
 
 

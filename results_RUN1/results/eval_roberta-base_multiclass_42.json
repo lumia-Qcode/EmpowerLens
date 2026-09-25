@@ -1,0 +1,248 @@
+{
+  "meta": {
+    "task": "multiclass",
+    "model": "roberta-base",
+    "seed": 42,
+    "epochs": 4,
+    "lr": 2e-05,
+    "batch_size": 16,
+    "max_length": 512,
+    "truncation": "head",
+    "device": "cuda",
+    "smoke": false,
+    "num_labels": 11,
+    "val_truncation_rate": 0.02766798418972332,
+    "val_metrics": {
+      "eval_loss": 2.156059503555298,
+      "eval_macro_f1": 0.2023924440984972,
+      "eval_macro_f1_10": 0.15666310212091236,
+      "eval_runtime": 3.8824,
+      "eval_samples_per_second": 65.166,
+      "eval_steps_per_second": 2.061,
+      "epoch": 4.0
+    },
+    "thresholds": null
+  },
+  "splits": {
+    "val": {
+      "metrics": {
+        "model": "roberta-base",
+        "task": "multiclass",
+        "seed": 42.0,
+        "split": "val",
+        "n_classes": 11.0,
+        "weighted_f1": 0.3519933144369389,
+        "macro_f1": 0.2023924440984972,
+        "macro_f1_10": 0.15666310212091236,
+        "micro_f1": 0.3675889328063241,
+        "positive_class_f1": "",
+        "no_distortion_f1": 0.6596858638743456,
+        "no_distortion_wcontrib": 0.24770813070380565,
+        "truncation_rate": 0.0277,
+        "source": "empowerlens",
+        "averaging": ""
+      },
+      "per_class": [
+        {
+          "class": "no_distortion",
+          "precision": 0.65625,
+          "recall": 0.6631578947368421,
+          "f1": 0.6596858638743456,
+          "support": 95,
+          "weighted_contribution": 0.24770813070380565
+        },
+        {
+          "class": "emotional_reasoning",
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 13,
+          "weighted_contribution": 0.0
+        },
+        {
+          "class": "overgeneralization",
+          "precision": 0.3333333333333333,
+          "recall": 0.08333333333333333,
+          "f1": 0.13333333333333333,
+          "support": 24,
+          "weighted_contribution": 0.012648221343873516
+        },
+        {
+          "class": "mental_filter",
+          "precision": 0.125,
+          "recall": 0.23076923076923078,
+          "f1": 0.16216216216216217,
+          "support": 13,
+          "weighted_contribution": 0.008332443115051812
+        },
+        {
+          "class": "should_statements",
+          "precision": 0.16666666666666666,
+          "recall": 0.2727272727272727,
+          "f1": 0.20689655172413793,
+          "support": 11,
+          "weighted_contribution": 0.008995502248875561
+        },
+        {
+          "class": "all_or_nothing",
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 10,
+          "weighted_contribution": 0.0
+        },
+        {
+          "class": "mind_reading",
+          "precision": 0.25,
+          "recall": 0.5,
+          "f1": 0.3333333333333333,
+          "support": 20,
+          "weighted_contribution": 0.026350461133069828
+        },
+        {
+          "class": "fortune_telling",
+          "precision": 0.2727272727272727,
+          "recall": 0.375,
+          "f1": 0.3157894736842105,
+          "support": 16,
+          "weighted_contribution": 0.01997087580611608
+        },
+        {
+          "class": "magnification",
+          "precision": 0.13636363636363635,
+          "recall": 0.15789473684210525,
+          "f1": 0.14634146341463414,
+          "support": 19,
+          "weighted_contribution": 0.010990070375012049
+        },
+        {
+          "class": "personalization",
+          "precision": 0.14285714285714285,
+          "recall": 0.0625,
+          "f1": 0.08695652173913043,
+          "support": 16,
+          "weighted_contribution": 0.005499226671249355
+        },
+        {
+          "class": "labeling",
+          "precision": 0.3333333333333333,
+          "recall": 0.125,
+          "f1": 0.18181818181818182,
+          "support": 16,
+          "weighted_contribution": 0.011498383039885016
+        }
+      ],
+      "truncation_rate": 0.0277
+    },
+    "test": {
+      "metrics": {
+        "model": "roberta-base",
+        "task": "multiclass",
+        "seed": 42.0,
+        "split": "test",
+        "n_classes": 11.0,
+        "weighted_f1": 0.28081674592456884,
+        "macro_f1": 0.1593939345667713,
+        "macro_f1_10": 0.1188361528822055,
+        "micro_f1": 0.2885375494071146,
+        "positive_class_f1": "",
+        "no_distortion_f1": 0.5649717514124294,
+        "no_distortion_wcontrib": 0.2054442732408834,
+        "truncation_rate": 0.0237,
+        "source": "empowerlens",
+        "averaging": ""
+      },
+      "per_class": [
+        {
+          "class": "no_distortion",
+          "precision": 0.5882352941176471,
+          "recall": 0.5434782608695652,
+          "f1": 0.5649717514124294,
+          "support": 92,
+          "weighted_contribution": 0.2054442732408834
+        },
+        {
+          "class": "emotional_reasoning",
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 12,
+          "weighted_contribution": 0.0
+        },
+        {
+          "class": "overgeneralization",
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 26,
+          "weighted_contribution": 0.0
+        },
+        {
+          "class": "mental_filter",
+          "precision": 0.2,
+          "recall": 0.38461538461538464,
+          "f1": 0.2631578947368421,
+          "support": 13,
+          "weighted_contribution": 0.013521947160391096
+        },
+        {
+          "class": "should_statements",
+          "precision": 0.23529411764705882,
+          "recall": 0.36363636363636365,
+          "f1": 0.2857142857142857,
+          "support": 11,
+          "weighted_contribution": 0.012422360248447204
+        },
+        {
+          "class": "all_or_nothing",
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 11,
+          "weighted_contribution": 0.0
+        },
+        {
+          "class": "mind_reading",
+          "precision": 0.19444444444444445,
+          "recall": 0.25,
+          "f1": 0.21875,
+          "support": 28,
+          "weighted_contribution": 0.024209486166007904
+        },
+        {
+          "class": "fortune_telling",
+          "precision": 0.08,
+          "recall": 0.15384615384615385,
+          "f1": 0.10526315789473684,
+          "support": 13,
+          "weighted_contribution": 0.005408778864156439
+        },
+        {
+          "class": "magnification",
+          "precision": 0.1,
+          "recall": 0.16666666666666666,
+          "f1": 0.125,
+          "support": 18,
+          "weighted_contribution": 0.008893280632411068
+        },
+        {
+          "class": "personalization",
+          "precision": 0.125,
+          "recall": 0.07692307692307693,
+          "f1": 0.09523809523809523,
+          "support": 13,
+          "weighted_contribution": 0.004893657067570111
+        },
+        {
+          "class": "labeling",
+          "precision": 0.2,
+          "recall": 0.0625,
+          "f1": 0.09523809523809523,
+          "support": 16,
+          "weighted_contribution": 0.006022962544701674
+        }
+      ],
+      "truncation_rate": 0.0237
+    }
+  }
+}

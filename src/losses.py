@@ -1,6 +1,9 @@
 """
 Optional loss functions and optimizer builders for src/train_transformer.py.
 
+AsymmetricLoss: a third imbalance strategy (asymmetric focusing +
+probability shifting) that replaces pos_weight rather than stacking on it.
+
 FocalLoss: alternative to plain weighted BCE for multilabel Stage 2, where a
 few classes (all_or_nothing, mental_filter, personalization) have very few
 positive examples relative to the rest. Focal loss down-weights the gradient
@@ -28,13 +31,43 @@ import torch
 import torch.nn as nn
 
 
+def masked_mean(per_element: torch.Tensor, keep: Optional[torch.Tensor]) -> torch.Tensor:
+    """Mean over elements, ignoring label columns where ``keep`` is 0.
+
+    WHY MASKING AND NOT pos_weight=0
+    --------------------------------
+    The obvious way to make a label "not count" is to zero its pos_weight. That
+    does NOT work. ``pos_weight`` scales only the POSITIVE term of BCE. For a
+    column whose targets are all 0 — which is exactly the case this exists for —
+    the entire loss is the negative term ``-log(1 - p)``, which pos_weight never
+    touches. The model would still be trained to drive that logit to 0.
+
+    Measured consequence of getting this wrong: in the 2026-08-17 sequential run,
+    stage A trained on 7,846 PatternReframe rows with ml_emotional_reasoning = 0 in
+    every one. That is not missing supervision, it is 7,846 assertions that the
+    label never occurs, and stage B could not undo it — emotional_reasoning F1 fell
+    from 0.368 (Annotated-only baseline) to 0.074, which alone accounted for ~72%
+    of the sequential run's macro_f1 deficit.
+
+    Dividing by the kept count rather than the full element count keeps the loss on
+    the same scale as an unmasked run, so learning rates stay comparable.
+    """
+    if keep is None:
+        return per_element.mean()
+    per_element = per_element * keep                     # broadcasts over the batch
+    denom = per_element.shape[0] * keep.sum()
+    return per_element.sum() / denom.clamp(min=1.0)
+
+
 class FocalLoss(nn.Module):
     """Multilabel focal loss layered on top of BCEWithLogitsLoss's pos_weight."""
 
-    def __init__(self, pos_weight: Optional[torch.Tensor] = None, gamma: float = 2.0):
+    def __init__(self, pos_weight: Optional[torch.Tensor] = None, gamma: float = 2.0,
+                 label_mask: Optional[torch.Tensor] = None):
         super().__init__()
         self.pos_weight = pos_weight
         self.gamma = gamma
+        self.label_mask = label_mask
 
     def forward(self, logits: torch.Tensor, targets: torch.Tensor) -> torch.Tensor:
         bce = nn.functional.binary_cross_entropy_with_logits(
@@ -42,7 +75,80 @@ class FocalLoss(nn.Module):
         )
         p_t = torch.exp(-bce)
         focal = ((1 - p_t) ** self.gamma) * bce
-        return focal.mean()
+        return masked_mean(focal, self.label_mask)
+
+
+class MaskedBCEWithLogitsLoss(nn.Module):
+    """BCEWithLogitsLoss that ignores chosen label columns entirely.
+
+    Used when a training set carries no information about a label — see
+    ``masked_mean`` for why zeroing pos_weight is not equivalent.
+    """
+
+    def __init__(self, pos_weight: Optional[torch.Tensor] = None,
+                 label_mask: Optional[torch.Tensor] = None):
+        super().__init__()
+        self.pos_weight = pos_weight
+        self.label_mask = label_mask
+
+    def forward(self, logits: torch.Tensor, targets: torch.Tensor) -> torch.Tensor:
+        bce = nn.functional.binary_cross_entropy_with_logits(
+            logits, targets, pos_weight=self.pos_weight, reduction="none"
+        )
+        return masked_mean(bce, self.label_mask)
+
+
+class AsymmetricLoss(nn.Module):
+    """Asymmetric loss for multilabel imbalance (Ridnik et al., ICCV 2021).
+
+    A third way of handling the negative flood, mechanically different from
+    both pos_weight and focal:
+
+    * **Asymmetric focusing** — separate gamma for positives and negatives
+      (``gamma_neg`` > ``gamma_pos``), so confident negatives are damped hard
+      while positives keep their full gradient. FocalLoss uses one gamma for
+      both and therefore also damps the rare positives it is meant to protect.
+    * **Probability shifting** — ``clip`` discards negatives the model already
+      scores below that probability. On this corpus most negatives are trivially
+      negative (``all_or_nothing`` is 5.0% positive in train), and those
+      already-solved rows otherwise dominate the gradient sum.
+
+    Needs no ``pos_weight``: the asymmetry IS the class balancing. Passing both
+    would double-count, so the caller should choose one.
+
+    Reduction is ``masked_mean`` rather than the paper's ``sum`` so the loss
+    stays on the same scale as the other losses here and --lr is comparable
+    across an ablation.
+    """
+
+    def __init__(self, gamma_neg: float = 4.0, gamma_pos: float = 1.0,
+                 clip: float = 0.05, eps: float = 1e-8,
+                 label_mask: Optional[torch.Tensor] = None):
+        super().__init__()
+        self.gamma_neg = gamma_neg
+        self.gamma_pos = gamma_pos
+        self.clip = clip
+        self.eps = eps
+        self.label_mask = label_mask
+
+    def forward(self, logits: torch.Tensor, targets: torch.Tensor) -> torch.Tensor:
+        p = torch.sigmoid(logits)
+        p_pos, p_neg = p, 1.0 - p
+        if self.clip > 0:
+            # Shift negatives down; anything already below `clip` contributes nothing.
+            p_neg = (p_neg + self.clip).clamp(max=1.0)
+
+        loss = (targets * torch.log(p_pos.clamp(min=self.eps))
+                + (1 - targets) * torch.log(p_neg.clamp(min=self.eps)))
+
+        # Asymmetric focusing weight, computed with the gradient detached so the
+        # modulating term scales the loss without contributing gradient of its own
+        # (this is what the reference implementation does).
+        with torch.no_grad():
+            pt = p_pos * targets + p_neg * (1 - targets)
+            gamma = self.gamma_pos * targets + self.gamma_neg * (1 - targets)
+            w = torch.pow(1 - pt, gamma)
+        return masked_mean(-loss * w, self.label_mask)
 
 
 def _find_encoder_layers(model):
