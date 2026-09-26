@@ -1,0 +1,11 @@
+distortion,true_rate,pred_rate_at_0.5,over_prediction,mean_prob,prob_std
+mind_reading,0.117,0.12,0.004,0.262,0.159
+magnification,0.097,0.092,-0.004,0.249,0.154
+fortune_telling,0.083,0.07,-0.013,0.206,0.159
+mental_filter,0.06,0.018,-0.042,0.166,0.126
+emotional_reasoning,0.067,0.024,-0.043,0.182,0.13
+all_or_nothing,0.05,0.0,-0.049,0.139,0.088
+should_statements,0.053,0.0,-0.053,0.148,0.083
+labeling,0.08,0.013,-0.068,0.191,0.089
+personalization,0.08,0.011,-0.069,0.201,0.115
+overgeneralization,0.109,0.0,-0.109,0.259,0.063

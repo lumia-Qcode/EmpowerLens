@@ -1,0 +1,23 @@
+{
+  "model": "mental/mental-roberta-base",
+  "folds": 5,
+  "epochs": 5,
+  "seed": 42,
+  "n_rows": 2530,
+  "distortions": [
+    "emotional_reasoning",
+    "overgeneralization",
+    "mental_filter",
+    "should_statements",
+    "all_or_nothing",
+    "mind_reading",
+    "fortune_telling",
+    "magnification",
+    "personalization",
+    "labeling"
+  ],
+  "max_pos_weight": 3.0,
+  "inner_val_frac": 0.1,
+  "use_distorted_part": false,
+  "note": "out-of-fold probs; each row predicted by a model that never trained on it (inner-val split used for early stopping is drawn from TRAIN only, never from the held-out fold being predicted)"
+}

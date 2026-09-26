@@ -12,6 +12,11 @@ __pycache__/
 *.safetensors
 checkpoints/
 wandb/
+results_reannotation/fold0_ckpt/
+results_reannotation/fold1_ckpt/
+results_reannotation/fold2_ckpt/
+results_reannotation/fold3_ckpt/
+results_reannotation/fold4_ckpt/
 
 # --- HuggingFace / misc caches ---
 .cache/
