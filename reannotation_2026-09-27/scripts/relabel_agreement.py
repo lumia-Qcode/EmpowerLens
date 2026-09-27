@@ -54,7 +54,13 @@ def read_workbooks() -> pd.DataFrame:
                 continue
             primary = (r[idx["Primary"]] or "").strip() or None
             secondary = (r[idx["Secondary"]] or "").strip() or None
-            unsure = (r[idx["Unsure"]] or "").strip() or None
+            raw_unsure = r[idx["Unsure"]]
+            # Accepts a checkbox (True/False), a typed TRUE/Yes/x, or blank.
+            if isinstance(raw_unsure, bool):
+                unsure = "Yes" if raw_unsure else None
+            else:
+                text = str(raw_unsure or "").strip().lower()
+                unsure = "Yes" if text in {"true", "yes", "y", "x", "1", "☑"} else None
             note = r[idx["Notes"]]
             reason = None
             if primary is None:

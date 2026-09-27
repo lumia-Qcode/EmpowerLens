@@ -49,6 +49,11 @@ TEST_FILL = "FFF2CC"  # light amber
 
 SECONDS_PER_ROW = 45
 
+# Sheet protection locks the read-only columns, but any reader that opens the file
+# in a restricted mode (Excel Protected View, a preview pane) then looks simply
+# "broken" to an annotator. Off by default; flip to True if you want the lock.
+PROTECT_SHEET = False
+
 HERE = Path(__file__).resolve().parent
 BASE = HERE.parent                       # reannotation_2026-09-27/
 REPO = BASE.parent                       # repo root
@@ -272,7 +277,7 @@ def write_workbook(path: Path, rows: pd.DataFrame, fills: list[str], primary_val
         if SHOW_DISTORTED_PART:
             span = r.get(SPAN_COL)
             values.append("" if pd.isna(span) else span)
-        values += ["", "", "", ""]
+        values += ["", "", False, ""]   # Primary, Secondary, Unsure, Notes
         ws.append(values)
         fill = PatternFill("solid", fgColor=fills[i - 2])
         for c, name in enumerate(VISIBLE, start=1):
@@ -291,25 +296,33 @@ def write_workbook(path: Path, rows: pd.DataFrame, fills: list[str], primary_val
         ws.column_dimensions[get_column_letter(c)].width = widths.get(name, 18)
     ws.freeze_panes = "A2"
 
-    # Dropdowns. Inline lists blow Excel's 255-character limit, so the values
-    # live on a hidden sheet that annotators never see.
-    lists = wb.create_sheet("_lists")
-    for i, v in enumerate(primary_values, start=1):
-        lists.cell(row=i, column=1, value=v)
-    for i, v in enumerate(secondary_values, start=1):
-        lists.cell(row=i, column=2, value=v)
-    lists.cell(row=1, column=3, value="Yes")
-    lists.sheet_state = "hidden"
-
+    # Dropdowns. Inline lists keep everything on one sheet, which survives
+    # LibreOffice / Google Sheets round-trips better than a cross-sheet
+    # reference. Excel caps the inline list at 255 characters, so assert it.
     p_col, s_col = get_column_letter(PRIMARY_COL_IDX), get_column_letter(SECONDARY_COL_IDX)
     u_col = get_column_letter(VISIBLE.index("Unsure") + 1)
 
-    dv_p = DataValidation(type="list", formula1=f"_lists!$A$1:$A${len(primary_values)}",
-                          allow_blank=False, showDropDown=False)
-    dv_s = DataValidation(type="list", formula1=f"_lists!$B$1:$B${len(secondary_values)}",
-                          allow_blank=True, showDropDown=False)
-    dv_u = DataValidation(type="list", formula1="_lists!$C$1:$C$1",
-                          allow_blank=True, showDropDown=False)
+    p_list, s_list = ",".join(primary_values), ",".join(secondary_values)
+    for name, lst in (("Primary", p_list), ("Secondary", s_list)):
+        if len(lst) > 255:
+            raise SystemExit(f"{name} dropdown is {len(lst)} chars; Excel allows 255.")
+
+    dv_p = DataValidation(type="list", formula1=f'"{p_list}"', allow_blank=False,
+                          showDropDown=False, showErrorMessage=True,
+                          errorTitle="Pick from the list",
+                          error="Choose one of the labels in the dropdown.",
+                          promptTitle="Primary", prompt="Required. One label.",
+                          showInputMessage=True)
+    dv_s = DataValidation(type="list", formula1=f'"{s_list}"', allow_blank=True,
+                          showDropDown=False, showErrorMessage=True,
+                          errorTitle="Pick from the list",
+                          error="Choose one of the ten distortions, or leave blank.")
+    # Unsure holds checkbox values. Excel 365's native checkbox is a cell
+    # feature openpyxl cannot write, so the column is seeded with FALSE and the
+    # annotator (or whoever preps the file) turns it into real checkboxes with
+    # Insert > Checkbox over F2:F<last>. Until then it is a TRUE/FALSE dropdown.
+    dv_u = DataValidation(type="list", formula1='"TRUE,FALSE"', allow_blank=True,
+                          showDropDown=False, showErrorMessage=False)
     for dv, col in ((dv_p, p_col), (dv_s, s_col), (dv_u, u_col)):
         ws.add_data_validation(dv)
         dv.add(f"{col}2:{col}{last}")
@@ -327,8 +340,9 @@ def write_workbook(path: Path, rows: pd.DataFrame, fills: list[str], primary_val
     )
     ws.conditional_formatting.add(f"A2:{get_column_letter(len(VISIBLE))}{last}", rule)
 
-    ws.protection.sheet = True
-    ws.protection.selectLockedCells = False
+    if PROTECT_SHEET:
+        ws.protection.sheet = True
+        ws.protection.selectLockedCells = False
     wb.save(path)
 
 
