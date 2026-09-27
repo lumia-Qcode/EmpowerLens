@@ -59,9 +59,19 @@ No original labels, bucket, model predictions or overlap marker.
 
 Row shading: overlap `DDEBF7` (blue), training `E2EFDA` (green), test `FFF2CC` (amber).
 Primary dropdown = the 11 dataset labels + `No Distortion (calibrated pessimism)`;
-Secondary = the 10 distortions. A row turns red when Primary is blank, Secondary
-repeats Primary, or Secondary is set while Primary is a No-Distortion value.
-Read-only columns are locked (sheet protection, no password).
+Secondary = the 10 distortions; both are inline lists, so there is no helper sheet.
+A row turns red when Secondary repeats Primary, when Secondary is set while Primary
+is a No-Distortion value, or when Primary is blank *on a row that was otherwise
+started* (a blank Primary on an untouched row is not an error — flagging those
+would paint the whole sheet red before the session begins).
+
+`Unsure` is seeded with `FALSE` so it can be converted to real checkboxes in one
+step: select the column's data rows and use **Insert > Checkbox** (Excel 365).
+Without that it behaves as a `TRUE`/`FALSE` dropdown; the merge script accepts
+either, plus `Yes`, `x` and `1`.
+
+Sheets are **not** protected (`PROTECT_SHEET = False`): a protected sheet reads as
+"broken" to an annotator whose Excel opens the file in Protected View.
 
 `annotator_master_key.xlsx` maps every row to its annotator, section, split, bucket,
 original labels and triage columns. **Not for annotators.**

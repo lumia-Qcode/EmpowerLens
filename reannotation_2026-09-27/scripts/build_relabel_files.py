@@ -327,11 +327,16 @@ def write_workbook(path: Path, rows: pd.DataFrame, fills: list[str], primary_val
         ws.add_data_validation(dv)
         dv.add(f"{col}2:{col}{last}")
 
-    # Red highlight for the three validation failures.
+    # Red highlight for the validation failures. A blank Primary only counts as
+    # an error once the row has been touched (Secondary, Unsure or Notes filled)
+    # — otherwise every untouched row would be red from the moment the file opens
+    # and the section shading would be unreadable.
+    n_col = get_column_letter(VISIBLE.index("Notes") + 1)
     red = PatternFill("solid", fgColor="FFC7CE")
     rule = FormulaRule(
         formula=[
-            f'OR(${p_col}2="",'
+            f'OR('
+            f'AND(${p_col}2="",OR(${s_col}2<>"",${u_col}2=TRUE,${n_col}2<>"")),'
             f'AND(${s_col}2<>"",${s_col}2=${p_col}2),'
             f'AND(${s_col}2<>"",OR(${p_col}2="No Distortion",${p_col}2="{CP_LABEL}")))'
         ],
