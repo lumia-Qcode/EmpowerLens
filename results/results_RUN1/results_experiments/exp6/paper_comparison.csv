@@ -1,0 +1,7 @@
+model,task,seed,split,n_classes,weighted_f1,macro_f1,macro_f1_10,micro_f1,positive_class_f1,no_distortion_f1,no_distortion_wcontrib,truncation_rate,source,averaging
+mental/mental-roberta-base,multilabel,42,val,10,0.3182333232894492,0.3019424776544623,,0.3103448275862069,,,,0.0415,empowerlens,
+mental/mental-roberta-base,multilabel,42,test,10,0.3250677831566679,0.3158723790393562,,0.3159851301115242,,,,0.0383,empowerlens,
+mental/mental-roberta-base,multilabel,1337,val,10,0.3370782882133664,0.3234357255284258,,0.3212237093690248,,,,0.0415,empowerlens,
+mental/mental-roberta-base,multilabel,1337,test,10,0.3203998613778221,0.307056241595183,,0.3093525179856115,,,,0.0383,empowerlens,
+mental/mental-roberta-base,multilabel,2024,val,10,0.30582638157887293,0.29516211666435455,,0.3006993006993007,,,,0.0415,empowerlens,
+mental/mental-roberta-base,multilabel,2024,test,10,0.3112570510314851,0.3022338445788205,,0.30550621669627,,,,0.0383,empowerlens,

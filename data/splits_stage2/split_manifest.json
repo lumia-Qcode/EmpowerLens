@@ -1,32 +1,32 @@
 {
-  "created_utc": "2026-08-15T19:58:03.311323+00:00",
+  "created_utc": "2026-08-17T15:54:46.160115+00:00",
   "purpose": "Stage 2 splits = --source splits filtered to y_bin==1 (distorted only). No re-splitting: row-level train/val/test boundaries are inherited unchanged from --source.",
-  "source_dir": "data\\splits",
+  "source_dir": "data\\splits_combined",
   "n_per_split": {
-    "train": 1278,
-    "val": 158,
-    "test": 161
+    "train": 1463,
+    "val": 183,
+    "test": 183
   },
   "n_removed_no_distortion": {
-    "train": 746,
-    "val": 95,
-    "test": 92
+    "train": 1040,
+    "val": 130,
+    "test": 130
   },
   "per_class_train": {
-    "emotional_reasoning": 135,
-    "overgeneralization": 222,
-    "mental_filter": 121,
-    "should_statements": 108,
-    "all_or_nothing": 101,
-    "mind_reading": 232,
-    "fortune_telling": 168,
-    "magnification": 196,
-    "personalization": 162,
-    "labeling": 162
+    "emotional_reasoning": 176,
+    "overgeneralization": 214,
+    "mental_filter": 134,
+    "should_statements": 197,
+    "all_or_nothing": 137,
+    "mind_reading": 247,
+    "fortune_telling": 225,
+    "magnification": 168,
+    "personalization": 140,
+    "labeling": 263
   },
   "source_file_sha256": {
-    "train": "2410e1d640c698898cbae334d74a53cc6313a4029e1c88ff5f942c7ae9a024d4",
-    "val": "82510ce7acab58d58cc8d9397ff214fcb2beef7a6bae235a2b7dff12a366b9ec",
-    "test": "1013562d7c8887746689959d38724a3adb7d29ab07cc9e71782d85276282d1e0"
+    "train": "dc1523f9135c0590a538644473f053fb2ebe3e8e7c177ef780f78663468c8ae9",
+    "val": "c876c6ab093eff02325e766072110163f121c64f2ac758eb19966cd6ffa3f4bb",
+    "test": "ab5101352823940cc331a2b6223d8e0ad652bf5304c510b6bae3ccae2f814241"
   }
 }

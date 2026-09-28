@@ -291,6 +291,12 @@ def main(argv=None):
     ap.add_argument("--llrd-decay", type=float, default=0.9, help="per-layer LR multiplier, only used with --llrd")
     ap.add_argument("--early-stopping-patience", type=int, default=0,
                     help="stop after N eval epochs with no improvement, 0 = off (old behavior: always run --epochs)")
+    ap.add_argument("--max-pos-weight", type=float, default=None,
+                    help="multilabel only: cap on BCEWithLogitsLoss pos_weight. None = uncapped (old behavior). "
+                         "Uncapped inverse-frequency weighting on rare classes can push predicted probabilities "
+                         "up corpus-wide (a real run on this corpus at pos_weight~10 for a ~5%% base-rate class "
+                         "showed ~3x over-prediction); pass e.g. --max-pos-weight 3 if val metrics look skewed "
+                         "toward recall at precision's expense.")
     args = ap.parse_args(argv)
 
     if args.truncation == "head_tail" and args.max_length <= args.head_keep:

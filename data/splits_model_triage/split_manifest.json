@@ -1,0 +1,112 @@
+{
+  "created_utc": "2026-09-25T16:11:12.512873+00:00",
+  "source_csv": "Annotated_data_model_triage.csv",
+  "source_sha256": "700b55bcf1b8d83f8fa1fd2b583d7871902fb1887f203318c259ddbe7301c780",
+  "encoding": "utf-8-sig",
+  "random_state": 42,
+  "proportions": {
+    "train": 0.8,
+    "val": 0.1,
+    "test": 0.1
+  },
+  "n_total": 2530,
+  "splits": {
+    "train": {
+      "n": 2024,
+      "n_distorted": 1338,
+      "n_non_distorted": 686,
+      "per_class": {
+        "no_distortion": 686,
+        "emotional_reasoning": 18,
+        "overgeneralization": 162,
+        "mental_filter": 49,
+        "should_statements": 7,
+        "all_or_nothing": 4,
+        "mind_reading": 468,
+        "fortune_telling": 125,
+        "magnification": 398,
+        "personalization": 47,
+        "labeling": 60
+      },
+      "ml_positive_per_distortion": {
+        "emotional_reasoning": 127,
+        "overgeneralization": 185,
+        "mental_filter": 109,
+        "should_statements": 22,
+        "all_or_nothing": 23,
+        "mind_reading": 512,
+        "fortune_telling": 293,
+        "magnification": 497,
+        "personalization": 140,
+        "labeling": 109
+      }
+    },
+    "val": {
+      "n": 253,
+      "n_distorted": 167,
+      "n_non_distorted": 86,
+      "per_class": {
+        "no_distortion": 86,
+        "emotional_reasoning": 1,
+        "overgeneralization": 19,
+        "mental_filter": 3,
+        "should_statements": 0,
+        "all_or_nothing": 0,
+        "mind_reading": 62,
+        "fortune_telling": 16,
+        "magnification": 50,
+        "personalization": 5,
+        "labeling": 11
+      },
+      "ml_positive_per_distortion": {
+        "emotional_reasoning": 16,
+        "overgeneralization": 23,
+        "mental_filter": 13,
+        "should_statements": 3,
+        "all_or_nothing": 3,
+        "mind_reading": 67,
+        "fortune_telling": 36,
+        "magnification": 62,
+        "personalization": 18,
+        "labeling": 14
+      }
+    },
+    "test": {
+      "n": 253,
+      "n_distorted": 167,
+      "n_non_distorted": 86,
+      "per_class": {
+        "no_distortion": 86,
+        "emotional_reasoning": 3,
+        "overgeneralization": 18,
+        "mental_filter": 6,
+        "should_statements": 1,
+        "all_or_nothing": 1,
+        "mind_reading": 60,
+        "fortune_telling": 16,
+        "magnification": 49,
+        "personalization": 4,
+        "labeling": 9
+      },
+      "ml_positive_per_distortion": {
+        "emotional_reasoning": 16,
+        "overgeneralization": 23,
+        "mental_filter": 14,
+        "should_statements": 3,
+        "all_or_nothing": 3,
+        "mind_reading": 68,
+        "fortune_telling": 37,
+        "magnification": 62,
+        "personalization": 17,
+        "labeling": 13
+      }
+    }
+  },
+  "library_versions": {
+    "python": "3.12.13",
+    "numpy": "2.0.2",
+    "pandas": "2.3.3",
+    "scikit-learn": "1.6.1",
+    "iterative-stratification": "0.1.9"
+  }
+}

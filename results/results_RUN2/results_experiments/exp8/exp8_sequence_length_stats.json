@@ -1,0 +1,11 @@
+{
+  "n": 2530,
+  "median": 155.0,
+  "p90": 434.0,
+  "p95": 485.0,
+  "max": 1394,
+  "pct_truncated_at_128": 61.5,
+  "pct_truncated_at_256": 27.55,
+  "pct_truncated_at_512": 3.16,
+  "pct_truncated_at_1024": 0.08
+}

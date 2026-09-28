@@ -1,0 +1,12 @@
+human_class,n,codipas_agrees,top_alternative,top_alternative_n
+mental_filter,122,0.057,no_distortion,54
+all_or_nothing,100,0.09,no_distortion,36
+fortune_telling,143,0.098,no_distortion,48
+magnification,194,0.098,no_distortion,79
+personalization,153,0.137,no_distortion,45
+overgeneralization,237,0.186,no_distortion,84
+emotional_reasoning,134,0.201,no_distortion,57
+should_statements,107,0.243,no_distortion,39
+labeling,162,0.259,no_distortion,37
+mind_reading,237,0.312,no_distortion,80
+no_distortion,931,0.693,labeling,62

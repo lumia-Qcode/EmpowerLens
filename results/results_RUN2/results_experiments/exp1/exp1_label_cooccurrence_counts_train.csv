@@ -1,0 +1,11 @@
+,emotional_reasoning,overgeneralization,mental_filter,should_statements,all_or_nothing,mind_reading,fortune_telling,magnification,personalization,labeling
+emotional_reasoning,135,2,4,3,1,9,15,9,4,5
+overgeneralization,2,222,3,5,8,11,13,10,8,10
+mental_filter,4,3,121,1,6,3,12,16,5,8
+should_statements,3,5,1,108,2,2,6,3,10,9
+all_or_nothing,1,8,6,2,101,4,4,6,3,7
+mind_reading,9,11,3,2,4,232,10,12,11,10
+fortune_telling,15,13,12,6,4,10,168,7,7,12
+magnification,9,10,16,3,6,12,7,196,11,5
+personalization,4,8,5,10,3,11,7,11,162,17
+labeling,5,10,8,9,7,10,12,5,17,162

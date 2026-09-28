@@ -1,0 +1,11 @@
+,emotional_reasoning,overgeneralization,mental_filter,should_statements,all_or_nothing,mind_reading,fortune_telling,magnification,personalization,labeling
+emotional_reasoning,1.0,0.006,0.016,0.012,0.004,0.025,0.052,0.028,0.014,0.017
+overgeneralization,0.006,1.0,0.009,0.015,0.025,0.025,0.034,0.025,0.021,0.027
+mental_filter,0.016,0.009,1.0,0.004,0.028,0.009,0.043,0.053,0.018,0.029
+should_statements,0.012,0.015,0.004,1.0,0.01,0.006,0.022,0.01,0.038,0.034
+all_or_nothing,0.004,0.025,0.028,0.01,1.0,0.012,0.015,0.021,0.012,0.027
+mind_reading,0.025,0.025,0.009,0.006,0.012,1.0,0.026,0.029,0.029,0.026
+fortune_telling,0.052,0.034,0.043,0.022,0.015,0.026,1.0,0.02,0.022,0.038
+magnification,0.028,0.025,0.053,0.01,0.021,0.029,0.02,1.0,0.032,0.014
+personalization,0.014,0.021,0.018,0.038,0.012,0.029,0.022,0.032,1.0,0.055
+labeling,0.017,0.027,0.029,0.034,0.027,0.026,0.038,0.014,0.055,1.0
