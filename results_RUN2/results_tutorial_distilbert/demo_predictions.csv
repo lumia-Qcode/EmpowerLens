@@ -1,0 +1,31 @@
+text,rank,label,score,in_top_k,fired_fixed,tuned_threshold,fired_tuned
+I can't believe I made such a stupid mistake. I'm a complete failure.,1,labeling,0.3207945227622986,True,False,0.25,True
+I can't believe I made such a stupid mistake. I'm a complete failure.,2,personalization,0.2992459237575531,True,False,0.15,True
+I can't believe I made such a stupid mistake. I'm a complete failure.,3,fortune_telling,0.23933212459087372,False,False,0.05,True
+I can't believe I made such a stupid mistake. I'm a complete failure.,4,emotional_reasoning,0.1672918200492859,False,False,0.1,True
+I can't believe I made such a stupid mistake. I'm a complete failure.,5,mental_filter,0.1666388362646103,False,False,0.1,True
+I can't believe I made such a stupid mistake. I'm a complete failure.,6,should_statements,0.07971291989088058,False,False,0.05,True
+I can't believe I made such a stupid mistake. I'm a complete failure.,7,magnification,0.06228894740343094,False,False,0.1,False
+I can't believe I made such a stupid mistake. I'm a complete failure.,8,all_or_nothing,0.04638904333114624,False,False,0.05,False
+I can't believe I made such a stupid mistake. I'm a complete failure.,9,mind_reading,0.04247979447245598,False,False,0.5,False
+I can't believe I made such a stupid mistake. I'm a complete failure.,10,overgeneralization,0.03384681046009064,False,False,0.1,False
+I'm sure they are all talking about how bad my presentation was.,1,mind_reading,0.32475724816322327,True,False,0.5,False
+I'm sure they are all talking about how bad my presentation was.,2,overgeneralization,0.021539893001317978,True,False,0.1,False
+I'm sure they are all talking about how bad my presentation was.,3,labeling,0.017869597300887108,False,False,0.25,False
+I'm sure they are all talking about how bad my presentation was.,4,emotional_reasoning,0.014483043923974037,False,False,0.1,False
+I'm sure they are all talking about how bad my presentation was.,5,should_statements,0.011334547773003578,False,False,0.05,False
+I'm sure they are all talking about how bad my presentation was.,6,personalization,0.011271115392446518,False,False,0.15,False
+I'm sure they are all talking about how bad my presentation was.,7,magnification,0.010859942063689232,False,False,0.1,False
+I'm sure they are all talking about how bad my presentation was.,8,fortune_telling,0.010339315980672836,False,False,0.05,False
+I'm sure they are all talking about how bad my presentation was.,9,all_or_nothing,0.006809511687606573,False,False,0.05,False
+I'm sure they are all talking about how bad my presentation was.,10,mental_filter,0.006409190129488707,False,False,0.1,False
+"This is a great achievement, but I was just lucky.",1,emotional_reasoning,0.07194320857524872,True,False,0.1,False
+"This is a great achievement, but I was just lucky.",2,magnification,0.05773450806736946,True,False,0.1,False
+"This is a great achievement, but I was just lucky.",3,should_statements,0.05417131260037422,False,False,0.05,True
+"This is a great achievement, but I was just lucky.",4,personalization,0.041813287883996964,False,False,0.15,False
+"This is a great achievement, but I was just lucky.",5,overgeneralization,0.040951866656541824,False,False,0.1,False
+"This is a great achievement, but I was just lucky.",6,labeling,0.035350847989320755,False,False,0.25,False
+"This is a great achievement, but I was just lucky.",7,mental_filter,0.032831594347953796,False,False,0.1,False
+"This is a great achievement, but I was just lucky.",8,all_or_nothing,0.028295256197452545,False,False,0.05,False
+"This is a great achievement, but I was just lucky.",9,fortune_telling,0.007237959187477827,False,False,0.05,False
+"This is a great achievement, but I was just lucky.",10,mind_reading,0.004520480986684561,False,False,0.5,False

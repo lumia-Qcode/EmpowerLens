@@ -1,0 +1,11 @@
+class,precision,recall,f1,support
+emotional_reasoning,0.0,0.0,0.0,17.0
+overgeneralization,1.0,0.037037037037037,0.0714285714285714,27.0
+mental_filter,0.0,0.0,0.0,15.0
+should_statements,0.0,0.0,0.0,14.0
+all_or_nothing,0.0,0.0,0.0,12.0
+mind_reading,0.4666666666666667,0.4375,0.4516129032258064,32.0
+fortune_telling,0.0,0.0,0.0,21.0
+magnification,0.5,0.0416666666666666,0.0769230769230769,24.0
+personalization,0.3333333333333333,0.05,0.0869565217391304,20.0
+labeling,0.0,0.0,0.0,20.0
