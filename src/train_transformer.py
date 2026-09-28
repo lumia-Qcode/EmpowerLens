@@ -30,6 +30,7 @@ os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
 import argparse
 import functools
 import json
+from collections import Counter
 from pathlib import Path
 
 import numpy as np
@@ -50,12 +51,22 @@ from transformers import (
 from transformers.trainer_pt_utils import LengthGroupedSampler
 
 from src.data import DISTORTIONS, MC_CLASSES
+# find_span lives in the CODIPAS loader but is a generic normalize-then-locate
+# string utility with no CODIPAS-specific behavior; reused here rather than
+# duplicated so both datasets resolve spans by identical rules.
+from src.data_codipas import find_span
 from src.losses import (FocalLoss, MaskedBCEWithLogitsLoss, build_llrd_optimizer,
                         freeze_bottom_layers)
 
 TEXT_COL = "Patient Question"
+SPAN_COL = "Distorted part"
 ML_COLS = [f"ml_{d}" for d in DISTORTIONS]
 TASK_NUM_LABELS = {"binary": 2, "multiclass": 11, "multilabel": 10}
+
+# Entity-marker convention (Baldini Soares et al. 2019): wrap the span in a
+# plain character already in every BPE vocab, so no embedding resize is needed
+# and the marked/unmarked inputs stay token-for-token comparable elsewhere.
+SPAN_MARKER = "@"
 
 
 def resolve_device(choice: str) -> str:
@@ -86,6 +97,65 @@ def _special_token_ids(tokenizer):
     prefix = [cls] if cls is not None else []
     suffix = [sep] if sep is not None else []
     return prefix, suffix
+
+
+def build_inputs(df: pd.DataFrame, input_repr: str):
+    """Return (texts, stats) for one of the three input representations.
+
+    ``document``    the full ``Patient Question`` — the default, unchanged behavior.
+    ``span_crop``   the gold ``Distorted part`` alone, context discarded.
+    ``span_marked`` the full document with the span wrapped in ``SPAN_MARKER``.
+
+    Both span modes are ORACLE setups: ``Distorted part`` is a gold annotation
+    that does not exist at inference time, so any score they produce is a
+    ceiling, never a system result. See docs/FYP_PLAN.md section 4.
+
+    ``span_marked`` has to locate the span inside the document; ``find_span``
+    resolves 1,593 of 1,597 distorted rows on Annotated_data.csv (1,382 exact,
+    211 fuzzy). The 4 that do not resolve are left unmarked rather than dropped,
+    and the rate is returned in stats so it lands in meta.json.
+    """
+    if input_repr == "document":
+        return df[TEXT_COL].astype(str), {}
+
+    if SPAN_COL not in df.columns:
+        raise SystemExit(
+            f"--input-repr {input_repr} needs the '{SPAN_COL}' column, but the splits "
+            f"dir does not carry it. Regenerate the Stage 2 splits with the current "
+            f"src/make_splits_cascade.py, which keeps it."
+        )
+
+    spans = df[SPAN_COL]
+    if spans.isna().any():
+        # Every y_bin==1 row in Annotated_data.csv has a span; a null here means
+        # the splits dir contains No-Distortion rows, which have nothing to crop.
+        raise SystemExit(
+            f"--input-repr {input_repr}: {int(spans.isna().sum())} of {len(df)} rows have "
+            f"an empty '{SPAN_COL}'. Span training expects a distorted-only splits dir."
+        )
+
+    if input_repr == "span_crop":
+        return spans.astype(str), {}
+
+    texts, match_counts = [], Counter()
+    for doc, span in zip(df[TEXT_COL].astype(str), spans.astype(str)):
+        start, end, match_type = find_span(doc, span)
+        match_counts[match_type] += 1
+        if match_type == "none":
+            texts.append(doc)
+        else:
+            texts.append(
+                f"{doc[:start]}{SPAN_MARKER} {doc[start:end]} {SPAN_MARKER}{doc[end:]}"
+            )
+
+    n = max(len(df), 1)
+    stats = {
+        "span_match_exact": match_counts["exact"],
+        "span_match_fuzzy": match_counts["fuzzy"],
+        "span_match_none": match_counts["none"],
+        "span_match_rate": round((n - match_counts["none"]) / n, 4),
+    }
+    return pd.Series(texts, index=df.index), stats
 
 
 def encode_texts(texts, tokenizer, max_length: int, strategy: str, head_keep: int):
@@ -297,6 +367,11 @@ def main(argv=None):
                          "up corpus-wide (a real run on this corpus at pos_weight~10 for a ~5%% base-rate class "
                          "showed ~3x over-prediction); pass e.g. --max-pos-weight 3 if val metrics look skewed "
                          "toward recall at precision's expense.")
+    ap.add_argument("--input-repr", choices=["document", "span_crop", "span_marked"], default="document",
+                    help="what text the model sees. 'document' = full Patient Question (default). "
+                         "'span_crop' = the gold Distorted part alone. 'span_marked' = the document "
+                         "with the span wrapped in markers. Both span modes are ORACLE setups — they "
+                         "use a gold annotation unavailable at inference, so they measure a ceiling.")
     args = ap.parse_args(argv)
 
     if args.truncation == "head_tail" and args.max_length <= args.head_keep:
@@ -358,8 +433,18 @@ def main(argv=None):
 
     model.to(device)
 
-    tr_enc, _ = encode_texts(train_df[TEXT_COL], tokenizer, args.max_length, args.truncation, args.head_keep)
-    va_enc, val_trunc_rate = encode_texts(val_df[TEXT_COL], tokenizer, args.max_length, args.truncation, args.head_keep)
+    train_texts, train_span_stats = build_inputs(train_df, args.input_repr)
+    val_texts, val_span_stats = build_inputs(val_df, args.input_repr)
+    if args.input_repr != "document":
+        print(f"[input] {args.input_repr} (ORACLE — uses gold spans, result is a ceiling)")
+        if train_span_stats:
+            print(f"[input] train span match {train_span_stats['span_match_rate']:.1%} "
+                  f"(exact {train_span_stats['span_match_exact']}, "
+                  f"fuzzy {train_span_stats['span_match_fuzzy']}, "
+                  f"unlocated {train_span_stats['span_match_none']})")
+
+    tr_enc, _ = encode_texts(train_texts, tokenizer, args.max_length, args.truncation, args.head_keep)
+    va_enc, val_trunc_rate = encode_texts(val_texts, tokenizer, args.max_length, args.truncation, args.head_keep)
     train_ds = TextDataset(tr_enc, list(y_train))
     val_ds = TextDataset(va_enc, list(y_val))
 
@@ -396,7 +481,14 @@ def main(argv=None):
     # model_id is the IDENTITY (naming, metric rows); args.model is where weights
     # came from. They differ only for sequential fine-tuning off a local checkpoint.
     model_id = args.tag or args.model
-    run_name = f"{args.task}_{model_id.split('/')[-1]}_{args.seed}" + ("_smoke" if args.smoke else "")
+    # The representation has to be in the dir name or the three arms of the
+    # span gate (document / span_crop / span_marked) overwrite each other at the
+    # same task+model+seed. Suffixed ONLY for the non-default modes, so every
+    # pre-existing run path stays byte-identical and the notebooks'
+    # skip-if-already-done checks keep matching.
+    repr_suffix = "" if args.input_repr == "document" else f"_{args.input_repr}"
+    run_name = (f"{args.task}_{model_id.split('/')[-1]}_{args.seed}{repr_suffix}"
+                + ("_smoke" if args.smoke else ""))
     out_dir = Path(args.out) / run_name
 
     # Old default was hardcoded to macro_f1 for every task, which for
@@ -481,6 +573,11 @@ def main(argv=None):
         "mask_labels": args.mask_labels, "label_smoothing": args.label_smoothing, "grad_accum": args.grad_accum, "lr_scheduler": args.lr_scheduler,
         "dropout": args.dropout, "freeze_layers": args.freeze_layers, "llrd": args.llrd, "llrd_decay": args.llrd_decay,
         "early_stopping_patience": args.early_stopping_patience,
+        # evaluate.py reads this back so a span-trained checkpoint can never be
+        # scored on plain documents by accident.
+        "input_repr": args.input_repr,
+        "train_span_match": train_span_stats or None,
+        "val_span_match": val_span_stats or None,
         "val_truncation_rate": val_trunc_rate,
         "val_metrics": {k: float(v) for k, v in val_metrics.items() if isinstance(v, (int, float))},
         "thresholds": thresholds,
