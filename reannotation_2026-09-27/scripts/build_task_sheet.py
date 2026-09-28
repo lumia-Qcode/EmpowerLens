@@ -23,86 +23,81 @@ OUT = Path(__file__).resolve().parents[2] / "planning" / "tasks_week_2026-09-28.
 OWNERS = ["Nayab", "Lumia", "Izza", "Laiba", "Reesha", "Hurema", "Team", "Unassigned"]
 STATUSES = ["Not started", "In progress", "Blocked", "Done"]
 
-HEADERS = ["ID", "Task", "Detail", "Owner", "Deadline", "Status", "Depends on", "Notes"]
+HEADERS = ["ID", "Module", "Task", "Detail", "Owner", "Deadline", "Status",
+           "Depends on", "Notes"]
+
+# Which part of the project each task belongs to.
+MODULES = {
+    "T01": "Re-annotation", "T02": "Re-annotation", "T03": "Re-annotation",
+    "T04": "Re-annotation", "T05": "Re-annotation",
+    "T06": "Data augmentation", "T07": "Data augmentation", "T08": "Data augmentation",
+    "T09": "Transfer evaluation", "T10": "Transfer evaluation",
+    "T11": "Span selection", "T12": "Span selection", "T13": "Span selection",
+    "T14": "Model tuning", "T15": "Model tuning",
+    "T16": "Entrepreneurial data", "T17": "Entrepreneurial data",
+    "T18": "Entrepreneurial data", "T19": "Entrepreneurial data",
+    "T20": "Entrepreneurial data", "T21": "Entrepreneurial data",
+    "T22": "Specificity set", "T23": "Specificity set", "T24": "Specificity set",
+}
+
+MODULE_COLOURS = {
+    "Re-annotation": "DDEBF7",
+    "Data augmentation": "E2EFDA",
+    "Transfer evaluation": "FFF2CC",
+    "Span selection": "FCE4D6",
+    "Model tuning": "E4DFEC",
+    "Entrepreneurial data": "DAEEF3",
+    "Specificity set": "F2DCDB",
+}
 
 # (id, task, detail, owner, deadline, depends_on, notes)
+# Owners and the T09/T10 wording come from the team's reassignment (28 Sep).
+# Rows are emitted sorted by deadline; IDs stay stable so dependencies still read.
 TASKS = [
+    ("T16", "Decide target dataset sizes",
+     "How many seed + test items the entrepreneurial set needs",
+     "Lumia", "Tue 29 Sep", "",
+     "~100 non-distorted for +/-10% specificity CI; ~20/class -> 200-300 for per-class"),
+    ("T09", "CBT-Bench: acquire + map labels + run on org dataset finetuned model",
+     "Psychotherapy-LLM/CBT-Bench on HuggingFace; CBT-CD split, 146 items, 10 classes",
+     "Izza", "Wed 30 Sep", "",
+     "Write an explicit label mapping; record how many items had to be dropped"),
+    ("T11", "Span approach: literature + decision",
+     "BIO token tagging vs sentence classification vs extractive QA",
+     "Lumia", "Wed 30 Sep", "",
+     "Recommendation: sentence-level — annotators flagged sentences, report promises it"),
+    ("T17", "Scraping: sources + ToS check",
+     "Pick sources, confirm terms of service and redistribution limits",
+     "Izza", "Wed 30 Sep", "T16",
+     "Scraped text can be republished only as derived data in most cases"),
+    ("T19", "Circulate form + start thread",
+     "Post to relevant entrepreneurial groups/sites; collect responses",
+     "Lumia", "Wed 30 Sep", "",
+     "Consent + anonymisation first. Responses are EVALUATION ONLY, never prompts"),
+    ("T12", "Build sentence labels from spans",
+     "Split into sentences; label the one containing the gold span; use find_span offsets",
+     "Lumia", "Fri 02 Oct", "T11",
+     "Current span_crop/span_marked modes are ORACLE; the selector does not exist yet"),
+    ("T14", "Hyperparameter tuning",
+     "LR (2e-5/3e-5/5e-5), epochs, max_length, weight decay on the original dataset",
+     "Izza", "Fri 02 Oct", "",
+     "Val only. Confirm the winner across all 3 seeds; single-seed wins are noise"),
+    ("T15", "Over/underfitting diagnosis",
+     "Train vs val loss curves per epoch; early stop on val macro-F1",
+     "Izza", "Fri 02 Oct", "T14",
+     "~2,000 train rows: expect overfitting from epoch 3-4"),
     ("T01", "Label CS workbook",
      "annotator_4_CS_majors.xlsx — 413 rows (60 overlap + 293 training + 60 test)",
      "Team", "Sat 03 Oct", "",
      "Overlap 60 must be labelled independently, no discussion, or kappa is void"),
     ("T02", "Label psych workbooks",
      "annotator_1 Laiba 421 / annotator_2 Reesha 418 / annotator_3 Hurema 415 rows",
-     "Laiba", "Sat 03 Oct", "",
+     "Team", "Sat 03 Oct", "",
      "~5h 10m each at 45 s/row; unfinished rows are acceptable"),
-    ("T03", "Merge labels + agreement",
-     "Run scripts/relabel_agreement.py on returned workbooks",
-     "Nayab", "Sun 04 Oct", "T01, T02",
-     "Produces merged_labels.csv, agreement_report.md, unsure_for_adjudication.csv"),
-    ("T04", "Adjudicate Unsure rows",
-     "Psych annotators resolve rows flagged Unsure",
-     "Laiba", "Tue 06 Oct", "T03",
-     "Nobody owned this before; needed before the labels are final"),
-    ("T05", "Separate errors from redefinitions",
-     "Split label changes into genuine errors vs calibrated-pessimism redefinition",
-     "Nayab", "Tue 06 Oct", "T03",
-     "Original annotation had no justified-concern rule; keep the two countable apart"),
-    ("T06", "Back-translation augmentation",
-     "Inflate under-represented classes in the relabelled train split",
-     "Lumia", "Thu 08 Oct", "T03, T04",
-     "TRAIN ONLY. Augmented rows stay in their source row's split or it is leakage"),
-    ("T07", "Decide span handling for augmented rows",
-     "Back-translation breaks 'Distorted part' offsets",
-     "Lumia", "Wed 07 Oct", "T06",
-     "Either re-translate + re-locate the span, or mark rows classification-only"),
-    ("T08", "Hand-check augmented samples",
-     "30 rows per augmented class: did the distortion cue survive?",
-     "Izza", "Fri 09 Oct", "T06",
-     "'I'll never get funding' -> 'I might not' is no longer fortune-telling"),
-    ("T09", "CBT-Bench: acquire + map labels",
-     "Psychotherapy-LLM/CBT-Bench on HuggingFace; CBT-CD split, 146 items, 10 classes",
-     "Izza", "Wed 30 Sep", "",
-     "Write an explicit label mapping; record how many items had to be dropped"),
-    ("T10", "Evaluate fine-tuned model on CBT-Bench",
-     "Transfer test of the TherapistQA-trained model",
-     "Izza", "Fri 02 Oct", "T09",
-     "Only 146 items (~15/class): report support counts, no headline single number"),
-    ("T11", "Span approach: literature + decision",
-     "BIO token tagging vs sentence classification vs extractive QA",
-     "Nayab", "Wed 30 Sep", "",
-     "Recommendation: sentence-level — annotators flagged sentences, report promises it"),
-    ("T12", "Build sentence labels from spans",
-     "Split into sentences; label the one containing the gold span; use find_span offsets",
-     "Nayab", "Fri 02 Oct", "T11",
-     "Current span_crop/span_marked modes are ORACLE; the selector does not exist yet"),
-    ("T13", "Train + evaluate span selector",
-     "Sentence accuracy and span overlap, reported separately from classification",
-     "Nayab", "Thu 08 Oct", "T12",
-     "Report the 0.402 oracle as an upper bound and the selector's cost as the gap"),
-    ("T14", "Hyperparameter tuning",
-     "LR (2e-5/3e-5/5e-5), epochs, max_length, weight decay on the original dataset",
-     "Lumia", "Fri 02 Oct", "",
-     "Val only. Confirm the winner across all 3 seeds; single-seed wins are noise"),
-    ("T15", "Over/underfitting diagnosis",
-     "Train vs val loss curves per epoch; early stop on val macro-F1",
-     "Lumia", "Fri 02 Oct", "T14",
-     "~2,000 train rows: expect overfitting from epoch 3-4"),
-    ("T16", "Decide target dataset sizes",
-     "How many seed + test items the entrepreneurial set needs",
-     "Nayab", "Tue 29 Sep", "",
-     "~100 non-distorted for +/-10% specificity CI; ~20/class -> 200-300 for per-class"),
-    ("T17", "Scraping: sources + ToS check",
-     "Pick sources, confirm terms of service and redistribution limits",
-     "Izza", "Wed 30 Sep", "T16",
-     "Scraped text can be republished only as derived data in most cases"),
     ("T18", "Scrape entrepreneurial text",
      "Volume set by T16; cleaning and de-duplication included",
      "Izza", "Sat 03 Oct", "T17",
      "Unlabelled at this stage; labels come later with Laiba"),
-    ("T19", "Circulate form + start thread",
-     "Post to relevant entrepreneurial groups/sites; collect responses",
-     "Lumia", "Wed 30 Sep", "",
-     "Consent + anonymisation first. Responses are EVALUATION ONLY, never prompts"),
     ("T20", "Triage form responses",
      "Keep responses usable for the entrepreneurial set",
      "Lumia", "Sat 03 Oct", "T19",
@@ -111,14 +106,46 @@ TASKS = [
      "Merge scraped + form text into one schema, ready for labelling",
      "Team", "Sat 03 Oct", "T18, T20",
      "WEEK GOAL. Labels follow later with Laiba and the team"),
+    ("T03", "Merge labels + agreement",
+     "Run scripts/relabel_agreement.py on returned workbooks",
+     "Lumia", "Sun 04 Oct", "T01, T02",
+     "Produces merged_labels.csv, agreement_report.md, unsure_for_adjudication.csv"),
     ("T22", "Seed the justified-concern set",
      "Harvest calibrated-pessimism rows from the relabelling output",
      "Nayab", "Mon 05 Oct", "T03",
      "Real, human-verified justified concerns; clinical topic, entrepreneurial rewrite needed"),
+    ("T04", "Adjudicate Unsure rows",
+     "Psych annotators resolve rows flagged Unsure",
+     "Izza", "Tue 06 Oct", "T03",
+     "Needed before the labels are final"),
+    ("T05", "Separate errors from redefinitions",
+     "Split label changes into genuine errors vs calibrated-pessimism redefinition",
+     "Lumia", "Tue 06 Oct", "T03",
+     "Original annotation had no justified-concern rule; keep the two countable apart"),
+    ("T07", "Decide span handling for augmented rows",
+     "Back-translation breaks 'Distorted part' offsets",
+     "Lumia", "Wed 07 Oct", "T11",
+     "MOVED BEFORE T06: it is a design decision augmentation depends on, not a follow-up"),
+    ("T06", "Back-translation augmentation",
+     "Inflate under-represented classes in the relabelled train split",
+     "Lumia", "Thu 08 Oct", "T03, T04, T07",
+     "TRAIN ONLY. Augmented rows stay in their source row's split or it is leakage"),
+    ("T13", "Train + evaluate span selector",
+     "Sentence accuracy and span overlap, reported separately from classification",
+     "Lumia", "Thu 08 Oct", "T12",
+     "Report the 0.402 oracle as an upper bound and the selector's cost as the gap"),
+    ("T08", "Hand-check augmented samples",
+     "30 rows per augmented class: did the distortion cue survive?",
+     "Izza", "Fri 09 Oct", "T06",
+     "'I'll never get funding' -> 'I might not' is no longer fortune-telling"),
     ("T23", "Write challenge-set pairs",
      "20 matched justified/distorted pairs per distortion family",
      "Team", "Fri 09 Oct", "T22",
      "Matched pairs give controls for free and block style shortcuts"),
+    ("T10", "Evaluate fine-tuned model with relabelled+augmented dataset on CBT-Bench",
+     "Transfer test of the relabelled + augmented model",
+     "Izza", "Sat 10 Oct", "T06, T08, T09",
+     "DATE MOVED from Fri 02 Oct: it needs the augmented data, which lands Thu 08 Oct"),
     ("T24", "Style-leak check on challenge set",
      "TF-IDF + logistic regression must score near chance on justified vs distorted",
      "Nayab", "Sat 10 Oct", "T23",
@@ -149,16 +176,21 @@ def main() -> None:
     ws.row_dimensions[1].height = 22
 
     for tid, task, detail, owner, deadline, depends, note in TASKS:
-        ws.append([tid, task, detail, owner, deadline, "Not started", depends, note])
+        module = MODULES.get(tid, "")
+        ws.append([tid, module, task, detail, owner, deadline, "Not started",
+                   depends, note])
+        cell = ws.cell(row=ws.max_row, column=2)
+        cell.fill = PatternFill("solid", fgColor=MODULE_COLOURS.get(module, "FFFFFF"))
+        cell.font = Font(bold=True)
 
     last = ws.max_row
-    widths = [6, 34, 62, 12, 13, 13, 14, 62]
+    widths = [6, 20, 34, 62, 12, 13, 13, 14, 62]
     for c, w in enumerate(widths, start=1):
         ws.column_dimensions[get_column_letter(c)].width = w
     for r in range(2, last + 1):
         for c in range(1, len(HEADERS) + 1):
             ws.cell(row=r, column=c).alignment = Alignment(
-                vertical="top", wrap_text=c in (2, 3, 8)
+                vertical="top", wrap_text=c in (3, 4, 9)
             )
     ws.freeze_panes = "A2"
     ws.auto_filter.ref = f"A1:{get_column_letter(len(HEADERS))}{last}"
@@ -169,8 +201,8 @@ def main() -> None:
                                allow_blank=False, showDropDown=False)
     ws.add_data_validation(dv_owner)
     ws.add_data_validation(dv_status)
-    dv_owner.add(f"D2:D{last}")
-    dv_status.add(f"F2:F{last}")
+    dv_owner.add(f"E2:E{last}")
+    dv_status.add(f"G2:G{last}")
 
     rng = f"A2:{get_column_letter(len(HEADERS))}{last}"
     for status, colour in FILLS.items():
@@ -178,7 +210,7 @@ def main() -> None:
             continue
         ws.conditional_formatting.add(
             rng,
-            FormulaRule(formula=[f'$F2="{status}"'],
+            FormulaRule(formula=[f'$G2="{status}"'],
                         fill=PatternFill("solid", fgColor=colour), stopIfTrue=False),
         )
 
@@ -188,6 +220,8 @@ def main() -> None:
         ["Week of Mon 28 Sep 2026 — deadline for the compiled dataset: Sat 03 Oct"],
         [""],
         ["Status values", ", ".join(STATUSES)],
+        ["Modules", "Re-annotation, Data augmentation, Transfer evaluation, "
+                    "Span selection, Model tuning, Entrepreneurial data, Specificity set"],
         ["Row colour", "amber = in progress, red = blocked, green = done"],
         [""],
         ["Standing rules"],
