@@ -1,0 +1,115 @@
+=== T11 SPAN DATA CHECK ===
+
+[A] Coverage
+rows total               : 2530
+distorted rows           : 1597
+  with a span            : 1597 (100.0%)
+  missing span           : 0 (0.0%)
+no_distortion with span  : 0 of 933
+
+[B] Span match inside text (distorted rows with a span)
+  exact      : 1355 (84.8%)
+  normalized : 27 (1.7%)
+  anchor     : 199 (12.5%)
+  fuzzy      : 3 (0.2%)
+  none       : 13 (0.8%)
+
+[B2] Anchored spans (n=199): region length / quoted span length
+  median 2.07 | p90 5.30 | <=1.15 (contiguous edit): 10 (5.0%) | 1.15-1.5: 42 (21.1%) | >1.5 (likely joined/non-contiguous): 147 (73.9%)
+[B3] Anchored rows: sentences inside the anchored region vs sentences whose full text appears in the quoted span
+  region sentences 1673 | contained in quote 633 (37.8%) | rows where ALL region sentences are contained: 3 (1.5%) | rows with zero contained: 1 (0.5%)
+  (contained << region => quote is a non-contiguous subset; labelling 'every sentence between anchors' would over-label)
+
+[C] Text structure (located spans, n=1584)
+sentences/text   mean 10.69  median 8  p90 21  max 83
+single-sentence texts (selection trivial): 19 (1.2%)
+texts with >=3 sentences                 : 1516 (95.7%)
+words/text       median 159  p90 382
+
+[D] Span vs sentences (located spans)
+  sub_sentence   : 89 (5.6%)
+  whole_sentence : 885 (55.9%)
+  multi_sentence : 610 (38.5%)
+gold sentences per row (overlap rule; containment rule for anchored rows): 1 -> 974 (61.5%) | 2 -> 363 (22.9%) | 3+ -> 247 (15.6%)
+rows where 'any' and 'sub>=20%' rules disagree on count (non-anchored): 15 (1.1%)
+rows with >=2 gold sentences that are NON-adjacent (gap between them): 182 (29.8%) | all located rows: 182 (11.5%)
+multi-fragment spans (ellipsis/newline in span)       : 42 (2.6%)
+
+[E] Span size
+span words       median 29  mean 36.5  p90 67
+span share of text chars  median 0.20  | spans >=90% of text: 60 (3.8%)
+
+[F] Trivial selector baselines (hit = picked sentence overlaps gold span)
+all located rows  : first 0.154 | last 0.248 | random 0.242
+multi-sentence only (n_sent>=2, n=1565): first 0.144 | last 0.239 | random 0.233
+
+[G] Cross-boundary (multi_sentence) rate
+  secondary=False: 331 (28.2%)
+  secondary=True : 279 (68.2%)
+  by dominant class (n | multi% | sub-sentence%):
+    all_or_nothing         99 |  54.5 |   6.1
+    emotional_reasoning   133 |  39.1 |   4.5
+    fortune_telling       140 |  33.6 |   3.6
+    labeling              161 |  39.1 |   6.8
+    magnification         193 |  51.3 |   2.6
+    mental_filter         122 |  45.9 |   5.7
+    mind_reading          239 |  24.7 |   9.2
+    overgeneralization    238 |  33.6 |   6.7
+    personalization       152 |  46.1 |   2.6
+    should_statements     107 |  28.0 |   6.5
+
+[I] Selection-bias check: stats by how the span was located
+  subset                    n   span_words(med)  n_sent(med)  multi%  whole%  sub%
+  exact+normalized       1382              27            8   30.2   63.4    6.4
+  anchor+fuzzy            202              53           14   95.0    4.5    0.5
+  ALL located            1584              29            8   38.5   55.9    5.6
+  still unlocated: 13 (0.8%)
+
+[H] Eyeball samples  ( ¦ = sentence boundary, [[ ]] = located span )
+-- multi-sentence spans --
+id 4581 (all_or_nothing): First off I would like to thank you for taking the time out to help me. ¦ But the problem is I’m depressed but nobody knows it. ¦ [[Half the reason I am is because I have no really close friends to hang out with or etc. ¦ While everybody is usually going to the movies, the beach, or somewhere fun I’m at home. ¦ My mother has started to notice it, she always suggests I hangout with my friends but truth is I don’t have ...
+
+id 4620 (should_statements): [[I have been suffering from bulimia for four months now. ¦ I realize the health risks and I know I have a problem. ¦ I have been trying to stop for a month now with no success. ¦ Before this problem I was healthy and now I fear that all my hard work I have completed over the years to be a healthy person are going down the drain. ¦ To be honest I am not sure what started my ED, but my main focus is to overcome it. ¦  ...
+
+id 2480 (emotional_reasoning): From a 15 year old in the U.S.: [[I don’t know where to start or what to say, but I know I am depressed. ¦ I have been thinking for quite a while now that I have bipolar disorder or borderline personality disorder, or both.]] ¦ I imagine flashbacks and I talk to myself most of the time, specifically I have multiple voices in my head that are all their own person.
+
+id 130 (all_or_nothing): From a woman in the U.S.: [[I have a friend who has autism just like I do. ¦ At first we had a lot in common when we first met. ¦ As the short two years go by, I’ve learned we really don’t have a lot in common besides video games, anime and plush toys. ¦ Our values and beliefs differ from each other. ¦ She prefers family while I choose independence.]]
+
+id 802 (labeling): I’ve been seeing my therapist for about 6 months. ¦ Working through a lot of trauma a lot of it related to sexual abuse as a child/teen/adult. ¦ I’ve never really been big on sex(I’d go as far as saying I don’t much like it.) ¦ and just recently left an abusive relationship. ¦ I’ve always had love for my therapist since I meet her. ¦ We clicked immediately and I’ve always found her to be an attractive woman but you k ...
+
+id 1673 (magnification): I am a shy person by nature, I generally dislike and don’t care to be social. ¦ [[But in this past year I’ve gone further than that, rather what I would call paranoid tendencies. ¦ Even so much that I’m afraid to tell people my name, how old I am, and similar information, so I often end up lying.]] ¦ When I say something truthful I want to punch myself.
+
+-- anchored spans with ratio > 1.5 (joined/non-contiguous?) --
+id 186 (labeling, ratio 1.84): Hello. ¦ I’ve been in a relationship for over a year now. ¦ We were friends for 2 years before that. ¦ When we were 4-5 months he said he had to tell me something important. ¦ He said that he was concerned about me and that I should take care of myself more because I always left me last. ¦ It hurt me so much (because I’ve had low self-esteem for a while and been insecure) that I got mad at him that day. ¦ After days  ...
+
+id 314 (mind_reading, ratio 2.82): The therapist prescribed me anti-depressants but im not depressed,maybe can get anxious but not anything new or bad for the most part. ¦ Now my problem is that I keep getting these episodes where I all of a sudden start not making sense and saying things like how can I walk to the sun or why is the lady stomping on ants like that when it was just a video of someone dancing. ¦ and i start like jumping around .yesterda ...
+
+id 1656 (personalization, ratio 2.51): It took me a very long time to find a man with the intelligence, kindness, energy, talent, competence and intellectual confidence that I wanted. ¦ He is perfect in all ways but sexual, I know he loves me. ¦ He proves it every day in countless ways.For many years now, I have totally buried my sexuality. ¦ I have, in fact, denied myself and not let myself be who I am. ¦ I have felt bad for being so sexual. ¦ I would tr ...
+
+id 1097 (emotional_reasoning, ratio 2.34): From the U.S.: I am in a mild state of mania right now and am on manic spending sprees. ¦ This started a couple of months ago when I bought a whole new wardrobe which I needed because I have lost 77 pounds in the last year. ¦ This triggered my manic spending. ¦ I am totally out of control and have already racked up more than $2000 in credit card debt. ¦ [[I fear it will be a lot more if I can’t stop. ¦ I cannot take  ...
+
+-- unlocated spans (match = none) --
+id 1536: SPAN='i live a normal life otherwise but i just lie so much i don’t know what’s wrong with me or why i do it and im too far in to stop now.'
+   TEXT=Im 17 years old. ive lied about having an eating disorder and have been hospitalized many times. ive lied about trauma and have been hospitalized for it as well.
+
+id 405: SPAN='I’m now 24 and nothing I’ve to do with my life. When I get up –think to do take a step for my career or anything, I feel fear–; the fear of nothing I don’t know'
+   TEXT=Hi, Doctor, I think I’m continued dive in the depression. I can’t feel very well. When I trying to get rid of my bad thoughts which is continuously coming to my mind –I can’t. When I trying to concentrate on my work I can’t. Every time I th
+
+id 306: SPAN='I want to be with her but I can’t keep myself in check.  I’m feeling worthless and guilty. '
+   TEXT=I’m in a relationship w a woman I love. But I cannot control myself. I lie constantly. She always catches me in lies and I get angry and turn it on her. I know I have lied but I blame her. When emotions get crazy my behavior is bad – lying,
+
+id 1713: SPAN='My dreams are dying.  My father was a control freak,drunkard, & little abusive.'
+   TEXT=From India: I feel lost, unmotivated,living for the day. My dreams are dying. I don’t have a perfect friend. I don’t feel myself. I have a few hobbies. I am learning to play keyboard. I do pencil sketches. But I have lost passion. I am a sh
+
+id 1702: SPAN='Any kind of sound irritates me when im in this mood.   I either believe people too much or don’t believe them at all.  I feel very guilty. '
+   TEXT=I have trouble controlling what I speak when im angry. My mother hurts me with her words and I hurt her right back. I really don’t mean to do that it just happens. I have trouble controlling myself from breaking crockery when im angry. I ca
+
+id 436: SPAN='I’m not a normal person.  I’m a boring person.  My voice is drowned out, and the thought of how quiet my voice sounds turns me off from saying anything at all b'
+   TEXT=I’m not a normal person. I have no friends, and no one that I can call a friend. I’m always pushing people away from me and I can’t create any relationships, male or female. I’m a boring person. Whenever I talk to someone I respect, sometim
+
+-- texts with most sentences (check for over-splitting) --
+id 1659 (n_sent=83): I am reaching out to you as a desperate man, in a need for diagnosis and advice. ¦ My health insurance is shit and I still live with my parents who don’t really believe in mental illness and think that I simply have to focus on other things and that it will pass. ¦ I don’t have time. ¦ I don’t have the strength. ¦ I’m supposed to be graduating the next year. ¦ My family depends on me. ¦ This has to end. ¦ Please, hel ...
+
+id 438 (n_sent=61): Dear Therapist, I would like to have some advice. ¦ I’m only 15 years old and very mature for my age. ¦ but thats not what i need advice about. ¦ [[I’m too young to be worrying about my life the way I do. ¦ i have a very good body image and I try to keep it that way as best as i can. ¦ a little too much. ¦ I believe I suffer from Obsessive Compulsive Dissorder. ¦ I havent really been able to admit it to myself or any ...
+
+id 1767 (n_sent=56): Dx’ed cptsd. ¦ therapist feels unsure what works for me and we are still investigating. ¦ MDD also issue and of late have been disengaging and broke sobriety last session Drinkin prior to session yet we did an anger excer. ¦ I felt some release also felt it could be dangerous to do alone. ¦ I requested add., appt. ¦ from therapist since i had been in crisis. ¦ She had asked me if I wanted a referral. ¦ I was asking f ...
