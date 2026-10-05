@@ -33,6 +33,7 @@ from src.train_transformer import (
     ML_COLS,
     TEXT_COL,
     TextDataset,
+    build_inputs,
     collate,
     encode_texts,
     resolve_device,
@@ -133,8 +134,16 @@ def main(argv=None):
     
     # CRITICAL FIX: Recover head_keep from meta.json, defaulting to 128 for old checkpoints
     head_keep = meta.get("head_keep", 128)
+    # Taken from the checkpoint, never from a flag: scoring a span-trained model
+    # on full documents is a silent train/test mismatch that still produces
+    # plausible-looking numbers. Checkpoints predating this key are "document".
+    input_repr = meta.get("input_repr", "document")
     thresholds = meta.get("thresholds")
-    tag = model_name.split("/")[-1]
+    # Same collision reasoning as run_name in train_transformer.py: without this
+    # the document and span arms both write eval_<tag>_<task>_<seed>.json into
+    # one --out dir. Suffixed only for non-default modes, so the notebooks'
+    # filename-based skip checks are unaffected.
+    tag = model_name.split("/")[-1] + ("" if input_repr == "document" else f"_{input_repr}")
 
     # --- Guard: the isolated-Stage-2 trap -----------------------------------
     # A distorted-only splits dir (produced by make_splits_cascade.py) has had
@@ -173,6 +182,15 @@ def main(argv=None):
         print("[warn] distorted-only splits: these are Stage-2 ISOLATED diagnostics, "
               "not cascade results.")
 
+    # Same reasoning as the stage2-isolated tag above: a gold-span score is a
+    # ceiling, not a system result, and paper_comparison.csv is read long after
+    # anyone remembers how a given row was produced. Tag the model name so the
+    # caveat travels with the number.
+    if input_repr != "document":
+        model_name = f"{model_name}[oracle-{input_repr}]"
+        print(f"[warn] {input_repr}: ORACLE evaluation using gold spans. These are "
+              "ceiling numbers, not deployable system results.")
+
     device = resolve_device(args.device)
     tokenizer = AutoTokenizer.from_pretrained(str(ckpt))
     model = AutoModelForSequenceClassification.from_pretrained(str(ckpt)).to(device)
@@ -192,8 +210,9 @@ def main(argv=None):
         df = load_split(args.splits, split)
         y_true = true_labels(df, task)
         
+        texts, _span_stats = build_inputs(df, input_repr)
         # CRITICAL FIX: Passed head_keep into encode_texts to match train_transformer signature
-        enc, trunc_rate = encode_texts(df[TEXT_COL], tokenizer, max_length, truncation, head_keep)
+        enc, trunc_rate = encode_texts(texts, tokenizer, max_length, truncation, head_keep)
         logits = predict_logits(model, enc, tokenizer.pad_token_id, device, args.batch_size)
         
         # CRITICAL FIX: Adjusted arguments to pass max_labels cleanly

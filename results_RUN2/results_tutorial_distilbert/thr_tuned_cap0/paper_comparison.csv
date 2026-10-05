@@ -1,0 +1,3 @@
+model,task,seed,split,n_classes,weighted_f1,macro_f1,macro_f1_10,micro_f1,positive_class_f1,no_distortion_f1,no_distortion_wcontrib,truncation_rate,roc_auc,source,averaging
+tutorial-distilbert-base-uncased,multilabel,42,val,10,0.2834943615661625,0.2648814328626064,,0.2591549295774648,,,,0.0158,0.7078651202477517,empowerlens,
+tutorial-distilbert-base-uncased,multilabel,42,test,10,0.19835528105984732,0.19273140831771854,,0.218705035971223,,,,0.0198,0.6885131620328251,empowerlens,

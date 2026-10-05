@@ -38,6 +38,11 @@ from src.data import DISTORTIONS, TEXT_COL
 
 SPLIT_NAMES = ("train", "val", "test")
 KEEP_COLS = [TEXT_COL, "y_bin", "y_mc"] + [f"ml_{d}" for d in DISTORTIONS]
+# Carried through when the source has it, so Stage 2 can train on gold spans
+# (train_transformer.py --input-repr). Optional, not in KEEP_COLS, because
+# CODIPAS- and synthetic-derived source dirs do not all provide it — and it is
+# never a required input, so its absence must not break the normal cascade.
+SPAN_COL = "Distorted part"
 
 
 def _sha256_file(path: Path) -> str:
@@ -94,10 +99,12 @@ def main(argv=None):
             raise ValueError(f"{src_dir / f'{n}.csv'} is missing required columns: {missing}")
 
         n_before = len(df)
-        distorted = df[df["y_bin"] == 1][KEEP_COLS].reset_index(drop=True)
+        cols = KEEP_COLS + ([SPAN_COL] if SPAN_COL in df.columns else [])
+        distorted = df[df["y_bin"] == 1][cols].reset_index(drop=True)
         distorted.to_csv(out_dir / f"{n}.csv", index=False)
 
         manifest["n_per_split"][n] = int(len(distorted))
+        manifest.setdefault("span_column_kept", {})[n] = SPAN_COL in df.columns
         manifest["n_removed_no_distortion"][n] = int(n_before - len(distorted))
         manifest["source_file_sha256"][n] = _sha256_file(src_dir / f"{n}.csv")
 
