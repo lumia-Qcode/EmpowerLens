@@ -323,6 +323,7 @@ def main(argv=None):
     ap.add_argument("--lr", type=float, default=2e-5)
     ap.add_argument("--batch-size", type=int, default=16)
     ap.add_argument("--max-length", type=int, default=512)
+    ap.add_argument("--weight-decay", type=float, default=0.01)
     ap.add_argument("--truncation", choices=["head", "head_tail"], default="head")
     ap.add_argument("--head-keep", type=int, default=128, help="Front tokens kept during head_tail truncation")
     ap.add_argument("--device", default="auto")
@@ -498,7 +499,7 @@ def main(argv=None):
 
     targs = TrainingArguments(
         output_dir=str(out_dir), num_train_epochs=args.epochs, per_device_train_batch_size=args.batch_size,
-        per_device_eval_batch_size=args.batch_size, learning_rate=args.lr, warmup_ratio=0.1, weight_decay=0.01,
+        per_device_eval_batch_size=args.batch_size, learning_rate=args.lr, warmup_ratio=0.1, weight_decay=args.weight_decay,
         gradient_accumulation_steps=args.grad_accum, lr_scheduler_type=args.lr_scheduler,
         eval_strategy="epoch", save_strategy="epoch", load_best_model_at_end=True, metric_for_best_model=metric_key,
         greater_is_better=True, save_total_limit=1, fp16=(device == "cuda"), logging_steps=10, report_to=report_to,
@@ -573,6 +574,7 @@ def main(argv=None):
         "mask_labels": args.mask_labels, "label_smoothing": args.label_smoothing, "grad_accum": args.grad_accum, "lr_scheduler": args.lr_scheduler,
         "dropout": args.dropout, "freeze_layers": args.freeze_layers, "llrd": args.llrd, "llrd_decay": args.llrd_decay,
         "early_stopping_patience": args.early_stopping_patience,
+        "weight_decay": args.weight_decay,
         # evaluate.py reads this back so a span-trained checkpoint can never be
         # scored on plain documents by accident.
         "input_repr": args.input_repr,
