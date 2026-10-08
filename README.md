@@ -107,7 +107,7 @@ line with the original paper's findings.
 
 ## Notes
 
-- `Secondary Distortion (Optional)` in the annotations is not used; only the
+- `Secondary Distortion (Optional)` in the annotations is not used; only thes
   dominant distortion is treated as ground truth, matching the paper's primary
   classification setup.
 - `make_synthetic_labels()` in `cd_pipeline.py` is retained for reference only
