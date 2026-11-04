@@ -1,0 +1,1279 @@
+Id_Number,original_label,neighbour_disagreement,neighbour_majority_label
+2564,Mental filter,1.0,Mind Reading
+2557,Magnification,1.0,Mind Reading
+4501,Labeling,1.0,Should statements
+2479,Mental filter,1.0,Magnification
+2469,Magnification,1.0,Mind Reading
+2466,All-or-nothing thinking,1.0,Personalization
+2463,Labeling,1.0,All-or-nothing thinking
+2461,Emotional Reasoning,1.0,Personalization
+4567,All-or-nothing thinking,1.0,Fortune-telling
+4561,Labeling,1.0,Mind Reading
+4550,Emotional Reasoning,1.0,Labeling
+4545,Mind Reading,1.0,Fortune-telling
+2443,Personalization,1.0,Magnification
+2441,Labeling,1.0,Emotional Reasoning
+2440,Mind Reading,1.0,Magnification
+2436,Magnification,1.0,All-or-nothing thinking
+2435,Mental filter,1.0,Labeling
+2427,Mental filter,1.0,All-or-nothing thinking
+2418,Mental filter,1.0,Mind Reading
+2413,All-or-nothing thinking,1.0,Mental filter
+2408,Mind Reading,1.0,Personalization
+2387,Emotional Reasoning,1.0,All-or-nothing thinking
+2368,Emotional Reasoning,1.0,Mental filter
+4604,All-or-nothing thinking,1.0,Mind Reading
+4602,All-or-nothing thinking,1.0,Magnification
+4599,Emotional Reasoning,1.0,Should statements
+4593,Labeling,1.0,Fortune-telling
+4588,Labeling,1.0,Magnification
+4574,Mind Reading,1.0,Emotional Reasoning
+2365,Emotional Reasoning,1.0,All-or-nothing thinking
+2362,All-or-nothing thinking,1.0,Mental filter
+2354,Should statements,1.0,Fortune-telling
+2344,Emotional Reasoning,1.0,Overgeneralization
+2337,All-or-nothing thinking,1.0,Labeling
+2335,Should statements,1.0,All-or-nothing thinking
+2331,Personalization,1.0,Emotional Reasoning
+4628,Magnification,1.0,Emotional Reasoning
+4622,All-or-nothing thinking,1.0,Magnification
+2324,Labeling,1.0,Emotional Reasoning
+2316,Mental filter,1.0,Mind Reading
+2229,Emotional Reasoning,1.0,Overgeneralization
+2224,Mental filter,1.0,All-or-nothing thinking
+2219,Mental filter,1.0,Fortune-telling
+2218,Mental filter,1.0,All-or-nothing thinking
+2200,Labeling,1.0,Mental filter
+2195,Mind Reading,1.0,Overgeneralization
+2189,Mental filter,1.0,Labeling
+2188,Magnification,1.0,Personalization
+2180,Should statements,1.0,Emotional Reasoning
+2163,Labeling,1.0,Emotional Reasoning
+2162,Mental filter,1.0,Mind Reading
+2151,Overgeneralization,1.0,Fortune-telling
+2149,Emotional Reasoning,1.0,Mind Reading
+2143,Mind Reading,1.0,Fortune-telling
+4659,Emotional Reasoning,1.0,Fortune-telling
+4636,All-or-nothing thinking,1.0,Labeling
+4634,Labeling,1.0,Magnification
+2138,Mind Reading,1.0,Labeling
+2113,Should statements,1.0,Emotional Reasoning
+2090,Fortune-telling,1.0,Mind Reading
+2084,Mental filter,1.0,Mind Reading
+2082,Mental filter,1.0,Labeling
+1992,Mental filter,1.0,Mind Reading
+1986,All-or-nothing thinking,1.0,Labeling
+1975,Mental filter,1.0,Mind Reading
+1965,Emotional Reasoning,1.0,All-or-nothing thinking
+1964,Mental filter,1.0,Mind Reading
+1947,All-or-nothing thinking,1.0,Magnification
+1946,All-or-nothing thinking,1.0,Fortune-telling
+1945,Should statements,1.0,Emotional Reasoning
+1935,Emotional Reasoning,1.0,Personalization
+1930,Mental filter,1.0,Mind Reading
+4683,Emotional Reasoning,1.0,Overgeneralization
+4681,Magnification,1.0,Overgeneralization
+4676,Emotional Reasoning,1.0,Mind Reading
+4671,Emotional Reasoning,1.0,Labeling
+4670,Overgeneralization,1.0,Magnification
+4669,Personalization,1.0,All-or-nothing thinking
+4667,Personalization,1.0,Mind Reading
+4665,Fortune-telling,1.0,Overgeneralization
+1927,Personalization,1.0,Fortune-telling
+1925,Should statements,1.0,All-or-nothing thinking
+2081,Emotional Reasoning,1.0,Labeling
+2061,All-or-nothing thinking,1.0,Labeling
+2057,Should statements,1.0,Labeling
+2054,Labeling,1.0,Mind Reading
+9,Overgeneralization,1.0,Fortune-telling
+4,Mental filter,1.0,Fortune-telling
+0,Emotional Reasoning,1.0,Mind Reading
+4699,Personalization,1.0,Magnification
+4693,Mind Reading,1.0,Overgeneralization
+4690,Fortune-telling,1.0,Mind Reading
+2049,Personalization,1.0,Emotional Reasoning
+2043,Overgeneralization,1.0,Magnification
+2040,Emotional Reasoning,1.0,Mental filter
+2036,Personalization,1.0,Magnification
+2031,Should statements,1.0,Labeling
+2029,Personalization,1.0,Mind Reading
+2007,Should statements,1.0,Magnification
+1915,Mind Reading,1.0,Should statements
+1908,Fortune-telling,1.0,Personalization
+18,Fortune-telling,1.0,Labeling
+13,Should statements,1.0,Magnification
+1894,Mind Reading,1.0,Emotional Reasoning
+1893,Labeling,1.0,All-or-nothing thinking
+1883,Personalization,1.0,Labeling
+1879,Fortune-telling,1.0,Mind Reading
+1876,Personalization,1.0,Mental filter
+1862,Labeling,1.0,Emotional Reasoning
+1861,Fortune-telling,1.0,Magnification
+1849,Overgeneralization,1.0,Mental filter
+1844,Personalization,1.0,All-or-nothing thinking
+1825,Overgeneralization,1.0,Emotional Reasoning
+1790,Should statements,1.0,Personalization
+1788,Should statements,1.0,Mental filter
+1786,Overgeneralization,1.0,Magnification
+1784,Personalization,1.0,Emotional Reasoning
+1782,Overgeneralization,1.0,Mind Reading
+66,All-or-nothing thinking,1.0,Mental filter
+64,Emotional Reasoning,1.0,Personalization
+59,Labeling,1.0,Mind Reading
+53,Mind Reading,1.0,Fortune-telling
+52,Should statements,1.0,Emotional Reasoning
+38,Mental filter,1.0,Magnification
+1760,Emotional Reasoning,1.0,Mind Reading
+1757,Emotional Reasoning,1.0,Labeling
+1740,Fortune-telling,1.0,All-or-nothing thinking
+1737,Overgeneralization,1.0,Mind Reading
+1735,Mind Reading,1.0,Emotional Reasoning
+1724,All-or-nothing thinking,1.0,Labeling
+1723,Magnification,1.0,Labeling
+1716,Overgeneralization,1.0,Fortune-telling
+1714,Overgeneralization,1.0,Mind Reading
+1708,Overgeneralization,1.0,Magnification
+87,Magnification,1.0,Overgeneralization
+79,Fortune-telling,1.0,Magnification
+74,All-or-nothing thinking,1.0,Fortune-telling
+72,Mind Reading,1.0,Overgeneralization
+67,Overgeneralization,1.0,Fortune-telling
+1704,Labeling,1.0,Emotional Reasoning
+1692,Labeling,1.0,Magnification
+1690,Emotional Reasoning,1.0,Mental filter
+1689,Labeling,1.0,Magnification
+1682,Mind Reading,1.0,Personalization
+1680,Fortune-telling,1.0,Labeling
+1679,All-or-nothing thinking,1.0,Mind Reading
+1673,Magnification,1.0,Fortune-telling
+1655,Labeling,1.0,Fortune-telling
+1646,Mental filter,1.0,Mind Reading
+113,Emotional Reasoning,1.0,Labeling
+110,Personalization,1.0,Mental filter
+109,All-or-nothing thinking,1.0,Magnification
+108,All-or-nothing thinking,1.0,Mind Reading
+106,Overgeneralization,1.0,Mind Reading
+105,Magnification,1.0,Mind Reading
+98,Overgeneralization,1.0,Fortune-telling
+97,Emotional Reasoning,1.0,All-or-nothing thinking
+93,Emotional Reasoning,1.0,Magnification
+1641,Personalization,1.0,Fortune-telling
+1634,All-or-nothing thinking,1.0,Mind Reading
+1589,Overgeneralization,1.0,Fortune-telling
+1579,Magnification,1.0,Fortune-telling
+1578,Should statements,1.0,Overgeneralization
+1569,Emotional Reasoning,1.0,Labeling
+135,Magnification,1.0,Overgeneralization
+132,Personalization,1.0,Fortune-telling
+1559,Labeling,1.0,Magnification
+1552,Labeling,1.0,Overgeneralization
+1532,Fortune-telling,1.0,Labeling
+1526,Mind Reading,1.0,All-or-nothing thinking
+1515,Overgeneralization,1.0,Fortune-telling
+1505,Overgeneralization,1.0,Fortune-telling
+1498,All-or-nothing thinking,1.0,Emotional Reasoning
+1494,Magnification,1.0,All-or-nothing thinking
+1486,Mind Reading,1.0,Emotional Reasoning
+1482,All-or-nothing thinking,1.0,Fortune-telling
+1476,Overgeneralization,1.0,Fortune-telling
+1460,Mind Reading,1.0,Labeling
+1446,Should statements,1.0,Overgeneralization
+1438,Personalization,1.0,Should statements
+155,Emotional Reasoning,1.0,All-or-nothing thinking
+149,Mental filter,1.0,Personalization
+146,Emotional Reasoning,1.0,Fortune-telling
+144,Labeling,1.0,Personalization
+1411,Should statements,1.0,Emotional Reasoning
+1280,Overgeneralization,1.0,Fortune-telling
+1272,All-or-nothing thinking,1.0,Fortune-telling
+1268,Labeling,1.0,Magnification
+1265,Fortune-telling,1.0,Mind Reading
+1240,Labeling,1.0,Fortune-telling
+1229,Magnification,1.0,All-or-nothing thinking
+1227,Emotional Reasoning,1.0,Fortune-telling
+1217,Magnification,1.0,Labeling
+1211,Mind Reading,1.0,Mental filter
+1205,All-or-nothing thinking,1.0,Mind Reading
+1202,Fortune-telling,1.0,Mind Reading
+1199,Magnification,1.0,Mind Reading
+1197,Fortune-telling,1.0,Mind Reading
+1188,Magnification,1.0,Mental filter
+178,Emotional Reasoning,1.0,Fortune-telling
+163,Overgeneralization,1.0,Mind Reading
+162,Emotional Reasoning,1.0,Fortune-telling
+159,All-or-nothing thinking,1.0,Magnification
+1183,Overgeneralization,1.0,Mind Reading
+1162,Should statements,1.0,Magnification
+1158,Mental filter,1.0,Magnification
+1151,All-or-nothing thinking,1.0,Overgeneralization
+1150,Fortune-telling,1.0,Mind Reading
+1142,Mind Reading,1.0,Overgeneralization
+1129,Magnification,1.0,All-or-nothing thinking
+1128,Personalization,1.0,Mental filter
+1126,Overgeneralization,1.0,Labeling
+1118,All-or-nothing thinking,1.0,Emotional Reasoning
+1117,Magnification,1.0,Personalization
+1116,Overgeneralization,1.0,Fortune-telling
+215,Labeling,1.0,Emotional Reasoning
+212,Labeling,1.0,All-or-nothing thinking
+209,All-or-nothing thinking,1.0,Magnification
+201,Magnification,1.0,Mind Reading
+199,Labeling,1.0,Fortune-telling
+1108,All-or-nothing thinking,1.0,Mental filter
+1103,Fortune-telling,1.0,Overgeneralization
+1100,Magnification,1.0,Mental filter
+1097,Emotional Reasoning,1.0,Labeling
+1081,Personalization,1.0,Emotional Reasoning
+1073,Mental filter,1.0,Fortune-telling
+1069,Fortune-telling,1.0,Mind Reading
+1065,Should statements,1.0,Mental filter
+1060,Magnification,1.0,Mental filter
+1054,Mental filter,1.0,Mind Reading
+1052,Overgeneralization,1.0,Mind Reading
+1051,Emotional Reasoning,1.0,Mind Reading
+238,Should statements,1.0,Mental filter
+231,Fortune-telling,1.0,Overgeneralization
+224,All-or-nothing thinking,1.0,Magnification
+1043,Magnification,1.0,Personalization
+1026,All-or-nothing thinking,1.0,Magnification
+1018,Labeling,1.0,Magnification
+1012,Labeling,1.0,Overgeneralization
+1008,Overgeneralization,1.0,Magnification
+987,Magnification,1.0,Mind Reading
+976,Should statements,1.0,Labeling
+954,Mental filter,1.0,All-or-nothing thinking
+949,Mental filter,1.0,Mind Reading
+945,Should statements,1.0,Emotional Reasoning
+266,Overgeneralization,1.0,Fortune-telling
+263,Emotional Reasoning,1.0,Mind Reading
+249,Emotional Reasoning,1.0,Mind Reading
+248,Magnification,1.0,Labeling
+917,All-or-nothing thinking,1.0,Emotional Reasoning
+914,Mind Reading,1.0,Labeling
+906,Overgeneralization,1.0,Mind Reading
+903,Magnification,1.0,Mental filter
+885,Emotional Reasoning,1.0,Mind Reading
+875,Mind Reading,1.0,Fortune-telling
+868,Labeling,1.0,Overgeneralization
+858,Labeling,1.0,Fortune-telling
+846,Personalization,1.0,Mind Reading
+830,Magnification,1.0,Labeling
+817,Labeling,1.0,Mind Reading
+814,Should statements,1.0,Labeling
+810,Fortune-telling,1.0,Mind Reading
+809,Should statements,1.0,Labeling
+294,All-or-nothing thinking,1.0,Should statements
+291,Overgeneralization,1.0,Mind Reading
+290,All-or-nothing thinking,1.0,Fortune-telling
+286,Emotional Reasoning,1.0,Mind Reading
+802,Labeling,1.0,Fortune-telling
+799,All-or-nothing thinking,1.0,Emotional Reasoning
+791,All-or-nothing thinking,1.0,Mind Reading
+768,Personalization,1.0,Mind Reading
+760,Labeling,1.0,Mind Reading
+738,Labeling,1.0,Mind Reading
+735,Overgeneralization,1.0,All-or-nothing thinking
+734,Should statements,1.0,Labeling
+733,Should statements,1.0,Magnification
+731,Mind Reading,1.0,Emotional Reasoning
+728,Should statements,1.0,Magnification
+314,Mind Reading,1.0,Emotional Reasoning
+313,Magnification,1.0,Mental filter
+311,Magnification,1.0,Overgeneralization
+306,Fortune-telling,1.0,Mind Reading
+296,Magnification,1.0,Personalization
+719,Magnification,1.0,Labeling
+715,Overgeneralization,1.0,Personalization
+710,Overgeneralization,1.0,Mental filter
+705,Overgeneralization,1.0,Magnification
+701,Should statements,1.0,Overgeneralization
+696,Overgeneralization,1.0,Fortune-telling
+689,Overgeneralization,1.0,All-or-nothing thinking
+685,Personalization,1.0,Emotional Reasoning
+658,Labeling,1.0,All-or-nothing thinking
+656,Overgeneralization,1.0,Magnification
+650,Should statements,1.0,Mind Reading
+649,Overgeneralization,1.0,Magnification
+646,Overgeneralization,1.0,Magnification
+645,Magnification,1.0,All-or-nothing thinking
+335,Magnification,1.0,Personalization
+332,Overgeneralization,1.0,Personalization
+331,Fortune-telling,1.0,Personalization
+326,Mental filter,1.0,Emotional Reasoning
+320,Should statements,1.0,All-or-nothing thinking
+317,Magnification,1.0,Personalization
+634,Labeling,1.0,Mind Reading
+623,Labeling,1.0,Fortune-telling
+612,All-or-nothing thinking,1.0,Labeling
+610,Mind Reading,1.0,Fortune-telling
+598,Overgeneralization,1.0,Mind Reading
+596,Magnification,1.0,Mental filter
+586,Labeling,1.0,Fortune-telling
+367,Overgeneralization,1.0,Mind Reading
+358,Labeling,1.0,Personalization
+357,All-or-nothing thinking,1.0,Labeling
+356,Emotional Reasoning,1.0,Fortune-telling
+349,All-or-nothing thinking,1.0,Fortune-telling
+338,Magnification,1.0,Emotional Reasoning
+577,Should statements,1.0,Mind Reading
+573,Should statements,1.0,Mind Reading
+562,Mind Reading,1.0,Fortune-telling
+553,Fortune-telling,1.0,All-or-nothing thinking
+542,Magnification,1.0,Mental filter
+519,Emotional Reasoning,1.0,Overgeneralization
+514,Labeling,1.0,Mental filter
+496,All-or-nothing thinking,1.0,Personalization
+391,Emotional Reasoning,1.0,Labeling
+387,All-or-nothing thinking,1.0,Mind Reading
+374,Magnification,1.0,Fortune-telling
+373,All-or-nothing thinking,1.0,Personalization
+464,Overgeneralization,1.0,Mind Reading
+462,Should statements,1.0,Mind Reading
+456,Fortune-telling,1.0,All-or-nothing thinking
+455,Fortune-telling,1.0,Mind Reading
+450,Labeling,1.0,Mind Reading
+438,Should statements,1.0,Magnification
+433,Emotional Reasoning,1.0,Fortune-telling
+427,Overgeneralization,1.0,Magnification
+419,Personalization,1.0,Overgeneralization
+415,Magnification,1.0,Mental filter
+414,Fortune-telling,1.0,All-or-nothing thinking
+405,Emotional Reasoning,1.0,Mental filter
+404,Magnification,1.0,Mind Reading
+400,Overgeneralization,1.0,Magnification
+397,All-or-nothing thinking,1.0,Mental filter
+2530,Mental filter,1.0,All-or-nothing thinking
+2528,Labeling,1.0,Mind Reading
+2519,Should statements,1.0,Mental filter
+2517,Mental filter,1.0,Should statements
+2513,Personalization,1.0,Fortune-telling
+2501,Mind Reading,1.0,All-or-nothing thinking
+4542,Emotional Reasoning,1.0,Fortune-telling
+4539,Overgeneralization,1.0,Fortune-telling
+4538,Mind Reading,1.0,Personalization
+4531,Emotional Reasoning,1.0,Personalization
+4500,Personalization,0.9,Mind Reading
+2559,Labeling,0.9,Mental filter
+4510,Magnification,0.9,Mind Reading
+2553,All-or-nothing thinking,0.9,Fortune-telling
+2538,Mind Reading,0.9,Fortune-telling
+4569,Overgeneralization,0.9,Fortune-telling
+4564,Labeling,0.9,Magnification
+4560,Fortune-telling,0.9,Emotional Reasoning
+4555,Overgeneralization,0.9,Magnification
+4548,Fortune-telling,0.9,Mind Reading
+4547,Labeling,0.9,Mental filter
+2456,Emotional Reasoning,0.9,Labeling
+2451,Should statements,0.9,Personalization
+2446,Magnification,0.9,Mind Reading
+431,Labeling,0.9,Personalization
+421,Emotional Reasoning,0.9,Fortune-telling
+418,Labeling,0.9,Emotional Reasoning
+416,Labeling,0.9,All-or-nothing thinking
+408,Labeling,0.9,Overgeneralization
+2438,Labeling,0.9,Magnification
+2425,Should statements,0.9,All-or-nothing thinking
+2423,Personalization,0.9,Emotional Reasoning
+2409,Personalization,0.9,Fortune-telling
+2403,Overgeneralization,0.9,Fortune-telling
+2402,Labeling,0.9,Personalization
+2384,Mind Reading,0.9,Emotional Reasoning
+2371,Mental filter,0.9,Emotional Reasoning
+4601,Emotional Reasoning,0.9,Mind Reading
+486,Overgeneralization,0.9,Fortune-telling
+481,Overgeneralization,0.9,Emotional Reasoning
+480,All-or-nothing thinking,0.9,Mind Reading
+479,Mind Reading,0.9,All-or-nothing thinking
+473,Labeling,0.9,Fortune-telling
+470,Labeling,0.9,Fortune-telling
+461,Labeling,0.9,Magnification
+454,Labeling,0.9,Fortune-telling
+4595,Overgeneralization,0.9,All-or-nothing thinking
+4580,Personalization,0.9,All-or-nothing thinking
+4579,Mind Reading,0.9,Fortune-telling
+2355,Overgeneralization,0.9,Mental filter
+2351,Mind Reading,0.9,Fortune-telling
+2345,Labeling,0.9,Mind Reading
+395,Personalization,0.9,Emotional Reasoning
+394,Magnification,0.9,Fortune-telling
+384,Fortune-telling,0.9,Mental filter
+382,Overgeneralization,0.9,Fortune-telling
+491,Personalization,0.9,Mind Reading
+488,Overgeneralization,0.9,Mind Reading
+4632,Personalization,0.9,Mental filter
+4620,Should statements,0.9,Fortune-telling
+4618,Fortune-telling,0.9,Magnification
+4617,Overgeneralization,0.9,Emotional Reasoning
+4614,Emotional Reasoning,0.9,All-or-nothing thinking
+4611,Personalization,0.9,Labeling
+523,Overgeneralization,0.9,Personalization
+522,Fortune-telling,0.9,Labeling
+513,Should statements,0.9,Fortune-telling
+510,Mental filter,0.9,Personalization
+508,Fortune-telling,0.9,Mind Reading
+506,Personalization,0.9,Mental filter
+505,Overgeneralization,0.9,Mental filter
+504,All-or-nothing thinking,0.9,Emotional Reasoning
+502,Overgeneralization,0.9,Personalization
+500,Overgeneralization,0.9,Mind Reading
+499,Magnification,0.9,Emotional Reasoning
+497,Magnification,0.9,Mental filter
+2328,Overgeneralization,0.9,Labeling
+2327,Mental filter,0.9,Fortune-telling
+2323,Personalization,0.9,Overgeneralization
+2317,Mental filter,0.9,Emotional Reasoning
+2312,Personalization,0.9,Mind Reading
+2306,Mind Reading,0.9,Labeling
+2304,Emotional Reasoning,0.9,Overgeneralization
+2301,Overgeneralization,0.9,Mind Reading
+2297,Should statements,0.9,Labeling
+2296,All-or-nothing thinking,0.9,Labeling
+2236,Mental filter,0.9,Overgeneralization
+2231,Should statements,0.9,Emotional Reasoning
+2230,Mind Reading,0.9,Emotional Reasoning
+578,Personalization,0.9,Mind Reading
+554,Fortune-telling,0.9,Labeling
+548,Overgeneralization,0.9,Mind Reading
+547,Magnification,0.9,All-or-nothing thinking
+546,Overgeneralization,0.9,Magnification
+543,Overgeneralization,0.9,Magnification
+526,Magnification,0.9,Emotional Reasoning
+364,Overgeneralization,0.9,Mind Reading
+361,Personalization,0.9,Overgeneralization
+355,Mental filter,0.9,Magnification
+353,Mental filter,0.9,Magnification
+352,Personalization,0.9,Magnification
+585,Mind Reading,0.9,Labeling
+581,Mind Reading,0.9,Personalization
+580,Overgeneralization,0.9,Magnification
+2214,Mental filter,0.9,Overgeneralization
+2211,Should statements,0.9,Fortune-telling
+2193,Should statements,0.9,Magnification
+2184,Emotional Reasoning,0.9,Mind Reading
+2175,Overgeneralization,0.9,Mind Reading
+2159,All-or-nothing thinking,0.9,Magnification
+2158,Mind Reading,0.9,Mental filter
+2154,Emotional Reasoning,0.9,Mind Reading
+2152,Emotional Reasoning,0.9,Fortune-telling
+2142,Should statements,0.9,Fortune-telling
+618,Overgeneralization,0.9,Labeling
+613,Magnification,0.9,Personalization
+608,Overgeneralization,0.9,Fortune-telling
+607,Magnification,0.9,Emotional Reasoning
+601,Overgeneralization,0.9,Fortune-telling
+597,Fortune-telling,0.9,Mind Reading
+594,Overgeneralization,0.9,All-or-nothing thinking
+590,Labeling,0.9,Mind Reading
+587,All-or-nothing thinking,0.9,Emotional Reasoning
+4651,Emotional Reasoning,0.9,Mind Reading
+4643,Labeling,0.9,Overgeneralization
+4642,Fortune-telling,0.9,Should statements
+2083,Emotional Reasoning,0.9,Fortune-telling
+2077,Magnification,0.9,Mind Reading
+2074,Mental filter,0.9,Magnification
+2072,All-or-nothing thinking,0.9,Labeling
+2071,Mental filter,0.9,All-or-nothing thinking
+2011,Mental filter,0.9,Magnification
+1989,Mind Reading,0.9,Labeling
+1981,Overgeneralization,0.9,Should statements
+1980,Personalization,0.9,Emotional Reasoning
+1978,Personalization,0.9,Magnification
+1977,Emotional Reasoning,0.9,Labeling
+328,Mental filter,0.9,All-or-nothing thinking
+318,Magnification,0.9,Overgeneralization
+315,Fortune-telling,0.9,Labeling
+644,Magnification,0.9,Mind Reading
+642,Should statements,0.9,Mind Reading
+630,Labeling,0.9,Mind Reading
+622,Overgeneralization,0.9,Fortune-telling
+620,Magnification,0.9,Labeling
+619,Overgeneralization,0.9,Labeling
+684,Magnification,0.9,Fortune-telling
+682,Mental filter,0.9,Emotional Reasoning
+680,All-or-nothing thinking,0.9,Fortune-telling
+674,Mind Reading,0.9,Personalization
+670,Overgeneralization,0.9,Labeling
+662,Magnification,0.9,Mental filter
+657,Mental filter,0.9,Personalization
+336,Fortune-telling,0.9,Personalization
+333,Fortune-telling,0.9,Mind Reading
+1972,Mind Reading,0.9,All-or-nothing thinking
+1971,Emotional Reasoning,0.9,Labeling
+1969,Emotional Reasoning,0.9,All-or-nothing thinking
+1958,Labeling,0.9,Fortune-telling
+1956,Should statements,0.9,All-or-nothing thinking
+1949,Labeling,0.9,Fortune-telling
+1944,Mental filter,0.9,Magnification
+1934,Labeling,0.9,Mind Reading
+4686,Emotional Reasoning,0.9,Fortune-telling
+721,Personalization,0.9,Overgeneralization
+720,Labeling,0.9,Emotional Reasoning
+714,Should statements,0.9,Personalization
+711,Mind Reading,0.9,Magnification
+709,Mind Reading,0.9,Personalization
+706,Fortune-telling,0.9,Labeling
+694,Magnification,0.9,Mind Reading
+692,Should statements,0.9,All-or-nothing thinking
+691,Magnification,0.9,Mental filter
+690,Labeling,0.9,Mind Reading
+688,Overgeneralization,0.9,Magnification
+4678,Magnification,0.9,Fortune-telling
+4673,Labeling,0.9,Magnification
+4664,Emotional Reasoning,0.9,Overgeneralization
+1926,Mental filter,0.9,Should statements
+1923,Personalization,0.9,Fortune-telling
+1919,Emotional Reasoning,0.9,Mental filter
+2095,Labeling,0.9,All-or-nothing thinking
+2052,Personalization,0.9,Mental filter
+312,Should statements,0.9,Mind Reading
+310,Emotional Reasoning,0.9,Magnification
+303,Overgeneralization,0.9,Mind Reading
+301,Overgeneralization,0.9,Mental filter
+300,Overgeneralization,0.9,Mind Reading
+299,Overgeneralization,0.9,Mind Reading
+298,Emotional Reasoning,0.9,Mind Reading
+726,Labeling,0.9,Mind Reading
+722,Magnification,0.9,Mental filter
+756,Fortune-telling,0.9,Should statements
+753,Personalization,0.9,Labeling
+748,Personalization,0.9,Should statements
+741,All-or-nothing thinking,0.9,Fortune-telling
+737,Labeling,0.9,Mind Reading
+10,Should statements,0.9,All-or-nothing thinking
+4701,Overgeneralization,0.9,Personalization
+4696,Mind Reading,0.9,Magnification
+2041,Overgeneralization,0.9,Mind Reading
+2039,Magnification,0.9,Labeling
+2030,Labeling,0.9,Personalization
+2017,Fortune-telling,0.9,All-or-nothing thinking
+2009,Labeling,0.9,Overgeneralization
+2008,Mind Reading,0.9,Mental filter
+2006,Magnification,0.9,Fortune-telling
+2003,Should statements,0.9,All-or-nothing thinking
+2001,Labeling,0.9,Emotional Reasoning
+1911,Should statements,0.9,Personalization
+1898,Magnification,0.9,Emotional Reasoning
+786,Magnification,0.9,Emotional Reasoning
+785,Magnification,0.9,Overgeneralization
+783,Mind Reading,0.9,Mental filter
+782,Emotional Reasoning,0.9,Personalization
+779,Overgeneralization,0.9,Mind Reading
+778,Magnification,0.9,Personalization
+773,Fortune-telling,0.9,Mind Reading
+770,Personalization,0.9,Overgeneralization
+766,Should statements,0.9,Magnification
+763,Mind Reading,0.9,Labeling
+30,Mental filter,0.9,All-or-nothing thinking
+29,Magnification,0.9,Fortune-telling
+23,Fortune-telling,0.9,Emotional Reasoning
+16,All-or-nothing thinking,0.9,Emotional Reasoning
+15,Mental filter,0.9,Magnification
+1890,Labeling,0.9,Magnification
+275,Magnification,0.9,Mind Reading
+271,Emotional Reasoning,0.9,Magnification
+270,Overgeneralization,0.9,All-or-nothing thinking
+800,Mental filter,0.9,All-or-nothing thinking
+795,Fortune-telling,0.9,Mind Reading
+789,Magnification,0.9,Fortune-telling
+787,Personalization,0.9,Magnification
+1888,Magnification,0.9,Emotional Reasoning
+1881,Fortune-telling,0.9,All-or-nothing thinking
+1878,Personalization,0.9,Overgeneralization
+1875,Mind Reading,0.9,All-or-nothing thinking
+1869,Overgeneralization,0.9,All-or-nothing thinking
+1868,Fortune-telling,0.9,All-or-nothing thinking
+1863,Personalization,0.9,Overgeneralization
+1855,Emotional Reasoning,0.9,All-or-nothing thinking
+1854,Personalization,0.9,Labeling
+1853,Mental filter,0.9,Fortune-telling
+827,Mind Reading,0.9,Personalization
+826,Personalization,0.9,Mind Reading
+824,Personalization,0.9,Mind Reading
+820,Magnification,0.9,Fortune-telling
+818,Labeling,0.9,Magnification
+816,Labeling,0.9,All-or-nothing thinking
+811,Magnification,0.9,Mind Reading
+806,Should statements,0.9,Mind Reading
+805,Fortune-telling,0.9,Labeling
+295,Emotional Reasoning,0.9,Labeling
+1847,Fortune-telling,0.9,Should statements
+1838,Should statements,0.9,Fortune-telling
+1837,Overgeneralization,0.9,Mental filter
+1831,Personalization,0.9,Mind Reading
+1829,Labeling,0.9,Mind Reading
+1820,Emotional Reasoning,0.9,Mental filter
+1816,Mental filter,0.9,All-or-nothing thinking
+867,Personalization,0.9,Magnification
+862,Magnification,0.9,Mind Reading
+856,Overgeneralization,0.9,Personalization
+834,Emotional Reasoning,0.9,Overgeneralization
+1807,Mind Reading,0.9,Personalization
+1803,Mental filter,0.9,Overgeneralization
+1801,Fortune-telling,0.9,Personalization
+1800,Labeling,0.9,Mind Reading
+1795,Overgeneralization,0.9,Mind Reading
+1791,Labeling,0.9,Mind Reading
+1789,Emotional Reasoning,0.9,Overgeneralization
+1777,Should statements,0.9,All-or-nothing thinking
+1769,Mind Reading,0.9,Magnification
+902,All-or-nothing thinking,0.9,Personalization
+898,Should statements,0.9,Fortune-telling
+896,All-or-nothing thinking,0.9,Labeling
+887,Magnification,0.9,Emotional Reasoning
+881,Personalization,0.9,Emotional Reasoning
+62,All-or-nothing thinking,0.9,Emotional Reasoning
+58,Personalization,0.9,Magnification
+51,Personalization,0.9,Mind Reading
+47,Mental filter,0.9,Labeling
+45,Should statements,0.9,Emotional Reasoning
+39,All-or-nothing thinking,0.9,Fortune-telling
+1762,Emotional Reasoning,0.9,Labeling
+1753,Labeling,0.9,Magnification
+1749,Mental filter,0.9,Mind Reading
+1744,Magnification,0.9,Mental filter
+1743,Mind Reading,0.9,Personalization
+1742,Magnification,0.9,Mind Reading
+1718,Should statements,0.9,Labeling
+1713,Overgeneralization,0.9,Fortune-telling
+1711,Mind Reading,0.9,Mental filter
+1710,Mind Reading,0.9,Magnification
+919,Personalization,0.9,Fortune-telling
+258,Fortune-telling,0.9,Labeling
+251,Labeling,0.9,Mind Reading
+247,Should statements,0.9,All-or-nothing thinking
+242,Fortune-telling,0.9,Mind Reading
+86,Overgeneralization,0.9,Fortune-telling
+83,Emotional Reasoning,0.9,Magnification
+82,Mental filter,0.9,Personalization
+78,All-or-nothing thinking,0.9,Magnification
+76,Emotional Reasoning,0.9,Personalization
+71,Fortune-telling,0.9,Mind Reading
+1701,Magnification,0.9,Overgeneralization
+1693,Fortune-telling,0.9,Mind Reading
+975,Emotional Reasoning,0.9,Labeling
+967,Magnification,0.9,Mind Reading
+946,Personalization,0.9,Mental filter
+943,Overgeneralization,0.9,Fortune-telling
+942,Emotional Reasoning,0.9,Mental filter
+939,Labeling,0.9,Mind Reading
+938,All-or-nothing thinking,0.9,Fortune-telling
+934,Emotional Reasoning,0.9,Should statements
+933,Magnification,0.9,Mind Reading
+932,Labeling,0.9,Personalization
+927,Emotional Reasoning,0.9,Labeling
+1666,Magnification,0.9,Overgeneralization
+1659,Mental filter,0.9,All-or-nothing thinking
+1656,Personalization,0.9,Mind Reading
+1645,Fortune-telling,0.9,Mind Reading
+1035,Emotional Reasoning,0.9,Mental filter
+1030,Overgeneralization,0.9,Mind Reading
+1013,Fortune-telling,0.9,Emotional Reasoning
+1011,Magnification,0.9,Overgeneralization
+1007,Labeling,0.9,Mind Reading
+1004,Overgeneralization,0.9,Mental filter
+982,Magnification,0.9,Fortune-telling
+111,Should statements,0.9,Mind Reading
+104,Emotional Reasoning,0.9,All-or-nothing thinking
+101,Personalization,0.9,Mind Reading
+100,All-or-nothing thinking,0.9,Fortune-telling
+96,All-or-nothing thinking,0.9,Personalization
+1618,Personalization,0.9,Fortune-telling
+1616,Should statements,0.9,Labeling
+236,Magnification,0.9,All-or-nothing thinking
+234,Personalization,0.9,Fortune-telling
+230,Personalization,0.9,Fortune-telling
+228,All-or-nothing thinking,0.9,Mental filter
+217,Labeling,0.9,Emotional Reasoning
+1047,Labeling,0.9,Magnification
+1045,Personalization,0.9,Mind Reading
+1044,All-or-nothing thinking,0.9,Personalization
+1037,Magnification,0.9,Emotional Reasoning
+1601,Magnification,0.9,All-or-nothing thinking
+1588,Labeling,0.9,Fortune-telling
+1587,Overgeneralization,0.9,Mind Reading
+1586,Fortune-telling,0.9,All-or-nothing thinking
+1583,Fortune-telling,0.9,Labeling
+1580,Personalization,0.9,Mental filter
+1575,Mental filter,0.9,Labeling
+1570,Overgeneralization,0.9,Emotional Reasoning
+1079,Magnification,0.9,Fortune-telling
+1078,Magnification,0.9,Labeling
+1068,Emotional Reasoning,0.9,Mind Reading
+1050,Overgeneralization,0.9,Labeling
+237,Overgeneralization,0.9,All-or-nothing thinking
+1568,Personalization,0.9,Labeling
+1565,Labeling,0.9,Magnification
+136,Magnification,0.9,Mental filter
+129,Overgeneralization,0.9,Fortune-telling
+128,Mind Reading,0.9,Magnification
+125,Labeling,0.9,Personalization
+124,Mental filter,0.9,Fortune-telling
+120,Overgeneralization,0.9,Mental filter
+119,Magnification,0.9,Mental filter
+203,Magnification,0.9,Should statements
+200,Labeling,0.9,Overgeneralization
+195,Personalization,0.9,Mind Reading
+1099,Overgeneralization,0.9,Labeling
+1098,Emotional Reasoning,0.9,Magnification
+1089,Labeling,0.9,Overgeneralization
+1088,Fortune-telling,0.9,Magnification
+1549,Should statements,0.9,Mind Reading
+1528,Magnification,0.9,Fortune-telling
+1523,Overgeneralization,0.9,Magnification
+1522,Fortune-telling,0.9,Emotional Reasoning
+1518,Overgeneralization,0.9,Mind Reading
+1508,Mental filter,0.9,All-or-nothing thinking
+1507,Fortune-telling,0.9,Magnification
+1503,Mental filter,0.9,All-or-nothing thinking
+1499,Overgeneralization,0.9,Mind Reading
+1485,Overgeneralization,0.9,Mental filter
+1484,Overgeneralization,0.9,Fortune-telling
+1483,Fortune-telling,0.9,Mental filter
+1479,Fortune-telling,0.9,Magnification
+1474,Mind Reading,0.9,Personalization
+1470,Should statements,0.9,Personalization
+1468,Overgeneralization,0.9,Labeling
+1464,Magnification,0.9,Fortune-telling
+1165,All-or-nothing thinking,0.9,Magnification
+1159,Should statements,0.9,Mind Reading
+1147,Labeling,0.9,Magnification
+1140,Magnification,0.9,Labeling
+1135,Should statements,0.9,Overgeneralization
+1121,All-or-nothing thinking,0.9,Fortune-telling
+1120,Personalization,0.9,Mind Reading
+214,Labeling,0.9,Mind Reading
+188,Should statements,0.9,Fortune-telling
+186,Labeling,0.9,Personalization
+177,Labeling,0.9,Magnification
+176,Mental filter,0.9,Fortune-telling
+169,Overgeneralization,0.9,Mind Reading
+1167,Labeling,0.9,Personalization
+1453,Overgeneralization,0.9,Mental filter
+1451,Should statements,0.9,Fortune-telling
+1436,Fortune-telling,0.9,Magnification
+1434,Magnification,0.9,Overgeneralization
+1432,Should statements,0.9,All-or-nothing thinking
+156,Personalization,0.9,Mind Reading
+141,Personalization,0.9,Mind Reading
+1417,Personalization,0.9,Mind Reading
+1406,Overgeneralization,0.9,Magnification
+1405,Magnification,0.9,Mental filter
+1404,Mental filter,0.9,Emotional Reasoning
+1401,Emotional Reasoning,0.9,All-or-nothing thinking
+1295,Fortune-telling,0.9,Magnification
+1294,Should statements,0.9,Mind Reading
+1289,Magnification,0.9,Mind Reading
+1288,Fortune-telling,0.9,Mind Reading
+1275,Labeling,0.9,Fortune-telling
+1228,Overgeneralization,0.9,All-or-nothing thinking
+1210,Overgeneralization,0.9,Labeling
+1207,All-or-nothing thinking,0.9,Magnification
+1206,Labeling,0.9,Fortune-telling
+1187,Labeling,0.9,All-or-nothing thinking
+1273,Labeling,0.9,Fortune-telling
+1269,Personalization,0.9,Mind Reading
+1264,Fortune-telling,0.9,Personalization
+1263,Magnification,0.9,Mental filter
+1262,Magnification,0.9,Personalization
+1253,Overgeneralization,0.9,Magnification
+1237,All-or-nothing thinking,0.9,Personalization
+1232,Mind Reading,0.9,Mental filter
+1231,Overgeneralization,0.9,Fortune-telling
+2536,Magnification,0.9,Personalization
+2494,Magnification,0.9,Labeling
+2492,Personalization,0.9,Mental filter
+2482,Magnification,0.9,Mental filter
+2473,Mental filter,0.9,Fortune-telling
+4573,Overgeneralization,0.9,Labeling
+2529,Emotional Reasoning,0.9,Mind Reading
+2515,Mind Reading,0.9,Emotional Reasoning
+2505,Emotional Reasoning,0.9,Overgeneralization
+2500,Labeling,0.9,Emotional Reasoning
+4544,All-or-nothing thinking,0.9,Fortune-telling
+4540,Mind Reading,0.9,All-or-nothing thinking
+4535,Labeling,0.9,All-or-nothing thinking
+4532,All-or-nothing thinking,0.9,Magnification
+4514,Fortune-telling,0.8,Mind Reading
+4523,Labeling,0.8,Fortune-telling
+4526,Mind Reading,0.8,Magnification
+4536,Fortune-telling,0.8,Fortune-telling
+435,Personalization,0.8,Fortune-telling
+423,Mental filter,0.8,Magnification
+411,Mental filter,0.8,Labeling
+403,Fortune-telling,0.8,Emotional Reasoning
+2531,Mind Reading,0.8,Emotional Reasoning
+2400,Emotional Reasoning,0.8,Emotional Reasoning
+1225,Overgeneralization,0.8,Mind Reading
+1222,Mind Reading,0.8,Overgeneralization
+1221,Mind Reading,0.8,Mental filter
+1219,Overgeneralization,0.8,Emotional Reasoning
+1216,Overgeneralization,0.8,Mind Reading
+1195,Overgeneralization,0.8,Labeling
+189,Personalization,0.8,Fortune-telling
+1274,Mind Reading,0.8,Should statements
+1254,Magnification,0.8,Magnification
+482,Emotional Reasoning,0.8,Emotional Reasoning
+471,Mind Reading,0.8,Magnification
+468,Labeling,0.8,Fortune-telling
+458,Mental filter,0.8,Fortune-telling
+451,Magnification,0.8,Overgeneralization
+449,Mind Reading,0.8,Labeling
+447,Fortune-telling,0.8,Personalization
+4596,Labeling,0.8,Fortune-telling
+4589,Mind Reading,0.8,Emotional Reasoning
+4584,Mental filter,0.8,Fortune-telling
+4583,Magnification,0.8,Fortune-telling
+4575,Labeling,0.8,Labeling
+2363,Mental filter,0.8,Emotional Reasoning
+150,Fortune-telling,0.8,Fortune-telling
+147,Fortune-telling,0.8,All-or-nothing thinking
+145,Personalization,0.8,Mind Reading
+140,Overgeneralization,0.8,Mental filter
+1418,Mind Reading,0.8,Should statements
+1408,Fortune-telling,0.8,Labeling
+1290,Personalization,0.8,Fortune-telling
+1286,Overgeneralization,0.8,Mental filter
+1278,Fortune-telling,0.8,Fortune-telling
+1169,Mind Reading,0.8,Mind Reading
+1462,Mental filter,0.8,Mental filter
+1458,Mind Reading,0.8,Fortune-telling
+1454,Mind Reading,0.8,Mental filter
+1443,Personalization,0.8,All-or-nothing thinking
+1441,Mind Reading,0.8,Personalization
+1440,Personalization,0.8,Magnification
+1428,Should statements,0.8,Emotional Reasoning
+1423,Emotional Reasoning,0.8,Overgeneralization
+2350,Mind Reading,0.8,Mental filter
+2346,Emotional Reasoning,0.8,Emotional Reasoning
+392,Mind Reading,0.8,Fortune-telling
+389,All-or-nothing thinking,0.8,All-or-nothing thinking
+385,Fortune-telling,0.8,Mind Reading
+380,Magnification,0.8,Fortune-telling
+377,Mind Reading,0.8,Fortune-telling
+369,Mental filter,0.8,All-or-nothing thinking
+1152,Overgeneralization,0.8,Emotional Reasoning
+1122,Should statements,0.8,Emotional Reasoning
+1119,Magnification,0.8,Personalization
+1111,Magnification,0.8,All-or-nothing thinking
+175,Mind Reading,0.8,Fortune-telling
+167,Fortune-telling,0.8,Magnification
+166,Overgeneralization,0.8,Mental filter
+1175,Labeling,0.8,All-or-nothing thinking
+1170,Magnification,0.8,Emotional Reasoning
+4612,Magnification,0.8,Personalization
+515,Mental filter,0.8,Overgeneralization
+501,Fortune-telling,0.8,Personalization
+2311,Mind Reading,0.8,Magnification
+567,Overgeneralization,0.8,Mental filter
+1560,Should statements,0.8,All-or-nothing thinking
+1544,Fortune-telling,0.8,Labeling
+1538,Fortune-telling,0.8,Should statements
+1527,Personalization,0.8,Personalization
+1511,Mind Reading,0.8,Personalization
+1463,Personalization,0.8,Mind Reading
+1154,Magnification,0.8,Mind Reading
+566,Overgeneralization,0.8,Mind Reading
+560,Fortune-telling,0.8,Should statements
+354,Magnification,0.8,Fortune-telling
+341,Mind Reading,0.8,Magnification
+584,Overgeneralization,0.8,Mind Reading
+2225,Fortune-telling,0.8,Fortune-telling
+213,Overgeneralization,0.8,Emotional Reasoning
+208,Labeling,0.8,Mind Reading
+207,Should statements,0.8,Mind Reading
+196,Mind Reading,0.8,Magnification
+194,Emotional Reasoning,0.8,Fortune-telling
+191,Mind Reading,0.8,Labeling
+1105,Labeling,0.8,Mind Reading
+1102,Magnification,0.8,Emotional Reasoning
+2217,Magnification,0.8,All-or-nothing thinking
+2182,Emotional Reasoning,0.8,Personalization
+2161,Should statements,0.8,Magnification
+2139,Emotional Reasoning,0.8,Emotional Reasoning
+617,Overgeneralization,0.8,Should statements
+615,Magnification,0.8,Fortune-telling
+614,Overgeneralization,0.8,Mind Reading
+603,Fortune-telling,0.8,Fortune-telling
+592,Overgeneralization,0.8,Fortune-telling
+591,Mental filter,0.8,Emotional Reasoning
+589,Personalization,0.8,Emotional Reasoning
+4655,Mind Reading,0.8,Should statements
+4653,Overgeneralization,0.8,Fortune-telling
+1599,Magnification,0.8,Magnification
+1592,Fortune-telling,0.8,Fortune-telling
+1574,Mind Reading,0.8,Labeling
+1086,Mind Reading,0.8,Magnification
+1085,Personalization,0.8,Fortune-telling
+1084,Magnification,0.8,Mental filter
+1067,Fortune-telling,0.8,All-or-nothing thinking
+1062,Fortune-telling,0.8,Fortune-telling
+1059,Overgeneralization,0.8,Mental filter
+1055,Magnification,0.8,All-or-nothing thinking
+239,Emotional Reasoning,0.8,Emotional Reasoning
+1639,Labeling,0.8,Fortune-telling
+1629,Overgeneralization,0.8,Labeling
+1626,Personalization,0.8,Mind Reading
+233,Magnification,0.8,Fortune-telling
+232,Should statements,0.8,Fortune-telling
+226,Magnification,0.8,Emotional Reasoning
+1600,Mind Reading,0.8,Mind Reading
+4652,Overgeneralization,0.8,Personalization
+4648,Emotional Reasoning,0.8,Emotional Reasoning
+4646,Mind Reading,0.8,Emotional Reasoning
+4637,Personalization,0.8,Fortune-telling
+2132,Magnification,0.8,Mind Reading
+2118,Mental filter,0.8,Labeling
+2087,Mental filter,0.8,Fortune-telling
+1994,Emotional Reasoning,0.8,Overgeneralization
+322,Should statements,0.8,All-or-nothing thinking
+321,Fortune-telling,0.8,Should statements
+635,Mind Reading,0.8,Magnification
+631,Magnification,0.8,Magnification
+681,Magnification,0.8,Emotional Reasoning
+666,Mental filter,0.8,Mind Reading
+665,Personalization,0.8,Mental filter
+663,Labeling,0.8,Magnification
+652,Mental filter,0.8,Magnification
+1976,Mind Reading,0.8,Fortune-telling
+1959,All-or-nothing thinking,0.8,Labeling
+1653,Magnification,0.8,Fortune-telling
+1647,Fortune-telling,0.8,Mind Reading
+1024,Magnification,0.8,Fortune-telling
+1021,Fortune-telling,0.8,All-or-nothing thinking
+985,Emotional Reasoning,0.8,Magnification
+984,Magnification,0.8,Labeling
+981,Mental filter,0.8,Emotional Reasoning
+978,Personalization,0.8,Fortune-telling
+1642,Fortune-telling,0.8,Fortune-telling
+112,Should statements,0.8,Fortune-telling
+92,Fortune-telling,0.8,Mind Reading
+1697,Fortune-telling,0.8,Fortune-telling
+1695,Personalization,0.8,Mind Reading
+963,Magnification,0.8,All-or-nothing thinking
+925,Fortune-telling,0.8,All-or-nothing thinking
+923,Mental filter,0.8,Personalization
+1672,Personalization,0.8,Magnification
+1668,Labeling,0.8,All-or-nothing thinking
+1667,Labeling,0.8,Emotional Reasoning
+1664,Magnification,0.8,Mental filter
+1661,Mind Reading,0.8,Should statements
+1658,Personalization,0.8,Magnification
+262,Overgeneralization,0.8,Mind Reading
+260,Fortune-telling,0.8,Fortune-telling
+255,Overgeneralization,0.8,Fortune-telling
+254,Labeling,0.8,Labeling
+241,Should statements,0.8,Mind Reading
+240,All-or-nothing thinking,0.8,All-or-nothing thinking
+913,Mental filter,0.8,Magnification
+907,Labeling,0.8,Labeling
+904,Personalization,0.8,Magnification
+85,Mind Reading,0.8,Labeling
+75,Labeling,0.8,Mind Reading
+1939,Personalization,0.8,Fortune-telling
+1936,Personalization,0.8,All-or-nothing thinking
+712,Mental filter,0.8,All-or-nothing thinking
+704,Overgeneralization,0.8,Mind Reading
+4682,Labeling,0.8,Mind Reading
+4677,Mental filter,0.8,Overgeneralization
+4661,Personalization,0.8,Emotional Reasoning
+1924,Fortune-telling,0.8,Mind Reading
+2098,Mental filter,0.8,Emotional Reasoning
+2088,Emotional Reasoning,0.8,Emotional Reasoning
+63,Fortune-telling,0.8,Mind Reading
+40,Overgeneralization,0.8,Fortune-telling
+1764,Mind Reading,0.8,All-or-nothing thinking
+1763,Fortune-telling,0.8,Mind Reading
+1761,Overgeneralization,0.8,Overgeneralization
+1758,Fortune-telling,0.8,Fortune-telling
+1734,Mind Reading,0.8,Fortune-telling
+1732,Personalization,0.8,Mental filter
+1707,Mind Reading,0.8,Fortune-telling
+1706,Magnification,0.8,Mind Reading
+309,Overgeneralization,0.8,All-or-nothing thinking
+308,Fortune-telling,0.8,Fortune-telling
+307,Overgeneralization,0.8,Emotional Reasoning
+297,Emotional Reasoning,0.8,Emotional Reasoning
+725,Personalization,0.8,Fortune-telling
+762,Mind Reading,0.8,Labeling
+752,Mind Reading,0.8,Mental filter
+751,Overgeneralization,0.8,Mind Reading
+749,Overgeneralization,0.8,Emotional Reasoning
+747,Mind Reading,0.8,Fortune-telling
+746,Mind Reading,0.8,Magnification
+743,Mind Reading,0.8,Magnification
+1793,All-or-nothing thinking,0.8,All-or-nothing thinking
+1785,Personalization,0.8,Personalization
+899,Overgeneralization,0.8,Emotional Reasoning
+893,Mind Reading,0.8,Fortune-telling
+890,Personalization,0.8,Magnification
+886,Overgeneralization,0.8,Labeling
+884,Magnification,0.8,Emotional Reasoning
+1815,Fortune-telling,0.8,Mind Reading
+1814,Magnification,0.8,Magnification
+873,Mind Reading,0.8,Should statements
+872,Magnification,0.8,Personalization
+869,Magnification,0.8,Magnification
+853,Mind Reading,0.8,Labeling
+850,Overgeneralization,0.8,Magnification
+848,Personalization,0.8,Mental filter
+839,Mind Reading,0.8,Mental filter
+837,Overgeneralization,0.8,Magnification
+1809,Magnification,0.8,Personalization
+736,Overgeneralization,0.8,Mental filter
+730,Fortune-telling,0.8,Mental filter
+8,Magnification,0.8,Labeling
+4698,Overgeneralization,0.8,Fortune-telling
+4697,Mind Reading,0.8,Mental filter
+4691,Personalization,0.8,Labeling
+4687,Magnification,0.8,Overgeneralization
+2050,Personalization,0.8,Mind Reading
+2022,Mind Reading,0.8,Personalization
+2021,Fortune-telling,0.8,Fortune-telling
+2012,Overgeneralization,0.8,Magnification
+1866,Labeling,0.8,Fortune-telling
+1860,Fortune-telling,0.8,Fortune-telling
+1857,Overgeneralization,0.8,Labeling
+812,Magnification,0.8,Fortune-telling
+1852,Fortune-telling,0.8,Mind Reading
+1842,Should statements,0.8,Fortune-telling
+1830,Overgeneralization,0.8,Mind Reading
+1822,Magnification,0.8,Mental filter
+21,Personalization,0.8,Mental filter
+19,Magnification,0.8,Magnification
+14,Personalization,0.8,Fortune-telling
+293,Emotional Reasoning,0.8,Emotional Reasoning
+285,Overgeneralization,0.8,Fortune-telling
+281,Personalization,0.8,Labeling
+272,Personalization,0.8,Labeling
+267,Should statements,0.8,Labeling
+1885,Magnification,0.8,Magnification
+1877,Should statements,0.8,Emotional Reasoning
+1896,Overgeneralization,0.8,Magnification
+777,Fortune-telling,0.8,All-or-nothing thinking
+775,Overgeneralization,0.8,Emotional Reasoning
+764,Personalization,0.8,All-or-nothing thinking
+26,Fortune-telling,0.8,Magnification
+2495,Mind Reading,0.8,Fortune-telling
+2551,Mind Reading,0.8,Fortune-telling
+2549,Mental filter,0.8,Magnification
+4563,Mind Reading,0.8,Mental filter
+4558,Mental filter,0.8,Fortune-telling
+4553,Overgeneralization,0.8,Mind Reading
+2455,Labeling,0.8,Mental filter
+2454,Labeling,0.8,Mental filter
+2445,Labeling,0.8,All-or-nothing thinking
+442,Mind Reading,0.8,Should statements
+1239,Labeling,0.8,Fortune-telling
+4521,Fortune-telling,0.8,Overgeneralization
+2537,Overgeneralization,0.8,Mental filter
+2490,Emotional Reasoning,0.8,Overgeneralization
+2484,Emotional Reasoning,0.8,Emotional Reasoning
+2483,Emotional Reasoning,0.8,Emotional Reasoning
+2480,Emotional Reasoning,0.8,Emotional Reasoning
+2476,Magnification,0.8,Overgeneralization
+2475,Emotional Reasoning,0.8,Mental filter
+4572,All-or-nothing thinking,0.8,All-or-nothing thinking
+2496,Magnification,0.8,Magnification
+2498,Overgeneralization,0.7,Fortune-telling
+2521,Personalization,0.7,Mind Reading
+2525,Mental filter,0.7,Mental filter
+2544,Emotional Reasoning,0.7,Emotional Reasoning
+4515,Personalization,0.7,Personalization
+4519,Mind Reading,0.7,Mind Reading
+2552,Labeling,0.7,Labeling
+765,Mind Reading,0.7,Mind Reading
+769,Mind Reading,0.7,Mind Reading
+35,Mental filter,0.7,Overgeneralization
+27,Labeling,0.7,Labeling
+88,Overgeneralization,0.7,Overgeneralization
+84,Mental filter,0.7,Overgeneralization
+708,Fortune-telling,0.7,Should statements
+1722,Should statements,0.7,Fortune-telling
+1872,Mind Reading,0.7,Mind Reading
+1910,Emotional Reasoning,0.7,Emotional Reasoning
+1905,Magnification,0.7,Fortune-telling
+1902,Mental filter,0.7,Mental filter
+798,Mind Reading,0.7,Mind Reading
+292,Should statements,0.7,Should statements
+2047,Labeling,0.7,Labeling
+4688,Emotional Reasoning,0.7,Emotional Reasoning
+1845,Emotional Reasoning,0.7,Emotional Reasoning
+1836,Overgeneralization,0.7,Overgeneralization
+1823,All-or-nothing thinking,0.7,All-or-nothing thinking
+12,Overgeneralization,0.7,Emotional Reasoning
+841,Magnification,0.7,Magnification
+1813,Personalization,0.7,Mind Reading
+2024,Magnification,0.7,Magnification
+831,Mind Reading,0.7,Mind Reading
+2062,Mind Reading,0.7,Mind Reading
+4685,Personalization,0.7,Mind Reading
+716,Overgeneralization,0.7,Overgeneralization
+727,Magnification,0.7,Personalization
+900,Mental filter,0.7,Fortune-telling
+1779,Mental filter,0.7,Mental filter
+723,Mind Reading,0.7,Mind Reading
+745,Mind Reading,0.7,Mind Reading
+891,Mind Reading,0.7,Mind Reading
+874,Mind Reading,0.7,Mind Reading
+859,Magnification,0.7,Magnification
+842,Personalization,0.7,Personalization
+57,Personalization,0.7,Personalization
+60,Mind Reading,0.7,Mind Reading
+1747,Overgeneralization,0.7,Overgeneralization
+4658,Fortune-telling,0.7,Fortune-telling
+121,Labeling,0.7,All-or-nothing thinking
+122,Overgeneralization,0.7,Mind Reading
+197,Overgeneralization,0.7,Overgeneralization
+2222,Personalization,0.7,Mind Reading
+130,All-or-nothing thinking,0.7,All-or-nothing thinking
+565,Overgeneralization,0.7,Overgeneralization
+227,Mind Reading,0.7,Mind Reading
+220,Fortune-telling,0.7,Fortune-telling
+1610,Fortune-telling,0.7,Fortune-telling
+221,Magnification,0.7,Magnification
+1623,Overgeneralization,0.7,Mental filter
+1617,Magnification,0.7,Magnification
+327,Emotional Reasoning,0.7,Magnification
+1984,Mental filter,0.7,Mental filter
+4638,Should statements,0.7,Should statements
+2064,Labeling,0.7,Labeling
+4644,Overgeneralization,0.7,Mind Reading
+637,Overgeneralization,0.7,Labeling
+676,Mental filter,0.7,Labeling
+330,Magnification,0.7,Magnification
+1031,Magnification,0.7,Fortune-telling
+1644,Mind Reading,0.7,Emotional Reasoning
+1649,Mind Reading,0.7,Mind Reading
+1960,Mind Reading,0.7,Mind Reading
+970,Labeling,0.7,Labeling
+1702,Magnification,0.7,Magnification
+983,Personalization,0.7,Personalization
+1025,Labeling,0.7,Labeling
+2410,Mind Reading,0.7,Mind Reading
+152,Overgeneralization,0.7,Overgeneralization
+1277,All-or-nothing thinking,0.7,All-or-nothing thinking
+1430,Fortune-telling,0.7,Fortune-telling
+143,Should statements,0.7,Should statements
+2414,Emotional Reasoning,0.7,Emotional Reasoning
+537,Magnification,0.7,Fortune-telling
+583,Overgeneralization,0.7,Magnification
+1465,Mind Reading,0.7,Mind Reading
+2430,Overgeneralization,0.7,Overgeneralization
+434,Mind Reading,0.7,Fortune-telling
+422,Personalization,0.7,Personalization
+4585,Labeling,0.7,Fortune-telling
+444,Personalization,0.7,Personalization
+1203,Overgeneralization,0.7,Overgeneralization
+154,Overgeneralization,0.7,Mind Reading
+184,Overgeneralization,0.7,Overgeneralization
+2332,Fortune-telling,0.7,Fortune-telling
+4631,Mind Reading,0.7,Mind Reading
+1136,Fortune-telling,0.7,Mind Reading
+494,Fortune-telling,0.7,All-or-nothing thinking
+2338,Labeling,0.7,Labeling
+372,Mind Reading,0.7,Mind Reading
+2333,Mind Reading,0.7,Mind Reading
+524,Overgeneralization,0.7,Overgeneralization
+4623,All-or-nothing thinking,0.7,All-or-nothing thinking
+4627,Labeling,0.7,Labeling
+4626,Personalization,0.7,Personalization
+1177,Overgeneralization,0.7,Overgeneralization
+4654,Emotional Reasoning,0.7,Emotional Reasoning
+1063,Overgeneralization,0.7,Fortune-telling
+1074,Overgeneralization,0.7,Mind Reading
+1495,Mind Reading,0.7,Mind Reading
+1493,Magnification,0.7,Magnification
+558,Overgeneralization,0.7,Mind Reading
+1475,Personalization,0.7,Personalization
+366,Mental filter,0.7,Mental filter
+525,Mental filter,0.7,Mental filter
+1548,Mind Reading,0.7,Labeling
+1530,All-or-nothing thinking,0.7,All-or-nothing thinking
+521,Mind Reading,0.7,Mind Reading
+412,Mind Reading,0.6,Mind Reading
+1193,Mind Reading,0.6,Mind Reading
+882,Mind Reading,0.6,Mind Reading
+1733,Mind Reading,0.6,Mind Reading
+432,Mind Reading,0.6,Mind Reading
+153,Mind Reading,0.6,Mind Reading
+173,Mind Reading,0.6,Mind Reading
+2051,Mind Reading,0.6,Mind Reading
+829,Mind Reading,0.6,Mind Reading
+804,Overgeneralization,0.6,Overgeneralization
+803,Magnification,0.6,Magnification
+1895,Mind Reading,0.6,Mind Reading
+767,Overgeneralization,0.6,Overgeneralization
+287,Mind Reading,0.6,Mind Reading
+279,Overgeneralization,0.6,Overgeneralization
+1725,Magnification,0.6,Magnification
+4551,Fortune-telling,0.6,Fortune-telling
+707,Mind Reading,0.6,Mind Reading
+2078,Personalization,0.6,Personalization
+2488,Overgeneralization,0.6,Overgeneralization
+246,Mind Reading,0.6,Mind Reading
+876,Mental filter,0.6,Mental filter
+851,Overgeneralization,0.6,Overgeneralization
+1270,Mind Reading,0.6,Mind Reading
+1416,Mind Reading,0.6,Mind Reading
+568,Overgeneralization,0.6,Overgeneralization
+1534,Personalization,0.6,Personalization
+151,Mind Reading,0.6,Mind Reading
+148,Mind Reading,0.6,Mind Reading
+1281,Mind Reading,0.6,Mind Reading
+1429,Labeling,0.6,Labeling
+1516,Mind Reading,0.6,Mind Reading
+4625,Labeling,0.6,Labeling
+1057,Mind Reading,0.6,Mind Reading
+1230,Magnification,0.6,Magnification
+1266,Mind Reading,0.6,Mind Reading
+117,Personalization,0.6,Personalization
+342,Mind Reading,0.6,Mind Reading
+1502,Mind Reading,0.6,Mind Reading
+1607,Mental filter,0.6,Mental filter
+1995,Mind Reading,0.6,Mind Reading
+259,Magnification,0.6,Magnification
+329,Mind Reading,0.6,Mind Reading
+339,Mind Reading,0.6,Mind Reading
+965,Personalization,0.6,Personalization
+1662,Mind Reading,0.6,Mind Reading
+493,Mind Reading,0.6,Mind Reading
+579,Mind Reading,0.6,Mind Reading
+390,Mind Reading,0.6,Mind Reading
+1141,Mind Reading,0.6,Mind Reading
+556,Magnification,0.6,Magnification
+4629,Mind Reading,0.6,Mind Reading
+34,Mind Reading,0.5,Mind Reading
+1248,Mind Reading,0.5,Mind Reading
+4517,Mind Reading,0.5,Mind Reading
+402,Overgeneralization,0.5,Overgeneralization
+1190,Magnification,0.5,Magnification
+73,Overgeneralization,0.5,Overgeneralization
+1783,Mind Reading,0.5,Mind Reading
+897,Mind Reading,0.5,Mind Reading
+28,Overgeneralization,0.5,Overgeneralization
+815,Mind Reading,0.5,Mind Reading
+1,Mind Reading,0.5,Mind Reading
+1966,Mind Reading,0.5,Mind Reading
+1674,Overgeneralization,0.5,Overgeneralization
+2367,Mind Reading,0.5,Mind Reading
+1577,Mind Reading,0.5,Mind Reading
+115,Mind Reading,0.5,Mind Reading
+1581,Mind Reading,0.5,Mind Reading
+2075,Mind Reading,0.5,Mind Reading
+1049,Labeling,0.5,Labeling
+4615,Mind Reading,0.5,Mind Reading
+1256,Mind Reading,0.5,Mind Reading
+2366,Mental filter,0.5,Mental filter
+1125,Mind Reading,0.5,Mind Reading
+1431,Personalization,0.5,Personalization
+1427,Mind Reading,0.5,Mind Reading
+1767,Mind Reading,0.4,Mind Reading
+739,Mind Reading,0.4,Mind Reading
+161,Mind Reading,0.4,Mind Reading
+134,Mind Reading,0.4,Mind Reading
+127,Mind Reading,0.4,Mind Reading
+2320,Mind Reading,0.4,Mind Reading
+1442,Mind Reading,0.4,Mind Reading
+2294,Mind Reading,0.4,Mind Reading
+2439,Mind Reading,0.4,Mind Reading
+1631,Mind Reading,0.3,Mind Reading
