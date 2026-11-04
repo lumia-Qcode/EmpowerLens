@@ -51,7 +51,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from sklearn.cluster import KMeans
+from sklearn.cluster import HDBSCAN, KMeans
 from sklearn.decomposition import TruncatedSVD
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import adjusted_rand_score, normalized_mutual_info_score
@@ -62,7 +62,10 @@ SEED = 42
 N_CLUSTERS = 10
 N_NEIGHBOURS = 10
 SVD_DIMS = 100
+MIN_CLUSTER_SIZE = 5      # HDBSCAN: smallest group it will call a cluster
+DUP_THRESHOLD = 0.80      # cosine above which two texts are "near-duplicates"
 
+RAW = Path("Annotated_data.csv")
 TRAIN_SPLIT = Path("data/splits/train.csv")
 TRIAGE = Path("reannotation_2026-09-27/inputs/triage_full.csv")
 MERGED = Path("reannotation_2026-09-27/outputs/relabel/merged_labels.csv")
@@ -154,19 +157,49 @@ def stage_cluster(df: pd.DataFrame) -> pd.DataFrame:
             if n_feat < N_CLUSTERS:
                 print(f"[skip] {source}/{setting}: only {n_feat} features")
                 continue
-            km = KMeans(n_clusters=N_CLUSTERS, random_state=SEED, n_init=10)
-            pred = km.fit_predict(X)
-            rows.append({
-                "clustered on": source,
-                "vectoriser": setting,
-                "features": n_feat,
-                "ARI": round(adjusted_rand_score(y, pred), 4),
-                "NMI": round(normalized_mutual_info_score(y, pred), 4),
-                "purity": round(purity(y, pred), 4),
-                "majority floor": round(floor, 4),
-            })
-            print(f"  {source:15} {setting:12} ARI={rows[-1]['ARI']:.4f} "
-                  f"purity={rows[-1]['purity']:.4f}")
+
+            # HDBSCAN needs dense input and benefits from the same reduction
+            # the neighbour stage uses; K-Means runs on the sparse matrix.
+            dims = min(SVD_DIMS, n_feat - 1)
+            Z = normalize(TruncatedSVD(n_components=dims,
+                                       random_state=SEED).fit_transform(X))
+
+            for algo in ("kmeans", "hdbscan"):
+                if algo == "kmeans":
+                    pred = KMeans(n_clusters=N_CLUSTERS, random_state=SEED,
+                                  n_init=10).fit_predict(X)
+                    keep = np.ones(len(pred), dtype=bool)
+                else:
+                    # Density-based: picks its own cluster count and leaves
+                    # rows in sparse regions unassigned (label -1 = noise).
+                    pred = HDBSCAN(min_cluster_size=MIN_CLUSTER_SIZE,
+                                   metric="euclidean").fit_predict(Z)
+                    keep = pred != -1
+                    if keep.sum() < N_CLUSTERS:
+                        print(f"  {source:15} {setting:12} hdbscan  "
+                              f"-- everything called noise, skipped")
+                        continue
+
+                # Scored on clustered rows only; "covered" says how many that is,
+                # so a high score on 3% of the data cannot look like a win.
+                yk = np.asarray(y)[keep]
+                pk = pred[keep]
+                rows.append({
+                    "clustered on": source,
+                    "vectoriser": setting,
+                    "algorithm": algo,
+                    "features": n_feat,
+                    "clusters": int(len(set(pk))),
+                    "covered": round(keep.mean(), 4),
+                    "ARI": round(adjusted_rand_score(yk, pk), 4),
+                    "NMI": round(normalized_mutual_info_score(yk, pk), 4),
+                    "purity": round(purity(yk, pk), 4),
+                    "majority floor": round(floor, 4),
+                })
+                r = rows[-1]
+                print(f"  {source:15} {setting:12} {algo:8} "
+                      f"k={r['clusters']:3} covered={r['covered']:.0%} "
+                      f"ARI={r['ARI']:.4f} purity={r['purity']:.4f}")
 
     out = pd.DataFrame(rows)
     OUT.mkdir(parents=True, exist_ok=True)
@@ -213,6 +246,72 @@ def stage_neighbours(df: pd.DataFrame, k: int) -> pd.DataFrame:
     out.to_csv(OUT / "unsupervised_queue.csv", index=False, encoding="utf-8")
     print(f"  scored {len(out)} rows; "
           f"{(disagree >= 0.9).sum()} rows disagree with >=90% of neighbours")
+    return out
+
+
+# --------------------------------------------------------------------------- #
+# stage 2b: near-duplicate pairs carrying conflicting labels
+# --------------------------------------------------------------------------- #
+def load_with_splits() -> pd.DataFrame:
+    """Whole corpus with a split column, so duplicates can be checked across them."""
+    df = pd.read_csv(RAW, encoding="utf-8-sig")
+    df["split"] = "unassigned"
+    for name in ("train", "val", "test"):
+        p = Path(f"data/splits/{name}.csv")
+        if p.exists():
+            ids = set(pd.read_csv(p, encoding="utf-8-sig")[ID_COL])
+            df.loc[df[ID_COL].isin(ids), "split"] = name
+    return df
+
+
+def stage_duplicates(threshold: float) -> pd.DataFrame:
+    """Find text pairs that are near-copies, then report where their labels differ.
+
+    This needs no cluster structure at all. Two texts that are near-identical
+    should carry the same label; where they do not, one of the two is very
+    likely mislabelled. The measured agreement at cosine >= 0.9 is 52%, against
+    a 10.9% chance rate, so a conflict in this band is a strong signal.
+
+    The same scan also catches near-duplicates that straddle a split boundary,
+    which would be leakage rather than a label error.
+    """
+    df = load_with_splits()
+    texts = df[TEXT_COL].astype(str).tolist()
+
+    # Raw TF-IDF, not the SVD projection: near-duplicate detection wants exact
+    # wording overlap, and the reduction blurs precisely that.
+    X = normalize(TfidfVectorizer(stop_words=None, min_df=1).fit_transform(texts))
+    S = (X @ X.T).toarray()
+    np.fill_diagonal(S, 0.0)
+
+    ia, ib = np.where(np.triu(S, k=1) >= threshold)
+    if len(ia) == 0:
+        print(f"  no pairs at cosine >= {threshold}")
+        return pd.DataFrame()
+
+    lab = df[LABEL_COL].astype(str).str.strip().to_numpy()
+    out = pd.DataFrame({
+        "id_a": df[ID_COL].to_numpy()[ia],
+        "id_b": df[ID_COL].to_numpy()[ib],
+        "similarity": S[ia, ib].round(4),
+        "label_a": lab[ia],
+        "label_b": lab[ib],
+        "split_a": df["split"].to_numpy()[ia],
+        "split_b": df["split"].to_numpy()[ib],
+        "text_a": [texts[i][:160].replace("\n", " ") for i in ia],
+        "text_b": [texts[i][:160].replace("\n", " ") for i in ib],
+    })
+    out["label_conflict"] = out["label_a"] != out["label_b"]
+    out["cross_split"] = out["split_a"] != out["split_b"]
+    out = out.sort_values(["label_conflict", "similarity"], ascending=[False, False])
+
+    n, c, x = len(out), int(out["label_conflict"].sum()), int(out["cross_split"].sum())
+    print(f"  pairs at cosine >= {threshold}: {n}")
+    print(f"  of those, labels conflict      : {c} ({c / n:.0%}) <- label-error candidates")
+    print(f"  of those, cross split boundary : {x} <- leakage candidates")
+
+    OUT.mkdir(parents=True, exist_ok=True)
+    out.to_csv(OUT / "near_duplicates.csv", index=False, encoding="utf-8")
     return out
 
 
@@ -314,8 +413,10 @@ def stage_compare(unsup: pd.DataFrame) -> pd.DataFrame | None:
 # --------------------------------------------------------------------------- #
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--only", choices=["cluster", "neighbours", "compare"])
+    ap.add_argument("--only", choices=["cluster", "neighbours", "duplicates",
+                                       "compare"])
     ap.add_argument("--k", type=int, default=N_NEIGHBOURS)
+    ap.add_argument("--dup-threshold", type=float, default=DUP_THRESHOLD)
     args = ap.parse_args()
 
     df = load_distorted_train()
@@ -329,6 +430,11 @@ def main() -> int:
     if args.only in (None, "neighbours", "compare"):
         print("STAGE 2  unsupervised label-error queue")
         unsup = stage_neighbours(df, args.k)
+        print()
+
+    if args.only in (None, "duplicates"):
+        print("STAGE 2b near-duplicate pairs with conflicting labels")
+        stage_duplicates(args.dup_threshold)
         print()
 
     if args.only in (None, "compare"):

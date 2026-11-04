@@ -1,7 +1,13 @@
-clustered on,vectoriser,features,ARI,NMI,purity,majority floor
-spans,stopwords,1696,0.0156,0.032,0.2011,0.1495
-spans,nostopwords,1928,0.0162,0.0543,0.2105,0.1495
-spans,markers,47,0.0056,0.0435,0.2175,0.1495
-full documents,stopwords,4884,0.0038,0.0258,0.1886,0.1495
-full documents,nostopwords,5160,0.0124,0.0437,0.2121,0.1495
-full documents,markers,47,0.0028,0.0219,0.1847,0.1495
+clustered on,vectoriser,algorithm,features,clusters,covered,ARI,NMI,purity,majority floor
+spans,stopwords,kmeans,1696,10,1.0,0.0156,0.032,0.2011,0.1495
+spans,stopwords,hdbscan,1696,16,0.1213,0.0272,0.2853,0.3677,0.1495
+spans,nostopwords,kmeans,1928,10,1.0,0.0162,0.0543,0.2105,0.1495
+spans,nostopwords,hdbscan,1928,3,0.2973,0.0064,0.0339,0.2158,0.1495
+spans,markers,kmeans,47,10,1.0,0.0056,0.0435,0.2175,0.1495
+spans,markers,hdbscan,47,39,0.7504,0.0049,0.1313,0.2701,0.1495
+full documents,stopwords,kmeans,4884,10,1.0,0.0038,0.0258,0.1886,0.1495
+full documents,stopwords,hdbscan,4884,13,0.1088,0.0055,0.2193,0.295,0.1495
+full documents,nostopwords,kmeans,5160,10,1.0,0.0124,0.0437,0.2121,0.1495
+full documents,nostopwords,hdbscan,5160,3,0.1674,0.0104,0.0383,0.2804,0.1495
+full documents,markers,kmeans,47,10,1.0,0.0028,0.0219,0.1847,0.1495
+full documents,markers,hdbscan,47,28,0.3294,-0.0114,0.1281,0.2637,0.1495
