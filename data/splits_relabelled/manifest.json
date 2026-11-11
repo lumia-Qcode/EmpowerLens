@@ -1,0 +1,131 @@
+{
+  "created_utc": "2026-11-11T19:00:20.711154+00:00",
+  "task": "D14 relabelled splits (same rows, same files as data/splits)",
+  "sources": {
+    "reannotation_2026-09-27\\outputs\\relabel\\merged_labels.csv": "38abf9fbe0805f0382f35a9897a98070a012e7ac9c27bab3e66ebbdd7efb1580",
+    "reannotation_2026-09-27\\scripts\\label_changes.py": "5059e0b40c85b2749fb4a78a2cf531018386a03ec79c2af3420bf3b77d5fd566",
+    "data\\splits\\train.csv": "2410e1d640c698898cbae334d74a53cc6313a4029e1c88ff5f942c7ae9a024d4",
+    "data\\splits\\val.csv": "82510ce7acab58d58cc8d9397ff214fcb2beef7a6bae235a2b7dff12a366b9ec",
+    "data\\splits\\test.csv": "1013562d7c8887746689959d38724a3adb7d29ab07cc9e71782d85276282d1e0"
+  },
+  "rules": {
+    "valid_vote": "Primary filled, not filled_from_original, Unsure not ticked",
+    "majority": "one 11-way label (calibrated pessimism = No Distortion) with > half the valid votes",
+    "dominant": "the majority label",
+    "secondary": "empty for No Distortion; else the Secondary given by > half of the voters who chose the majority Dominant, dropped if equal to the Dominant; original secondary not kept",
+    "label_provenance": "reannotated = row has a majority label; original = labels untouched"
+  },
+  "rows_with_votes_but_not_relabelled": {
+    "filled from original": 81,
+    "no majority (split vote)": 34,
+    "Unsure only": 27,
+    "blank Primary": 22
+  },
+  "splits": {
+    "train": {
+      "n": 2024,
+      "n_reannotated": 1012,
+      "n_original": 1012,
+      "n_dominant_changed": 832,
+      "n_secondary_changed": 381,
+      "n_any_label_changed": 900,
+      "n_binary_changed": 445,
+      "per_class_before": {
+        "no_distortion": 746,
+        "emotional_reasoning": 109,
+        "overgeneralization": 189,
+        "mental_filter": 96,
+        "should_statements": 85,
+        "all_or_nothing": 79,
+        "mind_reading": 191,
+        "fortune_telling": 114,
+        "magnification": 158,
+        "personalization": 124,
+        "labeling": 133
+      },
+      "per_class_after": {
+        "no_distortion": 1155,
+        "emotional_reasoning": 72,
+        "overgeneralization": 81,
+        "mental_filter": 65,
+        "should_statements": 23,
+        "all_or_nothing": 54,
+        "mind_reading": 162,
+        "fortune_telling": 94,
+        "magnification": 166,
+        "personalization": 48,
+        "labeling": 104
+      }
+    },
+    "val": {
+      "n": 253,
+      "n_reannotated": 126,
+      "n_original": 127,
+      "n_dominant_changed": 102,
+      "n_secondary_changed": 54,
+      "n_any_label_changed": 114,
+      "n_binary_changed": 54,
+      "per_class_before": {
+        "no_distortion": 95,
+        "emotional_reasoning": 13,
+        "overgeneralization": 24,
+        "mental_filter": 13,
+        "should_statements": 11,
+        "all_or_nothing": 10,
+        "mind_reading": 20,
+        "fortune_telling": 16,
+        "magnification": 19,
+        "personalization": 16,
+        "labeling": 16
+      },
+      "per_class_after": {
+        "no_distortion": 143,
+        "emotional_reasoning": 6,
+        "overgeneralization": 8,
+        "mental_filter": 12,
+        "should_statements": 8,
+        "all_or_nothing": 3,
+        "mind_reading": 22,
+        "fortune_telling": 5,
+        "magnification": 18,
+        "personalization": 9,
+        "labeling": 19
+      }
+    },
+    "test": {
+      "n": 253,
+      "n_reannotated": 184,
+      "n_original": 69,
+      "n_dominant_changed": 101,
+      "n_secondary_changed": 55,
+      "n_any_label_changed": 117,
+      "n_binary_changed": 61,
+      "per_class_before": {
+        "no_distortion": 92,
+        "emotional_reasoning": 12,
+        "overgeneralization": 26,
+        "mental_filter": 13,
+        "should_statements": 11,
+        "all_or_nothing": 11,
+        "mind_reading": 28,
+        "fortune_telling": 13,
+        "magnification": 18,
+        "personalization": 13,
+        "labeling": 16
+      },
+      "per_class_after": {
+        "no_distortion": 127,
+        "emotional_reasoning": 7,
+        "overgeneralization": 19,
+        "mental_filter": 8,
+        "should_statements": 5,
+        "all_or_nothing": 10,
+        "mind_reading": 19,
+        "fortune_telling": 8,
+        "magnification": 16,
+        "personalization": 12,
+        "labeling": 22
+      }
+    }
+  }
+}
