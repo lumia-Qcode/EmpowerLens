@@ -38,6 +38,17 @@ STAGE 3  --only compare
     Reported as average precision and as precision/recall at k, so the routes
     are compared on how many confirmed errors each surfaces per row reviewed.
 
+    Verdicts follow D08 exactly (reannotation_2026-09-27/scripts/label_changes.py):
+    a vote counts only if Primary is filled, it was not filled in from the
+    original label, and Unsure is not ticked; a row needs one 11-way label with
+    more than half the valid votes, and "changed" means that label differs from
+    the original dominant label. Two tables (D11):
+        route_comparison.csv       all lists on the rows every list can score
+                                   (neighbour queue = distorted train rows only)
+        route_comparison_test.csv  model triage vs random on the test rows, the
+                                   only re-annotated rows that include unflagged ones
+    Confirmed errors per hour assume 45 s per row (no times were recorded).
+
 Usage (Windows):
     venv\\Scripts\\python.exe -m src.cluster_label_errors
     venv\\Scripts\\python.exe -m src.cluster_label_errors --only cluster
@@ -318,42 +329,89 @@ def stage_duplicates(threshold: float) -> pd.DataFrame:
 # --------------------------------------------------------------------------- #
 # stage 3: score every route against the re-annotation that already happened
 # --------------------------------------------------------------------------- #
+LABEL_CHANGES = Path("reannotation_2026-09-27/scripts/label_changes.py")
+SECONDS_PER_ROW = 45          # no per-row times were recorded in the workbooks
+TIME_BASIS = "45 s/row estimate (no times recorded)"
+KS = (50, 100, 200)
+BUCKET_RANK = {"A": 0, "B": 1}  # anything else (C, "agree") ranks after the flagged buckets
+
+
+def _d08_classify():
+    """D08's grouping rule, loaded from its script so both tasks share one definition."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("label_changes", LABEL_CHANGES)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod.classify
+
+
 def human_verdicts() -> pd.DataFrame | None:
-    """Majority human label per row from the completed re-annotation session."""
+    """Majority human label per row, with D08's vote rules (see module docstring)."""
     if not MERGED.exists():
         print(f"[skip] {MERGED} not found -- stage 3 needs the completed "
               f"workbooks merged by relabel_agreement.py")
         return None
     m = pd.read_csv(MERGED, encoding="utf-8-sig")
-    m = m[m["Primary"].notna()]
-    if m.empty:
-        print("[skip] merged_labels.csv has no filled labels yet")
+    filled = m["filled_from_original"].astype(str).str.lower() == "true"
+    valid = m[m["Primary"].notna() & ~filled & m["Unsure"].isna()]
+    if valid.empty:
+        print("[skip] merged_labels.csv has no usable labels yet")
         return None
 
+    classify = _d08_classify()
+    info = m.drop_duplicates("Row ID").set_index("Row ID")
     rows = []
-    for rid, grp in m.groupby("Row ID"):
-        vote = grp["primary_collapsed"].value_counts()
-        rows.append({
-            ID_COL: rid,
-            "human_label": vote.index[0],
-            "n_annotators": len(grp),
-            "unanimous": bool(len(vote) == 1),
-            "original_dominant": grp["original_dominant"].iloc[0],
-        })
-    v = pd.DataFrame(rows)
-    v["changed"] = (v["human_label"].str.strip().str.lower()
-                    != v["original_dominant"].astype(str).str.strip().str.lower())
-    return v
+    for rid, votes in valid.groupby("Row ID")["Primary"]:
+        new, group = classify(str(info.at[rid, "original_dominant"]).strip(),
+                              info.at[rid, "original_secondary"], votes.tolist())
+        if new is None:          # split vote: no verdict
+            continue
+        rows.append({ID_COL: int(rid), "human_label": new, "changed": group is not None,
+                     "group": group, "n_annotators": len(votes), "split": info.at[rid, "split"]})
+    return pd.DataFrame(rows)
 
 
-def average_precision(scores: np.ndarray, truth: np.ndarray) -> float:
-    order = np.argsort(-scores)
-    hits = truth[order]
+def rank_order(scores, tiebreak=None) -> np.ndarray:
+    """Indices from highest to lowest score; ties broken by `tiebreak` (higher first)."""
+    scores = np.asarray(scores, float)
+    tb = np.zeros(len(scores)) if tiebreak is None else np.asarray(tiebreak, float)
+    return np.lexsort((-tb, -scores))
+
+
+def average_precision(scores: np.ndarray, truth: np.ndarray, tiebreak: np.ndarray | None = None) -> float:
+    """AP of a ranking (highest score first)."""
+    hits = np.asarray(truth, float)[rank_order(scores, tiebreak)]
     if hits.sum() == 0:
         return float("nan")
-    cum = np.cumsum(hits)
-    prec = cum / np.arange(1, len(hits) + 1)
+    prec = np.cumsum(hits) / np.arange(1, len(hits) + 1)
     return float((prec * hits).sum() / hits.sum())
+
+
+def model_triage_score(bucket, self_confidence) -> np.ndarray:
+    """Model triage list as one sortable score: bucket A, then B, then the rest; inside a
+    bucket, lowest self-confidence (the model disputes the label most) first."""
+    rank = np.array([BUCKET_RANK.get(str(b), 2) for b in bucket], float)
+    return -(rank * 2 + np.nan_to_num(np.asarray(self_confidence, float), nan=1.0))
+
+
+def score_lists(d: pd.DataFrame, lists: dict) -> pd.DataFrame:
+    truth = d["changed"].to_numpy(bool)
+    base = truth.mean()
+    tiebreak = np.random.default_rng(SEED + 1).random(len(d))  # fixed, fair order for tied scores
+    rows = []
+    for name, score in lists.items():
+        hits = truth[rank_order(score, tiebreak)]
+        rec = {"list": name, "rows_scored": len(d), "confirmed_errors": int(truth.sum()),
+               "base_rate": round(float(base), 4),
+               "AP": round(average_precision(score, truth, tiebreak), 4)}
+        for k in KS:
+            rec[f"precision@{k}"] = round(float(hits[:k].mean()), 4) if k <= len(d) else float("nan")
+        p100 = rec["precision@100"]
+        rec["lift@100"] = round(p100 / base, 2) if base else float("nan")
+        rec["errors_per_hour@100"] = round(p100 * 3600 / SECONDS_PER_ROW, 1)
+        rec["time_basis"] = TIME_BASIS
+        rows.append(rec)
+    return pd.DataFrame(rows)
 
 
 def stage_compare(unsup: pd.DataFrame) -> pd.DataFrame | None:
@@ -363,51 +421,105 @@ def stage_compare(unsup: pd.DataFrame) -> pd.DataFrame | None:
     if not TRIAGE.exists():
         print(f"[skip] missing {TRIAGE}")
         return None
+    tri = pd.read_csv(TRIAGE, encoding="utf-8-sig").drop(columns=["Patient Question"], errors="ignore")
+    allv = verdicts.merge(tri, on=ID_COL, how="inner")
 
-    tri = pd.read_csv(TRIAGE, encoding="utf-8-sig")
-    d = verdicts.merge(tri, on=ID_COL, how="inner").merge(
-        unsup[[ID_COL, "neighbour_disagreement"]], on=ID_COL, how="left")
-    d["neighbour_disagreement"] = d["neighbour_disagreement"].fillna(0.0)
+    def model_lists(d):
+        return {
+            "model triage (A+B buckets)": model_triage_score(d["bucket"], d["self_confidence"]),
+            "random (seed 42)": np.random.default_rng(SEED).random(len(d)),
+            "extra: model self-confidence only": -d["self_confidence"].fillna(1).to_numpy(),
+            "extra: model cleanlab quality": -d["cleanlab_quality"].fillna(1).to_numpy(),
+            "extra: model entropy": d["entropy"].fillna(0).to_numpy(),
+        }
 
-    truth = d["changed"].to_numpy()
-    base = truth.mean()
-    print(f"  rows with a human verdict and triage score: {len(d)}")
-    print(f"  confirmed label changes: {truth.sum()} ({base:.1%} base rate)")
+    # Table 1: rows every list can score (the neighbour queue holds distorted train rows only).
+    common = allv.merge(unsup[[ID_COL, "neighbour_disagreement"]], on=ID_COL, how="inner")
+    lists1 = {"neighbours (clustering)": common["neighbour_disagreement"].to_numpy(), **model_lists(common)}
+    t1 = score_lists(common, lists1)
+    # Table 2: test rows, the only re-annotated rows that include unflagged (bucket C) ones.
+    test = allv[allv["split"] == "test"].reset_index(drop=True)
+    t2 = score_lists(test, model_lists(test))
 
-    rng = np.random.default_rng(SEED)
-    routes = {
-        # Low self-confidence means the model disputes the recorded label.
-        "model-driven (self-confidence)": -d["self_confidence"].fillna(0).to_numpy(),
-        "model-driven (cleanlab)": -d["cleanlab_quality"].fillna(1).to_numpy(),
-        "model uncertainty (entropy)": d["entropy"].fillna(0).to_numpy(),
-        "unsupervised (neighbours)": d["neighbour_disagreement"].to_numpy(),
-        "random": rng.random(len(d)),
-    }
-
-    rows = []
-    for name, score in routes.items():
-        order = np.argsort(-score)
-        rec = {"route": name, "AP": round(average_precision(score, truth), 4)}
-        for k in (100, 250, 500):
-            if k > len(d):
-                continue
-            top = truth[order[:k]]
-            rec[f"precision@{k}"] = round(top.mean(), 4)
-            rec[f"recall@{k}"] = round(top.sum() / truth.sum(), 4)
-            rec[f"lift@{k}"] = round(top.mean() / base, 2) if base else float("nan")
-        rows.append(rec)
-
-    out = pd.DataFrame(rows).sort_values("AP", ascending=False)
     OUT.mkdir(parents=True, exist_ok=True)
-    out.to_csv(OUT / "route_comparison.csv", index=False, encoding="utf-8")
-    (OUT / "route_comparison_meta.json").write_text(json.dumps({
-        "rows_scored": int(len(d)),
-        "confirmed_changes": int(truth.sum()),
-        "base_rate": round(float(base), 4),
-        "seed": SEED,
-        "n_neighbours": N_NEIGHBOURS,
-    }, indent=2), encoding="utf-8")
-    return out
+    t1.to_csv(OUT / "route_comparison.csv", index=False, encoding="utf-8")
+    t2.to_csv(OUT / "route_comparison_test.csv", index=False, encoding="utf-8")
+    flag = test["bucket"].isin(BUCKET_RANK)
+    meta = {
+        "verdict_rows": int(len(allv)), "verdict_rows_changed": int(allv["changed"].sum()),
+        "table1_rows": int(len(common)),
+        "table1_buckets": {str(k): int(v) for k, v in common["bucket"].value_counts().items()},
+        "table2_rows": int(len(test)),
+        "table2_flagged_changed": f"{int(test.loc[flag, 'changed'].sum())} of {int(flag.sum())}",
+        "table2_unflagged_changed": f"{int(test.loc[~flag, 'changed'].sum())} of {int((~flag).sum())}",
+        "seconds_per_row": SECONDS_PER_ROW, "time_basis": TIME_BASIS,
+        "seed": SEED, "n_neighbours": N_NEIGHBOURS,
+    }
+    (OUT / "route_comparison_meta.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")
+    write_compare_report(t1, t2, meta)
+    return t1
+
+
+def write_compare_report(t1: pd.DataFrame, t2: pd.DataFrame, meta: dict) -> None:
+    show = ["list", "AP", "precision@50", "precision@100", "precision@200", "lift@100",
+            "errors_per_hour@100", "rows_scored"]
+
+    def get(t, name, col):
+        return float(t.loc[t["list"] == name, col].iloc[0])
+
+    def table(t):  # precision@k is undefined when the list is shorter than k
+        return t[show].astype(object).where(t[show].notna(), "n/a").to_markdown(index=False)
+
+    nb, mt, rd = "neighbours (clustering)", "model triage (A+B buckets)", "random (seed 42)"
+    winner = max((nb, mt, rd), key=lambda n: get(t1, n, "AP"))
+    ari = ""
+    rec_path = OUT / "cluster_recovery.csv"
+    if rec_path.exists():
+        a = pd.read_csv(rec_path)["ARI"]
+        ari = (f" Stage 1 shows why clustering struggles: clusters follow topic, not distortion type "
+               f"(ARI {a.min():.3f} to {a.max():.3f} across settings, `cluster_recovery.csv`).")
+    md = [
+        "# D11 - Which list finds wrong labels best?", "",
+        "Three ranked lists are scored against the re-annotation verdicts: **neighbours** (stage 2: a row whose "
+        "10 nearest texts mostly carry another label ranks high), **model triage** (the A and B buckets of the "
+        "re-annotation session: A before B, and inside a bucket the row whose label the model trusts least first), "
+        "and **random** order (seed 42), the floor. Rows marked *extra* are the model's raw scores, for reference.", "",
+        "**Verdicts** use the same rule as D08 (`label_changes.py`): a vote counts only if Primary is filled, it was "
+        "not filled in from the original label (81 CS-majors blanks), and Unsure is not ticked (never adjudicated); "
+        "a row needs one 11-way label (calibrated pessimism = No Distortion) with more than half its valid votes. "
+        "A row is a **confirmed error** when that label differs from the original dominant label. "
+        f"{meta['verdict_rows']} rows have a verdict; {meta['verdict_rows_changed']} of them changed.", "",
+        "**Scores.** Average precision (AP) is one number for the whole list, high when real errors sit near the top. "
+        "Precision@k = share of the first k rows that were real errors. Lift@100 = precision@100 / base rate "
+        "(what random order gets on average). **Confirmed errors per hour** = precision@100 x 80 rows per hour, "
+        f"using the **{SECONDS_PER_ROW} s per row estimate** (no times were recorded). Tied scores are ordered by "
+        "a fixed random draw.", "",
+        "## Table 1 - all three lists, on the rows each list can score", "",
+        f"{meta['table1_rows']} rows (buckets: {meta['table1_buckets']}). The neighbour queue covers distorted "
+        "**train** rows only, and the only train rows that were re-annotated are ones the model had flagged, so "
+        "**every row here is already in the model's A/B buckets** and the base rate is high "
+        f"({t1['base_rate'].iloc[0]:.1%}). Precision near the base rate means a list adds nothing; read lift "
+        "and AP against random.", "",
+        table(t1), "",
+        "## Table 2 - model triage vs random on the test rows", "",
+        f"{meta['table2_rows']} test rows with a verdict (base rate {t2['base_rate'].iloc[0]:.1%}): flagged "
+        f"changed {meta['table2_flagged_changed']}, unflagged changed {meta['table2_unflagged_changed']}. This is "
+        "the only part of the re-annotation that included rows the model did **not** flag, so it is the only fair "
+        "test of the A/B selection itself. Neighbours cannot be scored here (its queue has no test rows).", "",
+        table(t2), "",
+        "precision@200 is n/a on this table: it has fewer than 200 rows.", "",
+        "## Answer", "",
+        f"On the shared rows the best of the three lists by AP is **{winner}**: neighbours AP "
+        f"{get(t1, nb, 'AP'):.3f}, model triage {get(t1, mt, 'AP'):.3f}, random {get(t1, rd, 'AP'):.3f}. "
+        f"On the test rows model triage scores AP {get(t2, mt, 'AP'):.3f} vs random {get(t2, rd, 'AP'):.3f} "
+        f"(precision@50 {get(t2, mt, 'precision@50'):.2f} vs {get(t2, rd, 'precision@50'):.2f}).{ari}", "",
+        "**Caveat.** Ground truth exists only for re-annotated rows, and the model chose most of them, so Table 1 "
+        "compares the lists *inside the model's own selection*. Table 2 is small and has one annotator per row. "
+        "Neither table is an unbiased estimate over all 2,530 rows.", "",
+        "Files: `route_comparison.csv` (Table 1), `route_comparison_test.csv` (Table 2), "
+        "`route_comparison_meta.json`. Script: `python -m src.cluster_label_errors --only compare`.", "",
+    ]
+    (OUT / "route_comparison.md").write_text("\n".join(md), encoding="utf-8")
 
 
 # --------------------------------------------------------------------------- #

@@ -1,0 +1,6 @@
+list,rows_scored,confirmed_errors,base_rate,AP,precision@50,precision@100,precision@200,lift@100,errors_per_hour@100,time_basis
+model triage (A+B buckets),184,101,0.5489,0.8198,0.82,0.74,,1.35,59.2,45 s/row estimate (no times recorded)
+random (seed 42),184,101,0.5489,0.6125,0.6,0.59,,1.07,47.2,45 s/row estimate (no times recorded)
+extra: model self-confidence only,184,101,0.5489,0.8246,0.82,0.77,,1.4,61.6,45 s/row estimate (no times recorded)
+extra: model cleanlab quality,184,101,0.5489,0.818,0.84,0.77,,1.4,61.6,45 s/row estimate (no times recorded)
+extra: model entropy,184,101,0.5489,0.6313,0.64,0.64,,1.17,51.2,45 s/row estimate (no times recorded)
