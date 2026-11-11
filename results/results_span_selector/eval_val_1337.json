@@ -1,0 +1,15 @@
+{
+  "precision": 0.3557692307692308,
+  "recall": 0.5481481481481482,
+  "f1": 0.4314868804664723,
+  "row_hit_rate": 0.7006369426751592,
+  "n_rows": 157,
+  "n_sentences": 1586,
+  "n_gold_sentences": 270,
+  "n_selected": 416,
+  "threshold": 0.46869999170303345,
+  "model": "mental/mental-roberta-base",
+  "best_epoch": 3,
+  "split": "val",
+  "seed": 1337
+}
