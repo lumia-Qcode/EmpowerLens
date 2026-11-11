@@ -1,0 +1,16 @@
+{
+  "verdict_rows": 1322,
+  "verdict_rows_changed": 1035,
+  "table1_rows": 946,
+  "table1_buckets": {
+    "A": 877,
+    "B": 69
+  },
+  "table2_rows": 184,
+  "table2_flagged_changed": "72 of 97",
+  "table2_unflagged_changed": "29 of 87",
+  "seconds_per_row": 45,
+  "time_basis": "45 s/row estimate (no times recorded)",
+  "seed": 42,
+  "n_neighbours": 10
+}

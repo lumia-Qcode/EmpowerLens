@@ -1,0 +1,7 @@
+list,rows_scored,confirmed_errors,base_rate,AP,precision@50,precision@100,precision@200,lift@100,errors_per_hour@100,time_basis
+neighbours (clustering),946,814,0.8605,0.8729,0.84,0.88,0.87,1.02,70.4,45 s/row estimate (no times recorded)
+model triage (A+B buckets),946,814,0.8605,0.8878,0.94,0.91,0.885,1.06,72.8,45 s/row estimate (no times recorded)
+random (seed 42),946,814,0.8605,0.8432,0.84,0.84,0.835,0.98,67.2,45 s/row estimate (no times recorded)
+extra: model self-confidence only,946,814,0.8605,0.8876,0.94,0.91,0.885,1.06,72.8,45 s/row estimate (no times recorded)
+extra: model cleanlab quality,946,814,0.8605,0.8775,0.88,0.88,0.895,1.02,70.4,45 s/row estimate (no times recorded)
+extra: model entropy,946,814,0.8605,0.8322,0.82,0.84,0.795,0.98,67.2,45 s/row estimate (no times recorded)

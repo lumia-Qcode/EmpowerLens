@@ -1,0 +1,26 @@
+# D07 - Inter-annotator agreement on the 60 overlap rows
+
+Source: `merged_labels.csv`, overlap section (60 rows, 4 annotators). Type = 11 labels with *No Distortion (calibrated pessimism)* counted as No Distortion; binary = distorted or not.
+
+**Blank labels:** 3 of 60 overlap rows were left without a label by at least one annotator (row 2057: Hurema; row 414: Hurema; row 1924: Reesha). In each comparison only rows where every annotator in it has a label are used, so the 'all four' and 'psychology only' groups use fewer rows than a pair that avoids the blank annotator (`number of rows` column). The CS-majors blanks filled from the original label (81 rows) are all outside the overlap set.
+
+Kappa subtracts the agreement expected by chance, so it is always lower than raw % agreement on the same labels. Raw % agreement is the mean over annotator pairs of the share of rows with identical labels (the 'raw % all agree' column is the stricter share where everyone agrees). The original paper reports 33.7% (type) and 61% (binary); compare against the raw % columns, not the kappas. 95% CIs are bootstrap over rows (1,000 resamples, seed 42).
+
+| comparison                              | label level                          | kappa type   |   kappa value |   ci95_low |   ci95_high |   raw % agreement |   raw % all agree |   number of rows |   rows dropped (blank label) |
+|:----------------------------------------|:-------------------------------------|:-------------|--------------:|-----------:|------------:|------------------:|------------------:|-----------------:|-----------------------------:|
+| all four annotators                     | type (11 labels, CP = No Distortion) | Fleiss       |         0.226 |      0.148 |       0.294 |              38   |              14   |               57 |                            3 |
+| all four annotators                     | binary (distorted or not)            | Fleiss       |         0.367 |      0.211 |       0.51  |              69.9 |              45.6 |               57 |                            3 |
+| psychology only (Laiba, Reesha, Hurema) | type (11 labels, CP = No Distortion) | Fleiss       |         0.241 |      0.134 |       0.332 |              40.4 |              22.8 |               57 |                            3 |
+| psychology only (Laiba, Reesha, Hurema) | binary (distorted or not)            | Fleiss       |         0.371 |      0.181 |       0.526 |              69.6 |              54.4 |               57 |                            3 |
+| Laiba vs Reesha                         | type (11 labels, CP = No Distortion) | Cohen        |         0.203 |      0.094 |       0.317 |              32.2 |              32.2 |               59 |                            1 |
+| Laiba vs Reesha                         | binary (distorted or not)            | Cohen        |         0.329 |      0.149 |       0.521 |              66.1 |              66.1 |               59 |                            1 |
+| Laiba vs Hurema                         | type (11 labels, CP = No Distortion) | Cohen        |         0.43  |      0.264 |       0.574 |              60.3 |              60.3 |               58 |                            2 |
+| Laiba vs Hurema                         | binary (distorted or not)            | Cohen        |         0.655 |      0.448 |       0.828 |              82.8 |              82.8 |               58 |                            2 |
+| Laiba vs CS majors                      | type (11 labels, CP = No Distortion) | Cohen        |         0.224 |      0.108 |       0.343 |              38.3 |              38.3 |               60 |                            0 |
+| Laiba vs CS majors                      | binary (distorted or not)            | Cohen        |         0.44  |      0.227 |       0.641 |              71.7 |              71.7 |               60 |                            0 |
+| Reesha vs Hurema                        | type (11 labels, CP = No Distortion) | Cohen        |         0.177 |      0.066 |       0.3   |              29.8 |              29.8 |               57 |                            3 |
+| Reesha vs Hurema                        | binary (distorted or not)            | Cohen        |         0.22  |      0     |       0.423 |              61.4 |              61.4 |               57 |                            3 |
+| Reesha vs CS majors                     | type (11 labels, CP = No Distortion) | Cohen        |         0.223 |      0.112 |       0.347 |              32.2 |              32.2 |               59 |                            1 |
+| Reesha vs CS majors                     | binary (distorted or not)            | Cohen        |         0.441 |      0.213 |       0.665 |              78   |              78   |               59 |                            1 |
+| Hurema vs CS majors                     | type (11 labels, CP = No Distortion) | Cohen        |         0.199 |      0.07  |       0.344 |              36.2 |              36.2 |               58 |                            2 |
+| Hurema vs CS majors                     | binary (distorted or not)            | Cohen        |         0.276 |      0.045 |       0.511 |              63.8 |              63.8 |               58 |                            2 |

@@ -1,0 +1,1036 @@
+Id_Number,original_label,new_majority_label,n_annotators,unanimous,group,original_secondary,binary_changed,votes,section,split,bucket
+0,Emotional Reasoning,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+2,Overgeneralization,Magnification,1,n/a,genuine error,Emotional Reasoning,False,Magnification,test,test,A
+3,Fortune-telling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+4,Mental filter,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+5,Fortune-telling,All-or-nothing thinking,1,n/a,genuine error,,False,All-or-nothing thinking,test,test,A
+9,Overgeneralization,No Distortion,1,n/a,genuine error,Fortune-telling,True,No Distortion,training,train,A
+10,Should statements,No Distortion,1,n/a,genuine error,Fortune-telling,True,No Distortion,training,train,A
+14,Personalization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+15,Mental filter,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+17,Mind Reading,No Distortion,1,n/a,genuine error,,True,No Distortion,test,test,agree (not flagged)
+21,Personalization,Should statements,1,n/a,genuine error,Emotional Reasoning,False,Should statements,training,train,A
+24,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+27,Labeling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+35,Mental filter,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+37,All-or-nothing thinking,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+38,Mental filter,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+43,Fortune-telling,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+50,Fortune-telling,Mental filter,1,n/a,genuine error,Magnification,False,Mental filter,training,train,A
+52,Should statements,No Distortion,1,n/a,genuine error,Labeling,True,No Distortion,training,train,A
+54,Mental filter,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+57,Personalization,Emotional Reasoning,1,n/a,genuine error,,False,Emotional Reasoning,training,train,A
+59,Labeling,No Distortion,1,n/a,genuine error,Mental filter,True,No Distortion,training,train,A
+62,All-or-nothing thinking,Mind Reading,1,n/a,genuine error,,False,Mind Reading,training,train,A
+64,Emotional Reasoning,Fortune-telling,1,n/a,genuine error,,False,Fortune-telling,training,train,A
+66,All-or-nothing thinking,Labeling,1,n/a,genuine error,Mind Reading,False,Labeling,training,train,A
+70,All-or-nothing thinking,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+74,All-or-nothing thinking,Labeling,1,n/a,genuine error,,False,Labeling,training,train,A
+77,Overgeneralization,Personalization,1,n/a,genuine error,,False,Personalization,test,test,A
+79,Fortune-telling,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+81,Fortune-telling,No Distortion,1,n/a,genuine error,,True,No Distortion,test,test,A
+82,Mental filter,Overgeneralization,1,n/a,genuine error,Fortune-telling,False,Overgeneralization,training,train,A
+83,Emotional Reasoning,Overgeneralization,1,n/a,genuine error,,False,Overgeneralization,training,train,A
+86,Overgeneralization,Labeling,1,n/a,genuine error,,False,Labeling,training,train,A
+88,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+98,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+101,Personalization,Mind Reading,1,n/a,genuine error,,False,Mind Reading,training,train,A
+104,Emotional Reasoning,Mental filter,1,n/a,genuine error,,False,Mental filter,training,train,A
+108,All-or-nothing thinking,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+109,All-or-nothing thinking,Emotional Reasoning,1,n/a,genuine error,,False,Emotional Reasoning,training,train,A
+110,Personalization,All-or-nothing thinking,1,n/a,genuine error,,False,All-or-nothing thinking,training,train,A
+112,Should statements,Emotional Reasoning,1,n/a,genuine error,Magnification,False,Emotional Reasoning,training,train,A
+113,Emotional Reasoning,Labeling,1,n/a,genuine error,,False,Labeling,training,train,A
+118,No Distortion,Overgeneralization,1,n/a,genuine error,,True,Overgeneralization,test,test,agree (not flagged)
+120,Overgeneralization,Labeling,1,n/a,genuine error,Should statements,False,Labeling,training,train,A
+122,Overgeneralization,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+126,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+130,All-or-nothing thinking,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+132,Personalization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+140,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+142,All-or-nothing thinking,No Distortion,1,n/a,genuine error,,True,No Distortion,test,test,A
+144,Labeling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+145,Personalization,No Distortion,1,n/a,genuine error,Mind Reading,True,No Distortion,training,train,A
+147,Fortune-telling,All-or-nothing thinking,1,n/a,genuine error,,False,All-or-nothing thinking,training,train,A
+149,Mental filter,No Distortion,1,n/a,genuine error,Should statements,True,No Distortion,training,train,A
+150,Fortune-telling,Emotional Reasoning,1,n/a,genuine error,Overgeneralization,False,Emotional Reasoning,training,train,A
+154,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+155,Emotional Reasoning,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+156,Personalization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+160,All-or-nothing thinking,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+162,Emotional Reasoning,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+168,No Distortion,Magnification,1,n/a,genuine error,,True,Magnification,training,train,A
+169,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+170,Emotional Reasoning,Mind Reading,1,n/a,genuine error,,False,Mind Reading,training,train,A
+173,Mind Reading,Fortune-telling,1,n/a,genuine error,,False,Fortune-telling,training,train,A
+174,Emotional Reasoning,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+184,Overgeneralization,Labeling,1,n/a,genuine error,Magnification,False,Labeling,training,train,A
+185,Labeling,Mind Reading,1,n/a,genuine error,,False,Mind Reading,test,test,A
+186,Labeling,Magnification,1,n/a,genuine error,Mental filter,False,Magnification,training,train,A
+188,Should statements,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+192,Emotional Reasoning,No Distortion,1,n/a,genuine error,,True,No Distortion,test,test,agree (not flagged)
+193,Labeling,No Distortion,1,n/a,genuine error,,True,No Distortion,test,test,A
+194,Emotional Reasoning,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+197,Overgeneralization,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+200,Labeling,All-or-nothing thinking,1,n/a,genuine error,,False,All-or-nothing thinking,training,train,A
+201,Magnification,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+203,Magnification,Overgeneralization,1,n/a,genuine error,Emotional Reasoning,False,Overgeneralization,training,train,A
+205,Personalization,No Distortion,1,n/a,genuine error,,True,No Distortion,test,test,A
+207,Should statements,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+208,Labeling,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+212,Labeling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+213,Overgeneralization,Fortune-telling,1,n/a,genuine error,,False,Fortune-telling,training,train,A
+214,Labeling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+217,Labeling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+218,Fortune-telling,Magnification,1,n/a,genuine error,,False,Magnification,test,test,A
+224,All-or-nothing thinking,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+225,Should statements,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,B
+237,Overgeneralization,Magnification,1,n/a,genuine error,All-or-nothing thinking,False,Magnification,training,train,A
+238,Should statements,Magnification,1,n/a,genuine error,Personalization,False,Magnification,training,train,A
+240,All-or-nothing thinking,Mental filter,1,n/a,genuine error,,False,Mental filter,training,train,A
+241,Should statements,Mental filter,1,n/a,genuine error,Fortune-telling,False,Mental filter,training,train,A
+245,Mind Reading,Personalization,1,n/a,genuine error,Labeling,False,Personalization,test,test,A
+248,Magnification,No Distortion,1,n/a,genuine error,Overgeneralization,True,No Distortion,training,train,A
+255,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+259,Magnification,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+261,Fortune-telling,Mind Reading,1,n/a,genuine error,,False,Mind Reading,test,test,agree (not flagged)
+262,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+266,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+267,Should statements,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+270,Overgeneralization,Fortune-telling,1,n/a,genuine error,,False,Fortune-telling,training,train,A
+271,Emotional Reasoning,All-or-nothing thinking,1,n/a,genuine error,Mind Reading,False,All-or-nothing thinking,training,train,A
+272,Personalization,Emotional Reasoning,1,n/a,genuine error,,False,Emotional Reasoning,training,train,A
+274,Personalization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+278,Fortune-telling,Labeling,1,n/a,genuine error,Emotional Reasoning,False,Labeling,training,train,A
+281,Personalization,Labeling,1,n/a,genuine error,,False,Labeling,training,train,A
+290,All-or-nothing thinking,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+291,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+293,Emotional Reasoning,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+295,Emotional Reasoning,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+301,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+304,Fortune-telling,Magnification,1,n/a,genuine error,,False,Magnification,test,test,A
+305,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+306,Fortune-telling,No Distortion,1,n/a,genuine error,Labeling,True,No Distortion,training,train,A
+307,Overgeneralization,Mental filter,1,n/a,genuine error,,False,Mental filter,training,train,A
+308,Fortune-telling,Emotional Reasoning,1,n/a,genuine error,,False,Emotional Reasoning,training,train,A
+309,Overgeneralization,Labeling,1,n/a,genuine error,,False,Labeling,training,train,A
+310,Emotional Reasoning,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+312,Should statements,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+315,Fortune-telling,Emotional Reasoning,1,n/a,genuine error,Labeling,False,Emotional Reasoning,training,train,A
+316,Mental filter,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+317,Magnification,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+325,Labeling,Emotional Reasoning,1,n/a,genuine error,,False,Emotional Reasoning,test,test,A
+326,Mental filter,Overgeneralization,1,n/a,genuine error,Magnification,False,Overgeneralization,training,train,B
+327,Emotional Reasoning,Mental filter,1,n/a,genuine error,Fortune-telling,False,Mental filter,training,train,A
+331,Fortune-telling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+332,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+334,Magnification,No Distortion,4,no,genuine error,,True,No Distortion | Labeling | No Distortion | No Distortion (calibrated pessimism),overlap,train,A
+336,Fortune-telling,Labeling,1,n/a,genuine error,,False,Labeling,training,train,A
+338,Magnification,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+343,Emotional Reasoning,Mental filter,1,n/a,genuine error,Mind Reading,False,Mental filter,training,train,A
+349,All-or-nothing thinking,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+350,Overgeneralization,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+351,Mind Reading,No Distortion,1,n/a,genuine error,Fortune-telling,True,No Distortion,training,train,A
+352,Personalization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+355,Mental filter,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+357,All-or-nothing thinking,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+358,Labeling,Mind Reading,1,n/a,genuine error,,False,Mind Reading,training,train,A
+364,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+366,Mental filter,No Distortion,1,n/a,genuine error,Fortune-telling,True,No Distortion,training,train,B
+367,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+369,Mental filter,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+373,All-or-nothing thinking,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+375,Mental filter,Mind Reading,1,n/a,genuine error,Overgeneralization,False,Mind Reading,training,train,A
+380,Magnification,Mental filter,1,n/a,genuine error,,False,Mental filter,training,train,A
+382,Overgeneralization,No Distortion,1,n/a,genuine error,Personalization,True,No Distortion,training,train,A
+388,Fortune-telling,Overgeneralization,1,n/a,genuine error,Emotional Reasoning,False,Overgeneralization,test,test,A
+391,Emotional Reasoning,Mind Reading,1,n/a,genuine error,,False,Mind Reading,training,train,A
+395,Personalization,Mental filter,1,n/a,genuine error,,False,Mental filter,training,train,A
+400,Overgeneralization,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+401,No Distortion,Overgeneralization,1,n/a,genuine error,,True,Overgeneralization,test,test,agree (not flagged)
+402,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+405,Emotional Reasoning,Fortune-telling,1,n/a,genuine error,Mental filter,False,Fortune-telling,training,train,A
+407,Personalization,Emotional Reasoning,1,n/a,genuine error,Mind Reading,False,Emotional Reasoning,training,train,A
+408,Labeling,Emotional Reasoning,1,n/a,genuine error,,False,Emotional Reasoning,training,train,A
+413,Personalization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+419,Personalization,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+421,Emotional Reasoning,Magnification,1,n/a,genuine error,Personalization,False,Magnification,training,train,A
+422,Personalization,No Distortion,1,n/a,genuine error,Mind Reading,True,No Distortion,training,train,A
+433,Emotional Reasoning,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,B
+438,Should statements,Emotional Reasoning,1,n/a,genuine error,Personalization,False,Emotional Reasoning,training,train,A
+445,All-or-nothing thinking,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+447,Fortune-telling,Mental filter,1,n/a,genuine error,,False,Mental filter,training,train,A
+449,Mind Reading,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+450,Labeling,No Distortion,1,n/a,genuine error,Personalization,True,No Distortion,training,train,A
+451,Magnification,Labeling,1,n/a,genuine error,,False,Labeling,training,train,A
+456,Fortune-telling,All-or-nothing thinking,1,n/a,genuine error,,False,All-or-nothing thinking,training,train,B
+458,Mental filter,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+462,Should statements,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+464,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+465,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,test,test,A
+480,All-or-nothing thinking,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+484,Magnification,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+486,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+488,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+491,Personalization,No Distortion,1,n/a,genuine error,Labeling,True,No Distortion,training,train,A
+493,Mind Reading,Overgeneralization,1,n/a,genuine error,,False,Overgeneralization,training,train,A
+504,All-or-nothing thinking,Fortune-telling,1,n/a,genuine error,,False,Fortune-telling,training,train,A
+506,Personalization,Overgeneralization,1,n/a,genuine error,,False,Overgeneralization,training,train,B
+510,Mental filter,Fortune-telling,1,n/a,genuine error,All-or-nothing thinking,False,Fortune-telling,training,train,A
+513,Should statements,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+514,Labeling,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+519,Emotional Reasoning,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+522,Fortune-telling,Mental filter,1,n/a,genuine error,Emotional Reasoning,False,Mental filter,training,train,A
+523,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+525,Mental filter,All-or-nothing thinking,1,n/a,genuine error,,False,All-or-nothing thinking,training,train,B
+532,Magnification,Should statements,1,n/a,genuine error,,False,Should statements,training,train,A
+537,Magnification,Labeling,1,n/a,genuine error,,False,Labeling,training,train,B
+538,Magnification,Labeling,1,n/a,genuine error,,False,Labeling,training,train,A
+540,Personalization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+542,Magnification,Emotional Reasoning,1,n/a,genuine error,Fortune-telling,False,Emotional Reasoning,training,train,A
+546,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+547,Magnification,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+552,Magnification,Mental filter,1,n/a,genuine error,Should statements,False,Mental filter,training,train,A
+553,Fortune-telling,Personalization,1,n/a,genuine error,,False,Personalization,training,train,A
+554,Fortune-telling,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+556,Magnification,Fortune-telling,1,n/a,genuine error,Mental filter,False,Fortune-telling,training,train,B
+558,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+562,Mind Reading,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+566,Overgeneralization,Mind Reading,1,n/a,genuine error,,False,Mind Reading,training,train,A
+567,Overgeneralization,Magnification,1,n/a,genuine error,Fortune-telling,False,Magnification,training,train,A
+568,Overgeneralization,Labeling,1,n/a,genuine error,,False,Labeling,training,train,A
+573,Should statements,Emotional Reasoning,1,n/a,genuine error,,False,Emotional Reasoning,training,train,A
+577,Should statements,Labeling,1,n/a,genuine error,,False,Labeling,training,train,A
+579,Mind Reading,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+583,Overgeneralization,No Distortion,4,yes,genuine error,,True,No Distortion | No Distortion | No Distortion | No Distortion (calibrated pessimism),overlap,train,A
+589,Personalization,No Distortion,1,n/a,genuine error,Labeling,True,No Distortion,training,train,A
+590,Labeling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+592,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+594,Overgeneralization,No Distortion,1,n/a,genuine error,Labeling,True,No Distortion,training,train,A
+598,Overgeneralization,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+604,Overgeneralization,No Distortion,1,n/a,genuine error,Mental filter,True,No Distortion,training,train,A
+608,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+612,All-or-nothing thinking,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+613,Magnification,Fortune-telling,1,n/a,genuine error,,False,Fortune-telling,training,train,B
+614,Overgeneralization,Mental filter,1,n/a,genuine error,Mind Reading,False,Mental filter,training,train,A
+618,Overgeneralization,Labeling,1,n/a,genuine error,Magnification,False,Labeling,training,train,A
+619,Overgeneralization,Labeling,1,n/a,genuine error,,False,Labeling,training,train,A
+620,Magnification,Mental filter,1,n/a,genuine error,,False,Mental filter,training,train,B
+623,Labeling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+624,Magnification,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+626,No Distortion,Labeling,1,n/a,genuine error,,True,Labeling,training,train,A
+631,Magnification,Labeling,1,n/a,genuine error,,False,Labeling,training,train,A
+634,Labeling,No Distortion,1,n/a,genuine error,Mind Reading,True,No Distortion,training,train,A
+635,Mind Reading,No Distortion,1,n/a,genuine error,Overgeneralization,True,No Distortion,training,train,A
+644,Magnification,No Distortion,1,n/a,genuine error,Mental filter,True,No Distortion,training,train,A
+645,Magnification,Labeling,1,n/a,genuine error,Mind Reading,False,Labeling,training,train,A
+646,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+649,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+650,Should statements,Labeling,1,n/a,genuine error,Mind Reading,False,Labeling,training,train,A
+652,Mental filter,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+662,Magnification,No Distortion,4,no,genuine error,,True,No Distortion | No Distortion | Magnification | No Distortion,overlap,train,A
+664,Emotional Reasoning,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+670,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+671,Magnification,No Distortion,3,no,genuine error,,True,No Distortion | Magnification | No Distortion,overlap,train,A
+673,Should statements,All-or-nothing thinking,1,n/a,genuine error,,False,All-or-nothing thinking,training,train,A
+676,Mental filter,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+680,All-or-nothing thinking,Mental filter,1,n/a,genuine error,,False,Mental filter,training,train,A
+682,Mental filter,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+686,Overgeneralization,Labeling,1,n/a,genuine error,,False,Labeling,training,train,A
+688,Overgeneralization,Mind Reading,1,n/a,genuine error,,False,Mind Reading,training,train,A
+690,Labeling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+696,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+697,Should statements,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+701,Should statements,Emotional Reasoning,1,n/a,genuine error,,False,Emotional Reasoning,training,train,A
+705,Overgeneralization,Mind Reading,1,n/a,genuine error,Magnification,False,Mind Reading,training,train,A
+707,Mind Reading,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+712,Mental filter,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+714,Should statements,Mental filter,1,n/a,genuine error,,False,Mental filter,training,train,A
+715,Overgeneralization,All-or-nothing thinking,1,n/a,genuine error,,False,All-or-nothing thinking,training,train,A
+722,Magnification,Emotional Reasoning,1,n/a,genuine error,,False,Emotional Reasoning,training,train,A
+723,Mind Reading,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+725,Personalization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+726,Labeling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+728,Should statements,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+734,Should statements,Overgeneralization,1,n/a,genuine error,,False,Overgeneralization,training,train,B
+736,Overgeneralization,Fortune-telling,1,n/a,genuine error,Emotional Reasoning,False,Fortune-telling,training,train,A
+737,Labeling,Mind Reading,1,n/a,genuine error,,False,Mind Reading,training,train,A
+739,Mind Reading,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+741,All-or-nothing thinking,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+743,Mind Reading,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+745,Mind Reading,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+746,Mind Reading,Personalization,1,n/a,genuine error,,False,Personalization,training,train,B
+747,Mind Reading,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+748,Personalization,Should statements,1,n/a,genuine error,,False,Should statements,training,train,A
+751,Overgeneralization,Fortune-telling,1,n/a,genuine error,,False,Fortune-telling,training,train,A
+752,Mind Reading,No Distortion,1,n/a,genuine error,Emotional Reasoning,True,No Distortion,training,train,A
+753,Personalization,Should statements,1,n/a,genuine error,,False,Should statements,training,train,A
+760,Labeling,Personalization,1,n/a,genuine error,Should statements,False,Personalization,training,train,A
+769,Mind Reading,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+773,Fortune-telling,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+775,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+779,Overgeneralization,Magnification,1,n/a,genuine error,Mind Reading,False,Magnification,training,train,A
+782,Emotional Reasoning,No Distortion,1,n/a,genuine error,Fortune-telling,True,No Distortion,training,train,A
+785,Magnification,No Distortion,1,n/a,genuine error,Overgeneralization,True,No Distortion,training,train,A
+786,Magnification,Overgeneralization,1,n/a,genuine error,,False,Overgeneralization,training,train,A
+790,Magnification,No Distortion,1,n/a,genuine error,,True,No Distortion,test,test,A
+792,Fortune-telling,Labeling,1,n/a,genuine error,,False,Labeling,test,test,A
+797,Mental filter,Overgeneralization,1,n/a,genuine error,Magnification,False,Overgeneralization,test,test,A
+802,Labeling,Emotional Reasoning,1,n/a,genuine error,,False,Emotional Reasoning,training,train,A
+804,Overgeneralization,Fortune-telling,1,n/a,genuine error,,False,Fortune-telling,training,train,A
+805,Fortune-telling,Mind Reading,1,n/a,genuine error,,False,Mind Reading,training,train,B
+806,Should statements,Fortune-telling,1,n/a,genuine error,,False,Fortune-telling,training,train,A
+809,Should statements,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+811,Magnification,Fortune-telling,1,n/a,genuine error,,False,Fortune-telling,training,train,A
+814,Should statements,Magnification,1,n/a,genuine error,Personalization,False,Magnification,training,train,A
+815,Mind Reading,All-or-nothing thinking,1,n/a,genuine error,,False,All-or-nothing thinking,training,train,A
+817,Labeling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+818,Labeling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+822,No Distortion,Emotional Reasoning,1,n/a,genuine error,,True,Emotional Reasoning,test,test,agree (not flagged)
+826,Personalization,No Distortion,1,n/a,genuine error,Labeling,True,No Distortion,training,train,A
+842,Personalization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+847,Should statements,Mind Reading,1,n/a,genuine error,,False,Mind Reading,test,test,A
+851,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+858,Labeling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+862,Magnification,Mental filter,1,n/a,genuine error,,False,Mental filter,training,train,A
+867,Personalization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+875,Mind Reading,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+876,Mental filter,Overgeneralization,1,n/a,genuine error,,False,Overgeneralization,training,train,B
+882,Mind Reading,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+887,Magnification,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+889,Magnification,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+896,All-or-nothing thinking,Overgeneralization,1,n/a,genuine error,,False,Overgeneralization,training,train,A
+898,Should statements,Fortune-telling,1,n/a,genuine error,,False,Fortune-telling,training,train,A
+899,Overgeneralization,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+901,No Distortion,Fortune-telling,1,n/a,genuine error,,True,Fortune-telling,training,train,B
+902,All-or-nothing thinking,No Distortion,1,n/a,genuine error,Labeling,True,No Distortion,training,train,A
+904,Personalization,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+906,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+909,Personalization,Mind Reading,1,n/a,genuine error,,False,Mind Reading,training,train,A
+913,Mental filter,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+914,Mind Reading,Overgeneralization,1,n/a,genuine error,,False,Overgeneralization,training,train,A
+916,Labeling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+917,All-or-nothing thinking,Overgeneralization,1,n/a,genuine error,Should statements,False,Overgeneralization,training,train,A
+923,Mental filter,Personalization,1,n/a,genuine error,,False,Personalization,training,train,A
+927,Emotional Reasoning,All-or-nothing thinking,1,n/a,genuine error,,False,All-or-nothing thinking,training,train,A
+932,Labeling,All-or-nothing thinking,1,n/a,genuine error,Fortune-telling,False,All-or-nothing thinking,training,train,A
+933,Magnification,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+934,Emotional Reasoning,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+938,All-or-nothing thinking,Labeling,1,n/a,genuine error,Mind Reading,False,Labeling,training,train,A
+939,Labeling,Overgeneralization,1,n/a,genuine error,,False,Overgeneralization,training,train,A
+942,Emotional Reasoning,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+943,Overgeneralization,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+946,Personalization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+952,Mind Reading,Labeling,1,n/a,genuine error,,False,Labeling,test,test,A
+954,Mental filter,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+955,No Distortion,Labeling,1,n/a,genuine error,,True,Labeling,test,test,agree (not flagged)
+961,Overgeneralization,All-or-nothing thinking,1,n/a,genuine error,,False,All-or-nothing thinking,test,test,A
+965,Personalization,Mind Reading,1,n/a,genuine error,,False,Mind Reading,training,train,A
+970,Labeling,No Distortion,4,yes,genuine error,,True,No Distortion | No Distortion | No Distortion | No Distortion (calibrated pessimism),overlap,train,A
+971,No Distortion,Overgeneralization,1,n/a,genuine error,,True,Overgeneralization,training,train,A
+974,Emotional Reasoning,No Distortion,1,n/a,genuine error,,True,No Distortion,test,test,agree (not flagged)
+975,Emotional Reasoning,All-or-nothing thinking,1,n/a,genuine error,,False,All-or-nothing thinking,training,train,A
+981,Mental filter,All-or-nothing thinking,1,n/a,genuine error,Emotional Reasoning,False,All-or-nothing thinking,training,train,A
+983,Personalization,Fortune-telling,1,n/a,genuine error,,False,Fortune-telling,training,train,A
+1004,Overgeneralization,Mental filter,1,n/a,genuine error,,False,Mental filter,training,train,A
+1008,Overgeneralization,Personalization,1,n/a,genuine error,,False,Personalization,training,train,A
+1009,Mind Reading,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1015,Mind Reading,No Distortion,1,n/a,genuine error,,True,No Distortion,test,test,agree (not flagged)
+1018,Labeling,Mental filter,1,n/a,genuine error,Fortune-telling,False,Mental filter,training,train,B
+1026,All-or-nothing thinking,Fortune-telling,1,n/a,genuine error,,False,Fortune-telling,training,train,A
+1035,Emotional Reasoning,Magnification,1,n/a,genuine error,Fortune-telling,False,Magnification,training,train,A
+1036,Personalization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1043,Magnification,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1050,Overgeneralization,Magnification,4,no,genuine error,,False,Magnification | Magnification | Magnification | Labeling,overlap,train,A
+1051,Emotional Reasoning,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1054,Mental filter,Mind Reading,1,n/a,genuine error,Personalization,False,Mind Reading,training,train,A
+1056,Magnification,Labeling,1,n/a,genuine error,,False,Labeling,test,test,agree (not flagged)
+1061,Mental filter,All-or-nothing thinking,1,n/a,genuine error,,False,All-or-nothing thinking,test,test,A
+1065,Should statements,Mental filter,1,n/a,genuine error,,False,Mental filter,training,train,A
+1066,Fortune-telling,Mental filter,1,n/a,genuine error,Personalization,False,Mental filter,training,train,A
+1070,Emotional Reasoning,No Distortion,1,n/a,genuine error,Magnification,True,No Distortion,test,test,B
+1073,Mental filter,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1078,Magnification,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1082,All-or-nothing thinking,No Distortion,1,n/a,genuine error,,True,No Distortion,test,test,A
+1083,Overgeneralization,Magnification,1,n/a,genuine error,Labeling,False,Magnification,training,train,A
+1085,Personalization,Labeling,4,no,genuine error,,False,Labeling | Labeling | Labeling | Emotional Reasoning,overlap,train,B
+1088,Fortune-telling,Labeling,1,n/a,genuine error,Emotional Reasoning,False,Labeling,training,train,A
+1089,Labeling,No Distortion,1,n/a,genuine error,Personalization,True,No Distortion,training,train,A
+1093,Fortune-telling,Personalization,1,n/a,genuine error,,False,Personalization,training,train,A
+1094,No Distortion,Labeling,1,n/a,genuine error,,True,Labeling,test,test,agree (not flagged)
+1098,Emotional Reasoning,Fortune-telling,1,n/a,genuine error,,False,Fortune-telling,training,train,A
+1102,Magnification,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1108,All-or-nothing thinking,Mind Reading,1,n/a,genuine error,,False,Mind Reading,training,train,A
+1111,Magnification,Mental filter,1,n/a,genuine error,,False,Mental filter,training,train,B
+1114,No Distortion,Mind Reading,1,n/a,genuine error,,True,Mind Reading,test,test,agree (not flagged)
+1116,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1117,Magnification,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1118,All-or-nothing thinking,Overgeneralization,1,n/a,genuine error,,False,Overgeneralization,training,train,A
+1119,Magnification,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1120,Personalization,Mental filter,1,n/a,genuine error,,False,Mental filter,training,train,A
+1133,All-or-nothing thinking,Fortune-telling,1,n/a,genuine error,Should statements,False,Fortune-telling,test,test,A
+1135,Should statements,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1141,Mind Reading,All-or-nothing thinking,1,n/a,genuine error,,False,All-or-nothing thinking,training,train,A
+1142,Mind Reading,Emotional Reasoning,1,n/a,genuine error,,False,Emotional Reasoning,training,train,A
+1144,All-or-nothing thinking,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+1149,Labeling,No Distortion,1,n/a,genuine error,,True,No Distortion,test,test,A
+1157,Overgeneralization,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+1158,Mental filter,Personalization,1,n/a,genuine error,Labeling,False,Personalization,training,train,A
+1159,Should statements,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1162,Should statements,No Distortion,1,n/a,genuine error,Magnification,True,No Distortion,training,train,A
+1164,Magnification,No Distortion,1,n/a,genuine error,,True,No Distortion,test,test,A
+1165,All-or-nothing thinking,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1167,Labeling,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+1171,Fortune-telling,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+1175,Labeling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1183,Overgeneralization,No Distortion,1,n/a,genuine error,Fortune-telling,True,No Distortion,training,train,A
+1205,All-or-nothing thinking,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1207,All-or-nothing thinking,Overgeneralization,1,n/a,genuine error,,False,Overgeneralization,training,train,A
+1210,Overgeneralization,Mental filter,1,n/a,genuine error,,False,Mental filter,training,train,A
+1216,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1218,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1219,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1221,Mind Reading,Overgeneralization,1,n/a,genuine error,,False,Overgeneralization,training,train,A
+1225,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1227,Emotional Reasoning,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+1236,No Distortion,Labeling,1,n/a,genuine error,,True,Labeling,training,train,A
+1246,Mind Reading,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1253,Overgeneralization,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+1254,Magnification,Emotional Reasoning,1,n/a,genuine error,,False,Emotional Reasoning,training,train,B
+1257,Overgeneralization,All-or-nothing thinking,1,n/a,genuine error,Mind Reading,False,All-or-nothing thinking,test,test,A
+1263,Magnification,Emotional Reasoning,1,n/a,genuine error,Personalization,False,Emotional Reasoning,training,train,A
+1264,Fortune-telling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1269,Personalization,No Distortion,4,no,genuine error,Should statements,True,No Distortion | Magnification | No Distortion | No Distortion (calibrated pessimism),overlap,train,A
+1272,All-or-nothing thinking,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1273,Labeling,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+1275,Labeling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1277,All-or-nothing thinking,Emotional Reasoning,1,n/a,genuine error,,False,Emotional Reasoning,training,train,A
+1280,Overgeneralization,Labeling,1,n/a,genuine error,,False,Labeling,training,train,A
+1281,Mind Reading,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+1282,Fortune-telling,Emotional Reasoning,1,n/a,genuine error,,False,Emotional Reasoning,training,train,A
+1294,Should statements,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1295,Fortune-telling,Emotional Reasoning,1,n/a,genuine error,,False,Emotional Reasoning,training,train,A
+1297,Fortune-telling,No Distortion,1,n/a,genuine error,,True,No Distortion,test,test,B
+1401,Emotional Reasoning,Magnification,1,n/a,genuine error,Fortune-telling,False,Magnification,training,train,A
+1402,All-or-nothing thinking,Mental filter,1,n/a,genuine error,,False,Mental filter,training,train,A
+1404,Mental filter,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+1405,Magnification,All-or-nothing thinking,1,n/a,genuine error,,False,All-or-nothing thinking,training,train,A
+1406,Overgeneralization,Mental filter,1,n/a,genuine error,,False,Mental filter,training,train,A
+1408,Fortune-telling,Mind Reading,1,n/a,genuine error,,False,Mind Reading,training,train,A
+1413,Overgeneralization,No Distortion,1,n/a,genuine error,Personalization,True,No Distortion,test,test,A
+1423,Emotional Reasoning,Fortune-telling,1,n/a,genuine error,,False,Fortune-telling,training,train,A
+1428,Should statements,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1431,Personalization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1432,Should statements,Labeling,1,n/a,genuine error,,False,Labeling,training,train,A
+1434,Magnification,All-or-nothing thinking,1,n/a,genuine error,Mind Reading,False,All-or-nothing thinking,training,train,A
+1436,Fortune-telling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1438,Personalization,Emotional Reasoning,1,n/a,genuine error,,False,Emotional Reasoning,training,train,A
+1440,Personalization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1443,Personalization,Mind Reading,1,n/a,genuine error,,False,Mind Reading,training,train,A
+1445,No Distortion,Labeling,1,n/a,genuine error,,True,Labeling,training,train,B
+1446,Should statements,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1451,Should statements,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1453,Overgeneralization,Labeling,1,n/a,genuine error,,False,Labeling,training,train,B
+1462,Mental filter,Overgeneralization,1,n/a,genuine error,,False,Overgeneralization,training,train,B
+1464,Magnification,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1476,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1484,Overgeneralization,Personalization,1,n/a,genuine error,Fortune-telling,False,Personalization,training,train,A
+1486,Mind Reading,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1494,Magnification,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1495,Mind Reading,Mental filter,1,n/a,genuine error,,False,Mental filter,training,train,A
+1499,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1505,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1506,Mental filter,Mind Reading,1,n/a,genuine error,,False,Mind Reading,test,test,A
+1508,Mental filter,Magnification,1,n/a,genuine error,,False,Magnification,training,train,B
+1514,Mind Reading,Labeling,1,n/a,genuine error,,False,Labeling,test,test,A
+1515,Overgeneralization,Labeling,1,n/a,genuine error,Personalization,False,Labeling,training,train,B
+1518,Overgeneralization,Mind Reading,1,n/a,genuine error,,False,Mind Reading,training,train,A
+1522,Fortune-telling,Mind Reading,1,n/a,genuine error,All-or-nothing thinking,False,Mind Reading,training,train,A
+1527,Personalization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,B
+1528,Magnification,Mental filter,1,n/a,genuine error,,False,Mental filter,training,train,A
+1530,All-or-nothing thinking,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1534,Personalization,Labeling,1,n/a,genuine error,,False,Labeling,training,train,A
+1536,Personalization,Labeling,1,n/a,genuine error,,False,Labeling,test,test,A
+1549,Should statements,Personalization,1,n/a,genuine error,,False,Personalization,training,train,A
+1551,No Distortion,Magnification,1,n/a,genuine error,,True,Magnification,training,train,A
+1553,Overgeneralization,Mental filter,1,n/a,genuine error,,False,Mental filter,test,test,A
+1560,Should statements,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1561,Personalization,No Distortion,1,n/a,genuine error,Mind Reading,True,No Distortion,test,test,A
+1568,Personalization,Magnification,1,n/a,genuine error,,False,Magnification,training,train,B
+1569,Emotional Reasoning,Labeling,1,n/a,genuine error,,False,Labeling,training,train,A
+1570,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1571,Labeling,All-or-nothing thinking,1,n/a,genuine error,,False,All-or-nothing thinking,training,train,A
+1572,Overgeneralization,Mental filter,1,n/a,genuine error,,False,Mental filter,training,train,A
+1580,Personalization,Magnification,1,n/a,genuine error,,False,Magnification,training,train,B
+1582,Fortune-telling,Should statements,1,n/a,genuine error,,False,Should statements,training,train,A
+1583,Fortune-telling,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+1590,All-or-nothing thinking,Labeling,1,n/a,genuine error,,False,Labeling,test,test,A
+1592,Fortune-telling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1597,No Distortion,Labeling,1,n/a,genuine error,,True,Labeling,test,test,agree (not flagged)
+1601,Magnification,Overgeneralization,1,n/a,genuine error,,False,Overgeneralization,training,train,A
+1607,Mental filter,All-or-nothing thinking,1,n/a,genuine error,,False,All-or-nothing thinking,training,train,A
+1610,Fortune-telling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1611,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1616,Should statements,Overgeneralization,1,n/a,genuine error,,False,Overgeneralization,training,train,A
+1617,Magnification,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1626,Personalization,Should statements,1,n/a,genuine error,,False,Should statements,training,train,A
+1634,All-or-nothing thinking,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1640,Overgeneralization,No Distortion,1,n/a,genuine error,Personalization,True,No Distortion,test,test,A
+1641,Personalization,Emotional Reasoning,1,n/a,genuine error,Fortune-telling,False,Emotional Reasoning,training,train,A
+1642,Fortune-telling,Emotional Reasoning,1,n/a,genuine error,,False,Emotional Reasoning,training,train,A
+1643,No Distortion,Labeling,1,n/a,genuine error,,True,Labeling,training,train,A
+1645,Fortune-telling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1646,Mental filter,No Distortion,1,n/a,genuine error,Fortune-telling,True,No Distortion,training,train,A
+1649,Mind Reading,Magnification,1,n/a,genuine error,Overgeneralization,False,Magnification,training,train,A
+1650,Overgeneralization,Labeling,1,n/a,genuine error,Fortune-telling,False,Labeling,test,test,A
+1659,Mental filter,Magnification,1,n/a,genuine error,Fortune-telling,False,Magnification,training,train,A
+1667,Labeling,Should statements,1,n/a,genuine error,Fortune-telling,False,Should statements,training,train,A
+1672,Personalization,No Distortion,1,n/a,genuine error,Fortune-telling,True,No Distortion,training,train,A
+1677,Emotional Reasoning,Overgeneralization,1,n/a,genuine error,,False,Overgeneralization,test,test,A
+1682,Mind Reading,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1690,Emotional Reasoning,No Distortion,1,n/a,genuine error,Fortune-telling,True,No Distortion,training,train,A
+1695,Personalization,Mental filter,1,n/a,genuine error,,False,Mental filter,training,train,A
+1696,Personalization,Labeling,1,n/a,genuine error,Emotional Reasoning,False,Labeling,training,train,A
+1697,Fortune-telling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1701,Magnification,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1702,Magnification,Labeling,1,n/a,genuine error,All-or-nothing thinking,False,Labeling,training,train,A
+1704,Labeling,Emotional Reasoning,1,n/a,genuine error,Overgeneralization,False,Emotional Reasoning,training,train,A
+1706,Magnification,Overgeneralization,1,n/a,genuine error,,False,Overgeneralization,training,train,A
+1708,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1710,Mind Reading,No Distortion,4,yes,genuine error,,True,No Distortion | No Distortion | No Distortion | No Distortion,overlap,train,A
+1717,Mind Reading,Overgeneralization,1,n/a,genuine error,,False,Overgeneralization,training,train,A
+1718,Should statements,Labeling,1,n/a,genuine error,,False,Labeling,training,train,A
+1722,Should statements,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1723,Magnification,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,B
+1725,Magnification,Mental filter,1,n/a,genuine error,Overgeneralization,False,Mental filter,training,train,A
+1731,Mind Reading,Magnification,1,n/a,genuine error,,False,Magnification,test,test,agree (not flagged)
+1733,Mind Reading,No Distortion,1,n/a,genuine error,Overgeneralization,True,No Distortion,training,train,A
+1737,Overgeneralization,Labeling,1,n/a,genuine error,Mind Reading,False,Labeling,training,train,A
+1740,Fortune-telling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1749,Mental filter,Magnification,1,n/a,genuine error,Personalization,False,Magnification,training,train,A
+1753,Labeling,Fortune-telling,1,n/a,genuine error,,False,Fortune-telling,training,train,A
+1757,Emotional Reasoning,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+1758,Fortune-telling,Emotional Reasoning,1,n/a,genuine error,,False,Emotional Reasoning,training,train,A
+1761,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1763,Fortune-telling,Emotional Reasoning,1,n/a,genuine error,,False,Emotional Reasoning,training,train,A
+1766,No Distortion,Overgeneralization,1,n/a,genuine error,,True,Overgeneralization,test,test,agree (not flagged)
+1774,Fortune-telling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1779,Mental filter,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1783,Mind Reading,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1784,Personalization,Emotional Reasoning,1,n/a,genuine error,,False,Emotional Reasoning,training,train,A
+1785,Personalization,Should statements,1,n/a,genuine error,,False,Should statements,training,train,A
+1786,Overgeneralization,Labeling,1,n/a,genuine error,,False,Labeling,training,train,A
+1788,Should statements,Personalization,1,n/a,genuine error,Labeling,False,Personalization,training,train,A
+1789,Emotional Reasoning,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+1790,Should statements,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1792,Mental filter,No Distortion,1,n/a,genuine error,Magnification,True,No Distortion,training,train,A
+1795,Overgeneralization,Mind Reading,1,n/a,genuine error,,False,Mind Reading,training,train,A
+1797,No Distortion,Labeling,1,n/a,genuine error,,True,Labeling,test,test,agree (not flagged)
+1800,Labeling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1801,Fortune-telling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1809,Magnification,Mind Reading,1,n/a,genuine error,,False,Mind Reading,training,train,A
+1818,Should statements,No Distortion,1,n/a,genuine error,,True,No Distortion,test,test,A
+1821,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1824,Labeling,Magnification,1,n/a,genuine error,,False,Magnification,test,test,A
+1829,Labeling,Mental filter,1,n/a,genuine error,,False,Mental filter,training,train,A
+1830,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1831,Personalization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1835,Emotional Reasoning,Mental filter,1,n/a,genuine error,Fortune-telling,False,Mental filter,training,train,A
+1836,Overgeneralization,Labeling,1,n/a,genuine error,,False,Labeling,training,train,A
+1837,Overgeneralization,All-or-nothing thinking,1,n/a,genuine error,,False,All-or-nothing thinking,training,train,A
+1839,No Distortion,Mental filter,1,n/a,genuine error,,True,Mental filter,training,train,A
+1842,Should statements,Emotional Reasoning,1,n/a,genuine error,Magnification,False,Emotional Reasoning,training,train,A
+1845,Emotional Reasoning,No Distortion,1,n/a,genuine error,Magnification,True,No Distortion,training,train,A
+1849,Overgeneralization,Personalization,1,n/a,genuine error,,False,Personalization,training,train,A
+1853,Mental filter,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1854,Personalization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1855,Emotional Reasoning,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1860,Fortune-telling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1862,Labeling,Emotional Reasoning,1,n/a,genuine error,Personalization,False,Emotional Reasoning,training,train,A
+1863,Personalization,Magnification,1,n/a,genuine error,Overgeneralization,False,Magnification,training,train,A
+1867,Personalization,Magnification,1,n/a,genuine error,,False,Magnification,test,test,agree (not flagged)
+1868,Fortune-telling,Emotional Reasoning,1,n/a,genuine error,Mental filter,False,Emotional Reasoning,training,train,A
+1873,Mind Reading,No Distortion,1,n/a,genuine error,,True,No Distortion,test,test,agree (not flagged)
+1875,Mind Reading,Mental filter,1,n/a,genuine error,,False,Mental filter,training,train,A
+1876,Personalization,All-or-nothing thinking,1,n/a,genuine error,Magnification,False,All-or-nothing thinking,training,train,A
+1878,Personalization,Labeling,1,n/a,genuine error,,False,Labeling,training,train,B
+1896,Overgeneralization,Mental filter,1,n/a,genuine error,,False,Mental filter,training,train,B
+1899,No Distortion,Labeling,1,n/a,genuine error,,True,Labeling,test,test,agree (not flagged)
+1904,Personalization,Labeling,1,n/a,genuine error,,False,Labeling,training,train,B
+1910,Emotional Reasoning,Fortune-telling,1,n/a,genuine error,Magnification,False,Fortune-telling,training,train,B
+1911,Should statements,No Distortion,4,no,genuine error,,True,No Distortion | No Distortion | Magnification | No Distortion (calibrated pessimism),overlap,train,A
+1913,Overgeneralization,No Distortion,1,n/a,genuine error,Labeling,True,No Distortion,test,test,A
+1923,Personalization,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+1924,Fortune-telling,No Distortion,3,yes,genuine error,,True,No Distortion | No Distortion | No Distortion,overlap,train,A
+1925,Should statements,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1926,Mental filter,Emotional Reasoning,1,n/a,genuine error,,False,Emotional Reasoning,training,train,B
+1927,Personalization,Magnification,1,n/a,genuine error,Fortune-telling,False,Magnification,training,train,A
+1930,Mental filter,No Distortion,4,yes,genuine error,,True,No Distortion | No Distortion | No Distortion | No Distortion,overlap,train,A
+1932,Emotional Reasoning,Overgeneralization,1,n/a,genuine error,Mind Reading,False,Overgeneralization,training,train,A
+1935,Emotional Reasoning,All-or-nothing thinking,1,n/a,genuine error,,False,All-or-nothing thinking,training,train,A
+1940,Emotional Reasoning,Labeling,1,n/a,genuine error,,False,Labeling,test,test,agree (not flagged)
+1945,Should statements,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+1946,All-or-nothing thinking,Emotional Reasoning,1,n/a,genuine error,Mind Reading,False,Emotional Reasoning,training,train,A
+1947,All-or-nothing thinking,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+1949,Labeling,Fortune-telling,1,n/a,genuine error,,False,Fortune-telling,training,train,A
+1955,No Distortion,Magnification,1,n/a,genuine error,,True,Magnification,training,train,A
+1958,Labeling,Emotional Reasoning,1,n/a,genuine error,Mental filter,False,Emotional Reasoning,training,train,A
+1959,All-or-nothing thinking,Emotional Reasoning,1,n/a,genuine error,,False,Emotional Reasoning,training,train,A
+1962,Mental filter,Emotional Reasoning,1,n/a,genuine error,,False,Emotional Reasoning,training,train,A
+1969,Emotional Reasoning,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+1972,Mind Reading,Personalization,1,n/a,genuine error,,False,Personalization,training,train,A
+1975,Mental filter,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1977,Emotional Reasoning,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+1978,Personalization,Mind Reading,1,n/a,genuine error,,False,Mind Reading,training,train,A
+1980,Personalization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+1982,Mental filter,No Distortion,1,n/a,genuine error,,True,No Distortion,test,test,A
+1986,All-or-nothing thinking,Labeling,1,n/a,genuine error,,False,Labeling,training,train,A
+1987,No Distortion,Emotional Reasoning,1,n/a,genuine error,,True,Emotional Reasoning,training,train,A
+1992,Mental filter,No Distortion,1,n/a,genuine error,Labeling,True,No Distortion,training,train,A
+2001,Labeling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+2002,Emotional Reasoning,Magnification,1,n/a,genuine error,All-or-nothing thinking,False,Magnification,training,train,A
+2003,Should statements,Mental filter,1,n/a,genuine error,Labeling,False,Mental filter,training,train,A
+2005,No Distortion,Fortune-telling,1,n/a,genuine error,,True,Fortune-telling,training,train,A
+2008,Mind Reading,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+2009,Labeling,No Distortion,1,n/a,genuine error,All-or-nothing thinking,True,No Distortion,training,train,A
+2021,Fortune-telling,Magnification,1,n/a,genuine error,Emotional Reasoning,False,Magnification,training,train,A
+2024,Magnification,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+2030,Labeling,No Distortion,1,n/a,genuine error,Personalization,True,No Distortion,training,train,A
+2031,Should statements,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,B
+2038,Labeling,Personalization,1,n/a,genuine error,Fortune-telling,False,Personalization,test,test,A
+2039,Magnification,Emotional Reasoning,1,n/a,genuine error,,False,Emotional Reasoning,training,train,A
+2040,Emotional Reasoning,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+2043,Overgeneralization,Should statements,4,no,genuine error,Emotional Reasoning,False,Should statements | Personalization | Should statements | Should statements,overlap,train,A
+2045,Mental filter,No Distortion,1,n/a,genuine error,Mind Reading,True,No Distortion,training,train,A
+2047,Labeling,Magnification,1,n/a,genuine error,Should statements,False,Magnification,training,train,B
+2050,Personalization,Emotional Reasoning,1,n/a,genuine error,,False,Emotional Reasoning,training,train,A
+2051,Mind Reading,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+2052,Personalization,Labeling,1,n/a,genuine error,All-or-nothing thinking,False,Labeling,training,train,A
+2054,Labeling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+2057,Should statements,Labeling,3,no,genuine error,,False,Labeling | Labeling | Should statements,overlap,train,A
+2061,All-or-nothing thinking,Magnification,1,n/a,genuine error,Mental filter,False,Magnification,training,train,A
+2062,Mind Reading,Mental filter,1,n/a,genuine error,All-or-nothing thinking,False,Mental filter,training,train,A
+2064,Labeling,Mind Reading,1,n/a,genuine error,,False,Mind Reading,training,train,A
+2071,Mental filter,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+2072,All-or-nothing thinking,Magnification,1,n/a,genuine error,,False,Magnification,training,train,B
+2074,Mental filter,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+2075,Mind Reading,Overgeneralization,1,n/a,genuine error,,False,Overgeneralization,training,train,A
+2078,Personalization,No Distortion,1,n/a,genuine error,Magnification,True,No Distortion,training,train,A
+2079,No Distortion,Mind Reading,1,n/a,genuine error,,True,Mind Reading,test,test,A
+2080,Labeling,No Distortion,1,n/a,genuine error,,True,No Distortion,test,test,agree (not flagged)
+2081,Emotional Reasoning,No Distortion,4,yes,genuine error,,True,No Distortion | No Distortion | No Distortion (calibrated pessimism) | No Distortion,overlap,train,A
+2082,Mental filter,Labeling,1,n/a,genuine error,,False,Labeling,training,train,A
+2088,Emotional Reasoning,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+2091,Magnification,No Distortion,1,n/a,genuine error,Labeling,True,No Distortion,training,train,A
+2095,Labeling,Fortune-telling,1,n/a,genuine error,Magnification,False,Fortune-telling,training,train,A
+2097,Mind Reading,No Distortion,1,n/a,genuine error,,True,No Distortion,test,test,agree (not flagged)
+2101,No Distortion,Labeling,1,n/a,genuine error,,True,Labeling,training,train,A
+2113,Should statements,All-or-nothing thinking,1,n/a,genuine error,,False,All-or-nothing thinking,training,train,A
+2118,Mental filter,Fortune-telling,1,n/a,genuine error,,False,Fortune-telling,training,train,A
+2134,All-or-nothing thinking,Overgeneralization,1,n/a,genuine error,,False,Overgeneralization,test,test,A
+2142,Should statements,Mental filter,1,n/a,genuine error,,False,Mental filter,training,train,A
+2143,Mind Reading,Mental filter,1,n/a,genuine error,,False,Mental filter,training,train,A
+2149,Emotional Reasoning,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+2151,Overgeneralization,Emotional Reasoning,1,n/a,genuine error,All-or-nothing thinking,False,Emotional Reasoning,training,train,A
+2152,Emotional Reasoning,Mind Reading,1,n/a,genuine error,,False,Mind Reading,training,train,A
+2154,Emotional Reasoning,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+2156,Should statements,No Distortion,1,n/a,genuine error,,True,No Distortion,test,test,A
+2157,No Distortion,Magnification,1,n/a,genuine error,,True,Magnification,test,test,agree (not flagged)
+2159,All-or-nothing thinking,Mind Reading,1,n/a,genuine error,Mental filter,False,Mind Reading,training,train,A
+2161,Should statements,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+2162,Mental filter,No Distortion,4,no,genuine error,,True,No Distortion | No Distortion | No Distortion | Mind Reading,overlap,train,A
+2174,No Distortion,Labeling,1,n/a,genuine error,,True,Labeling,training,train,A
+2175,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+2180,Should statements,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+2182,Emotional Reasoning,Mental filter,1,n/a,genuine error,,False,Mental filter,training,train,A
+2193,Should statements,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+2196,No Distortion,Mind Reading,1,n/a,genuine error,,True,Mind Reading,training,train,A
+2211,Should statements,Mind Reading,1,n/a,genuine error,,False,Mind Reading,training,train,A
+2214,Mental filter,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+2217,Magnification,Emotional Reasoning,1,n/a,genuine error,,False,Emotional Reasoning,training,train,A
+2219,Mental filter,Personalization,1,n/a,genuine error,,False,Personalization,training,train,A
+2229,Emotional Reasoning,Labeling,1,n/a,genuine error,,False,Labeling,training,train,A
+2231,Should statements,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+2236,Mental filter,Emotional Reasoning,1,n/a,genuine error,,False,Emotional Reasoning,training,train,A
+2296,All-or-nothing thinking,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+2304,Emotional Reasoning,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+2306,Mind Reading,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+2313,No Distortion,Emotional Reasoning,1,n/a,genuine error,,True,Emotional Reasoning,training,train,A
+2316,Mental filter,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+2317,Mental filter,Magnification,1,n/a,genuine error,Overgeneralization,False,Magnification,training,train,A
+2324,Labeling,No Distortion,1,n/a,genuine error,Overgeneralization,True,No Distortion,training,train,A
+2332,Fortune-telling,Mental filter,1,n/a,genuine error,,False,Mental filter,training,train,A
+2334,No Distortion,Emotional Reasoning,1,n/a,genuine error,,True,Emotional Reasoning,training,train,A
+2335,Should statements,Emotional Reasoning,1,n/a,genuine error,,False,Emotional Reasoning,training,train,A
+2337,All-or-nothing thinking,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+2338,Labeling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+2345,Labeling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+2354,Should statements,No Distortion,1,n/a,genuine error,Emotional Reasoning,True,No Distortion,training,train,A
+2360,No Distortion,All-or-nothing thinking,1,n/a,genuine error,,True,All-or-nothing thinking,training,train,A
+2362,All-or-nothing thinking,Labeling,1,n/a,genuine error,,False,Labeling,training,train,B
+2363,Mental filter,Overgeneralization,1,n/a,genuine error,Emotional Reasoning,False,Overgeneralization,training,train,A
+2366,Mental filter,Personalization,1,n/a,genuine error,,False,Personalization,training,train,A
+2367,Mind Reading,Emotional Reasoning,1,n/a,genuine error,,False,Emotional Reasoning,training,train,A
+2368,Emotional Reasoning,Mind Reading,1,n/a,genuine error,,False,Mind Reading,training,train,A
+2374,Emotional Reasoning,Mental filter,1,n/a,genuine error,,False,Mental filter,training,train,A
+2377,No Distortion,Emotional Reasoning,1,n/a,genuine error,,True,Emotional Reasoning,training,train,A
+2384,Mind Reading,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+2387,Emotional Reasoning,All-or-nothing thinking,1,n/a,genuine error,,False,All-or-nothing thinking,training,train,A
+2400,Emotional Reasoning,All-or-nothing thinking,1,n/a,genuine error,Mind Reading,False,All-or-nothing thinking,training,train,A
+2402,Labeling,Mind Reading,1,n/a,genuine error,,False,Mind Reading,training,train,A
+2403,Overgeneralization,Labeling,1,n/a,genuine error,Should statements,False,Labeling,training,train,A
+2409,Personalization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+2410,Mind Reading,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+2413,All-or-nothing thinking,Mental filter,1,n/a,genuine error,Labeling,False,Mental filter,training,train,A
+2414,Emotional Reasoning,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+2415,No Distortion,Labeling,1,n/a,genuine error,,True,Labeling,test,test,agree (not flagged)
+2417,Emotional Reasoning,Labeling,1,n/a,genuine error,,False,Labeling,training,train,A
+2423,Personalization,Emotional Reasoning,1,n/a,genuine error,,False,Emotional Reasoning,training,train,B
+2425,Should statements,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+2430,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+2435,Mental filter,Mind Reading,1,n/a,genuine error,Personalization,False,Mind Reading,training,train,A
+2436,Magnification,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+2440,Mind Reading,Labeling,1,n/a,genuine error,,False,Labeling,training,train,A
+2445,Labeling,All-or-nothing thinking,1,n/a,genuine error,,False,All-or-nothing thinking,training,train,A
+2449,Magnification,No Distortion,1,n/a,genuine error,,True,No Distortion,test,test,A
+2451,Should statements,Mind Reading,1,n/a,genuine error,,False,Mind Reading,training,train,A
+2454,Labeling,Overgeneralization,1,n/a,genuine error,Mental filter,False,Overgeneralization,training,train,A
+2456,Emotional Reasoning,Labeling,1,n/a,genuine error,,False,Labeling,training,train,A
+2458,Fortune-telling,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+2461,Emotional Reasoning,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+2462,Should statements,Overgeneralization,1,n/a,genuine error,,False,Overgeneralization,test,test,A
+2463,Labeling,Magnification,1,n/a,genuine error,Overgeneralization,False,Magnification,training,train,A
+2464,Should statements,Emotional Reasoning,1,n/a,genuine error,Personalization,False,Emotional Reasoning,training,train,A
+2469,Magnification,Labeling,1,n/a,genuine error,,False,Labeling,training,train,A
+2470,No Distortion,Mind Reading,1,n/a,genuine error,,True,Mind Reading,training,train,A
+2473,Mental filter,Mind Reading,1,n/a,genuine error,Emotional Reasoning,False,Mind Reading,training,train,A
+2476,Magnification,Mental filter,1,n/a,genuine error,Overgeneralization,False,Mental filter,training,train,B
+2480,Emotional Reasoning,Labeling,1,n/a,genuine error,,False,Labeling,training,train,A
+2483,Emotional Reasoning,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+2484,Emotional Reasoning,All-or-nothing thinking,1,n/a,genuine error,,False,All-or-nothing thinking,training,train,A
+2489,No Distortion,Overgeneralization,1,n/a,genuine error,,True,Overgeneralization,training,train,A
+2490,Emotional Reasoning,Mental filter,1,n/a,genuine error,,False,Mental filter,training,train,A
+2492,Personalization,No Distortion,1,n/a,genuine error,Should statements,True,No Distortion,training,train,A
+2495,Mind Reading,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+2496,Magnification,No Distortion,1,n/a,genuine error,Overgeneralization,True,No Distortion,training,train,A
+2498,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+2499,Magnification,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+2500,Labeling,Magnification,1,n/a,genuine error,,False,Magnification,training,train,B
+2501,Mind Reading,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+2505,Emotional Reasoning,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+2517,Mental filter,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+2521,Personalization,Mind Reading,1,n/a,genuine error,,False,Mind Reading,training,train,A
+2529,Emotional Reasoning,No Distortion,1,n/a,genuine error,Mind Reading,True,No Distortion,training,train,A
+2530,Mental filter,Labeling,1,n/a,genuine error,,False,Labeling,training,train,A
+2531,Mind Reading,No Distortion,1,n/a,genuine error,Emotional Reasoning,True,No Distortion,training,train,A
+2537,Overgeneralization,All-or-nothing thinking,1,n/a,genuine error,,False,All-or-nothing thinking,training,train,A
+2538,Mind Reading,Labeling,1,n/a,genuine error,,False,Labeling,training,train,A
+2544,Emotional Reasoning,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+2549,Mental filter,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+2551,Mind Reading,Labeling,1,n/a,genuine error,,False,Labeling,training,train,A
+2552,Labeling,Fortune-telling,1,n/a,genuine error,Overgeneralization,False,Fortune-telling,training,train,A
+2553,All-or-nothing thinking,Mental filter,1,n/a,genuine error,Overgeneralization,False,Mental filter,training,train,A
+2559,Labeling,No Distortion,1,n/a,genuine error,All-or-nothing thinking,True,No Distortion,training,train,A
+2563,Overgeneralization,All-or-nothing thinking,1,n/a,genuine error,,False,All-or-nothing thinking,test,test,agree (not flagged)
+2564,Mental filter,No Distortion,1,n/a,genuine error,Mind Reading,True,No Distortion,training,train,A
+4500,Personalization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+4501,Labeling,Magnification,1,n/a,genuine error,Emotional Reasoning,False,Magnification,training,train,A
+4504,Fortune-telling,Personalization,1,n/a,genuine error,Emotional Reasoning,False,Personalization,test,test,B
+4512,Mind Reading,No Distortion,1,n/a,genuine error,,True,No Distortion,test,test,A
+4518,All-or-nothing thinking,No Distortion,1,n/a,genuine error,,True,No Distortion,test,test,A
+4519,Mind Reading,No Distortion,1,n/a,genuine error,Overgeneralization,True,No Distortion,training,train,A
+4521,Fortune-telling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+4522,Magnification,Should statements,1,n/a,genuine error,All-or-nothing thinking,False,Should statements,training,train,A
+4531,Emotional Reasoning,Labeling,1,n/a,genuine error,All-or-nothing thinking,False,Labeling,training,train,A
+4532,All-or-nothing thinking,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+4535,Labeling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+4536,Fortune-telling,No Distortion,1,n/a,genuine error,Mind Reading,True,No Distortion,training,train,A
+4537,Overgeneralization,No Distortion,1,n/a,genuine error,Personalization,True,No Distortion,test,test,A
+4540,Mind Reading,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+4541,Labeling,No Distortion,1,n/a,genuine error,Overgeneralization,True,No Distortion,training,train,A
+4542,Emotional Reasoning,No Distortion,1,n/a,genuine error,Personalization,True,No Distortion,training,train,A
+4544,All-or-nothing thinking,Should statements,1,n/a,genuine error,Labeling,False,Should statements,training,train,A
+4545,Mind Reading,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+4550,Emotional Reasoning,No Distortion,1,n/a,genuine error,Should statements,True,No Distortion,training,train,A
+4551,Fortune-telling,No Distortion,1,n/a,genuine error,Overgeneralization,True,No Distortion,training,train,A
+4553,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+4557,Emotional Reasoning,No Distortion,1,n/a,genuine error,,True,No Distortion,test,test,A
+4558,Mental filter,No Distortion,1,n/a,genuine error,Overgeneralization,True,No Distortion,training,train,A
+4560,Fortune-telling,Magnification,1,n/a,genuine error,Labeling,False,Magnification,training,train,A
+4561,Labeling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+4564,Labeling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+4567,All-or-nothing thinking,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+4569,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+4573,Overgeneralization,No Distortion,1,n/a,genuine error,Should statements,True,No Distortion,training,train,A
+4574,Mind Reading,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+4579,Mind Reading,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+4580,Personalization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+4581,All-or-nothing thinking,Overgeneralization,1,n/a,genuine error,,False,Overgeneralization,training,train,A
+4582,Magnification,Personalization,1,n/a,genuine error,All-or-nothing thinking,False,Personalization,test,test,A
+4583,Magnification,Personalization,1,n/a,genuine error,Emotional Reasoning,False,Personalization,training,train,A
+4584,Mental filter,Mind Reading,1,n/a,genuine error,,False,Mind Reading,training,train,A
+4585,Labeling,No Distortion,1,n/a,genuine error,Emotional Reasoning,True,No Distortion,training,train,A
+4589,Mind Reading,Emotional Reasoning,1,n/a,genuine error,,False,Emotional Reasoning,training,train,A
+4590,Labeling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+4593,Labeling,Mind Reading,1,n/a,genuine error,Fortune-telling,False,Mind Reading,training,train,A
+4595,Overgeneralization,Mental filter,1,n/a,genuine error,All-or-nothing thinking,False,Mental filter,training,train,A
+4596,Labeling,Emotional Reasoning,1,n/a,genuine error,All-or-nothing thinking,False,Emotional Reasoning,training,train,B
+4599,Emotional Reasoning,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+4600,All-or-nothing thinking,Fortune-telling,1,n/a,genuine error,Overgeneralization,False,Fortune-telling,training,train,A
+4601,Emotional Reasoning,Mind Reading,1,n/a,genuine error,,False,Mind Reading,training,train,A
+4606,Personalization,Fortune-telling,1,n/a,genuine error,,False,Fortune-telling,training,train,A
+4608,Fortune-telling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+4611,Personalization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+4612,Magnification,Fortune-telling,1,n/a,genuine error,Emotional Reasoning,False,Fortune-telling,training,train,A
+4614,Emotional Reasoning,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+4617,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+4620,Should statements,Magnification,1,n/a,genuine error,Personalization,False,Magnification,training,train,A
+4622,All-or-nothing thinking,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+4623,All-or-nothing thinking,No Distortion,1,n/a,genuine error,Should statements,True,No Distortion,training,train,A
+4626,Personalization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+4632,Personalization,Labeling,1,n/a,genuine error,All-or-nothing thinking,False,Labeling,training,train,A
+4634,Labeling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+4635,Mind Reading,No Distortion,1,n/a,genuine error,,True,No Distortion,test,test,A
+4636,All-or-nothing thinking,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,B
+4637,Personalization,Should statements,1,n/a,genuine error,,False,Should statements,training,train,A
+4638,Should statements,Mental filter,1,n/a,genuine error,,False,Mental filter,training,train,A
+4639,Labeling,No Distortion,1,n/a,genuine error,,True,No Distortion,test,test,A
+4642,Fortune-telling,Mental filter,1,n/a,genuine error,,False,Mental filter,training,train,A
+4644,Overgeneralization,Magnification,1,n/a,genuine error,Personalization,False,Magnification,training,train,A
+4645,Mental filter,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+4647,Mental filter,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+4648,Emotional Reasoning,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+4651,Emotional Reasoning,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+4652,Overgeneralization,Mental filter,1,n/a,genuine error,,False,Mental filter,training,train,A
+4653,Overgeneralization,No Distortion,1,n/a,genuine error,Personalization,True,No Distortion,training,train,A
+4654,Emotional Reasoning,Magnification,1,n/a,genuine error,,False,Magnification,training,train,A
+4661,Personalization,Mental filter,1,n/a,genuine error,,False,Mental filter,training,train,B
+4664,Emotional Reasoning,No Distortion,4,yes,genuine error,,True,No Distortion | No Distortion | No Distortion | No Distortion (calibrated pessimism),overlap,train,A
+4668,Should statements,No Distortion,1,n/a,genuine error,,True,No Distortion,test,test,A
+4671,Emotional Reasoning,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+4673,Labeling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+4674,All-or-nothing thinking,Mind Reading,1,n/a,genuine error,,False,Mind Reading,training,train,A
+4676,Emotional Reasoning,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+4677,Mental filter,All-or-nothing thinking,1,n/a,genuine error,Overgeneralization,False,All-or-nothing thinking,training,train,B
+4678,Magnification,No Distortion,1,n/a,genuine error,Overgeneralization,True,No Distortion,training,train,A
+4682,Labeling,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+4683,Emotional Reasoning,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+4685,Personalization,Labeling,1,n/a,genuine error,,False,Labeling,training,train,A
+4686,Emotional Reasoning,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+4687,Magnification,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+4688,Emotional Reasoning,Overgeneralization,1,n/a,genuine error,,False,Overgeneralization,training,train,A
+4691,Personalization,Emotional Reasoning,1,n/a,genuine error,,False,Emotional Reasoning,training,train,A
+4693,Mind Reading,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+4696,Mind Reading,Fortune-telling,1,n/a,genuine error,,False,Fortune-telling,training,train,A
+4697,Mind Reading,Emotional Reasoning,1,n/a,genuine error,,False,Emotional Reasoning,training,train,A
+4698,Overgeneralization,No Distortion,1,n/a,genuine error,,True,No Distortion,training,train,A
+4701,Overgeneralization,Emotional Reasoning,1,n/a,genuine error,,False,Emotional Reasoning,training,train,A
+12,Overgeneralization,Fortune-telling,1,n/a,primary swap,Fortune-telling,False,Fortune-telling,training,train,A
+23,Fortune-telling,All-or-nothing thinking,1,n/a,primary swap,All-or-nothing thinking,False,All-or-nothing thinking,training,train,A
+30,Mental filter,Fortune-telling,1,n/a,primary swap,Fortune-telling,False,Fortune-telling,training,train,A
+73,Overgeneralization,Mind Reading,1,n/a,primary swap,Mind Reading,False,Mind Reading,training,train,A
+97,Emotional Reasoning,Fortune-telling,1,n/a,primary swap,Fortune-telling,False,Fortune-telling,training,train,B
+125,Labeling,Personalization,1,n/a,primary swap,Personalization,False,Personalization,training,train,B
+175,Mind Reading,Fortune-telling,1,n/a,primary swap,Fortune-telling,False,Fortune-telling,training,train,A
+191,Mind Reading,Emotional Reasoning,1,n/a,primary swap,Emotional Reasoning,False,Emotional Reasoning,training,train,A
+253,Magnification,Mind Reading,1,n/a,primary swap,Mind Reading,False,Mind Reading,training,train,A
+374,Magnification,Fortune-telling,1,n/a,primary swap,Fortune-telling,False,Fortune-telling,training,train,A
+387,All-or-nothing thinking,Magnification,1,n/a,primary swap,Magnification,False,Magnification,training,train,A
+411,Mental filter,All-or-nothing thinking,1,n/a,primary swap,All-or-nothing thinking,False,All-or-nothing thinking,training,train,A
+461,Labeling,Overgeneralization,4,no,primary swap,Overgeneralization,False,Overgeneralization | Overgeneralization | Overgeneralization | Magnification,overlap,train,A
+578,Personalization,Mind Reading,1,n/a,primary swap,Mind Reading,False,Mind Reading,training,train,A
+665,Personalization,Magnification,1,n/a,primary swap,Magnification,False,Magnification,training,train,A
+694,Magnification,Mind Reading,1,n/a,primary swap,Mind Reading,False,Mind Reading,training,train,A
+711,Mind Reading,Fortune-telling,1,n/a,primary swap,Fortune-telling,False,Fortune-telling,training,train,B
+768,Personalization,Magnification,1,n/a,primary swap,Magnification,False,Magnification,training,train,A
+793,Personalization,Fortune-telling,1,n/a,primary swap,Fortune-telling,False,Fortune-telling,test,test,A
+824,Personalization,Mind Reading,1,n/a,primary swap,Mind Reading,False,Mind Reading,training,train,A
+830,Magnification,Mind Reading,1,n/a,primary swap,Mind Reading,False,Mind Reading,training,train,B
+837,Overgeneralization,Fortune-telling,1,n/a,primary swap,Fortune-telling,False,Fortune-telling,training,train,A
+856,Overgeneralization,Labeling,1,n/a,primary swap,Labeling,False,Labeling,training,train,A
+869,Magnification,Personalization,1,n/a,primary swap,Personalization,False,Personalization,training,train,A
+883,Fortune-telling,Personalization,1,n/a,primary swap,Personalization,False,Personalization,training,train,A
+900,Mental filter,All-or-nothing thinking,1,n/a,primary swap,All-or-nothing thinking,False,All-or-nothing thinking,training,train,A
+949,Mental filter,Mind Reading,4,no,primary swap,Mind Reading,False,Mind Reading | Personalization | Mind Reading | Mind Reading,overlap,train,A
+1024,Magnification,Fortune-telling,1,n/a,primary swap,Fortune-telling,False,Fortune-telling,training,train,A
+1060,Magnification,Mind Reading,1,n/a,primary swap,Mind Reading,False,Mind Reading,training,train,A
+1068,Emotional Reasoning,Magnification,1,n/a,primary swap,Magnification,False,Magnification,training,train,A
+1188,Magnification,Mind Reading,1,n/a,primary swap,Mind Reading,False,Mind Reading,training,train,A
+1417,Personalization,Labeling,1,n/a,primary swap,Labeling,False,Labeling,training,train,B
+1559,Labeling,All-or-nothing thinking,1,n/a,primary swap,All-or-nothing thinking,False,All-or-nothing thinking,training,train,A
+1635,Magnification,Fortune-telling,1,n/a,primary swap,Fortune-telling,False,Fortune-telling,test,test,agree (not flagged)
+1669,Magnification,Personalization,1,n/a,primary swap,Personalization,False,Personalization,test,test,A
+1689,Labeling,Mind Reading,1,n/a,primary swap,Mind Reading,False,Mind Reading,training,train,A
+1691,Emotional Reasoning,Fortune-telling,1,n/a,primary swap,Fortune-telling,False,Fortune-telling,training,train,A
+1742,Magnification,Mind Reading,1,n/a,primary swap,Mind Reading,False,Mind Reading,training,train,A
+1746,Emotional Reasoning,Fortune-telling,1,n/a,primary swap,Fortune-telling,False,Fortune-telling,test,test,A
+1760,Emotional Reasoning,Fortune-telling,1,n/a,primary swap,Fortune-telling,False,Fortune-telling,training,train,A
+1782,Overgeneralization,Personalization,1,n/a,primary swap,Personalization,False,Personalization,training,train,A
+1793,All-or-nothing thinking,Magnification,1,n/a,primary swap,Magnification,False,Magnification,training,train,A
+1964,Mental filter,Magnification,1,n/a,primary swap,Magnification,False,Magnification,training,train,A
+1996,Mental filter,Mind Reading,1,n/a,primary swap,Mind Reading,False,Mind Reading,training,train,A
+2049,Personalization,All-or-nothing thinking,1,n/a,primary swap,All-or-nothing thinking,False,All-or-nothing thinking,training,train,B
+2098,Mental filter,Magnification,1,n/a,primary swap,Magnification,False,Magnification,training,train,A
+2195,Mind Reading,Labeling,1,n/a,primary swap,Labeling,False,Labeling,training,train,A
+2427,Mental filter,All-or-nothing thinking,1,n/a,primary swap,All-or-nothing thinking,False,All-or-nothing thinking,training,train,A
+2532,Should statements,Labeling,1,n/a,primary swap,Labeling,False,Labeling,training,train,A
+18,Fortune-telling,No Distortion,1,n/a,redefinition,Labeling,True,No Distortion (calibrated pessimism),training,train,A
+25,Personalization,No Distortion,1,n/a,redefinition,Labeling,True,No Distortion (calibrated pessimism),test,test,A
+45,Should statements,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+58,Personalization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+65,Overgeneralization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+72,Mind Reading,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+78,All-or-nothing thinking,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+93,Emotional Reasoning,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+106,Overgeneralization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+124,Mental filter,No Distortion,1,n/a,redefinition,Fortune-telling,True,No Distortion (calibrated pessimism),training,train,A
+131,Fortune-telling,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+141,Personalization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+151,Mind Reading,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+176,Mental filter,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+178,Emotional Reasoning,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+199,Labeling,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+219,Overgeneralization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+227,Mind Reading,No Distortion,1,n/a,redefinition,Overgeneralization,True,No Distortion (calibrated pessimism),training,train,A
+230,Personalization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+231,Fortune-telling,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+232,Should statements,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+233,Magnification,No Distortion,1,n/a,redefinition,Mental filter,True,No Distortion (calibrated pessimism),training,train,B
+234,Personalization,No Distortion,1,n/a,redefinition,Should statements,True,No Distortion (calibrated pessimism),training,train,A
+249,Emotional Reasoning,No Distortion,1,n/a,redefinition,Fortune-telling,True,No Distortion (calibrated pessimism),training,train,A
+263,Emotional Reasoning,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+279,Overgeneralization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+292,Should statements,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+300,Overgeneralization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+303,Overgeneralization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+329,Mind Reading,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+347,Overgeneralization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+354,Magnification,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+384,Fortune-telling,No Distortion,1,n/a,redefinition,Mental filter,True,No Distortion (calibrated pessimism),training,train,B
+385,Fortune-telling,No Distortion,1,n/a,redefinition,Mental filter,True,No Distortion (calibrated pessimism),training,train,A
+392,Mind Reading,No Distortion,1,n/a,redefinition,Labeling,True,No Distortion (calibrated pessimism),training,train,A
+418,Labeling,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+427,Overgeneralization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+435,Personalization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+455,Fortune-telling,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+481,Overgeneralization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+490,Should statements,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,B
+524,Overgeneralization,No Distortion,1,n/a,redefinition,Fortune-telling,True,No Distortion (calibrated pessimism),training,train,A
+548,Overgeneralization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+580,Overgeneralization,No Distortion,1,n/a,redefinition,Fortune-telling,True,No Distortion (calibrated pessimism),training,train,A
+586,Labeling,No Distortion,1,n/a,redefinition,Mind Reading,True,No Distortion (calibrated pessimism),training,train,A
+601,Overgeneralization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+603,Fortune-telling,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+605,Overgeneralization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),test,test,A
+630,Labeling,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+642,Should statements,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+656,Overgeneralization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+666,Mental filter,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+704,Overgeneralization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+708,Fortune-telling,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+709,Mind Reading,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+730,Fortune-telling,No Distortion,1,n/a,redefinition,Labeling,True,No Distortion (calibrated pessimism),training,train,A
+731,Mind Reading,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,B
+766,Should statements,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+770,Personalization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+777,Fortune-telling,No Distortion,1,n/a,redefinition,Mental filter,True,No Distortion (calibrated pessimism),training,train,A
+784,Mind Reading,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),test,test,agree (not flagged)
+789,Magnification,No Distortion,1,n/a,redefinition,Overgeneralization,True,No Distortion (calibrated pessimism),training,train,A
+791,All-or-nothing thinking,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+800,Mental filter,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+850,Overgeneralization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+868,Labeling,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+885,Emotional Reasoning,No Distortion,1,n/a,redefinition,Fortune-telling,True,No Distortion (calibrated pessimism),training,train,A
+886,Overgeneralization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+919,Personalization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+931,Should statements,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),test,test,agree (not flagged)
+967,Magnification,No Distortion,1,n/a,redefinition,Mind Reading,True,No Distortion (calibrated pessimism),training,train,A
+976,Should statements,No Distortion,1,n/a,redefinition,Labeling,True,No Distortion (calibrated pessimism),training,train,A
+978,Personalization,No Distortion,1,n/a,redefinition,Emotional Reasoning,True,No Distortion (calibrated pessimism),training,train,A
+1007,Labeling,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+1030,Overgeneralization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+1044,All-or-nothing thinking,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+1045,Personalization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+1047,Labeling,No Distortion,1,n/a,redefinition,Personalization,True,No Distortion (calibrated pessimism),training,train,A
+1053,Overgeneralization,No Distortion,1,n/a,redefinition,Mind Reading,True,No Distortion (calibrated pessimism),training,train,A
+1081,Personalization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+1140,Magnification,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+1190,Magnification,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+1197,Fortune-telling,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+1202,Fortune-telling,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+1206,Labeling,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+1231,Overgeneralization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+1237,All-or-nothing thinking,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+1288,Fortune-telling,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+1289,Magnification,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+1442,Mind Reading,No Distortion,1,n/a,redefinition,Fortune-telling,True,No Distortion (calibrated pessimism),training,train,A
+1444,Overgeneralization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+1454,Mind Reading,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+1475,Personalization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+1526,Mind Reading,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+1578,Should statements,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+1587,Overgeneralization,No Distortion,1,n/a,redefinition,Personalization,True,No Distortion (calibrated pessimism),training,train,A
+1588,Labeling,No Distortion,1,n/a,redefinition,Fortune-telling,True,No Distortion (calibrated pessimism),training,train,A
+1637,Labeling,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+1655,Labeling,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+1675,Overgeneralization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),test,test,A
+1679,All-or-nothing thinking,No Distortion,1,n/a,redefinition,Magnification,True,No Distortion (calibrated pessimism),training,train,A
+1692,Labeling,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+1724,All-or-nothing thinking,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+1747,Overgeneralization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+1781,Overgeneralization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+1798,Mind Reading,No Distortion,1,n/a,redefinition,Should statements,True,No Distortion (calibrated pessimism),test,test,A
+1803,Mental filter,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+1838,Should statements,No Distortion,1,n/a,redefinition,Fortune-telling,True,No Distortion (calibrated pessimism),training,train,A
+1857,Overgeneralization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+1877,Should statements,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+1879,Fortune-telling,No Distortion,1,n/a,redefinition,Personalization,True,No Distortion (calibrated pessimism),training,train,B
+1881,Fortune-telling,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+1902,Mental filter,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+1905,Magnification,No Distortion,1,n/a,redefinition,Personalization,True,No Distortion (calibrated pessimism),training,train,B
+1939,Personalization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+1956,Should statements,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+1981,Overgeneralization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+1994,Emotional Reasoning,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+2007,Should statements,No Distortion,1,n/a,redefinition,Fortune-telling,True,No Distortion (calibrated pessimism),training,train,A
+2019,Overgeneralization,No Distortion,1,n/a,redefinition,Labeling,True,No Distortion (calibrated pessimism),training,train,A
+2139,Emotional Reasoning,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+2158,Mind Reading,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,B
+2167,Magnification,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),test,test,A
+2184,Emotional Reasoning,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+2218,Mental filter,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+2220,Mental filter,No Distortion,1,n/a,redefinition,Labeling,True,No Distortion (calibrated pessimism),test,test,A
+2221,Emotional Reasoning,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+2297,Should statements,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+2309,Mind Reading,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),test,test,agree (not flagged)
+2323,Personalization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+2350,Mind Reading,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+2371,Mental filter,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+2407,Mind Reading,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),test,test,A
+2418,Mental filter,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+2437,Overgeneralization,No Distortion,1,n/a,redefinition,Mental filter,True,No Distortion (calibrated pessimism),test,test,A
+2466,All-or-nothing thinking,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+2475,Emotional Reasoning,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+2488,Overgeneralization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+2494,Magnification,No Distortion,1,n/a,redefinition,Labeling,True,No Distortion (calibrated pessimism),training,train,A
+2513,Personalization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+2528,Labeling,No Distortion,1,n/a,redefinition,Personalization,True,No Distortion (calibrated pessimism),training,train,A
+2536,Magnification,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+2557,Magnification,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+4510,Magnification,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+4514,Fortune-telling,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+4515,Personalization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+4528,Mental filter,No Distortion,1,n/a,redefinition,Emotional Reasoning,True,No Distortion (calibrated pessimism),test,test,A
+4549,Overgeneralization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+4555,Overgeneralization,No Distortion,1,n/a,redefinition,Should statements,True,No Distortion (calibrated pessimism),training,train,A
+4563,Mind Reading,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+4570,Personalization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),test,test,A
+4592,Mind Reading,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),test,test,A
+4618,Fortune-telling,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+4621,Magnification,No Distortion,1,n/a,redefinition,Overgeneralization,True,No Distortion (calibrated pessimism),test,test,A
+4625,Labeling,No Distortion,1,n/a,redefinition,Personalization,True,No Distortion (calibrated pessimism),training,train,A
+4627,Labeling,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
+4643,Labeling,No Distortion,4,no,redefinition,Emotional Reasoning,True,No Distortion | Emotional Reasoning | No Distortion (calibrated pessimism) | No Distortion (calibrated pessimism),overlap,train,A
+4667,Personalization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,B
+4669,Personalization,No Distortion,1,n/a,redefinition,Mind Reading,True,No Distortion (calibrated pessimism),training,train,A
+4699,Personalization,No Distortion,1,n/a,redefinition,,True,No Distortion (calibrated pessimism),training,train,A
