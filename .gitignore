@@ -18,6 +18,9 @@ results_reannotation/fold2_ckpt/
 results_reannotation/fold3_ckpt/
 results_reannotation/fold4_ckpt/
 
+# --- Report drafts, slides, task sheets: local to Nayab's PC only ---
+planning/
+
 # --- HuggingFace / misc caches ---
 .cache/
 
@@ -42,3 +45,5 @@ data/splits_pr_only/
 
 # Smoke-run scratch output (--smoke): never a real result, never committed
 results_*_smoke/
+
+D3/

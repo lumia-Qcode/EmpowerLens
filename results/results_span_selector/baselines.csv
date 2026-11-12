@@ -1,0 +1,11 @@
+split,method,precision,precision_std,recall,recall_std,f1,f1_std,row_hit_rate,row_hit_rate_std,n_rows,n_sentences,n_gold_sentences,n_selected,n_seeds
+val,"trained selector (mean ± std, 3 seeds)",0.3731,0.0159,0.542,0.0247,0.4415,0.0098,0.7049,0.0133,157,1586,270,393.0,3
+val,first sentence,0.1465,,0.0852,,0.1077,,0.1465,,157,1586,270,157.0,1
+val,last sentence,0.293,,0.1704,,0.2155,,0.293,,157,1586,270,157.0,1
+val,random sentence (seed 42),0.2484,,0.1444,,0.1827,,0.2484,,157,1586,270,157.0,1
+val,"extra: trained selector, top-1 sentence per row",0.5372,0.0265,0.3123,0.0154,0.395,0.0195,0.5372,0.0265,157,1586,270,157.0,3
+test,"trained selector (mean ± std, 3 seeds)",0.3537,0.0186,0.5207,0.015,0.421,0.0145,0.6646,0.0096,159,1591,290,427.6667,3
+test,first sentence,0.1635,,0.0897,,0.1158,,0.1635,,159,1591,290,159.0,1
+test,last sentence,0.2579,,0.1414,,0.1826,,0.2579,,159,1591,290,159.0,1
+test,random sentence (seed 42),0.2516,,0.1379,,0.1782,,0.2516,,159,1591,290,159.0,1
+test,"extra: trained selector, top-1 sentence per row",0.5388,0.0567,0.2954,0.0311,0.3816,0.0402,0.5388,0.0567,159,1591,290,159.0,3

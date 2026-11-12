@@ -499,7 +499,7 @@ def main(argv=None):
 
     targs = TrainingArguments(
         output_dir=str(out_dir), num_train_epochs=args.epochs, per_device_train_batch_size=args.batch_size,
-        per_device_eval_batch_size=args.batch_size, learning_rate=args.lr, warmup_ratio=0.1, weight_decay=args.weight_decay,
+        per_device_eval_batch_size=args.batch_size, learning_rate=args.lr, weight_decay=args.weight_decay,
         gradient_accumulation_steps=args.grad_accum, lr_scheduler_type=args.lr_scheduler,
         eval_strategy="epoch", save_strategy="epoch", load_best_model_at_end=True, metric_for_best_model=metric_key,
         greater_is_better=True, save_total_limit=1, fp16=(device == "cuda"), logging_steps=10, report_to=report_to,

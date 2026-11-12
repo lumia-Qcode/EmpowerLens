@@ -1,0 +1,17 @@
+{
+  "model": "mental/mental-roberta-base",
+  "lr": 3e-05,
+  "epochs": 5,
+  "batch_size": 32,
+  "max_length": 128,
+  "weight_decay": 0.1,
+  "loss": "BCE pos_weight=neg/pos",
+  "input": "single sentence, no context",
+  "threshold": "per seed, max val sentence F1 (see eval_val_<seed>.json)",
+  "seeds": [
+    42,
+    1337,
+    2024
+  ],
+  "labels": "results/results_sentence_label (T12; 13 unlocated rows excluded)"
+}
