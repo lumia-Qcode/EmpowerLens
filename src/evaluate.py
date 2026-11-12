@@ -235,6 +235,16 @@ def main(argv=None):
             "per_class": pc.to_dict(orient="records"),
             "truncation_rate": round(trunc_rate, 4),
         }
+        if task == "multilabel":
+            # Per-label specificity (TN / (TN + FP)) averaged over the 10 labels. Kept out of
+            # metric_bundle so the paper_comparison row shape is unchanged. On a distorted-only
+            # set this is NOT the binary headline specificity (there are no non-distorted rows).
+            yt, yp = np.asarray(y_true).astype(bool), np.asarray(y_pred).astype(bool)
+            neg = (~yt).sum(axis=0)
+            spec = np.where(neg > 0, (~yt & ~yp).sum(axis=0) / np.maximum(neg, 1), np.nan)
+            eval_json["splits"][split]["macro_specificity_10"] = float(np.nanmean(spec))
+            eval_json["splits"][split]["specificity_per_label"] = {
+                d: (None if np.isnan(v) else float(v)) for d, v in zip(DISTORTIONS, spec)}
 
     if args.reference:
         rows.extend(_reference_rows())

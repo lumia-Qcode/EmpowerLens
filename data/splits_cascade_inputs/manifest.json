@@ -1,0 +1,53 @@
+{
+  "created_utc": "2026-11-12T05:39:45.409444+00:00",
+  "task": "D17 cascade inputs",
+  "marker": "@",
+  "rows": {
+    "train": 1268,
+    "val": 157,
+    "test": 159
+  },
+  "dropped_unlocated": {
+    "train": [
+      306,
+      315,
+      405,
+      887,
+      1655,
+      1697,
+      1702,
+      1713,
+      2445,
+      4523
+    ],
+    "val": [
+      160
+    ],
+    "test": [
+      436,
+      1536
+    ]
+  },
+  "selector_top1_fallbacks": {
+    "val_42": 22,
+    "test_42": 24,
+    "val_1337": 22,
+    "test_1337": 23,
+    "val_2024": 20,
+    "test_2024": 27
+  },
+  "sources": {
+    "data\\splits\\train.csv": "2410e1d640c698898cbae334d74a53cc6313a4029e1c88ff5f942c7ae9a024d4",
+    "results\\results_sentence_label\\sentence_labels_train.csv": "624efbb5d9b77d5910f22a43f8deba0999cd959c7e2f693e5438420ca5b36480",
+    "data\\splits\\val.csv": "82510ce7acab58d58cc8d9397ff214fcb2beef7a6bae235a2b7dff12a366b9ec",
+    "results\\results_sentence_label\\sentence_labels_val.csv": "2e61c49db042018f7fa4a1c95c516a8182c41f067f748328999b01c5f47255d3",
+    "data\\splits\\test.csv": "1013562d7c8887746689959d38724a3adb7d29ab07cc9e71782d85276282d1e0",
+    "results\\results_sentence_label\\sentence_labels_test.csv": "d7938445747df9650cc35e004069031778307747f7b9759bbd35376c2cd8780b",
+    "results\\results_span_selector\\predictions_val_42.csv": "9be49b0746348b08aa1b3abac1875a7a0a92f1ee96a7f8bdf25299d8fbf16c4a",
+    "results\\results_span_selector\\predictions_test_42.csv": "6ba7b3ba567c5cca7a2c87f21abb3ce6d4e88110aeef071ea145edd5aabbf7f4",
+    "results\\results_span_selector\\predictions_val_1337.csv": "1b50bb0658396a24657e72ae0d80a3a58b98a427c263202bebe2eae5c886e3c0",
+    "results\\results_span_selector\\predictions_test_1337.csv": "d09b56ecae9da2952cd830f0669f593b70b69cde76784b212e770d92acd1f8c3",
+    "results\\results_span_selector\\predictions_val_2024.csv": "b026febbb6cb1b553bc175465655161aa3dd66b713ca642fdd5f07b30101b68f",
+    "results\\results_span_selector\\predictions_test_2024.csv": "4628f02e84dc86f1a56c622309845b76cfcf0166c5001fcc11508a216e1b6ef4"
+  }
+}
