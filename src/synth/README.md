@@ -49,7 +49,7 @@ llm.py          →  3 × Gemini 2.5 Flash diagnose independently (temps 0.3/0.6
       ↓
 generate.py     →  aggregate() → votes, y_soft, span, span_agreement
       ↓
-generate.py     →  decide() → accept / revise-once / reject
+generate.py     →  decide() → accept / regenerate-once / reject
       ↓
                    JSONL row
 ```
@@ -90,10 +90,10 @@ opening four words join the banned-opener list for subsequent prompts.
 |---|---|
 | `attributes.py` | Distortion definitions, attribute axes, generation constraints, banned lists |
 | `planner.py` | Deterministic spec generation — class balance + scenario grid. **No API calls** |
-| `prompts.py` | Generator / critic / reviser prompt builders |
+| `prompts.py` | Generator / critic prompt builders |
 | `llm.py` | Provider abstraction (Anthropic + Gemini), cost estimation |
 | `dedup.py` | Token-set Jaccard near-duplicate filter, dependency-free |
-| `generate.py` | Orchestrator, accept/revise/reject loop, JSONL writer |
+| `generate.py` | Orchestrator, accept/regenerate/reject loop, JSONL writer |
 
 ### `attributes.py`
 
@@ -198,9 +198,9 @@ Three defensive constraints from KoACD's Appendix H Analyzer prompt:
 **Exclusion memory is deliberately not implemented.** KoACD's agents negotiate
 across turns and can loop by re-proposing a rejected label. This pipeline has no
 multi-turn loop — the critics are one-shot stateless calls with no memory of
-their own prior verdict, and there is exactly one revision. There is nothing to
+their own prior verdict, and there is exactly one retry. There is nothing to
 loop, so the mechanism would be dead code. It becomes relevant only if the
-revision count is ever raised above one.
+retry count is ever raised above one.
 
 The critic never sees the intended label. It sees the whole text (not just the
 distorted span — DoT stage 1 needs a situation to separate facts from thoughts)
@@ -247,7 +247,7 @@ One JSON object per line:
 | `y_soft` | 10-dim vector, fraction of critics seeing each distortion |
 | `critic_votes` | raw counts, for auditing |
 | `no_distortion_votes` | the calibrated-pessimism margin — 3/3 is clean, 2/3 contested |
-| `revised` | `true` if this row came from the retry path (see below) |
+| `attempt` | `1`, or `2` if the panel rejected the first text and this fresh retry from the spec passed (see below) |
 | `n_critics`, `granularity` | |
 | `trigger`, `register`, `stage`, `sector`, `cultural_marker` | slicing variables |
 | `intended_primary`, `intended_secondary` | what the planner asked for — the gap vs. actual is a quality signal |
@@ -294,10 +294,11 @@ The run then prints three summaries:
 
 **Critics do not anchor across rounds.** `_critique()` issues three fresh
 stateless API calls each time; `build_critic_user` sends the text and nothing
-else, with no history or prior verdict. So a spec that fails twice has failed two
-independent trials. The *generator*, by contrast, is deliberately anchored — the
-reviser prompt carries the critics' objection — so accepted `revised: true` rows
-risk overcorrecting into caricature and are worth comparing against first-pass
+else, with no history or prior verdict. The retry is not anchored either: it is a
+fresh generation from the same spec, and the generator never sees the failed text
+or the critics' objection (methodology Section 5.2.4: a candidate is regenerated,
+never edited to fit its label). So a spec that fails twice has failed two
+independent trials. `attempt: 2` rows are still worth comparing with first-attempt
 rows.
 
 ---
@@ -314,7 +315,7 @@ Keys: `ANTHROPIC_API_KEY` (generator) + `GEMINI_API_KEY` or `GOOGLE_API_KEY` (cr
 # free — no API calls, nothing written
 venv\Scripts\python.exe -m src.synth.generate --n 300 --dry-run
 
-# calibration: measure real acceptance / revision rates before scaling
+# calibration: measure real acceptance / retry rates before scaling
 venv\Scripts\python.exe -m src.synth.generate --n 20 --out data/synthetic/calibrate.jsonl
 
 # pilot
@@ -391,7 +392,7 @@ Write the reflection now — about 150 words, 6-9 sentences, first person, no cl
 
 ## Cost
 
-Roughly **$0.009 per spec** that passes straight through; a revision doubles that
+Roughly **$0.009 per spec** that passes straight through; a retry doubles that
 row. At 300 specs: **$3.30–4.00 (≈ ₨920–1,110)** with paid Gemini, less on the
 free tier. The generator is ~75% of spend.
 
@@ -412,7 +413,7 @@ the pipeline does not support and must not be claimed in the writeup — see
 
 1. **A dropped critic verdict skews the vote.** If a critic's JSON fails to parse
    it is silently omitted, but `aggregate()` still divides by `n_critics`, making
-   the majority harder to reach and inflating the revision rate — and therefore
+   the majority harder to reach and inflating the retry rate — and therefore
    the cost.
 2. **`_critique` is not wrapped in try/except**, so a Gemini rate-limit error
    ends the run. Rows already written survive (the `with` block closes cleanly);

@@ -8,7 +8,13 @@ itself. Default: Claude Sonnet generates; a panel of blind Gemini critics
 Cycle per row:
     planner spec -> generator (Claude) -> format/English/dedup filters
       -> N BLIND critics (Gemini, Diagnosis-of-Thought, varied temperature)
-      -> aggregate agreement -> accept / revise-once / reject
+      -> aggregate agreement -> accept / regenerate-once / reject
+
+A text the panel does not agree with is regenerated once from the original
+spec (a fresh attempt: the generator never sees the failed text or the
+critics' reading) and passes the same filters and a fresh blind panel. It is
+never edited to fit its label (methodology Section 5.2.4): a rewrite steered by
+the critics' objection drifts towards caricature and cue words.
       -> write JSONL row (hard primary+secondary capped at 2, plus 10-dim y_soft)
 
 Run
@@ -218,7 +224,7 @@ def run(args) -> None:
     opener_starts: dict[str, int] = {}    # opening bigram -> count
     OVERUSED_AT = 3                       # ban a bigram once it's clearly a default
     cost = 0.0
-    n_accepted = n_rejected = n_revised = 0
+    n_accepted = n_rejected = n_retried = 0
     n_banned_term = n_length = n_unknown = 0
     abandoned_by_label: dict[str, int] = {}
     attempted_by_label: dict[str, int] = {}
@@ -235,7 +241,9 @@ def run(args) -> None:
     # that do pass, not just the pass rate.
     nd_accept_margin: list[int] = []
 
-    def _gen(spec, prior=None, note=None):
+    def _gen(spec):
+        """One generation from the spec alone. A retry calls this again with the
+        same spec: it never carries the failed text or the critics' note."""
         nonlocal cost
         # Only the last 12 openers are injected: the list is a diversity nudge,
         # not an exhaustive constraint, and an ever-growing block would bloat
@@ -245,12 +253,8 @@ def run(args) -> None:
         # also surface the short starts that have already become habitual.
         overused = [s for s, c in sorted(opener_starts.items(), key=lambda kv: -kv[1])
                     if c >= OVERUSED_AT]
-        if prior is None:
-            user = P.build_generator_user(spec, seeds, rng, recent_openers=recent,
-                                          overused_starts=overused)
-        else:
-            user = P.build_reviser_user(spec, prior, note, seeds, rng,
-                                        recent_openers=recent, overused_starts=overused)
+        user = P.build_generator_user(spec, seeds, rng, recent_openers=recent,
+                                      overused_starts=overused)
         # 800, not 400: on Sonnet 5 adaptive thinking is on by default and its
         # tokens count against max_tokens, so a 400 cap left ~150 tokens for
         # thinking and truncated the reflection mid-sentence (which then failed
@@ -293,7 +297,7 @@ def run(args) -> None:
             return max(agg["votes"], key=agg["votes"].get)
 
         def _reject(spec, reason, text=None, agg=None, agg_first=None,
-                    note=None, revised=False, detail=None):
+                    note=None, attempt=1, detail=None):
             nonlocal n_rejected
             n_rejected += 1
             lab = spec["primary"]
@@ -311,7 +315,7 @@ def run(args) -> None:
                 "stage": spec["stage"],
                 "sector": spec["sector"],
                 "cultural_marker": spec["cultural_marker"],
-                "revised": revised,
+                "attempt": attempt,
                 "text": text,
                 "critic_note": note,
             }
@@ -342,62 +346,67 @@ def run(args) -> None:
                 row["first_attempt_leaned"] = _leaned(agg_first)
             rfh.write(json.dumps(row, ensure_ascii=False) + "\n")
 
-        for i, spec in enumerate(specs):
-            attempted_by_label[spec["primary"]] = \
-                attempted_by_label.get(spec["primary"], 0) + 1
-            try:
-                text = _gen(spec)
-            except Exception as e:  # noqa: BLE001
-                print(f"[{spec['spec_id']}] generator error: {e}")
-                _reject(spec, "generator_error", detail=str(e))
-                continue
-
-            # Length bounds now come from the spec's granularity, not one global
+        def _screen(spec, text):
+            """Basic filters, run on every attempt. Returns (reason, detail) on a
+            failure, None when the text may go to the panel."""
+            nonlocal n_length, n_banned_term
+            # Length bounds come from the spec's granularity, not one global
             # range — a 30-50 word snippet and a 150-word reflection cannot
             # share a filter.
             g = A.GRANULARITIES[spec.get("granularity", "snippet")]
             wc = _word_count(text)
             if not (g["min_words"] <= wc <= g["max_words"]):
                 n_length += 1
-                _reject(spec, "length", text=text, detail=f"{wc} words")
-                continue
-
+                return "length", f"{wc} words"
             banned = _contains_banned_term(text)
             if banned is not None:
                 print(f"[{spec['spec_id']}] dropped: named its own pattern ({banned!r})")
                 n_banned_term += 1
-                _reject(spec, "named_own_pattern", text=text, detail=banned)
-                continue
-
+                return "named_own_pattern", banned
             if not _english_dominant(text):
-                _reject(spec, "not_english", text=text)
-                continue
+                return "not_english", None
             if D.is_duplicate(text, accepted_texts):
-                _reject(spec, "duplicate", text=text)
-                continue
+                return "duplicate", None
+            return None
 
-            verdicts = _critique(text)
-            agg = aggregate(verdicts, args.n_critics)
-            ok, dominant, secondary, note = decide(spec, agg, args.n_critics)
-            agg_first = agg if not ok else None      # keep round 1 for the log
-            first_text = text
+        for i, spec in enumerate(specs):
+            attempted_by_label[spec["primary"]] = \
+                attempted_by_label.get(spec["primary"], 0) + 1
 
-            if not ok:
+            # Attempt 1, and attempt 2 only when the panel disagreed with
+            # attempt 1. A filter failure is not retried (it never reached the
+            # panel). Attempt 2 is a fresh generation from the same spec and
+            # passes the same filters and a fresh blind panel.
+            ok, agg_first = False, None
+            for attempt in (1, 2):
                 try:
-                    text = _gen(spec, prior=text, note=note)
-                    n_revised += 1
-                    verdicts = _critique(text)
-                    agg = aggregate(verdicts, args.n_critics)
-                    ok, dominant, secondary, note = decide(spec, agg, args.n_critics)
+                    text = _gen(spec)
                 except Exception as e:  # noqa: BLE001
-                    print(f"[{spec['spec_id']}] reviser error: {e}")
-                    text = first_text
+                    print(f"[{spec['spec_id']}] generator error: {e}")
+                    _reject(spec, "generator_error", detail=str(e),
+                            agg_first=agg_first, attempt=attempt)
+                    break
 
-            if not ok:
+                failed = _screen(spec, text)
+                if failed is not None:
+                    _reject(spec, failed[0], text=text, detail=failed[1],
+                            agg_first=agg_first, attempt=attempt)
+                    break
+
+                verdicts = _critique(text)
+                agg = aggregate(verdicts, args.n_critics)
+                ok, dominant, secondary, note = decide(spec, agg, args.n_critics)
+                if ok:
+                    break
+                if attempt == 1:
+                    agg_first = agg               # keep round 1 for the log
+                    n_retried += 1
+                    continue
+
                 # Two different failures, kept apart. "critics_unknown" = the
                 # text was unjudgeable (generator problem). "critics_disagreed" =
-                # asked for X, two independent rounds of blind critics read
-                # something else (taxonomy signal).
+                # asked for X, two independent texts and two independent rounds
+                # of blind critics read something else (taxonomy signal).
                 majority = math.ceil(args.n_critics / 2)
                 reason = ("critics_unknown"
                           if agg.get("unknown_votes", 0) >= majority
@@ -405,7 +414,9 @@ def run(args) -> None:
                 if reason == "critics_unknown":
                     n_unknown += 1
                 _reject(spec, reason, text=text, agg=agg,
-                        agg_first=agg_first, note=note, revised=True)
+                        agg_first=agg_first, note=note, attempt=attempt)
+
+            if not ok:
                 continue
 
             fh.write(json.dumps({
@@ -430,11 +441,10 @@ def run(args) -> None:
                 "no_distortion_votes": agg["no_distortion_votes"],
                 "n_critics": args.n_critics,
                 "granularity": spec.get("granularity", "snippet"),
-                # True if this row is a revision. Revised rows are generated
-                # while being told what the critics objected to, so they risk
-                # overcorrecting into caricature — keep the flag so accepted
-                # revised rows can be compared against first-pass ones.
-                "revised": agg_first is not None,
+                # 2 = accepted on the fresh retry after the panel rejected the
+                # first attempt. Kept so second-attempt rows can be compared
+                # with first-attempt ones.
+                "attempt": 1 if agg_first is None else 2,
                 "trigger": spec["trigger"],
                 "register": spec["register"],
                 "stage": spec["stage"],
@@ -455,7 +465,8 @@ def run(args) -> None:
             if (i + 1) % 25 == 0:
                 print(f"  ...{i + 1}/{len(specs)} | accepted {n_accepted} | est ${cost:.2f}")
 
-    print(f"\n[done] accepted {n_accepted} | rejected {n_rejected} | revised {n_revised}")
+    print(f"\n[done] accepted {n_accepted} | rejected {n_rejected} | "
+          f"retried from spec {n_retried}")
     print(f"[filters] length {n_length} | named-own-pattern {n_banned_term}")
     # Unknown is a generation-quality counter, not a taxonomy one. A high number
     # means the generator is producing bare vents or plain situation reports with

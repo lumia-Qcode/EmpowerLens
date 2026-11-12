@@ -1,4 +1,4 @@
-"""Prompt builders for the generator, the blind critic, and the reviser.
+"""Prompt builders for the generator and the blind critic.
 
 Design notes
 ------------
@@ -277,19 +277,3 @@ CRITIC_SCHEMA = {
     "additionalProperties": False,
 }
 
-
-# --------------------------------------------------------------------------- #
-# Reviser (Sonnet) — one fixable retry                                        #
-# --------------------------------------------------------------------------- #
-
-def build_reviser_user(spec: dict, text: str, critic_note: str, seeds: list[dict],
-                       rng, recent_openers: list[str] | None = None,
-                       overused_starts: list[str] | None = None) -> str:
-    base = build_generator_user(spec, seeds, rng, recent_openers=recent_openers,
-                                overused_starts=overused_starts)
-    return (f"A previous attempt did not clearly show the target pattern.\n\n"
-            f'Previous attempt: "{text}"\n\n'
-            f"Independent reviewers instead read it as: {critic_note}\n\n"
-            f"Rewrite it so the TARGET pattern below is clearly the dominant "
-            f"reasoning, while staying natural, specific and grounded in the "
-            f"situation.\n\n{base}")

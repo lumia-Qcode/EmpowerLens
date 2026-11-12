@@ -66,7 +66,7 @@ in §1 and §2 resolve.
 | 2 | Filters | code | Cheap rejects before spending critic tokens — length, banned clinical vocabulary, English-dominance, Jaccard dedup |
 | 3 | Critic panel | `gemini:gemini-2.5-flash` ×3 | Blind, cross-provider judges; DoT reasoning; temperature-decorrelated (0.3/0.6/0.9); each emits the span it judged from |
 | 4 | Aggregate + decide | code | Soft labels from agreement; span agreement; anti-leakage acceptance gate |
-| 5 | Reviser | `anthropic:claude-sonnet-5` | One feedback-guided retry carrying the critics' actual objection |
+| 5 | Retry | `anthropic:claude-sonnet-5` | One fresh generation from the same spec; never sees the failed text or the critics' objection |
 
 *(Role rotation, à la KoACD, is intentionally **not** used: our critics are
 symmetric blind peers, so there are no asymmetric roles to rotate — temperature
@@ -121,7 +121,7 @@ currently support, listed so the writeup does not overstate them.
    opener but diverging score 0.159. It catches literal repeats, not homogeneity.
 4. **A dropped critic verdict skews the vote.** If a critic's JSON fails to
    parse it is silently omitted, but `aggregate()` still divides by `n_critics`,
-   making the majority harder to reach and inflating the revision rate.
+   making the majority harder to reach and inflating the retry rate.
 5. **No human verification has happened yet**, and the keyword-only leakage
    baseline is not written.
 6. **The ~33.7% inter-annotator agreement figure** quoted for Shreevastava &
