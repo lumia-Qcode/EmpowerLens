@@ -69,7 +69,7 @@ def predict_logits(model, encodings, pad_id, device, batch_size=16):
 
 
 # CRITICAL FIX: Explicitly added max_labels to the function signature
-def predictions_from_logits(logits, task, thresholds=None, max_labels=0):
+def predictions_from_logits(logits, task, thresholds=None, max_labels=0, binary_threshold=None):
     if task == "multilabel":
         probs = 1 / (1 + np.exp(-logits))
         t = np.array(thresholds if thresholds is not None else [0.5] * probs.shape[1])
@@ -83,6 +83,11 @@ def predictions_from_logits(logits, task, thresholds=None, max_labels=0):
                     preds[i] = 0
                     preds[i, keep] = 1
         return preds
+    if task == "binary" and binary_threshold is not None:
+        # D13: threshold on P(distorted), fitted on val by src/fit_binary_threshold.py
+        z = logits - logits.max(axis=1, keepdims=True)
+        p = np.exp(z[:, 1]) / np.exp(z).sum(axis=1)
+        return (p >= binary_threshold).astype(int)
     return np.argmax(logits, axis=1)
 
 
@@ -139,6 +144,7 @@ def main(argv=None):
     # plausible-looking numbers. Checkpoints predating this key are "document".
     input_repr = meta.get("input_repr", "document")
     thresholds = meta.get("thresholds")
+    binary_threshold = meta.get("binary_threshold")
     # Same collision reasoning as run_name in train_transformer.py: without this
     # the document and span arms both write eval_<tag>_<task>_<seed>.json into
     # one --out dir. Suffixed only for non-default modes, so the notebooks'
@@ -216,7 +222,7 @@ def main(argv=None):
         logits = predict_logits(model, enc, tokenizer.pad_token_id, device, args.batch_size)
         
         # CRITICAL FIX: Adjusted arguments to pass max_labels cleanly
-        y_pred = predictions_from_logits(logits, task, thresholds, args.max_labels)
+        y_pred = predictions_from_logits(logits, task, thresholds, args.max_labels, binary_threshold)
 
         if split == "test":
             test_y_true_saved = y_true
