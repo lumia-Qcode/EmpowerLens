@@ -1,0 +1,136 @@
+{
+  "meta": {
+    "splits": "data/splits_relabelled",
+    "task": "binary",
+    "model": "mental/mental-roberta-base",
+    "init_from": "mental/mental-roberta-base",
+    "seed": 1337,
+    "epochs": 5,
+    "lr": 3e-05,
+    "batch_size": 16,
+    "max_length": 512,
+    "truncation": "head",
+    "head_keep": 128,
+    "device": "cuda",
+    "smoke": false,
+    "num_labels": 2,
+    "loss": "weighted_ce",
+    "focal_gamma": null,
+    "mask_labels": "",
+    "label_smoothing": 0.0,
+    "grad_accum": 1,
+    "lr_scheduler": "linear",
+    "dropout": null,
+    "freeze_layers": 0,
+    "llrd": false,
+    "llrd_decay": 0.9,
+    "early_stopping_patience": 0,
+    "weight_decay": 0.1,
+    "input_repr": "document",
+    "train_span_match": null,
+    "val_span_match": null,
+    "val_truncation_rate": 0.02766798418972332,
+    "val_metrics": {
+      "eval_loss": 0.5998646020889282,
+      "eval_macro_f1": 0.772657764885785,
+      "eval_runtime": 1.6444,
+      "eval_samples_per_second": 153.856,
+      "eval_steps_per_second": 9.73,
+      "epoch": 5.0
+    },
+    "thresholds": null,
+    "determinism": {
+      "deterministic": false
+    },
+    "best_epoch": 3.0,
+    "selection_metric": "macro_f1",
+    "binary_threshold": 0.739014208316803,
+    "binary_threshold_criterion": {
+      "rule": "lowest threshold on P(distorted) with val FPR <= target",
+      "target_fpr": 0.15,
+      "val_fpr": 0.1469,
+      "val_sensitivity": 0.7091,
+      "val_n_non_distorted": 143
+    }
+  },
+  "splits": {
+    "val": {
+      "metrics": {
+        "model": "mental/mental-roberta-base",
+        "task": "binary",
+        "seed": 1337.0,
+        "split": "val",
+        "n_classes": 2.0,
+        "weighted_f1": 0.6967745792848266,
+        "macro_f1": 0.6955760786336005,
+        "macro_f1_10": "",
+        "micro_f1": 0.6956521739130435,
+        "positive_class_f1": 0.7003891050583657,
+        "no_distortion_f1": "",
+        "no_distortion_wcontrib": "",
+        "truncation_rate": 0.0277,
+        "roc_auc": 0.8202531645569621,
+        "source": "empowerlens",
+        "averaging": ""
+      },
+      "per_class": [
+        {
+          "class": "non_distorted",
+          "precision": 0.5584415584415584,
+          "recall": 0.9052631578947369,
+          "f1": 0.6907630522088354,
+          "support": 95,
+          "weighted_contribution": 0.2593774306713018
+        },
+        {
+          "class": "distorted",
+          "precision": 0.9090909090909091,
+          "recall": 0.569620253164557,
+          "f1": 0.7003891050583657,
+          "support": 158,
+          "weighted_contribution": 0.4373971486135248
+        }
+      ],
+      "truncation_rate": 0.0277
+    },
+    "test": {
+      "metrics": {
+        "model": "mental/mental-roberta-base",
+        "task": "binary",
+        "seed": 1337.0,
+        "split": "test",
+        "n_classes": 2.0,
+        "weighted_f1": 0.7040883952648659,
+        "macro_f1": 0.6979009552538964,
+        "macro_f1_10": "",
+        "micro_f1": 0.6996047430830039,
+        "positive_class_f1": 0.7205882352941176,
+        "no_distortion_f1": "",
+        "no_distortion_wcontrib": "",
+        "truncation_rate": 0.0237,
+        "roc_auc": 0.7948285174183094,
+        "source": "empowerlens",
+        "averaging": ""
+      },
+      "per_class": [
+        {
+          "class": "non_distorted",
+          "precision": 0.5563380281690141,
+          "recall": 0.8586956521739131,
+          "f1": 0.6752136752136753,
+          "support": 92,
+          "weighted_contribution": 0.24553224553224556
+        },
+        {
+          "class": "distorted",
+          "precision": 0.8828828828828829,
+          "recall": 0.6086956521739131,
+          "f1": 0.7205882352941176,
+          "support": 161,
+          "weighted_contribution": 0.4585561497326203
+        }
+      ],
+      "truncation_rate": 0.0237
+    }
+  }
+}
