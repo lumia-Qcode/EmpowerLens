@@ -110,9 +110,9 @@ Each synthetic row was compared with every text in each set.
 | Generator seeds (`entrepreneurial_seeds.jsonl`) | 44 | **0** | — | 0.279 |
 | Supplementary-evaluation rows (S03, role = evaluation) | 376 | **0** | — | 0.213 |
 | Benchmark test split (`data/splits/test.csv`, texts only) | 253 | **0** | — | 0.235 |
-| Survey responses | — | **not checked yet** | — | — |
+| Survey responses (written answers of 10+ words) | 348 | **0** | — | 0.224 |
 
-**No synthetic row is a near-copy of anything:** the closest pair in any set is 0.28, well under 0.6. The clean
+**No synthetic row is a near-copy of anything:** the closest pair in any of the four sets is 0.28, well under 0.6. The clean
 copy, `synthetic_train_en_clean.jsonl`, therefore holds **all 258 rows**, with the same counts per type as S06:
 
 | Type | Rows |
@@ -129,10 +129,20 @@ copy, `synthetic_train_en_clean.jsonl`, therefore holds **all 258 rows**, with t
 | Mental filter | 11 |
 | Magnification | 7 |
 
-**Survey.** The survey responses are participant data and are not in the repo (D04). The check is ready:
-`python -m src.synth_checks --survey <export.csv>`. It reads the free-text answers of 10+ words and reports only
-anonymous row/question numbers. The survey CSV is never committed. This section is updated when the export is
-available.
+**Survey.** The survey responses are participant data. They were read from the Google Form export, kept locally in
+the gitignored `D3/` folder and never committed:
+
+```
+python -m src.synth_checks --survey "D3/Copy of EmpowerLens — Entrepreneur Reflection Study (Responses).xlsx"
+```
+
+**What was compared:** every free-text answer of 10+ words, 348 answers from 37 respondents across the 17 thought
+questions and the wrap-up question.
+- That's more than D04's 330 "usable" answers, because this check doesn't drop gibberish, skips or the joke
+  respondent. For an overlap check, more is safer.
+- Consent, gender, stage and sector were not compared: they have no answers of 10+ words.
+
+Only anonymous row/question numbers would be reported, and none came close: the highest Jaccard was 0.224.
 
 **test.csv exception.** CLAUDE.md reserves `data/splits/test.csv` for `src/evaluate.py`. The brief asks for this
 overlap check, and the team agreed to it:

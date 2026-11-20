@@ -41,3 +41,6 @@ def test_load_survey_keeps_long_answers_only(tmp_path):
                   }).to_csv(p, index=False)
     out = S.load_survey(p)
     assert len(out) == 1 and out[0][0] == "survey_r2_q3"
+    x = tmp_path / "s.xlsx"
+    pd.read_csv(p, dtype=str).to_excel(x, index=False)
+    assert S.load_survey(x) == out

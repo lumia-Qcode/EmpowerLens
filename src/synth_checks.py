@@ -161,7 +161,11 @@ def load_survey(path: Path, min_words=10) -> list[tuple[str, str]]:
     timestamp / name / age / gender columns). Answers under 10 words are skipped
     (the D04 rule). Only anonymous ids ("survey_r<row>_q<col>") leave this function.
     """
-    df = pd.read_csv(path, dtype=str, encoding="utf-8-sig")
+    path = Path(path)
+    if path.suffix.lower() in (".xlsx", ".xls"):          # Google Forms "Download -> .xlsx"
+        df = pd.read_excel(path, dtype=str)                # first sheet = the form responses
+    else:
+        df = pd.read_csv(path, dtype=str, encoding="utf-8-sig")
     out = []
     for ci, col in enumerate(df.columns):
         wc = df[col].dropna().str.split().str.len()
