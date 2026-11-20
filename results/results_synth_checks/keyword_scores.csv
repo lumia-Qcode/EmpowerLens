@@ -1,0 +1,5 @@
+list,split,n,macro_f1,macro_f1_10,chance_macro_f1,chance_macro_f1_10
+a_priori,synthetic,258,0.2535,0.2392,0.0911,0.0675
+a_priori,benchmark_val,253,0.1082,0.081,0.0932,0.0646
+post_hoc,synthetic,258,0.2995,0.2907,0.0911,0.0675
+post_hoc,benchmark_val,253,0.1082,0.081,0.0932,0.0646

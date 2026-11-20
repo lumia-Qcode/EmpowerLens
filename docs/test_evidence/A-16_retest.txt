@@ -1,0 +1,19 @@
+A-16 re-test (empowerlens-demo branch d26-fixes, Claude agent, 2026-11-20)
+
+Browser (Playwright, commit f1b849e): signed in at /researcher as researcher@empowerlens.demo; cohort 1 opens on 'Reflection 1 of 18':
+text 'I have to be perfect in every meeting. If I make one mistake the deal is gone.' with the first sentence highlighted, prediction
+'Distorted reasoning detected (p = 0.978, threshold 0.977)', bold types All-or-nothing thinking 0.69 and Should statements 0.63
+(A-16_retest.png). Then Next to reflections 2, 3 and 4.
+
+access_log rows written by that browser session (researcher = user 2):
+{"log_id": 12, "user_id": 2, "cohort_id": 1, "reflection_id": null, "action": "list_researcher_review", "outcome": "allowed", "logged_at": "2026-11-20T14:47:27+00:00"}
+{"log_id": 13, "user_id": 2, "cohort_id": 1, "reflection_id": 1, "action": "open_researcher_review", "outcome": "allowed", "logged_at": "2026-11-20T14:47:27+00:00"}
+{"log_id": 14, "user_id": 2, "cohort_id": 1, "reflection_id": 2, "action": "open_researcher_review", "outcome": "allowed", "logged_at": "2026-11-20T14:47:36+00:00"}
+{"log_id": 15, "user_id": 2, "cohort_id": 1, "reflection_id": 3, "action": "open_researcher_review", "outcome": "allowed", "logged_at": "2026-11-20T14:47:45+00:00"}
+{"log_id": 16, "user_id": 2, "cohort_id": 1, "reflection_id": 4, "action": "open_researcher_review", "outcome": "allowed", "logged_at": "2026-11-20T14:47:46+00:00"}
+
+(Later rows for cohort 6 / reflection 34 came from the A-04 API checks, not this browser session.)
+
+access_log columns: log_id, user_id, cohort_id, reflection_id, action, outcome, logged_at
+One 'open_researcher_review' row per reflection opened, with reflection_id; the cohort list call logs 'list_researcher_review'
+and returns IDs only (no text, no prediction).

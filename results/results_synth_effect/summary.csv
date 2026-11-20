@@ -1,0 +1,7 @@
+condition,split,n_seeds,specificity_mean,specificity_std,fpr_mean,fpr_std,sensitivity_mean,sensitivity_std,multilabel_macro_f1_mean,multilabel_macro_f1_std
+train_only,supplementary_evaluation,3,0.9406,0.0017,0.0594,0.0017,0.2741,0.0339,0.1191,0.0063
+train_only,test,3,0.7935,0.0109,0.2065,0.0109,0.648,0.0482,0.266,0.0231
+train_only,val,3,0.8526,0.0,0.1474,0.0,0.6751,0.0256,0.2997,0.0275
+train_synth,supplementary_evaluation,3,0.7976,0.059,0.2024,0.059,0.5259,0.0841,0.1505,0.0027
+train_synth,test,3,0.721,0.0332,0.279,0.0332,0.6915,0.038,0.2788,0.0237
+train_synth,val,3,0.8526,0.0,0.1474,0.0,0.7089,0.0502,0.3215,0.0285

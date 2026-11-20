@@ -1,0 +1,21 @@
+A-06 re-test (empowerlens-demo branch d26-fixes, Claude agent, 2026-11-20)
+
+How a 'link' is identified: the participant link is /participant?cohort=<cohort_id> (or /participant + the workshop picker).
+The app never identifies people, so 'the same link' = the same workshop opened in the same browser. The participant token
+issued at consent is stored in that browser's localStorage under 'empowerlens.participant.<cohort_id>'. On opening the link the
+page calls GET /api/participant/status/<token>; a completed token (or a closed workshop) shows 'This exercise is closed'.
+Limitation: a different browser/device or a private window is not recognised (no login, by design).
+
+Browser (Playwright): A-05 first: /participant?cohort=6, consent, typed 'Everyone will laugh at my pitch, I always fail', Submit ->
+'Responses received' (no 'Start a new exercise' button any more). Then opened the same link again ->
+heading 'This exercise is closed', no consent form, no text box, no buttons (A-06_retest.png).
+Also /participant (no ?cohort) with the picker set to 'TEST participant flow' -> 'This exercise is closed'.
+In-page attempt to submit another answer with the stored token: 409 {"detail":"This exercise has already been submitted"}.
+
+API re-check with that token (P-0F6FAB65):
+GET /api/participant/status/P-0F6FAB65 -> 200 {"cohort_id":6,"completed":true,"cohort_open":true}
+POST /api/participant/submit (same token, new answer) -> 409 {"detail":"This exercise has already been submitted"}
+reflection rows before/after the attempt: 35 / 35
+Cohort 6 reflections (all of them):
+{"reflection_id": 34, "participant_token": "P-A4B20347", "text": "", "unanswered": 1}
+{"reflection_id": 35, "participant_token": "P-0F6FAB65", "text": "Everyone will laugh at my pitch, I always fail", "unanswered": 0}

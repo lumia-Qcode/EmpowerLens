@@ -1,0 +1,96 @@
+{
+  "n_synthetic": 258,
+  "threshold": 0.6,
+  "set_sizes": {
+    "seeds": 44,
+    "supplementary_evaluation": 376,
+    "test": 253,
+    "survey": 348
+  },
+  "flagged_per_set": {
+    "seeds": [],
+    "supplementary_evaluation": [],
+    "test": [],
+    "survey": []
+  },
+  "max_jaccard_per_set": {
+    "seeds": 0.279,
+    "supplementary_evaluation": 0.213,
+    "test": 0.235,
+    "survey": 0.224
+  },
+  "n_flagged_rows": 0,
+  "n_clean": 258,
+  "clean_per_type": {
+    "No Distortion": 84,
+    "Mind Reading": 21,
+    "Personalization": 21,
+    "Fortune-telling": 21,
+    "Labeling": 21,
+    "Overgeneralization": 20,
+    "Should statements": 19,
+    "Emotional Reasoning": 17,
+    "All-or-nothing thinking": 16,
+    "Mental filter": 11,
+    "Magnification": 7
+  },
+  "survey": "checked: 348 answers of 10+ words from Copy of EmpowerLens — Entrepreneur Reflection Study (Responses).xlsx",
+  "openers": {
+    "synthetic": {
+      "n": 258,
+      "distinct_first_words": 12,
+      "distinct_two_word_starts": 54,
+      "top_two_word_starts": [
+        [
+          "when my",
+          52
+        ],
+        [
+          "last week,",
+          37
+        ],
+        [
+          "our first",
+          33
+        ],
+        [
+          "my father",
+          18
+        ],
+        [
+          "i missed",
+          15
+        ]
+      ],
+      "share_top3_two_word_starts": 0.473
+    },
+    "benchmark_val": {
+      "n": 253,
+      "distinct_first_words": 46,
+      "distinct_two_word_starts": 114,
+      "top_two_word_starts": [
+        [
+          "from a",
+          34
+        ],
+        [
+          "from the",
+          28
+        ],
+        [
+          "i have",
+          19
+        ],
+        [
+          "i am",
+          19
+        ],
+        [
+          "i've been",
+          7
+        ]
+      ],
+      "share_top3_two_word_starts": 0.32
+    }
+  }
+}

@@ -1,0 +1,27 @@
+review_id,id,panel_label,reviewer_label
+R014,syn_00013,Labeling,Fortune-telling
+R072,syn_00020,Overgeneralization,No Distortion (calibrated pessimism)
+R005,syn_00026,Overgeneralization,No Distortion (calibrated pessimism)
+R018,syn_00030,Fortune-telling,Magnification
+R210,syn_00032,Labeling,Mind Reading
+R102,syn_00034,Overgeneralization,Fortune-telling
+R110,syn_00041,Labeling,Magnification
+R071,syn_00048,Labeling,Mind Reading
+R073,syn_00056,Fortune-telling,Overgeneralization
+R099,syn_00059,Magnification,Fortune-telling
+R184,syn_00087,Emotional Reasoning,Magnification
+R008,syn_00114,Magnification,Fortune-telling
+R112,syn_00137,Personalization,No Distortion (calibrated pessimism)
+R215,syn_00144,Should statements,Personalization
+R077,syn_00157,Labeling,Mind Reading
+R055,syn_00188,Overgeneralization,Fortune-telling
+R135,syn_00191,Magnification,Fortune-telling
+R084,syn_00204,Fortune-telling,Magnification
+R010,syn_00216,Mind Reading,Emotional Reasoning
+R026,syn_00226,Mind Reading,Labeling
+R153,syn_00257,Fortune-telling,Mind Reading
+R054,syn_00261,Fortune-telling,Magnification
+R017,syn_00263,Fortune-telling,Magnification
+R016,syn_00269,Personalization,Should statements
+R141,syn_00284,Overgeneralization,Fortune-telling
+R168,syn_00295,Overgeneralization,Fortune-telling

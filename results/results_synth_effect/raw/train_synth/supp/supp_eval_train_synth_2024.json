@@ -1,0 +1,96 @@
+{
+  "condition": "train_synth",
+  "seed": 2024,
+  "n": 376,
+  "n_distorted": 45,
+  "n_non_distorted": 331,
+  "binary_threshold": 0.7665371298789978,
+  "binary_splits": "data/splits_synth",
+  "multilabel_splits": "data/splits_synth",
+  "binary": {
+    "specificity": 0.7401812688821753,
+    "fpr": 0.2598187311178247,
+    "sensitivity": 0.4888888888888889,
+    "tn": 245,
+    "fp": 86,
+    "tp": 22,
+    "fn": 23
+  },
+  "multilabel": {
+    "macro_f1": 0.1475024975024975,
+    "micro_f1": 0.17391304347826086,
+    "weighted_f1": 0.22135622997691964
+  },
+  "per_class": [
+    {
+      "class": "emotional_reasoning",
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+    },
+    {
+      "class": "overgeneralization",
+      "precision": 0.16216216216216217,
+      "recall": 0.4,
+      "f1": 0.23076923076923078,
+      "support": 15
+    },
+    {
+      "class": "mental_filter",
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+    },
+    {
+      "class": "should_statements",
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 7
+    },
+    {
+      "class": "all_or_nothing",
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 8
+    },
+    {
+      "class": "mind_reading",
+      "precision": 0.35294117647058826,
+      "recall": 0.8571428571428571,
+      "f1": 0.5,
+      "support": 7
+    },
+    {
+      "class": "fortune_telling",
+      "precision": 0.4117647058823529,
+      "recall": 0.7777777777777778,
+      "f1": 0.5384615384615384,
+      "support": 9
+    },
+    {
+      "class": "magnification",
+      "precision": 0.1111111111111111,
+      "recall": 0.25,
+      "f1": 0.15384615384615385,
+      "support": 4
+    },
+    {
+      "class": "personalization",
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+    },
+    {
+      "class": "labeling",
+      "precision": 0.028985507246376812,
+      "recall": 0.25,
+      "f1": 0.05194805194805195,
+      "support": 8
+    }
+  ]
+}

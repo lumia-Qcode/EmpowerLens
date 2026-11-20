@@ -1,0 +1,108 @@
+{
+  "labeller": "Izza",
+  "labels_file": "data/synthetic/review_sheet.xlsx",
+  "n_reviewed": 217,
+  "n_removed": 26,
+  "n_clean": 258,
+  "n_final": 232,
+  "final_per_type": {
+    "No Distortion": 84,
+    "Mind Reading": 19,
+    "Personalization": 19,
+    "Should statements": 18,
+    "Labeling": 16,
+    "All-or-nothing thinking": 16,
+    "Emotional Reasoning": 16,
+    "Fortune-telling": 15,
+    "Overgeneralization": 14,
+    "Mental filter": 11,
+    "Magnification": 4
+  },
+  "removed_per_panel_label": {
+    "Overgeneralization": 6,
+    "Fortune-telling": 6,
+    "Labeling": 5,
+    "Magnification": 3,
+    "Personalization": 2,
+    "Mind Reading": 2,
+    "Emotional Reasoning": 1,
+    "Should statements": 1
+  },
+  "panel_vs_reviewer": [
+    {
+      "panel": "Fortune-telling",
+      "reviewer": "Magnification",
+      "n": 4
+    },
+    {
+      "panel": "Overgeneralization",
+      "reviewer": "Fortune-telling",
+      "n": 4
+    },
+    {
+      "panel": "Labeling",
+      "reviewer": "Mind Reading",
+      "n": 3
+    },
+    {
+      "panel": "Magnification",
+      "reviewer": "Fortune-telling",
+      "n": 3
+    },
+    {
+      "panel": "Overgeneralization",
+      "reviewer": "No Distortion (calibrated pessimism)",
+      "n": 2
+    },
+    {
+      "panel": "Labeling",
+      "reviewer": "Fortune-telling",
+      "n": 1
+    },
+    {
+      "panel": "Labeling",
+      "reviewer": "Magnification",
+      "n": 1
+    },
+    {
+      "panel": "Fortune-telling",
+      "reviewer": "Overgeneralization",
+      "n": 1
+    },
+    {
+      "panel": "Emotional Reasoning",
+      "reviewer": "Magnification",
+      "n": 1
+    },
+    {
+      "panel": "Personalization",
+      "reviewer": "No Distortion (calibrated pessimism)",
+      "n": 1
+    },
+    {
+      "panel": "Should statements",
+      "reviewer": "Personalization",
+      "n": 1
+    },
+    {
+      "panel": "Mind Reading",
+      "reviewer": "Emotional Reasoning",
+      "n": 1
+    },
+    {
+      "panel": "Mind Reading",
+      "reviewer": "Labeling",
+      "n": 1
+    },
+    {
+      "panel": "Fortune-telling",
+      "reviewer": "Mind Reading",
+      "n": 1
+    },
+    {
+      "panel": "Personalization",
+      "reviewer": "Should statements",
+      "n": 1
+    }
+  ]
+}

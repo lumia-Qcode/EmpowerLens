@@ -1,21 +1,21 @@
 Id_Number,absolute_words,attributed_label,top5_words,verdict
-131,"never, always, every",,,
-165,"everyone, nothing, all",,,
-219,"never, everything",,,
-334,never,,,
-697,"always, everything",,,
-920,all,,,
-1053,"never, everything, nothing, all, every",,,
-1066,"never, every",,,
-1172,always,,,
-1582,all,,,
-1696,"never, always, all",,,
-1736,always,,,
-1756,"never, all",,,
-1802,"never, always, every",,,
-1904,all,,,
-1932,"never, always, nobody, every",,,
-2417,everything,,,
-2532,every,,,
-4522,"always, all",,,
-4549,"always, all",,,
+131,"never, always, every",mind_reading,scared | criticizing | to | always | supportive,mixed
+165,"everyone, nothing, all",mind_reading,predator | prey | myself | isolate | by,topic
+219,"never, everything",emotional_reasoning,flashbacks | flashbacks | flashbacks | to | everything,mixed
+334,never,should_statements,humiliated | masochism | I | masochism | humiliated,topic
+697,"always, everything",mind_reading,don’t | insensitive | When | i | mother,topic
+920,all,mind_reading,like | like | me | angry | the,mixed
+1053,"never, everything, nothing, all, every",mind_reading,criticizing | He | the | acting | critiques,topic
+1066,"never, every",emotional_reasoning,I’m | suicidal | urges | of | I,topic
+1172,always,mind_reading,think | offensive | offend | because | me,mixed
+1582,all,personalization,aromantic | what | wasted | if | sick,topic
+1696,"never, always, all",all_or_nothing,retarded | I’m | talk | succeeding | mumble,mixed
+1736,always,mind_reading,doesn’t | takers | care | care | relationship,mixed
+1756,"never, all",mental_filter,don’t | I’m | couldn’t | can’t | out,cue
+1802,"never, always, every",personalization,infuriated | Sometimes | will | Dear | narcissist,topic
+1904,all,should_statements,From | Germany | wouldn’t | voluntary | myself,topic
+1932,"never, always, nobody, every",mind_reading,thought | ugly | lame | job | fustration,mixed
+2417,everything,emotional_reasoning,Prozac | haven’t | 40mg | very | the,topic
+2532,every,magnification,can’t | embarrassed | myself | can’t | I,cue
+4522,"always, all",personalization,But | She’s | She | She | She,topic
+4549,"always, all",mind_reading,stonewalls | irrational | mistakes | ready | being,topic

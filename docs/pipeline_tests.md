@@ -1,6 +1,6 @@
 # D27 — Unit, data-rule and performance test cases
 
-Rows with Task = D27 on the *Test cases* tab of `D3/tasks_D3_2026-11-15.xlsx`. Run 20 Nov 2026 on branch
+Rows with Task = D27 on the *Test cases* tab of the D3 task sheet (`tasks_D3_2026-11-15.xlsx`, kept off-repo). Run 20 Nov 2026 on branch
 `lumia-space` (commit `d210137`), Windows 11 Pro, 12th Gen Intel Core i5-1245U, 15.6 GB RAM, Python 3.15 project
 venv (CPU torch). Every command's full output is in `docs/test_evidence/<ID>.txt`.
 

@@ -1,0 +1,17 @@
+A-07 re-test (empowerlens-demo branch d26-fixes, Claude agent, 2026-11-20)
+
+Browser (Playwright): signed in at /trainer as trainer@empowerlens.demo, clicked Sign out, then pasted
+http://localhost:5173/api/trainer/cohorts/1/report -> HTTP 401 {"detail":"Sign in required"}, no report content (A-07_retest.png);
+/trainer shows 'Sign in as trainer' (A-07_retest_trainer_page.png).
+Replaying the signed-out bearer token (AeXQs5...) from the page: 401 {"detail":"Session expired, sign in again"}
+(before the fix this returned 200 with the full report). sessionStorage token after sign-out: null.
+Note: the first attempt on commit 3a23957 still returned 200, because the browser navigated before the logout request was sent;
+fixed in f3934ca (clear locally first, send the revoke with fetch keepalive) and re-run as above.
+
+API re-check:
+with fresh token: GET /api/trainer/cohorts/1/report -> 200
+POST /api/auth/logout -> 200 {"signed_out":true}
+same token again: GET /api/trainer/cohorts/1/report -> 401 {"detail":"Session expired, sign in again"}
+no token: GET /api/trainer/cohorts/1/report -> 401 {"detail":"Sign in required"}
+session rows for that token left in DB: 0
+Session expiry: 8 hours after sign-in (EMPOWERLENS_SESSION_HOURS); login now returns expires_in_hours=8.0

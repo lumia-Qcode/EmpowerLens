@@ -1,0 +1,13 @@
+,n,n,rows_with_own_keyword,rows_with_own_keyword
+split,benchmark_val,synthetic,benchmark_val,synthetic
+type,,,,
+all_or_nothing,10.0,16.0,0.8,0.75
+emotional_reasoning,13.0,17.0,0.846,0.941
+fortune_telling,16.0,21.0,0.125,0.19
+labeling,16.0,21.0,0.188,0.19
+magnification,19.0,7.0,0.158,0.143
+mental_filter,13.0,11.0,0.077,0.455
+mind_reading,20.0,21.0,0.15,0.333
+overgeneralization,24.0,20.0,0.167,0.7
+personalization,16.0,21.0,0.125,0.762
+should_statements,11.0,19.0,0.636,0.789

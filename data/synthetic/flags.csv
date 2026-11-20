@@ -1,0 +1,259 @@
+id,in_clean,flag_neighbours,flag_model,flag_close_votes,neighbour_disagreement,neighbour_majority_label,model_p_distorted,model_top_type,model_top_prob,model_reason,panel_votes_for_label,n_checks
+syn_00000,yes,yes,no,no,0.8,Fortune-telling,0.9814,Mind Reading,0.7736,,3,1
+syn_00001,yes,no,no,yes,0.0,No Distortion,0.0108,Personalization,0.3689,,2,1
+syn_00002,yes,no,no,yes,0.1,No Distortion,0.0124,Mind Reading,0.4528,,2,1
+syn_00003,yes,no,no,no,0.5,Personalization,0.9789,Personalization,0.7223,,3,0
+syn_00004,yes,no,no,yes,0.0,No Distortion,0.0115,Overgeneralization,0.302,,2,1
+syn_00005,yes,no,no,yes,0.0,No Distortion,0.0322,Mind Reading,0.3578,,2,1
+syn_00007,yes,no,no,no,0.7,Mind Reading,0.9211,Mind Reading,0.6661,,3,0
+syn_00008,yes,no,no,yes,0.7,Mind Reading,0.6969,Mind Reading,0.7409,,2,1
+syn_00009,yes,no,no,no,0.7,Mind Reading,0.9915,Personalization,0.8019,,3,0
+syn_00010,yes,no,no,yes,0.0,No Distortion,0.0619,Fortune-telling,0.5578,,2,1
+syn_00011,yes,yes,no,yes,0.8,No Distortion,0.9562,Fortune-telling,0.473,,2,2
+syn_00012,yes,no,no,yes,0.4,No Distortion,0.0177,Mind Reading,0.3963,,2,1
+syn_00013,yes,yes,no,no,0.9,Should statements,0.9917,Mind Reading,0.827,,3,1
+syn_00014,yes,no,no,no,0.1,No Distortion,0.0127,Mind Reading,0.4046,,3,0
+syn_00015,yes,no,no,no,0.4,Mind Reading,0.9886,Mind Reading,0.8455,,3,0
+syn_00016,yes,no,no,no,0.7,Labeling,0.9922,Personalization,0.8508,,3,0
+syn_00017,yes,yes,yes,no,0.8,Labeling,0.8302,Mind Reading,0.5317,model Mind Reading 0.53; Overgeneralization 0.47 < 0.5,3,2
+syn_00019,yes,no,no,yes,0.1,No Distortion,0.7023,Personalization,0.6245,,2,1
+syn_00020,yes,no,no,yes,0.7,Overgeneralization,0.9863,Fortune-telling,0.8547,,2,1
+syn_00022,yes,yes,yes,yes,0.8,No Distortion,0.0794,Fortune-telling,0.8684,P(distorted) 0.079 <= 0.1,2,3
+syn_00024,yes,no,no,no,0.1,All-or-nothing thinking,0.9927,Personalization,0.8544,,3,0
+syn_00025,yes,yes,no,yes,0.8,Personalization,0.9921,Personalization,0.8377,,2,2
+syn_00026,yes,yes,yes,yes,0.8,Mind Reading,0.9846,Mind Reading,0.6883,model Mind Reading 0.69; Overgeneralization 0.43 < 0.5,2,3
+syn_00027,yes,yes,yes,no,0.9,Labeling,0.047,Overgeneralization,0.5207,P(distorted) 0.047 <= 0.1,3,2
+syn_00028,yes,no,no,no,0.2,No Distortion,0.022,Mind Reading,0.5482,,3,0
+syn_00029,yes,yes,no,yes,0.8,No Distortion,0.9853,Fortune-telling,0.6285,,2,2
+syn_00030,yes,yes,no,no,0.8,All-or-nothing thinking,0.9872,Fortune-telling,0.8897,,3,1
+syn_00031,yes,no,no,yes,0.1,No Distortion,0.0318,Overgeneralization,0.3329,,2,1
+syn_00032,yes,yes,no,no,0.9,Overgeneralization,0.9885,Mind Reading,0.7935,,3,1
+syn_00033,yes,no,no,yes,0.4,Should statements,0.987,Magnification,0.7864,,2,1
+syn_00034,yes,yes,yes,no,1.0,Labeling,0.9919,Emotional Reasoning,0.7961,model Emotional Reasoning 0.80; Overgeneralization 0.42 < 0.5,3,2
+syn_00035,yes,no,no,no,0.5,Personalization,0.9187,Personalization,0.6445,,3,0
+syn_00036,yes,yes,no,no,0.9,No Distortion,0.9828,Fortune-telling,0.8077,,3,1
+syn_00037,yes,no,no,no,0.5,Emotional Reasoning,0.9924,Emotional Reasoning,0.8015,,3,0
+syn_00038,yes,no,no,yes,0.1,No Distortion,0.1701,Fortune-telling,0.5894,,2,1
+syn_00039,yes,no,no,yes,0.6,Emotional Reasoning,0.9694,Fortune-telling,0.8596,,2,1
+syn_00040,yes,yes,no,yes,1.0,Mind Reading,0.7357,Emotional Reasoning,0.8237,,2,2
+syn_00041,yes,yes,no,yes,1.0,No Distortion,0.9853,Mind Reading,0.6957,,2,2
+syn_00042,yes,yes,yes,no,0.8,Should statements,0.9696,Personalization,0.5725,model Personalization 0.57; Labeling 0.41 < 0.45,3,2
+syn_00044,yes,no,no,no,0.5,Personalization,0.9878,Emotional Reasoning,0.7268,,3,0
+syn_00045,yes,no,no,yes,0.5,Overgeneralization,0.9817,Fortune-telling,0.8548,,2,1
+syn_00046,yes,no,no,no,0.6,Personalization,0.9562,Personalization,0.7414,,3,0
+syn_00047,yes,yes,no,no,0.8,Should statements,0.9828,All-or-nothing thinking,0.6408,,3,1
+syn_00048,yes,yes,no,yes,1.0,Mind Reading,0.9841,Mind Reading,0.8258,,2,2
+syn_00051,yes,yes,yes,no,0.9,Labeling,0.9916,Mind Reading,0.8688,model Mind Reading 0.87; Overgeneralization 0.37 < 0.5,3,2
+syn_00052,yes,no,no,yes,0.1,No Distortion,0.1193,Fortune-telling,0.6566,,2,1
+syn_00054,yes,no,no,no,0.3,No Distortion,0.0229,Mind Reading,0.4173,,3,0
+syn_00055,yes,yes,yes,no,0.8,Emotional Reasoning,0.9909,Personalization,0.9141,model Personalization 0.91; Emotional Reasoning 0.45 < 0.8,3,2
+syn_00056,yes,no,no,yes,0.7,Overgeneralization,0.9903,Fortune-telling,0.6999,,2,1
+syn_00057,yes,no,no,no,0.2,No Distortion,0.0302,Overgeneralization,0.4013,,3,0
+syn_00059,yes,yes,no,yes,0.8,No Distortion,0.9889,Mental filter,0.8047,,2,2
+syn_00060,yes,yes,no,yes,0.8,No Distortion,0.9792,Fortune-telling,0.8962,,2,2
+syn_00061,yes,no,no,yes,0.0,No Distortion,0.0154,Overgeneralization,0.3504,,2,1
+syn_00062,yes,no,no,yes,0.1,No Distortion,0.0215,Overgeneralization,0.3977,,2,1
+syn_00063,yes,no,no,yes,0.1,No Distortion,0.0166,Mind Reading,0.3303,,2,1
+syn_00064,yes,no,yes,no,0.2,All-or-nothing thinking,0.9815,Fortune-telling,0.7454,model Fortune-telling 0.75; All-or-nothing thinking 0.43 < 0.65,3,1
+syn_00065,yes,no,yes,no,0.7,No Distortion,0.8778,Personalization,0.5903,model Personalization 0.59; Should statements 0.31 < 0.45,3,1
+syn_00066,yes,no,no,yes,0.3,No Distortion,0.0344,Mind Reading,0.3163,,2,1
+syn_00067,yes,no,yes,no,0.7,Should statements,0.9901,Personalization,0.7927,model Personalization 0.79; Should statements 0.44 < 0.45,3,1
+syn_00068,yes,no,no,yes,0.0,No Distortion,0.0289,Mind Reading,0.4083,,2,1
+syn_00069,yes,no,no,no,0.5,Fortune-telling,0.4023,Mind Reading,0.5039,,3,0
+syn_00070,yes,yes,no,yes,0.9,Labeling,0.0164,Overgeneralization,0.3744,,2,2
+syn_00071,yes,no,yes,no,0.6,Emotional Reasoning,0.9899,Personalization,0.8314,model Personalization 0.83; Emotional Reasoning 0.68 < 0.8,3,1
+syn_00072,yes,no,no,yes,0.3,No Distortion,0.0133,Mind Reading,0.5531,,2,1
+syn_00073,yes,no,no,yes,0.6,Mental filter,0.4345,Magnification,0.5279,,2,1
+syn_00074,yes,yes,no,no,1.0,Should statements,0.9921,Fortune-telling,0.8952,,3,1
+syn_00075,yes,no,no,yes,0.2,No Distortion,0.0147,Overgeneralization,0.3183,,2,1
+syn_00076,yes,no,no,no,0.7,Labeling,0.9867,Mind Reading,0.8302,,3,0
+syn_00078,yes,no,yes,no,0.3,All-or-nothing thinking,0.98,Mind Reading,0.7332,model Mind Reading 0.73; All-or-nothing thinking 0.36 < 0.65,3,1
+syn_00080,yes,no,no,no,0.6,Mind Reading,0.9882,Mind Reading,0.6102,,3,0
+syn_00081,yes,no,yes,no,0.6,Labeling,0.7069,Mind Reading,0.7261,model Mind Reading 0.73; Labeling 0.29 < 0.45,3,1
+syn_00083,yes,no,yes,yes,0.6,All-or-nothing thinking,0.9928,Fortune-telling,0.8651,model Fortune-telling 0.87; All-or-nothing thinking 0.35 < 0.65,2,2
+syn_00084,yes,no,no,yes,0.0,No Distortion,0.3782,Personalization,0.4035,,2,1
+syn_00085,yes,no,no,yes,0.1,No Distortion,0.453,Overgeneralization,0.3934,,2,1
+syn_00086,yes,no,no,yes,0.2,No Distortion,0.018,Fortune-telling,0.4335,,2,1
+syn_00087,yes,yes,no,no,0.8,No Distortion,0.986,Emotional Reasoning,0.8537,,3,1
+syn_00088,yes,no,no,no,0.3,Personalization,0.9886,Personalization,0.8699,,3,0
+syn_00089,yes,no,yes,no,0.6,Overgeneralization,0.9901,Magnification,0.7788,model Magnification 0.78; Overgeneralization 0.49 < 0.5,3,1
+syn_00090,yes,no,no,yes,0.7,Mind Reading,0.991,Mind Reading,0.9052,,2,1
+syn_00091,yes,no,no,no,0.0,No Distortion,0.0268,Overgeneralization,0.3459,,3,0
+syn_00093,yes,yes,yes,no,0.9,Labeling,0.9926,Fortune-telling,0.8977,model Fortune-telling 0.90; All-or-nothing thinking 0.52 < 0.65,3,2
+syn_00094,yes,no,no,yes,0.2,No Distortion,0.0567,Mind Reading,0.4143,,2,1
+syn_00095,yes,no,no,no,0.1,All-or-nothing thinking,0.9888,All-or-nothing thinking,0.7425,,3,0
+syn_00096,yes,no,no,yes,0.2,No Distortion,0.0194,Mind Reading,0.3518,,2,1
+syn_00098,yes,no,no,yes,0.1,No Distortion,0.0999,Personalization,0.5446,,2,1
+syn_00099,yes,no,no,yes,0.2,No Distortion,0.0578,Fortune-telling,0.8532,,2,1
+syn_00101,yes,no,no,no,0.0,No Distortion,0.0169,Mind Reading,0.35,,3,0
+syn_00102,yes,yes,no,yes,0.8,No Distortion,0.9889,Magnification,0.8388,,2,2
+syn_00103,yes,yes,no,yes,0.8,Emotional Reasoning,0.9917,Personalization,0.8,,2,2
+syn_00104,yes,no,no,no,0.2,Personalization,0.9905,Personalization,0.875,,3,0
+syn_00105,yes,no,no,no,0.1,No Distortion,0.01,Mind Reading,0.366,,3,0
+syn_00106,yes,yes,yes,yes,0.9,No Distortion,0.8311,Overgeneralization,0.5337,model Overgeneralization 0.53; Fortune-telling 0.45 < 0.75,2,3
+syn_00107,yes,yes,yes,no,0.8,Fortune-telling,0.9915,Emotional Reasoning,0.8359,model Emotional Reasoning 0.84; Overgeneralization 0.34 < 0.5,3,2
+syn_00108,yes,no,yes,no,0.7,Labeling,0.9827,Fortune-telling,0.8966,model Fortune-telling 0.90; Overgeneralization 0.37 < 0.5,3,1
+syn_00109,yes,no,no,no,0.5,Should statements,0.852,Mind Reading,0.4218,,3,0
+syn_00110,yes,no,no,no,0.7,Labeling,0.9864,Emotional Reasoning,0.6825,,3,0
+syn_00111,yes,no,no,no,0.7,Mind Reading,0.3913,Mind Reading,0.7408,,3,0
+syn_00112,yes,no,yes,yes,0.7,Labeling,0.9917,Mental filter,0.8566,model Mental filter 0.86; Should statements 0.39 < 0.45,2,2
+syn_00113,yes,yes,no,no,0.8,Fortune-telling,0.9332,Mind Reading,0.6888,,3,1
+syn_00114,yes,yes,no,yes,0.9,All-or-nothing thinking,0.9829,Fortune-telling,0.8308,,2,2
+syn_00115,yes,yes,no,yes,0.8,Labeling,0.9873,Personalization,0.8606,,2,2
+syn_00116,yes,no,no,yes,0.3,Should statements,0.9912,Personalization,0.8654,,2,1
+syn_00117,yes,no,no,no,0.2,No Distortion,0.0145,Overgeneralization,0.375,,3,0
+syn_00118,yes,no,no,no,0.7,Mind Reading,0.9829,Mind Reading,0.806,,3,0
+syn_00119,yes,no,no,no,0.7,Labeling,0.992,Personalization,0.8092,,3,0
+syn_00120,yes,no,no,yes,0.5,No Distortion,0.0716,Mind Reading,0.365,,2,1
+syn_00121,yes,no,no,no,0.4,No Distortion,0.0582,All-or-nothing thinking,0.5299,,3,0
+syn_00122,yes,no,no,no,0.6,Personalization,0.9912,Personalization,0.8896,,3,0
+syn_00124,yes,no,no,yes,0.3,No Distortion,0.0118,Fortune-telling,0.4595,,2,1
+syn_00125,yes,no,no,yes,0.2,No Distortion,0.0174,Overgeneralization,0.4041,,2,1
+syn_00126,yes,no,no,yes,0.3,No Distortion,0.0158,Mind Reading,0.3717,,2,1
+syn_00127,yes,no,no,no,0.5,Personalization,0.9898,Personalization,0.838,,3,0
+syn_00128,yes,no,no,no,0.5,Personalization,0.9923,Personalization,0.8864,,3,0
+syn_00129,yes,no,no,yes,0.6,Fortune-telling,0.9714,Fortune-telling,0.8436,,2,1
+syn_00130,yes,no,yes,yes,0.7,Overgeneralization,0.992,Fortune-telling,0.8032,model Fortune-telling 0.80; Emotional Reasoning 0.56 < 0.8,2,2
+syn_00131,yes,yes,no,yes,0.8,Labeling,0.9573,All-or-nothing thinking,0.6905,,2,2
+syn_00132,yes,no,yes,no,0.5,Labeling,0.9808,All-or-nothing thinking,0.5146,model All-or-nothing thinking 0.51; Labeling 0.44 < 0.45,3,1
+syn_00133,yes,no,no,no,0.2,No Distortion,0.0129,Overgeneralization,0.2821,,3,0
+syn_00134,yes,no,yes,yes,0.6,All-or-nothing thinking,0.9898,Mental filter,0.8412,model Mental filter 0.84; All-or-nothing thinking 0.63 < 0.65,2,2
+syn_00135,yes,no,no,yes,0.5,Mental filter,0.9848,Fortune-telling,0.7789,,2,1
+syn_00137,yes,no,no,no,0.6,Personalization,0.9892,Personalization,0.846,,3,0
+syn_00138,yes,no,no,yes,0.2,No Distortion,0.2062,Should statements,0.5097,,2,1
+syn_00139,yes,yes,yes,no,1.0,No Distortion,0.0238,Overgeneralization,0.3965,P(distorted) 0.024 <= 0.1,3,2
+syn_00140,yes,no,yes,yes,0.6,Mind Reading,0.9925,Personalization,0.8236,model Personalization 0.82; Mind Reading 0.50 < 0.55,2,2
+syn_00141,yes,no,no,yes,0.4,No Distortion,0.0249,Magnification,0.5887,,2,1
+syn_00142,yes,yes,no,yes,0.8,Should statements,0.9831,Mind Reading,0.8363,,2,2
+syn_00143,yes,yes,yes,no,0.8,Mind Reading,0.9899,Fortune-telling,0.7594,model Fortune-telling 0.76; Overgeneralization 0.46 < 0.5,3,2
+syn_00144,yes,no,no,yes,0.6,Should statements,0.9879,Personalization,0.7823,,2,1
+syn_00145,yes,yes,no,yes,0.9,Labeling,0.991,Emotional Reasoning,0.8347,,2,2
+syn_00146,yes,no,no,yes,0.0,No Distortion,0.0274,Labeling,0.3065,,2,1
+syn_00147,yes,no,no,yes,0.5,Should statements,0.9858,Mind Reading,0.9202,,2,1
+syn_00148,yes,no,yes,no,0.6,Mind Reading,0.0871,Mind Reading,0.6849,P(distorted) 0.087 <= 0.1,3,1
+syn_00149,yes,no,no,no,0.7,All-or-nothing thinking,0.9923,Mental filter,0.8613,,3,0
+syn_00150,yes,yes,no,no,0.9,Emotional Reasoning,0.9896,Fortune-telling,0.8932,,3,1
+syn_00152,yes,no,yes,yes,0.5,Personalization,0.9892,Emotional Reasoning,0.8736,model Emotional Reasoning 0.87; Personalization 0.41 < 0.65,2,2
+syn_00153,yes,no,no,no,0.1,No Distortion,0.0345,Mind Reading,0.3666,,3,0
+syn_00154,yes,no,no,yes,0.6,Mental filter,0.9608,Magnification,0.6891,,2,1
+syn_00155,yes,no,no,yes,0.0,No Distortion,0.0824,Emotional Reasoning,0.6736,,2,1
+syn_00157,yes,yes,yes,no,0.9,Mind Reading,0.9925,Fortune-telling,0.8302,model Fortune-telling 0.83; Labeling 0.32 < 0.45,3,2
+syn_00158,yes,no,no,no,0.7,No Distortion,0.9839,Personalization,0.7568,,3,0
+syn_00159,yes,no,yes,no,0.2,All-or-nothing thinking,0.9808,Fortune-telling,0.6148,model Fortune-telling 0.61; All-or-nothing thinking 0.47 < 0.65,3,1
+syn_00160,yes,no,no,no,0.1,No Distortion,0.0093,Personalization,0.4096,,3,0
+syn_00161,yes,yes,yes,no,0.8,No Distortion,0.9911,Fortune-telling,0.7421,model Fortune-telling 0.74; Overgeneralization 0.50 < 0.5,3,2
+syn_00162,yes,yes,no,yes,1.0,Mind Reading,0.9859,Mind Reading,0.9171,,2,2
+syn_00164,yes,yes,no,yes,1.0,No Distortion,0.984,Mind Reading,0.9149,,2,2
+syn_00165,yes,yes,yes,no,0.8,Labeling,0.9901,Personalization,0.8137,model Personalization 0.81; Emotional Reasoning 0.48 < 0.8,3,2
+syn_00166,yes,no,no,no,0.6,Personalization,0.9908,Personalization,0.8042,,3,0
+syn_00167,yes,no,no,no,0.6,Mind Reading,0.9875,Mind Reading,0.887,,3,0
+syn_00170,yes,no,no,yes,0.7,Labeling,0.3397,Mind Reading,0.4496,,2,1
+syn_00171,yes,yes,yes,yes,1.0,No Distortion,0.988,Magnification,0.8209,model Magnification 0.82; Mental filter 0.52 < 0.65,2,3
+syn_00172,yes,no,no,yes,0.7,Emotional Reasoning,0.9912,Fortune-telling,0.7918,,2,1
+syn_00173,yes,no,yes,yes,0.7,Labeling,0.9884,Mental filter,0.8499,model Mental filter 0.85; Overgeneralization 0.35 < 0.5,2,2
+syn_00174,yes,yes,no,no,0.9,Labeling,0.9912,Fortune-telling,0.7857,,3,1
+syn_00175,yes,no,no,yes,0.3,No Distortion,0.7873,Emotional Reasoning,0.542,,2,1
+syn_00176,yes,yes,no,yes,0.9,No Distortion,0.9899,Fortune-telling,0.8792,,2,2
+syn_00177,yes,no,no,no,0.7,Labeling,0.9923,Personalization,0.8229,,3,0
+syn_00178,yes,no,no,yes,0.1,No Distortion,0.014,Overgeneralization,0.3639,,2,1
+syn_00179,yes,yes,no,yes,0.9,Overgeneralization,0.9889,Personalization,0.7519,,2,2
+syn_00180,yes,no,no,no,0.7,Mental filter,0.982,Magnification,0.7128,,3,0
+syn_00181,yes,no,no,no,0.2,No Distortion,0.0236,Fortune-telling,0.5754,,3,0
+syn_00183,yes,no,no,yes,0.7,Personalization,0.9879,Personalization,0.8555,,2,1
+syn_00184,yes,no,no,yes,0.3,Should statements,0.9886,Magnification,0.6878,,2,1
+syn_00185,yes,no,no,yes,0.7,No Distortion,0.321,Overgeneralization,0.3994,,2,1
+syn_00186,yes,no,no,yes,0.0,No Distortion,0.2172,Magnification,0.4388,,2,1
+syn_00187,yes,no,no,no,0.7,Emotional Reasoning,0.9921,Emotional Reasoning,0.862,,3,0
+syn_00188,yes,no,yes,no,0.7,Emotional Reasoning,0.988,Fortune-telling,0.7413,model Fortune-telling 0.74; Overgeneralization 0.49 < 0.5,3,1
+syn_00189,yes,no,yes,yes,0.3,Emotional Reasoning,0.9923,Personalization,0.8566,model Personalization 0.86; Emotional Reasoning 0.71 < 0.8,2,2
+syn_00190,yes,no,no,yes,0.2,No Distortion,0.0261,Personalization,0.4075,,2,1
+syn_00191,yes,yes,no,yes,0.8,All-or-nothing thinking,0.9906,Mental filter,0.837,,2,2
+syn_00192,yes,no,no,yes,0.2,No Distortion,0.0145,Mind Reading,0.332,,2,1
+syn_00193,yes,no,no,no,0.1,No Distortion,0.0204,Mind Reading,0.472,,3,0
+syn_00194,yes,no,no,no,0.2,All-or-nothing thinking,0.9895,Fortune-telling,0.8795,,3,0
+syn_00195,yes,no,no,yes,0.5,No Distortion,0.0332,Mind Reading,0.3601,,2,1
+syn_00196,yes,no,no,yes,0.2,No Distortion,0.0145,Mind Reading,0.2895,,2,1
+syn_00197,yes,no,no,yes,0.3,No Distortion,0.3058,Fortune-telling,0.6179,,2,1
+syn_00199,yes,yes,no,yes,1.0,No Distortion,0.9501,Fortune-telling,0.9049,,2,2
+syn_00200,yes,no,no,no,0.6,Labeling,0.9899,All-or-nothing thinking,0.7324,,3,0
+syn_00201,yes,no,yes,no,0.7,All-or-nothing thinking,0.988,Fortune-telling,0.895,model Fortune-telling 0.90; All-or-nothing thinking 0.52 < 0.65,3,1
+syn_00202,yes,no,no,yes,0.7,All-or-nothing thinking,0.9887,Mind Reading,0.785,,2,1
+syn_00203,yes,yes,yes,yes,1.0,Labeling,0.9864,Fortune-telling,0.8998,model Fortune-telling 0.90; Magnification 0.68 < 0.7,2,3
+syn_00204,yes,yes,no,yes,1.0,Labeling,0.9889,Fortune-telling,0.865,,2,2
+syn_00206,yes,yes,yes,yes,0.8,Emotional Reasoning,0.9895,Fortune-telling,0.8241,model Fortune-telling 0.82; Should statements 0.33 < 0.45,2,3
+syn_00207,yes,no,yes,no,0.7,All-or-nothing thinking,0.9884,Fortune-telling,0.8961,model Fortune-telling 0.90; All-or-nothing thinking 0.35 < 0.65,3,1
+syn_00208,yes,no,no,yes,0.5,No Distortion,0.2424,Mind Reading,0.4867,,2,1
+syn_00209,yes,no,no,no,0.5,All-or-nothing thinking,0.9899,All-or-nothing thinking,0.7439,,3,0
+syn_00211,yes,no,no,yes,0.3,No Distortion,0.0725,Labeling,0.4168,,2,1
+syn_00212,yes,yes,no,no,0.9,No Distortion,0.9883,Emotional Reasoning,0.7142,,3,1
+syn_00213,yes,no,no,yes,0.0,No Distortion,0.0368,Overgeneralization,0.4098,,2,1
+syn_00216,yes,yes,no,no,0.8,Emotional Reasoning,0.9879,Mind Reading,0.8965,,3,1
+syn_00217,yes,no,no,yes,0.4,No Distortion,0.0246,Mind Reading,0.3262,,2,1
+syn_00219,yes,no,no,yes,0.4,Personalization,0.9786,Personalization,0.8193,,2,1
+syn_00220,yes,no,no,yes,0.1,No Distortion,0.7641,Personalization,0.517,,2,1
+syn_00221,yes,no,no,no,0.2,Personalization,0.9858,Personalization,0.8199,,3,0
+syn_00222,yes,no,yes,no,0.7,All-or-nothing thinking,0.9887,Fortune-telling,0.8192,model Fortune-telling 0.82; All-or-nothing thinking 0.34 < 0.65,3,1
+syn_00223,yes,yes,no,no,0.8,Labeling,0.9901,Personalization,0.8038,,3,1
+syn_00224,yes,no,no,yes,0.5,No Distortion,0.0089,Mind Reading,0.376,,2,1
+syn_00225,yes,no,no,no,0.7,Personalization,0.9908,Emotional Reasoning,0.8102,,3,0
+syn_00226,yes,yes,no,yes,0.8,Labeling,0.9907,Mind Reading,0.8503,,2,2
+syn_00228,yes,yes,no,no,1.0,Labeling,0.9868,Personalization,0.8878,,3,1
+syn_00230,yes,no,no,yes,0.1,No Distortion,0.0121,Overgeneralization,0.3127,,2,1
+syn_00232,yes,no,no,no,0.6,Fortune-telling,0.9906,Fortune-telling,0.8892,,3,0
+syn_00233,yes,no,no,yes,0.4,No Distortion,0.0441,Overgeneralization,0.2961,,2,1
+syn_00234,yes,no,no,yes,0.6,Overgeneralization,0.988,Fortune-telling,0.6867,,2,1
+syn_00235,yes,no,no,no,0.7,Fortune-telling,0.9781,Fortune-telling,0.8501,,3,0
+syn_00236,yes,no,no,no,0.4,Personalization,0.9859,Personalization,0.7526,,3,0
+syn_00237,yes,no,no,yes,0.3,No Distortion,0.0096,Mind Reading,0.3013,,2,1
+syn_00238,yes,no,no,yes,0.1,No Distortion,0.0327,Fortune-telling,0.7037,,2,1
+syn_00239,yes,no,no,yes,0.4,No Distortion,0.7302,Magnification,0.6036,,2,1
+syn_00240,yes,no,no,no,0.3,No Distortion,0.0273,Fortune-telling,0.4577,,3,0
+syn_00241,yes,yes,no,no,1.0,Labeling,0.9928,Emotional Reasoning,0.8344,,3,1
+syn_00242,yes,no,no,yes,0.2,No Distortion,0.0313,Overgeneralization,0.2816,,2,1
+syn_00243,yes,yes,no,no,0.9,No Distortion,0.9844,Fortune-telling,0.9238,,3,1
+syn_00245,yes,yes,yes,no,0.8,All-or-nothing thinking,0.9903,Fortune-telling,0.8296,model Fortune-telling 0.83; Labeling 0.37 < 0.45,3,2
+syn_00246,yes,yes,no,yes,0.8,Labeling,0.9716,Mind Reading,0.8676,,2,2
+syn_00247,yes,no,no,yes,0.4,No Distortion,0.0104,Mind Reading,0.4061,,2,1
+syn_00248,yes,yes,no,no,0.9,Overgeneralization,0.9916,Fortune-telling,0.9152,,3,1
+syn_00249,yes,yes,yes,no,0.9,No Distortion,0.9697,Magnification,0.6706,model Magnification 0.67; Labeling 0.18 < 0.45,3,2
+syn_00250,yes,yes,no,yes,0.9,Mind Reading,0.9894,Fortune-telling,0.8483,,2,2
+syn_00251,yes,yes,no,yes,0.9,No Distortion,0.9756,Magnification,0.8329,,2,2
+syn_00252,yes,no,no,no,0.0,No Distortion,0.3171,All-or-nothing thinking,0.6037,,3,0
+syn_00253,yes,yes,no,no,0.9,Overgeneralization,0.9871,Personalization,0.8959,,3,1
+syn_00254,yes,yes,yes,yes,0.9,Labeling,0.9889,Fortune-telling,0.8544,model Fortune-telling 0.85; Emotional Reasoning 0.70 < 0.8,2,3
+syn_00255,yes,no,no,yes,0.0,No Distortion,0.0185,Mind Reading,0.2889,,2,1
+syn_00256,yes,no,yes,yes,0.6,Mental filter,0.7749,Magnification,0.6792,model Magnification 0.68; Mental filter 0.22 < 0.65,2,2
+syn_00257,yes,yes,no,yes,0.9,Mind Reading,0.992,Fortune-telling,0.9277,,2,2
+syn_00258,yes,no,no,yes,0.7,No Distortion,0.1827,All-or-nothing thinking,0.5805,,2,1
+syn_00259,yes,no,no,no,0.6,Mind Reading,0.9897,Mind Reading,0.8789,,3,0
+syn_00260,yes,no,no,no,0.2,No Distortion,0.0074,Mind Reading,0.3349,,3,0
+syn_00261,yes,yes,no,yes,0.8,No Distortion,0.4267,Fortune-telling,0.8757,,2,2
+syn_00262,yes,no,yes,no,0.5,All-or-nothing thinking,0.9877,Mind Reading,0.8031,model Mind Reading 0.80; All-or-nothing thinking 0.18 < 0.65,3,1
+syn_00263,yes,yes,no,no,0.9,No Distortion,0.9763,Fortune-telling,0.8415,,3,1
+syn_00264,yes,yes,yes,yes,0.8,No Distortion,0.9909,Emotional Reasoning,0.859,model Emotional Reasoning 0.86; Should statements 0.36 < 0.45,2,3
+syn_00265,yes,no,no,no,0.3,No Distortion,0.0214,Overgeneralization,0.3677,,3,0
+syn_00266,yes,no,yes,no,0.7,Overgeneralization,0.9861,Mind Reading,0.7657,model Mind Reading 0.77; Overgeneralization 0.41 < 0.5,3,1
+syn_00268,yes,no,no,yes,0.6,Labeling,0.9862,Should statements,0.6843,,2,1
+syn_00269,yes,yes,no,yes,0.9,Mind Reading,0.9852,Personalization,0.6067,,2,2
+syn_00270,yes,no,no,yes,0.3,No Distortion,0.5979,Personalization,0.4505,,2,1
+syn_00271,yes,no,no,no,0.4,No Distortion,0.0182,Mind Reading,0.296,,3,0
+syn_00272,yes,no,no,no,0.1,No Distortion,0.0195,Fortune-telling,0.369,,3,0
+syn_00276,yes,no,no,yes,0.6,Emotional Reasoning,0.9895,Fortune-telling,0.8955,,2,1
+syn_00277,yes,yes,yes,no,1.0,No Distortion,0.9853,Mind Reading,0.7289,model Mind Reading 0.73; Labeling 0.34 < 0.45,3,2
+syn_00280,yes,no,no,yes,0.5,Personalization,0.9925,Personalization,0.8694,,2,1
+syn_00281,yes,no,no,no,0.5,Mind Reading,0.9871,Mind Reading,0.8666,,3,0
+syn_00282,yes,no,no,no,0.6,Fortune-telling,0.8831,Mind Reading,0.7086,,3,0
+syn_00284,yes,yes,no,no,0.9,Emotional Reasoning,0.9911,Fortune-telling,0.8647,,3,1
+syn_00285,yes,no,no,no,0.6,Fortune-telling,0.9881,Fortune-telling,0.7247,,3,0
+syn_00286,yes,no,no,yes,0.4,Mental filter,0.9889,Magnification,0.8034,,2,1
+syn_00287,yes,no,no,no,0.1,No Distortion,0.0144,Mind Reading,0.3102,,3,0
+syn_00288,yes,no,no,no,0.2,No Distortion,0.0092,Overgeneralization,0.3525,,3,0
+syn_00289,yes,yes,no,yes,0.9,No Distortion,0.9899,Fortune-telling,0.9145,,2,2
+syn_00291,yes,no,no,no,0.1,No Distortion,0.009,Mind Reading,0.3835,,3,0
+syn_00292,yes,no,no,yes,0.3,Should statements,0.9906,Magnification,0.7466,,2,1
+syn_00294,yes,no,no,no,0.2,No Distortion,0.0174,Magnification,0.3714,,3,0
+syn_00295,yes,no,yes,no,0.7,Overgeneralization,0.9861,Mind Reading,0.7199,model Mind Reading 0.72; Overgeneralization 0.43 < 0.5,3,1
+syn_00296,yes,yes,yes,yes,0.9,Overgeneralization,0.9926,Personalization,0.7696,model Personalization 0.77; Emotional Reasoning 0.76 < 0.8,2,3
+syn_00297,yes,no,no,no,0.0,No Distortion,0.0158,Overgeneralization,0.3385,,3,0
+syn_00298,yes,no,no,no,0.1,No Distortion,0.0179,Overgeneralization,0.3228,,3,0
+syn_00299,yes,no,no,no,0.6,No Distortion,0.0087,Mind Reading,0.3008,,3,0

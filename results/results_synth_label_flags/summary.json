@@ -1,0 +1,74 @@
+{
+  "n_rows": 258,
+  "n_clean": 258,
+  "flagged_per_check": {
+    "flag_neighbours": 77,
+    "flag_model": 52,
+    "flag_close_votes": 132
+  },
+  "rows_flagged_by_n_checks": {
+    "0": 71,
+    "1": 122,
+    "2": 56,
+    "3": 9
+  },
+  "neighbour_counts_by_cut": {
+    "0.5": 142,
+    "0.6": 114,
+    "0.7": 77,
+    ">=0.8": 77,
+    ">=0.9": 44
+  },
+  "neighbour_cut_used": 0.8,
+  "flagged_per_check_by_label": {
+    "flag_neighbours": {
+      "Fortune-telling": 13,
+      "Labeling": 12,
+      "Overgeneralization": 9,
+      "Emotional Reasoning": 9,
+      "Should statements": 8,
+      "Mind Reading": 7,
+      "Magnification": 7,
+      "Mental filter": 5,
+      "All-or-nothing thinking": 3,
+      "Personalization": 3,
+      "No Distortion": 1
+    },
+    "flag_model": {
+      "Overgeneralization": 13,
+      "All-or-nothing thinking": 10,
+      "Labeling": 7,
+      "Emotional Reasoning": 7,
+      "Should statements": 6,
+      "Mental filter": 3,
+      "Fortune-telling": 2,
+      "Mind Reading": 2,
+      "Personalization": 1,
+      "Magnification": 1
+    },
+    "flag_close_votes": {
+      "No Distortion": 57,
+      "Should statements": 15,
+      "Fortune-telling": 12,
+      "Overgeneralization": 8,
+      "Emotional Reasoning": 8,
+      "Mental filter": 8,
+      "Magnification": 7,
+      "Mind Reading": 6,
+      "Labeling": 5,
+      "Personalization": 4,
+      "All-or-nothing thinking": 2
+    }
+  },
+  "pairwise_overlap": {
+    "flag_neighbours&flag_model": 25,
+    "flag_neighbours&flag_close_votes": 40,
+    "flag_model&flag_close_votes": 18
+  },
+  "review_sheet": {
+    "flagged": 187,
+    "random": 30,
+    "total": 217
+  },
+  "model_version": "mentalroberta-d12-s42-20261120"
+}

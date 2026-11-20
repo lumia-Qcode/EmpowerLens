@@ -1,0 +1,13 @@
+$ venv\Scripts\python.exe -m pytest tests/test_multitask.py -v   (B-06 = the three test_b06_* tests)
+Run 21 Nov 2026, branch lumia-space 637f1c6
+
+tests/test_multitask.py::test_b06_masked_row_alone_gives_zero_selection_loss_and_zero_head_gradient[no_distortion] PASSED [ 11%]
+tests/test_multitask.py::test_b06_masked_row_alone_gives_zero_selection_loss_and_zero_head_gradient[span_unlocated] PASSED [ 22%]
+tests/test_multitask.py::test_b06_masked_row_adds_nothing_to_a_mixed_batch[no_distortion] PASSED [ 33%]
+tests/test_multitask.py::test_b06_masked_row_adds_nothing_to_a_mixed_batch[span_unlocated] PASSED [ 44%]
+tests/test_multitask.py::test_b06_truncated_sentence_is_masked_even_when_labelled PASSED [ 55%]
+tests/test_multitask.py::test_forward_shapes PASSED                      [ 66%]
+tests/test_multitask.py::test_one_optimisation_step_changes_all_heads_and_is_finite PASSED [ 77%]
+tests/test_multitask.py::test_token_sentence_ids_uses_char_overlap PASSED [ 88%]
+tests/test_multitask.py::test_sentence_targets_masks_unlabelled_rows_and_fails_on_unknown PASSED [100%]
+======================== 9 passed, 1 warning in 14.48s ========================

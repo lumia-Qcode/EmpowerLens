@@ -1,0 +1,10 @@
+split,seed,specificity,fpr,sensitivity,multilabel_macro_f1
+supplementary_evaluation,42,-0.0816,0.0816,0.2,0.031
+supplementary_evaluation,1337,-0.148,0.148,0.3111,0.0277
+supplementary_evaluation,2024,-0.1994,0.1994,0.2444,0.0356
+test,42,-0.0543,0.0543,0.0248,0.0137
+test,1337,-0.0978,0.0978,0.0311,-0.0101
+test,2024,-0.0652,0.0652,0.0745,0.0349
+val,42,0.0,0.0,0.0,0.0678
+val,1337,0.0,0.0,0.0633,-0.0089
+val,2024,0.0,0.0,0.038,0.0065

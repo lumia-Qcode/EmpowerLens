@@ -1,0 +1,96 @@
+{
+  "condition": "train_synth",
+  "seed": 1337,
+  "n": 376,
+  "n_distorted": 45,
+  "n_non_distorted": 331,
+  "binary_threshold": 0.8702088594436646,
+  "binary_splits": "data/splits_synth",
+  "multilabel_splits": "data/splits_synth",
+  "binary": {
+    "specificity": 0.7945619335347432,
+    "fpr": 0.20543806646525675,
+    "sensitivity": 0.6222222222222222,
+    "tn": 263,
+    "fp": 68,
+    "tp": 28,
+    "fn": 17
+  },
+  "multilabel": {
+    "macro_f1": 0.15133889576261328,
+    "micro_f1": 0.17793594306049823,
+    "weighted_f1": 0.21650820635175894
+  },
+  "per_class": [
+    {
+      "class": "emotional_reasoning",
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+    },
+    {
+      "class": "overgeneralization",
+      "precision": 0.109375,
+      "recall": 0.4666666666666667,
+      "f1": 0.17721518987341772,
+      "support": 15
+    },
+    {
+      "class": "mental_filter",
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+    },
+    {
+      "class": "should_statements",
+      "precision": 0.16129032258064516,
+      "recall": 0.7142857142857143,
+      "f1": 0.2631578947368421,
+      "support": 7
+    },
+    {
+      "class": "all_or_nothing",
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 8
+    },
+    {
+      "class": "mind_reading",
+      "precision": 0.375,
+      "recall": 0.42857142857142855,
+      "f1": 0.4,
+      "support": 7
+    },
+    {
+      "class": "fortune_telling",
+      "precision": 0.3333333333333333,
+      "recall": 0.6666666666666666,
+      "f1": 0.4444444444444444,
+      "support": 9
+    },
+    {
+      "class": "magnification",
+      "precision": 0.1,
+      "recall": 0.25,
+      "f1": 0.14285714285714285,
+      "support": 4
+    },
+    {
+      "class": "personalization",
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+    },
+    {
+      "class": "labeling",
+      "precision": 0.04838709677419355,
+      "recall": 0.375,
+      "f1": 0.08571428571428572,
+      "support": 8
+    }
+  ]
+}

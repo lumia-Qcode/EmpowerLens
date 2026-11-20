@@ -1,0 +1,15 @@
+$ python: jaccard (src/synth/dedup.py) of every seed in entrepreneurial_seeds.jsonl vs 4 sets
+Run 21 Nov 2026, branch lumia-space 637f1c6
+
+seeds: 44
+
+| set | texts | seeds >= 0.8 | max Jaccard |
+|---|---|---|---|
+| survey responses | 348 | 0 | 0.231 |
+| supplementary evaluation pool | 376 | 0 | 0.276 |
+| val.csv | 253 | 0 | 0.190 |
+| test.csv | 253 | 0 | 0.217 |
+
+seed texts that are a survey response verbatim: 0
+seed sources: {"team-authored": 22, "supplementary": 22}
+Survey file: the Google Form export, read locally from the gitignored D3/ folder (participant data, not committed); 10+-word answers only.

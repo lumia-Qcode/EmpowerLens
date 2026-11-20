@@ -1,0 +1,10 @@
+A-08 re-test (empowerlens-demo branch d26-fixes, Claude agent, 2026-11-20)
+
+Signed in as trainer A (user 1, Demo Trainer). Cohort 4 'TEST Trainer B cohort' belongs to trainer B (user 3).
+There is no per-cohort page URL in the frontend, so the cohort ID was changed in the report API URL, as in the original run.
+GET /api/trainer/cohorts/4/report -> 403 {"detail":"You do not own this cohort"}
+GET /api/trainer/cohorts/4/export?format=json -> 403 {"detail":"You do not own this cohort"}
+
+access_log rows added by these two requests:
+{"log_id": 33, "user_id": 1, "cohort_id": 4, "reflection_id": null, "action": "view_report", "outcome": "refused", "logged_at": "2026-11-20T14:49:17+00:00"}
+{"log_id": 34, "user_id": 1, "cohort_id": 4, "reflection_id": null, "action": "export_report", "outcome": "refused", "logged_at": "2026-11-20T14:49:17+00:00"}
