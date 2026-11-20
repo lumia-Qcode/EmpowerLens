@@ -325,10 +325,21 @@ venv\Scripts\python.exe -m src.synth.generate --n 300 --out data/synthetic/synth
 |---|---|
 | `--n` | 300 |
 | `--seed` | 42 |
-| `--gen-provider` / `--gen-model` | `anthropic` / `claude-sonnet-5` |
-| `--critic-provider` / `--critic-model` | `gemini` / `gemini-2.5-flash` |
+| `--gen-provider` / `--gen-model` | `nvidia` / `moonshotai/kimi-k3.1-pro` (NIM; `anthropic` / `claude-sonnet-5` for the original setup) |
+| `--critic-provider` / `--critic-models` | `nvidia` / three NIM slots from different families, `\|` = backup |
 | `--n-critics` | 3 |
 | `--critic-temps` | `0.3,0.6,0.9` |
+
+### On a Kaggle GPU (open models, no API keys)
+
+`src/synth/batch_generate.py` runs the same pipeline with open models on the notebook's own GPUs (vLLM, T4 x2),
+one model at a time, each phase in its own subprocess: generate (chunks of 75) → filters → critic 1, 2, 3 over
+every survivor → decide → revise the failures once → critics again → decide. Rows have the same schema as
+`generate.py`, plus a `<out>.summary.json`. Use `notebooks/kaggle_runner_synth.ipynb` (`MODE = "calibrate"` for
+S05, `"full"` for S06). CPU check without models: `python -m src.synth.batch_generate --n 5 --backend fake`.
+
+Two differences from the sequential run: the opener-diversity nudge updates per chunk rather than per row, and
+dedup compares each text with the seeds and the earlier texts that passed the filters.
 
 ---
 
