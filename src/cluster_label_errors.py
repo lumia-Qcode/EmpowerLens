@@ -53,6 +53,11 @@ Usage (Windows):
     venv\\Scripts\\python.exe -m src.cluster_label_errors
     venv\\Scripts\\python.exe -m src.cluster_label_errors --only cluster
     venv\\Scripts\\python.exe -m src.cluster_label_errors --k 15
+
+    # S09: neighbour check on another labelled file (e.g. the synthetic rows).
+    # All rows are used, No Distortion included; output goes to --out.
+    venv\\Scripts\\python.exe -m src.cluster_label_errors --only neighbours \\
+        --input data/synthetic/synthetic_train_en.jsonl --out results/results_synth_neighbours
 """
 from __future__ import annotations
 
@@ -114,6 +119,25 @@ def load_distorted_train() -> pd.DataFrame:
     out = df[mask].copy()
     out[SPAN_COL] = out[SPAN_COL].fillna("").astype(str)
     return out.reset_index(drop=True)
+
+
+def load_input(path: str) -> pd.DataFrame:
+    """A labelled jsonl/csv in the synthetic schema (id, text, dominant_distortion), mapped to the
+    benchmark column names. All rows are kept, No Distortion included."""
+    p = Path(path)
+    if p.suffix == ".jsonl":
+        df = pd.read_json(p, lines=True)
+    else:
+        df = pd.read_csv(p, encoding="utf-8-sig")
+    df = df.rename(columns={"id": ID_COL, "text": TEXT_COL, "dominant_distortion": LABEL_COL,
+                            "distorted_part": SPAN_COL})
+    missing = [c for c in (ID_COL, TEXT_COL, LABEL_COL) if c not in df.columns]
+    if missing:
+        raise SystemExit(f"{p}: missing columns {missing} (need id/text/dominant_distortion)")
+    if SPAN_COL not in df.columns:
+        df[SPAN_COL] = ""
+    df[SPAN_COL] = df[SPAN_COL].fillna("").astype(str)
+    return df.reset_index(drop=True)
 
 
 def purity(labels_true, labels_pred) -> float:
@@ -529,10 +553,23 @@ def main() -> int:
                                        "compare"])
     ap.add_argument("--k", type=int, default=N_NEIGHBOURS)
     ap.add_argument("--dup-threshold", type=float, default=DUP_THRESHOLD)
+    ap.add_argument("--input", default=None,
+                    help="labelled jsonl/csv (id, text, dominant_distortion) instead of the benchmark train split; "
+                         "neighbours only")
+    ap.add_argument("--out", default=None, help="output folder (default results/results_cluster_label_errors)")
     args = ap.parse_args()
 
-    df = load_distorted_train()
-    print(f"distorted train rows: {len(df)}\n")
+    global OUT
+    if args.out:
+        OUT = Path(args.out)
+    if args.input:
+        if args.only != "neighbours":
+            raise SystemExit("--input works with --only neighbours (the other stages are benchmark-specific)")
+        df = load_input(args.input)
+        print(f"rows from {args.input}: {len(df)}\n")
+    else:
+        df = load_distorted_train()
+        print(f"distorted train rows: {len(df)}\n")
 
     unsup = None
     if args.only in (None, "cluster"):

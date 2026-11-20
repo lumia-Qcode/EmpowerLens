@@ -1,0 +1,219 @@
+# S10: do not open until every row of review_sheet.xlsx is labelled.
+review_id,id,panel_label,random,flag_neighbours,flag_model,flag_close_votes
+R001,syn_00265,No Distortion,yes,no,no,no
+R002,syn_00193,No Distortion,yes,no,no,no
+R003,syn_00213,No Distortion,no,no,no,yes
+R004,syn_00270,No Distortion,no,no,no,yes
+R005,syn_00026,Overgeneralization,no,yes,yes,yes
+R006,syn_00174,Mind Reading,no,yes,no,no
+R007,syn_00286,Mental filter,no,no,no,yes
+R008,syn_00114,Magnification,no,yes,no,yes
+R009,syn_00180,Mental filter,yes,no,no,no
+R010,syn_00216,Mind Reading,no,yes,no,no
+R011,syn_00247,No Distortion,no,no,no,yes
+R012,syn_00047,Labeling,no,yes,no,no
+R013,syn_00015,Mind Reading,yes,no,no,no
+R014,syn_00013,Labeling,no,yes,no,no
+R015,syn_00103,Should statements,no,yes,no,yes
+R016,syn_00269,Personalization,no,yes,no,yes
+R017,syn_00263,Fortune-telling,no,yes,no,no
+R018,syn_00030,Fortune-telling,no,yes,no,no
+R019,syn_00241,Mental filter,no,yes,no,no
+R020,syn_00102,Mental filter,no,yes,no,yes
+R021,syn_00296,Emotional Reasoning,no,yes,yes,yes
+R022,syn_00220,No Distortion,no,no,no,yes
+R023,syn_00126,No Distortion,no,no,no,yes
+R024,syn_00039,Emotional Reasoning,no,no,no,yes
+R025,syn_00162,Should statements,no,yes,no,yes
+R026,syn_00226,Mind Reading,no,yes,no,yes
+R027,syn_00249,Labeling,no,yes,yes,no
+R028,syn_00027,Should statements,no,yes,yes,no
+R029,syn_00068,No Distortion,no,no,no,yes
+R030,syn_00016,Labeling,yes,no,no,no
+R031,syn_00171,Mental filter,no,yes,yes,yes
+R032,syn_00084,No Distortion,no,no,no,yes
+R033,syn_00175,No Distortion,no,no,no,yes
+R034,syn_00044,Personalization,yes,no,no,no
+R035,syn_00192,No Distortion,no,no,no,yes
+R036,syn_00199,Magnification,no,yes,no,yes
+R037,syn_00116,Should statements,no,no,no,yes
+R038,syn_00208,No Distortion,no,no,no,yes
+R039,syn_00185,Overgeneralization,no,no,no,yes
+R040,syn_00152,Personalization,no,no,yes,yes
+R041,syn_00148,Mind Reading,no,no,yes,no
+R042,syn_00292,Should statements,no,no,no,yes
+R043,syn_00184,Should statements,no,no,no,yes
+R044,syn_00145,Magnification,no,yes,no,yes
+R045,syn_00134,All-or-nothing thinking,no,no,yes,yes
+R046,syn_00147,Should statements,no,no,no,yes
+R047,syn_00212,Emotional Reasoning,no,yes,no,no
+R048,syn_00240,No Distortion,yes,no,no,no
+R049,syn_00138,No Distortion,no,no,no,yes
+R050,syn_00251,Mental filter,no,yes,no,yes
+R051,syn_00239,No Distortion,no,no,no,yes
+R052,syn_00061,No Distortion,no,no,no,yes
+R053,syn_00038,No Distortion,no,no,no,yes
+R054,syn_00261,Fortune-telling,no,yes,no,yes
+R055,syn_00188,Overgeneralization,no,no,yes,no
+R056,syn_00045,Overgeneralization,no,no,no,yes
+R057,syn_00031,No Distortion,no,no,no,yes
+R058,syn_00107,Overgeneralization,no,yes,yes,no
+R059,syn_00150,All-or-nothing thinking,no,yes,no,no
+R060,syn_00090,Mind Reading,no,no,no,yes
+R061,syn_00106,Fortune-telling,no,yes,yes,yes
+R062,syn_00008,Mind Reading,no,no,no,yes
+R063,syn_00211,No Distortion,no,no,no,yes
+R064,syn_00085,No Distortion,no,no,no,yes
+R065,syn_00155,No Distortion,no,no,no,yes
+R066,syn_00238,No Distortion,no,no,no,yes
+R067,syn_00131,Should statements,no,yes,no,yes
+R068,syn_00099,No Distortion,no,no,no,yes
+R069,syn_00172,Overgeneralization,no,no,no,yes
+R070,syn_00289,Emotional Reasoning,no,yes,no,yes
+R071,syn_00048,Labeling,no,yes,no,yes
+R072,syn_00020,Overgeneralization,no,no,no,yes
+R073,syn_00056,Fortune-telling,no,no,no,yes
+R074,syn_00042,Labeling,no,yes,yes,no
+R075,syn_00065,Should statements,no,no,yes,no
+R076,syn_00119,Labeling,yes,no,no,no
+R077,syn_00157,Labeling,no,yes,yes,no
+R078,syn_00228,Personalization,no,yes,no,no
+R079,syn_00075,No Distortion,no,no,no,yes
+R080,syn_00080,Mind Reading,yes,no,no,no
+R081,syn_00280,Personalization,no,no,no,yes
+R082,syn_00120,No Distortion,no,no,no,yes
+R083,syn_00064,All-or-nothing thinking,no,no,yes,no
+R084,syn_00204,Fortune-telling,no,yes,no,yes
+R085,syn_00125,No Distortion,no,no,no,yes
+R086,syn_00197,No Distortion,no,no,no,yes
+R087,syn_00040,Magnification,no,yes,no,yes
+R088,syn_00222,All-or-nothing thinking,no,no,yes,no
+R089,syn_00176,Fortune-telling,no,yes,no,yes
+R090,syn_00195,No Distortion,no,no,no,yes
+R091,syn_00002,No Distortion,no,no,no,yes
+R092,syn_00124,No Distortion,no,no,no,yes
+R093,syn_00070,No Distortion,no,yes,no,yes
+R094,syn_00268,Labeling,no,no,no,yes
+R095,syn_00179,Labeling,no,yes,no,yes
+R096,syn_00142,Emotional Reasoning,no,yes,no,yes
+R097,syn_00135,Mental filter,no,no,no,yes
+R098,syn_00223,Labeling,no,yes,no,no
+R099,syn_00059,Magnification,no,yes,no,yes
+R100,syn_00190,No Distortion,no,no,no,yes
+R101,syn_00093,All-or-nothing thinking,no,yes,yes,no
+R102,syn_00034,Overgeneralization,no,yes,yes,no
+R103,syn_00219,Personalization,no,no,no,yes
+R104,syn_00186,No Distortion,no,no,no,yes
+R105,syn_00052,No Distortion,no,no,no,yes
+R106,syn_00019,No Distortion,no,no,no,yes
+R107,syn_00028,No Distortion,yes,no,no,no
+R108,syn_00262,All-or-nothing thinking,no,no,yes,no
+R109,syn_00010,No Distortion,no,no,no,yes
+R110,syn_00041,Labeling,no,yes,no,yes
+R111,syn_00234,Overgeneralization,no,no,no,yes
+R112,syn_00137,Personalization,yes,no,no,no
+R113,syn_00230,No Distortion,no,no,no,yes
+R114,syn_00005,No Distortion,no,no,no,yes
+R115,syn_00051,Overgeneralization,no,yes,yes,no
+R116,syn_00271,No Distortion,yes,no,no,no
+R117,syn_00243,All-or-nothing thinking,no,yes,no,no
+R118,syn_00264,Should statements,no,yes,yes,yes
+R119,syn_00242,No Distortion,no,no,no,yes
+R120,syn_00178,No Distortion,no,no,no,yes
+R121,syn_00017,Overgeneralization,no,yes,yes,no
+R122,syn_00094,No Distortion,no,no,no,yes
+R123,syn_00196,No Distortion,no,no,no,yes
+R124,syn_00133,No Distortion,yes,no,no,no
+R125,syn_00276,Emotional Reasoning,no,no,no,yes
+R126,syn_00000,Mind Reading,no,yes,no,no
+R127,syn_00194,All-or-nothing thinking,yes,no,no,no
+R128,syn_00253,Personalization,no,yes,no,no
+R129,syn_00108,Overgeneralization,no,no,yes,no
+R130,syn_00256,Mental filter,no,no,yes,yes
+R131,syn_00098,No Distortion,no,no,no,yes
+R132,syn_00067,Should statements,no,no,yes,no
+R133,syn_00217,No Distortion,no,no,no,yes
+R134,syn_00063,No Distortion,no,no,no,yes
+R135,syn_00191,Magnification,no,yes,no,yes
+R136,syn_00036,Fortune-telling,no,yes,no,no
+R137,syn_00250,Overgeneralization,no,yes,no,yes
+R138,syn_00246,Mind Reading,no,yes,no,yes
+R139,syn_00130,Emotional Reasoning,no,no,yes,yes
+R140,syn_00062,No Distortion,no,no,no,yes
+R141,syn_00284,Overgeneralization,no,yes,no,no
+R142,syn_00071,Emotional Reasoning,no,no,yes,no
+R143,syn_00146,No Distortion,no,no,no,yes
+R144,syn_00254,Emotional Reasoning,no,yes,yes,yes
+R145,syn_00066,No Distortion,no,no,no,yes
+R146,syn_00224,No Distortion,no,no,no,yes
+R147,syn_00037,Emotional Reasoning,yes,no,no,no
+R148,syn_00004,No Distortion,no,no,no,yes
+R149,syn_00164,Mind Reading,no,yes,no,yes
+R150,syn_00081,Labeling,no,no,yes,no
+R151,syn_00206,Should statements,no,yes,yes,yes
+R152,syn_00054,No Distortion,yes,no,no,no
+R153,syn_00257,Fortune-telling,no,yes,no,yes
+R154,syn_00236,Personalization,yes,no,no,no
+R155,syn_00073,Mental filter,no,no,no,yes
+R156,syn_00129,Fortune-telling,no,no,no,yes
+R157,syn_00055,Emotional Reasoning,no,yes,yes,no
+R158,syn_00011,Fortune-telling,no,yes,no,yes
+R159,syn_00173,Overgeneralization,no,no,yes,yes
+R160,syn_00143,Overgeneralization,no,yes,yes,no
+R161,syn_00132,Labeling,no,no,yes,no
+R162,syn_00091,No Distortion,yes,no,no,no
+R163,syn_00127,Personalization,yes,no,no,no
+R164,syn_00141,No Distortion,no,no,no,yes
+R165,syn_00012,No Distortion,no,no,no,yes
+R166,syn_00022,Fortune-telling,no,yes,yes,yes
+R167,syn_00089,Overgeneralization,no,no,yes,no
+R168,syn_00295,Overgeneralization,no,no,yes,no
+R169,syn_00203,Magnification,no,yes,yes,yes
+R170,syn_00029,Fortune-telling,no,yes,no,yes
+R171,syn_00255,No Distortion,no,no,no,yes
+R172,syn_00113,Mind Reading,no,yes,no,no
+R173,syn_00221,Personalization,yes,no,no,no
+R174,syn_00207,All-or-nothing thinking,no,no,yes,no
+R175,syn_00200,Labeling,yes,no,no,no
+R176,syn_00281,Mind Reading,yes,no,no,no
+R177,syn_00096,No Distortion,no,no,no,yes
+R178,syn_00083,All-or-nothing thinking,no,no,yes,yes
+R179,syn_00170,Labeling,no,no,no,yes
+R180,syn_00074,Emotional Reasoning,no,yes,no,no
+R181,syn_00266,Overgeneralization,no,no,yes,no
+R182,syn_00225,Personalization,yes,no,no,no
+R183,syn_00258,No Distortion,no,no,no,yes
+R184,syn_00087,Emotional Reasoning,no,yes,no,no
+R185,syn_00072,No Distortion,no,no,no,yes
+R186,syn_00140,Mind Reading,no,no,yes,yes
+R187,syn_00033,Should statements,no,no,no,yes
+R188,syn_00086,No Distortion,no,no,no,yes
+R189,syn_00248,Fortune-telling,no,yes,no,no
+R190,syn_00187,Emotional Reasoning,yes,no,no,no
+R191,syn_00105,No Distortion,yes,no,no,no
+R192,syn_00252,No Distortion,yes,no,no,no
+R193,syn_00201,All-or-nothing thinking,no,no,yes,no
+R194,syn_00060,Fortune-telling,no,yes,no,yes
+R195,syn_00245,Labeling,no,yes,yes,no
+R196,syn_00149,Emotional Reasoning,yes,no,no,no
+R197,syn_00001,No Distortion,no,no,no,yes
+R198,syn_00078,All-or-nothing thinking,no,no,yes,no
+R199,syn_00233,No Distortion,no,no,no,yes
+R200,syn_00202,Fortune-telling,no,no,no,yes
+R201,syn_00237,No Distortion,no,no,no,yes
+R202,syn_00161,Overgeneralization,no,yes,yes,no
+R203,syn_00154,Mental filter,no,no,no,yes
+R204,syn_00183,Should statements,no,no,no,yes
+R205,syn_00139,Mental filter,no,yes,yes,no
+R206,syn_00122,Personalization,yes,no,no,no
+R207,syn_00115,Should statements,no,yes,no,yes
+R208,syn_00189,Emotional Reasoning,no,no,yes,yes
+R209,syn_00095,All-or-nothing thinking,yes,no,no,no
+R210,syn_00032,Labeling,no,yes,no,no
+R211,syn_00003,Personalization,yes,no,no,no
+R212,syn_00112,Should statements,no,no,yes,yes
+R213,syn_00165,Emotional Reasoning,no,yes,yes,no
+R214,syn_00025,Should statements,no,yes,no,yes
+R215,syn_00144,Should statements,no,no,no,yes
+R216,syn_00277,Labeling,no,yes,yes,no
+R217,syn_00159,All-or-nothing thinking,no,no,yes,no

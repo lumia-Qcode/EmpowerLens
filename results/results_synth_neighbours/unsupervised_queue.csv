@@ -1,0 +1,259 @@
+Id_Number,original_label,neighbour_disagreement,neighbour_majority_label
+syn_00034,Overgeneralization,1.0,Labeling
+syn_00048,Labeling,1.0,Mind Reading
+syn_00241,Mental filter,1.0,Labeling
+syn_00040,Magnification,1.0,Mind Reading
+syn_00041,Labeling,1.0,No Distortion
+syn_00228,Personalization,1.0,Labeling
+syn_00074,Emotional Reasoning,1.0,Should statements
+syn_00199,Magnification,1.0,No Distortion
+syn_00203,Magnification,1.0,Labeling
+syn_00139,Mental filter,1.0,No Distortion
+syn_00164,Mind Reading,1.0,No Distortion
+syn_00162,Should statements,1.0,Mind Reading
+syn_00277,Labeling,1.0,No Distortion
+syn_00171,Mental filter,1.0,No Distortion
+syn_00204,Fortune-telling,1.0,Labeling
+syn_00027,Should statements,0.9,Labeling
+syn_00257,Fortune-telling,0.9,Mind Reading
+syn_00263,Fortune-telling,0.9,No Distortion
+syn_00070,No Distortion,0.9,Labeling
+syn_00212,Emotional Reasoning,0.9,No Distortion
+syn_00251,Mental filter,0.9,No Distortion
+syn_00253,Personalization,0.9,Overgeneralization
+syn_00150,All-or-nothing thinking,0.9,Emotional Reasoning
+syn_00145,Magnification,0.9,Labeling
+syn_00176,Fortune-telling,0.9,No Distortion
+syn_00248,Fortune-telling,0.9,Overgeneralization
+syn_00051,Overgeneralization,0.9,Labeling
+syn_00036,Fortune-telling,0.9,No Distortion
+syn_00296,Emotional Reasoning,0.9,Overgeneralization
+syn_00013,Labeling,0.9,Should statements
+syn_00284,Overgeneralization,0.9,Emotional Reasoning
+syn_00289,Emotional Reasoning,0.9,No Distortion
+syn_00157,Labeling,0.9,Mind Reading
+syn_00114,Magnification,0.9,All-or-nothing thinking
+syn_00179,Labeling,0.9,Overgeneralization
+syn_00106,Fortune-telling,0.9,No Distortion
+syn_00093,All-or-nothing thinking,0.9,Labeling
+syn_00174,Mind Reading,0.9,Labeling
+syn_00249,Labeling,0.9,No Distortion
+syn_00250,Overgeneralization,0.9,Mind Reading
+syn_00243,All-or-nothing thinking,0.9,No Distortion
+syn_00269,Personalization,0.9,Mind Reading
+syn_00254,Emotional Reasoning,0.9,Labeling
+syn_00032,Labeling,0.9,Overgeneralization
+syn_00261,Fortune-telling,0.8,No Distortion
+syn_00030,Fortune-telling,0.8,All-or-nothing thinking
+syn_00245,Labeling,0.8,All-or-nothing thinking
+syn_00246,Mind Reading,0.8,Labeling
+syn_00042,Labeling,0.8,Should statements
+syn_00017,Overgeneralization,0.8,Labeling
+syn_00011,Fortune-telling,0.8,No Distortion
+syn_00000,Mind Reading,0.8,Fortune-telling
+syn_00142,Emotional Reasoning,0.8,Should statements
+syn_00131,Should statements,0.8,Labeling
+syn_00115,Should statements,0.8,Labeling
+syn_00264,Should statements,0.8,No Distortion
+syn_00161,Overgeneralization,0.8,No Distortion
+syn_00143,Overgeneralization,0.8,Mind Reading
+syn_00165,Emotional Reasoning,0.8,Labeling
+syn_00113,Mind Reading,0.8,Fortune-telling
+syn_00060,Fortune-telling,0.8,No Distortion
+syn_00226,Mind Reading,0.8,Labeling
+syn_00047,Labeling,0.8,Should statements
+syn_00059,Magnification,0.8,No Distortion
+syn_00223,Labeling,0.8,Labeling
+syn_00216,Mind Reading,0.8,Emotional Reasoning
+syn_00055,Emotional Reasoning,0.8,Emotional Reasoning
+syn_00029,Fortune-telling,0.8,No Distortion
+syn_00026,Overgeneralization,0.8,Mind Reading
+syn_00025,Should statements,0.8,Personalization
+syn_00022,Fortune-telling,0.8,No Distortion
+syn_00191,Magnification,0.8,All-or-nothing thinking
+syn_00087,Emotional Reasoning,0.8,No Distortion
+syn_00103,Should statements,0.8,Emotional Reasoning
+syn_00206,Should statements,0.8,Emotional Reasoning
+syn_00102,Mental filter,0.8,No Distortion
+syn_00107,Overgeneralization,0.8,Fortune-telling
+syn_00266,Overgeneralization,0.7,Overgeneralization
+syn_00258,No Distortion,0.7,No Distortion
+syn_00067,Should statements,0.7,Should statements
+syn_00056,Fortune-telling,0.7,Overgeneralization
+syn_00020,Overgeneralization,0.7,Overgeneralization
+syn_00207,All-or-nothing thinking,0.7,All-or-nothing thinking
+syn_00222,All-or-nothing thinking,0.7,All-or-nothing thinking
+syn_00225,Personalization,0.7,Personalization
+syn_00235,Fortune-telling,0.7,Fortune-telling
+syn_00065,Should statements,0.7,No Distortion
+syn_00108,Overgeneralization,0.7,Labeling
+syn_00183,Should statements,0.7,Personalization
+syn_00180,Mental filter,0.7,Mental filter
+syn_00076,Mind Reading,0.7,Labeling
+syn_00090,Mind Reading,0.7,Mind Reading
+syn_00201,All-or-nothing thinking,0.7,All-or-nothing thinking
+syn_00188,Overgeneralization,0.7,Emotional Reasoning
+syn_00187,Emotional Reasoning,0.7,Emotional Reasoning
+syn_00185,Overgeneralization,0.7,No Distortion
+syn_00110,Labeling,0.7,Labeling
+syn_00202,Fortune-telling,0.7,All-or-nothing thinking
+syn_00170,Labeling,0.7,Labeling
+syn_00172,Overgeneralization,0.7,Emotional Reasoning
+syn_00177,Labeling,0.7,Labeling
+syn_00173,Overgeneralization,0.7,Labeling
+syn_00118,Mind Reading,0.7,Mind Reading
+syn_00119,Labeling,0.7,Labeling
+syn_00112,Should statements,0.7,Labeling
+syn_00111,Mind Reading,0.7,Mind Reading
+syn_00149,Emotional Reasoning,0.7,All-or-nothing thinking
+syn_00158,Personalization,0.7,No Distortion
+syn_00295,Overgeneralization,0.7,Overgeneralization
+syn_00130,Emotional Reasoning,0.7,Overgeneralization
+syn_00016,Labeling,0.7,Labeling
+syn_00009,Mind Reading,0.7,Mind Reading
+syn_00008,Mind Reading,0.7,Mind Reading
+syn_00007,Mind Reading,0.7,Mind Reading
+syn_00285,Fortune-telling,0.6,Fortune-telling
+syn_00282,Fortune-telling,0.6,Fortune-telling
+syn_00166,Personalization,0.6,Personalization
+syn_00167,Mind Reading,0.6,Mind Reading
+syn_00073,Mental filter,0.6,Mental filter
+syn_00083,All-or-nothing thinking,0.6,All-or-nothing thinking
+syn_00081,Labeling,0.6,Labeling
+syn_00080,Mind Reading,0.6,Mind Reading
+syn_00148,Mind Reading,0.6,Mind Reading
+syn_00154,Mental filter,0.6,Mental filter
+syn_00122,Personalization,0.6,Personalization
+syn_00140,Mind Reading,0.6,Mind Reading
+syn_00134,All-or-nothing thinking,0.6,All-or-nothing thinking
+syn_00137,Personalization,0.6,Personalization
+syn_00144,Should statements,0.6,Should statements
+syn_00129,Fortune-telling,0.6,Fortune-telling
+syn_00256,Mental filter,0.6,Mental filter
+syn_00039,Emotional Reasoning,0.6,Emotional Reasoning
+syn_00046,Personalization,0.6,Personalization
+syn_00071,Emotional Reasoning,0.6,Emotional Reasoning
+syn_00268,Labeling,0.6,Labeling
+syn_00276,Emotional Reasoning,0.6,Emotional Reasoning
+syn_00299,No Distortion,0.6,No Distortion
+syn_00259,Mind Reading,0.6,Mind Reading
+syn_00232,Fortune-telling,0.6,Fortune-telling
+syn_00234,Overgeneralization,0.6,Overgeneralization
+syn_00200,Labeling,0.6,Labeling
+syn_00089,Overgeneralization,0.6,Overgeneralization
+syn_00281,Mind Reading,0.5,Mind Reading
+syn_00003,Personalization,0.5,Personalization
+syn_00035,Personalization,0.5,Personalization
+syn_00280,Personalization,0.5,Personalization
+syn_00209,All-or-nothing thinking,0.5,All-or-nothing thinking
+syn_00208,No Distortion,0.5,No Distortion
+syn_00224,No Distortion,0.5,No Distortion
+syn_00069,Fortune-telling,0.5,Fortune-telling
+syn_00132,Labeling,0.5,Labeling
+syn_00135,Mental filter,0.5,Mental filter
+syn_00195,No Distortion,0.5,No Distortion
+syn_00037,Emotional Reasoning,0.5,Emotional Reasoning
+syn_00044,Personalization,0.5,Personalization
+syn_00045,Overgeneralization,0.5,Overgeneralization
+syn_00147,Should statements,0.5,Should statements
+syn_00120,No Distortion,0.5,No Distortion
+syn_00109,Should statements,0.5,Should statements
+syn_00127,Personalization,0.5,Personalization
+syn_00152,Personalization,0.5,Personalization
+syn_00128,Personalization,0.5,Personalization
+syn_00262,All-or-nothing thinking,0.5,All-or-nothing thinking
+syn_00121,No Distortion,0.4,No Distortion
+syn_00233,No Distortion,0.4,No Distortion
+syn_00236,Personalization,0.4,Personalization
+syn_00239,No Distortion,0.4,No Distortion
+syn_00141,No Distortion,0.4,No Distortion
+syn_00247,No Distortion,0.4,No Distortion
+syn_00217,No Distortion,0.4,No Distortion
+syn_00015,Mind Reading,0.4,Mind Reading
+syn_00286,Mental filter,0.4,Mental filter
+syn_00012,No Distortion,0.4,No Distortion
+syn_00219,Personalization,0.4,Personalization
+syn_00033,Should statements,0.4,Should statements
+syn_00271,No Distortion,0.4,No Distortion
+syn_00211,No Distortion,0.3,No Distortion
+syn_00088,Personalization,0.3,Personalization
+syn_00270,No Distortion,0.3,No Distortion
+syn_00265,No Distortion,0.3,No Distortion
+syn_00240,No Distortion,0.3,No Distortion
+syn_00054,No Distortion,0.3,No Distortion
+syn_00237,No Distortion,0.3,No Distortion
+syn_00072,No Distortion,0.3,No Distortion
+syn_00066,No Distortion,0.3,No Distortion
+syn_00175,No Distortion,0.3,No Distortion
+syn_00184,Should statements,0.3,Should statements
+syn_00126,No Distortion,0.3,No Distortion
+syn_00292,Should statements,0.3,Should statements
+syn_00124,No Distortion,0.3,No Distortion
+syn_00078,All-or-nothing thinking,0.3,All-or-nothing thinking
+syn_00189,Emotional Reasoning,0.3,Emotional Reasoning
+syn_00197,No Distortion,0.3,No Distortion
+syn_00116,Should statements,0.3,Should statements
+syn_00094,No Distortion,0.2,No Distortion
+syn_00181,No Distortion,0.2,No Distortion
+syn_00096,No Distortion,0.2,No Distortion
+syn_00075,No Distortion,0.2,No Distortion
+syn_00294,No Distortion,0.2,No Distortion
+syn_00133,No Distortion,0.2,No Distortion
+syn_00117,No Distortion,0.2,No Distortion
+syn_00288,No Distortion,0.2,No Distortion
+syn_00057,No Distortion,0.2,No Distortion
+syn_00064,All-or-nothing thinking,0.2,All-or-nothing thinking
+syn_00086,No Distortion,0.2,No Distortion
+syn_00221,Personalization,0.2,Personalization
+syn_00028,No Distortion,0.2,No Distortion
+syn_00194,All-or-nothing thinking,0.2,All-or-nothing thinking
+syn_00260,No Distortion,0.2,No Distortion
+syn_00242,No Distortion,0.2,No Distortion
+syn_00125,No Distortion,0.2,No Distortion
+syn_00159,All-or-nothing thinking,0.2,All-or-nothing thinking
+syn_00192,No Distortion,0.2,No Distortion
+syn_00190,No Distortion,0.2,No Distortion
+syn_00196,No Distortion,0.2,No Distortion
+syn_00099,No Distortion,0.2,No Distortion
+syn_00104,Personalization,0.2,Personalization
+syn_00138,No Distortion,0.2,No Distortion
+syn_00024,All-or-nothing thinking,0.1,All-or-nothing thinking
+syn_00031,No Distortion,0.1,No Distortion
+syn_00019,No Distortion,0.1,No Distortion
+syn_00052,No Distortion,0.1,No Distortion
+syn_00287,No Distortion,0.1,No Distortion
+syn_00002,No Distortion,0.1,No Distortion
+syn_00014,No Distortion,0.1,No Distortion
+syn_00178,No Distortion,0.1,No Distortion
+syn_00272,No Distortion,0.1,No Distortion
+syn_00298,No Distortion,0.1,No Distortion
+syn_00063,No Distortion,0.1,No Distortion
+syn_00038,No Distortion,0.1,No Distortion
+syn_00238,No Distortion,0.1,No Distortion
+syn_00220,No Distortion,0.1,No Distortion
+syn_00095,All-or-nothing thinking,0.1,All-or-nothing thinking
+syn_00193,No Distortion,0.1,No Distortion
+syn_00160,No Distortion,0.1,No Distortion
+syn_00098,No Distortion,0.1,No Distortion
+syn_00291,No Distortion,0.1,No Distortion
+syn_00153,No Distortion,0.1,No Distortion
+syn_00105,No Distortion,0.1,No Distortion
+syn_00085,No Distortion,0.1,No Distortion
+syn_00230,No Distortion,0.1,No Distortion
+syn_00062,No Distortion,0.1,No Distortion
+syn_00004,No Distortion,0.0,No Distortion
+syn_00001,No Distortion,0.0,No Distortion
+syn_00010,No Distortion,0.0,No Distortion
+syn_00005,No Distortion,0.0,No Distortion
+syn_00146,No Distortion,0.0,No Distortion
+syn_00297,No Distortion,0.0,No Distortion
+syn_00101,No Distortion,0.0,No Distortion
+syn_00155,No Distortion,0.0,No Distortion
+syn_00084,No Distortion,0.0,No Distortion
+syn_00186,No Distortion,0.0,No Distortion
+syn_00091,No Distortion,0.0,No Distortion
+syn_00213,No Distortion,0.0,No Distortion
+syn_00068,No Distortion,0.0,No Distortion
+syn_00061,No Distortion,0.0,No Distortion
+syn_00255,No Distortion,0.0,No Distortion
+syn_00252,No Distortion,0.0,No Distortion

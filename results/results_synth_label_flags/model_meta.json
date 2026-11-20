@@ -1,0 +1,16 @@
+{
+  "binary_threshold": 0.9767410755157471,
+  "thresholds": {
+    "emotional_reasoning": 0.8,
+    "overgeneralization": 0.5,
+    "mental_filter": 0.65,
+    "should_statements": 0.45,
+    "all_or_nothing": 0.65,
+    "mind_reading": 0.55,
+    "fortune_telling": 0.75,
+    "magnification": 0.7,
+    "personalization": 0.65,
+    "labeling": 0.45
+  },
+  "model_version": "mentalroberta-d12-s42-20261120"
+}
