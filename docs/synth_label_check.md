@@ -1,114 +1,97 @@
-# S10 — Label check of flagged synthetic rows
+# S10 — Blind human check of flagged synthetic rows
 
-> **Status: PROVISIONAL.** These numbers come from a **disclosed model-assisted labelling pass**, not from the S10
-> human check the brief asks for. **Izza** still has to label every row of `data/synthetic/review_sheet.xlsx` blind
-> and re-run the command in the last section. That replaces every number below. Until then, don't report this file
-> as a human check.
+**Labeller:** Izza. She labelled all 217 rows of `data/synthetic/review_sheet.xlsx` blind:
+- the sheet shows only a review ID and the text;
+- `review_key.csv` was opened only after every row was labelled.
 
-**Labels:** `data/synthetic/review_labels_model.csv`, 217 rows. Each row records `labelled_by = "model-assisted
-(provisional; to be confirmed by Izza)"`.
+20 rows are marked Unsure.
 
-**How the labels were made:**
-- the reader used only the review sheet's ID and text, plus the codebook guide;
-- `review_key.csv` was not read while labelling.
-
-**The pass was not fully blind.** The same model had already read some of these synthetic texts and their panel
-labels during the S05/S06 write-ups (`docs/synth_calibration.md`, `docs/synth_run.md`): all Magnification and
-Mental filter rows and a few others. That can bias agreement upwards on those rows. Izza's pass doesn't have this
-problem.
-
-**Scoring:** `python -m src.synth_label_check --labels data/synthetic/review_labels_model.csv --labeller "model-assisted (provisional; to be confirmed by Izza)"`.
-- **Rule:** a row is "judged wrong" when the reviewer's main label differs from the panel's label. The two No
-  Distortion options count as the same.
+**Scoring:** `python -m src.synth_label_check --labels data/synthetic/review_sheet.xlsx --labeller Izza`.
+- **Rule:** a row is "judged wrong" when her main label differs from the panel's label. The two No Distortion
+  options count as the same.
 - **Outputs:**
   - `results/results_synth_label_check/precision_table.csv`
   - `results/results_synth_label_check/removed_rows.csv`
   - `results/results_synth_label_check/summary.json`
-  - `data/synthetic/synthetic_train_en_final.jsonl`
 
-## Precision of each check (provisional)
+**Earlier pass.** A disclosed model-assisted labelling pass was done first, as a provisional placeholder:
+`data/synthetic/review_labels_model.csv`. It isn't used for any number below. Izza's main labels agree with it on
+88% of the 217 rows.
+
+## Precision of each check
 
 | Check | Rows flagged | Rows judged wrong | Precision |
 |---|---|---|---|
-| Neighbours | 77 | 13 | **0.169** |
-| Model (D12) | 52 | 1 | 0.019 |
-| Close votes (2-to-1) | 132 | 10 | 0.076 |
-| Any check | 187 | 15 | 0.080 |
-| **Random rows (baseline)** | 30 | 0 | **0.000** |
+| Neighbours | 77 | 20 | **0.260** |
+| Model (D12) | 52 | 5 | 0.096 |
+| Close votes (2-to-1) | 132 | 14 | 0.106 |
+| Any check | 187 | 25 | 0.134 |
+| **Random rows (baseline error rate)** | 30 | 1 | **0.033** |
 
-The random rows' error rate is 0 of 30, so the baseline is 0. A 95% upper bound for 0/30 is about 10%. On this
-pass:
-- **Neighbours** has the best precision (0.17). That is the reverse of the benchmark warning, probably because
-  synthetic neighbourhoods are tighter than real ones.
-- **Close votes** is weaker (0.08), even though it is the largest list.
-- **Model** almost never catches a wrong row (1 of 52). The D12 model's disagreements are mostly with the panel's
-  choice of main versus second label. The reader, like the panel, accepted the panel's main label on those rows.
+**Every check finds wrong labels more often than random reading does.** The baseline is 1 wrong in 30 random rows
+(3.3%).
 
-**With a baseline of 0 of 30, every check beats random.** But the sample is small, and only S10's human labels can
-settle it.
+| Check | Precision | Times the random rate |
+|---|---|---|
+| Neighbours | 0.26 | about 8 |
+| Close votes | 0.11 | about 3 |
+| Model (D12) | 0.10 | about 3 |
+
+The baseline rests on only 30 rows, so a 95% interval on 1/30 runs up to about 17%. Only neighbours is clearly
+above that interval.
+
+**Neighbours is the most useful check here.** That is the reverse of the benchmark warning (ARI 0.003–0.016).
+Synthetic rows of one type share wording far more than real rows do (S07), so a row whose neighbours disagree is
+more often a genuine mislabel.
+
+**The other two checks.**
+- *Close votes* is the costliest: it puts 132 rows on the sheet for 14 errors.
+- *Model:* the D12 model, trained on the benchmark only, rarely disagrees in a way that turns out right.
+
+This mirrors D11's route comparison for the benchmark, so Chapter 9 can set the two side by side.
 
 ## Rows judged wrong (removed)
 
-**15 rows** are judged wrong and removed from the final file. Grouped by what the panel said and what the reader
-said:
+**26 rows** are judged wrong and removed from the final file. The full list is in `removed_rows.csv`.
 
-| Panel's label → reader's main label | Rows |
+| Panel's label → Izza's main label | Rows |
 |---|---|
+| Fortune-telling → Magnification | 4 |
+| Overgeneralization → Fortune-telling | 4 |
 | Labeling → Mind Reading | 3 |
 | Magnification → Fortune-telling | 3 |
-| Labeling → Fortune-telling | 2 |
-| Overgeneralization → Fortune-telling | 2 |
-| Fortune-telling → Mind Reading / Overgeneralization / Magnification | 1 each |
-| Mind Reading → Labeling | 1 |
-| Personalization → Should statements | 1 |
+| Overgeneralization → No Distortion (calibrated pessimism) | 2 |
+| Labeling → Fortune-telling / Magnification | 1 each |
+| Fortune-telling → Overgeneralization / Mind Reading | 1 each |
+| Emotional Reasoning → Magnification | 1 |
+| Personalization → No Distortion (calibrated pessimism) / Should statements | 1 each |
+| Should statements → Personalization | 1 |
+| Mind Reading → Emotional Reasoning / Labeling | 1 each |
 
-**11 of the 15 are swaps of main and second label, not wrong distortions.** The reader kept the panel's label as
-the second distortion and disagreed only about which one is main. The brief's rule judges main labels, so these
-count as wrong here. When Izza does the human pass, the team should decide whether a main/second swap is "wrongly
-labelled" or "acceptable". If it's acceptable, only **4 rows** are clearly wrong:
+- **Most removals sit on one border.** 14 of the 26 involve Fortune-telling and Magnification, in either direction.
+  S06's critics struggled with the same border.
+- **3 rows were read as sound reasoning:** two Overgeneralization rows and one Personalization row, labelled
+  calibrated pessimism.
+- **10 of the 26 are swaps of main and second label.** Izza kept the panel's label as the second distortion and
+  disagreed only about which one is main. Under the brief's rule they count as wrong.
+- **11 of the 26 were marked Unsure.**
+- **Removed, not relabelled.** Wrong rows were thrown away, never relabelled, as the brief and D11 require.
 
-| Row | Panel's label | Reader's label |
-|---|---|---|
-| syn_00041 | Labeling | Fortune-telling (marked Unsure) |
-| syn_00048 | Labeling | Mind Reading |
-| syn_00269 | Personalization | Should statements |
-| syn_00013 | Labeling | Fortune-telling, second Overgeneralization |
+## Final training file
 
-The list is in `results/results_synth_label_check/removed_rows.csv`.
-
-**The Magnification ↔ Fortune-telling border** again accounts for the most removals. S06 already showed it for the
-critic panel. The final file has only **4 Magnification rows**.
-
-**Rows were removed, never relabelled.** This mirrors D11.
-
-## Final training file (provisional)
-
-`data/synthetic/synthetic_train_en_final.jsonl` = the S07 clean file (258) minus the 15 removed = **243 rows**.
+`data/synthetic/synthetic_train_en_final.jsonl` = the S07 clean file (258) minus the 26 removed = **232 rows**.
+S08 trains on this file.
 
 | Type | Rows |
 |---|---|
 | No Distortion | 84 |
-| Mind Reading | 20 |
-| Personalization | 20 |
-| Should statements | 19 |
-| Fortune-telling | 18 |
-| Overgeneralization | 18 |
-| Emotional Reasoning | 17 |
+| Mind Reading | 19 |
+| Personalization | 19 |
+| Should statements | 18 |
 | Labeling | 16 |
 | All-or-nothing thinking | 16 |
+| Emotional Reasoning | 16 |
+| Fortune-telling | 15 |
+| Overgeneralization | 14 |
 | Mental filter | 11 |
 | Magnification | 4 |
-
-## How to finish S10 with the human labels
-
-1. **Izza fills the "Label" tab of `data/synthetic/review_sheet.xlsx`** (all 217 rows, until Status = Done). She
-   doesn't open `review_key.csv` or `review_labels_model.csv` until she's finished.
-2. **Re-run** with her sheet:
-   ```
-   python -m src.synth_label_check --labels data/synthetic/review_sheet.xlsx --labeller "Izza"
-   ```
-   This overwrites the precision table, the removed list and `synthetic_train_en_final.jsonl`.
-3. **Update this doc** with her numbers and remove the provisional banner.
-   - Optional: report how often her main labels agree with the provisional pass, as a measure of how far the pass
-     can be trusted.
-4. **Only then** S08 trains on the final file.
