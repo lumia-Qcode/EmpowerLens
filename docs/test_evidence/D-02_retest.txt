@@ -1,0 +1,40 @@
+D-02 re-test (empowerlens-demo branch d26-fixes, Claude agent, 2026-11-20)
+
+Same D-01 rows and seed cohort-1 texts as the original D-02, now taken from the app's own responses (researcher endpoints,
+which apply the new rule). Rule: not distorted -> 0 types; distorted -> 1 or 2 types.
+source | is_distorted | p | types reported (below_threshold marked *) | rule ok
+val row 0 (Id 4508) | False | 0.009 | [] | True
+val row 1 (Id 4522) | True | 0.984 | ['Personalization', 'Should statements'] | True
+val row 2 (Id 4541) | False | 0.9362 | [] | True
+val row 3 (Id 4543) | False | 0.5704 | [] | True
+val row 4 (Id 4549) | False | 0.586 | [] | True
+cohort1 reflection 1 | True | 0.9779 | ['All-or-nothing thinking', 'Should statements'] | True
+cohort1 reflection 2 | False | 0.0401 | [] | True
+cohort1 reflection 3 | False | 0.2228 | [] | True
+cohort1 reflection 4 | True | 0.9849 | ['Fortune-telling*'] | True
+cohort1 reflection 5 | False | 0.014 | [] | True
+cohort1 reflection 6 | True | 0.9917 | ['Personalization', 'Labeling'] | True
+cohort1 reflection 7 | False | 0.0486 | [] | True
+cohort1 reflection 8 | False | 0.9565 | [] | True
+cohort1 reflection 9 | True | 0.9859 | ['Personalization'] | True
+cohort1 reflection 10 | True | 0.9914 | ['Personalization', 'Labeling'] | True
+cohort1 reflection 11 | False | 0.4958 | [] | True
+cohort1 reflection 12 | False | 0.0461 | [] | True
+cohort1 reflection 13 | False | 0.4879 | [] | True
+cohort1 reflection 14 | False | 0.1039 | [] | True
+cohort1 reflection 15 | False | 0.2819 | [] | True
+cohort1 reflection 16 | False | 0.1273 | [] | True
+cohort1 reflection 17 | False | 0.0236 | [] | True
+cohort1 reflection 18 | False | 0.3035 | [] | True
+
+Rows breaking the rule: 0 of 23.
+Disagreements between the separate binary and type models and how the app handles them:
+- binary 'not distorted' but the type model fires types: types dropped (0 types). Unchanged.
+- binary 'distorted' with 3-4 types firing: top 2 by score kept. Unchanged.
+- binary 'distorted' with NO type over its threshold (cohort1 reflection 4, 'A competitor launched a similar product. We are doomed,
+  there is no point continuing.'): NEW defined behaviour: the highest-scoring type is reported, marked below_threshold (Fortune-telling
+  0.68 here), prediction.type_below_threshold = true. The researcher view shows 'Fortune-telling (below threshold)' plus a note
+  (D-02_retest.png). The cohort report counts it under that type and reports type_below_threshold:
+  cohort 1 report: share_with_distorted_reasoning=0.278 (5/18), type_below_threshold=1,
+  types_suppressed=4 (was 3 before the fix: the new Fortune-telling count of 1 is below the threshold of 3 and hidden).
+The raw empowerlens/ predictor output is unchanged; the rule is applied in the backend (reporting.resolve_type).

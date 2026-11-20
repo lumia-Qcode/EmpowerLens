@@ -1,0 +1,18 @@
+A-15 re-test (empowerlens-demo branch d26-fixes, Claude agent, 2026-11-20)
+
+Browser (Playwright): /researcher, signed in as trainer B (trainerb@test.local) -> stays on 'Sign in as researcher' with
+'This account has the trainer role, not researcher.' (A-15_retest.png). This check is still client-side and logs nothing (not fixed, minor).
+
+Researcher endpoints called with trainer B's token:
+GET /api/researcher/cohorts -> 403 {"detail":"This surface is restricted to the researcher role"}
+GET /api/researcher/cohorts/1/reflections -> 403 {"detail":"This surface is restricted to the researcher role"}
+GET /api/researcher/reflections/1 -> 403 {"detail":"This surface is restricted to the researcher role"}
+GET /api/researcher/export?format=json -> 403 {"detail":"This surface is restricted to the researcher role"}
+POST /api/researcher/analyze -> 403 {"detail":"This surface is restricted to the researcher role"}
+
+access_log rows added:
+{"log_id": 36, "user_id": 3, "cohort_id": null, "reflection_id": null, "action": "researcher_surface", "outcome": "refused", "logged_at": "2026-11-20T14:49:19+00:00"}
+{"log_id": 37, "user_id": 3, "cohort_id": null, "reflection_id": null, "action": "researcher_surface", "outcome": "refused", "logged_at": "2026-11-20T14:49:19+00:00"}
+{"log_id": 38, "user_id": 3, "cohort_id": null, "reflection_id": null, "action": "researcher_surface", "outcome": "refused", "logged_at": "2026-11-20T14:49:19+00:00"}
+{"log_id": 39, "user_id": 3, "cohort_id": null, "reflection_id": null, "action": "researcher_surface", "outcome": "refused", "logged_at": "2026-11-20T14:49:19+00:00"}
+{"log_id": 40, "user_id": 3, "cohort_id": null, "reflection_id": null, "action": "researcher_surface", "outcome": "refused", "logged_at": "2026-11-20T14:49:19+00:00"}

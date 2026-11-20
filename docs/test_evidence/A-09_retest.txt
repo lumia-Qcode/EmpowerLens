@@ -1,0 +1,9 @@
+A-09 re-test (empowerlens-demo branch d26-fixes, Claude agent, 2026-11-20)
+
+Browser (Playwright): trainer A signed in at /trainer; own cohort 1 'Spring Founders 2026' (18 submissions, threshold 3) report
+shown: Personalization 3 (17%), 4 rarer types hidden, 1 example sentence, and the new note '1 distorted reflection(s) had no type
+above its own threshold and are counted under their most likely type' (A-09_retest.png).
+
+API re-check: GET /api/trainer/cohorts/1/report -> 200; status=ok submissions=18 distribution=[{'label': 'Personalization', 'count': 3, 'share': 0.167}] types_suppressed=4 type_below_threshold=1
+access_log row added:
+{"log_id": 35, "user_id": 1, "cohort_id": 1, "reflection_id": null, "action": "view_report", "outcome": "allowed", "logged_at": "2026-11-20T14:49:17+00:00"}

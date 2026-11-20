@@ -1,0 +1,19 @@
+A-04 re-test (empowerlens-demo branch d26-fixes, Claude agent, 2026-11-20)
+
+Browser (Playwright, /participant?cohort=6, TEST participant flow): consent -> answer left empty -> no 'required' message;
+the hint reads 'You may leave this blank; it is recorded as unanswered.' and the button reads 'Submit without an answer'
+(A-04_retest_1_blank.png). Clicking it shows 'Responses received' (A-04_retest.png).
+There is still only one prompt in the app, so 'leave prompt 2 empty, answer the rest' is exercised as: the one prompt left blank.
+
+reflection table columns:
+reflection_id, participant_token, prompt_id, text, submitted_at, unanswered
+
+Stored row for the blank browser submission (cohort 6):
+{"reflection_id": 34, "participant_token": "P-A4B20347", "prompt_id": 1, "text": "", "unanswered": 1, "submitted_at": "2026-11-20T14:41:54+00:00"}
+
+Trainer cohort row for cohort 6: submissions=1 (answered only), unanswered=1
+Researcher review list for cohort 6 (answered only): reflections=[{"reflection_id": 35, "reviewed": false}] (model info omitted); the blank reflection 34 is not listed
+GET /api/researcher/reflections/34 (the blank one) -> 404 {"detail":"This response was left unanswered; there is nothing to classify"}
+Researcher annotation export (JSON) for cohort 6:
+{"item_id": "survey-34", "text": "", "unanswered": true}
+{"item_id": "survey-35", "text": "Everyone will laugh at my pitch, I always fail", "unanswered": false}
