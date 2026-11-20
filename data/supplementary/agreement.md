@@ -42,3 +42,26 @@ Dominant or secondary differs. Final labels go in `adjudication.csv`.
 | sup_417 | Fortune-telling + Overgeneralization | All-or-nothing thinking + Overgeneralization |
 | sup_454 | Overgeneralization | Overgeneralization + Magnification |
 | sup_481 | Labeling | Labeling + Fortune-telling |
+
+## Adjudication (after both had finished)
+
+The 10 rows above were settled by Lumia and Izza together on 20 Nov 2026, after both workbooks were complete;
+the agreement numbers above are from their independent labels, before this discussion. Final labels are in
+`adjudication.csv`. Each final distorted part is copied unchanged from the annotator whose label matched the
+decision (noted per row in that file).
+
+| item_id | Final label |
+|---|---|
+| sup_049 | Overgeneralization + All-or-nothing thinking |
+| sup_182 | Overgeneralization |
+| sup_206 | No Distortion |
+| sup_207 | Should statements |
+| sup_384 | Should statements |
+| sup_385 | No Distortion |
+| sup_413 | No Distortion |
+| sup_417 | Fortune-telling + Overgeneralization |
+| sup_454 | Overgeneralization + Magnification |
+| sup_481 | Labeling + Fortune-telling |
+
+Merged result: `supplementary_labelled.csv`, 500 rows, one final label each (`python -m src.supplementary_labels
+merge`). 65 rows distorted, 435 No Distortion (28 of them calibrated pessimism).
