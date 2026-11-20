@@ -1,0 +1,16 @@
+review_id,id,panel_label,reviewer_label
+R014,syn_00013,Labeling,Fortune-telling
+R210,syn_00032,Labeling,Mind Reading
+R136,syn_00036,Fortune-telling,Mind Reading
+R110,syn_00041,Labeling,Fortune-telling
+R071,syn_00048,Labeling,Mind Reading
+R073,syn_00056,Fortune-telling,Overgeneralization
+R099,syn_00059,Magnification,Fortune-telling
+R008,syn_00114,Magnification,Fortune-telling
+R077,syn_00157,Labeling,Mind Reading
+R135,syn_00191,Magnification,Fortune-telling
+R084,syn_00204,Fortune-telling,Magnification
+R026,syn_00226,Mind Reading,Labeling
+R111,syn_00234,Overgeneralization,Fortune-telling
+R016,syn_00269,Personalization,Should statements
+R141,syn_00284,Overgeneralization,Fortune-telling

@@ -1,0 +1,6 @@
+check,rows_flagged,rows_judged_wrong,precision
+neighbours,77,13,0.169
+model,52,1,0.019
+close votes,132,10,0.076
+any check,187,15,0.08
+random (baseline),30,0,0.0
