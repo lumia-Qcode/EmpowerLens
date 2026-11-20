@@ -63,7 +63,7 @@ NO_DISTORTION_CONDITIONS = [
     "field, expecting rejection is realism, not Fortune-telling",
     "the writer states a difficulty and then reasons about it soundly, or makes a plan",
     "disappointment, frustration or fear is expressed but the reasoning around it holds",
-    "the writer acknowledges a real limitation she actually has evidence for",
+    "the writer acknowledges a real limitation the writer actually has evidence for",
 ]
 
 # ---- Attribute dimensions the planner samples (AttrPrompt-style) -------------
@@ -74,7 +74,9 @@ TRIGGERS = [
     "missed_deadline", "team_setback", "family_disapproval", "supplier_problem",
     # Domain-specific scenarios — the situations are where EmpowerLens differs
     # from the clinical benchmark, so they are worth naming explicitly.
-    "only_woman_in_the_room", "first_customer_or_churn", "mentor_feedback_stung",
+    # ("only_woman_in_the_room" removed in S04: the training material is not
+    # conditioned on gender, Ch2.)
+    "first_customer_or_churn", "mentor_feedback_stung",
 ]
 
 # English track only for Month 2.
@@ -85,7 +87,10 @@ STAGES = ["idea", "prototype", "early_launch", "growing"]
 SECTORS = ["food", "fashion", "handicrafts", "beauty", "tech", "services", "education"]
 
 # Kept minimal on the English track; expands on the Urdu track.
-CULTURAL_MARKERS = [None, None, None, "gender_expectation", "family_pressure"]
+# "gender_expectation" removed in S04: Ch2 says the training material is not
+# conditioned on gender (decision recorded in data/synthetic_gen/seeds/seed_counts.md).
+# Now 3 of 4 specs carry no marker (3 of 5 before).
+CULTURAL_MARKERS = [None, None, None, "family_pressure"]
 
 # ---- Distribution knobs (defaults mirror the real corpus, roughly) ----------
 

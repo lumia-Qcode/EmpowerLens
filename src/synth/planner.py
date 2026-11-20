@@ -16,7 +16,7 @@ A spec is a plain dict so it serialises straight into the output JSONL:
       "register": "english_casual",
       "stage": "prototype",
       "sector": "handicrafts",
-      "cultural_marker": None | "gender_expectation" | ...,
+      "cultural_marker": None | "family_pressure",
     }
 """
 
