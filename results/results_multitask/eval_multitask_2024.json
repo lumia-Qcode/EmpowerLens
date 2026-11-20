@@ -1,0 +1,213 @@
+{
+  "settings": {
+    "task": "multitask",
+    "model": "mental/mental-roberta-base",
+    "init_from": "mental/mental-roberta-base",
+    "seed": 2024,
+    "lr": 3e-05,
+    "epochs": 5,
+    "weight_decay": 0.1,
+    "max_length": 512,
+    "truncation": "head",
+    "batch_size": 16,
+    "dropout": 0.1,
+    "loss_weights": {
+      "binary": 1.0,
+      "multilabel": 1.0,
+      "selection": 1.0
+    },
+    "device": "cuda",
+    "smoke": false,
+    "splits": "data/splits",
+    "labels_dir": "results/results_sentence_label",
+    "losses": {
+      "binary": "cross-entropy, class weights n/(2*count) from train",
+      "multilabel": "BCE, pos_weight neg/pos from train",
+      "selection": "BCE, pos_weight neg/pos over labelled train sentences; masked to 0 for no-distortion rows, the 13 unlocated rows, and truncated sentences"
+    },
+    "selection_pos_weight": 5.217902183532715,
+    "epoch_criterion": "max over epochs of mean(val binary macro-F1 at argmax, val multilabel macro-F1 at val-swept thresholds, val selector sentence F1 at val-best threshold)",
+    "best_epoch": 4,
+    "best_val_criterion": 0.5302646480283372,
+    "val_truncation_rate": 0.02766798418972332,
+    "test_truncation_rate": 0.023715415019762844
+  },
+  "thresholds": {
+    "binary": 0.7334995865821838,
+    "multilabel": [
+      0.7,
+      0.6,
+      0.5,
+      0.65,
+      0.6,
+      0.7,
+      0.8,
+      0.7,
+      0.7,
+      0.65
+    ],
+    "selector": 0.5578,
+    "binary_criterion": {
+      "rule": "lowest threshold on P(distorted) with val FPR <= target",
+      "target_fpr": 0.15,
+      "val_fpr": 0.1474,
+      "val_sensitivity": 0.7658
+    },
+    "multilabel_criterion": "per type, best val F1 on the 0.05-0.95 grid",
+    "selector_criterion": "max val sentence F1"
+  },
+  "epoch_history": [
+    {
+      "epoch": 1,
+      "train_loss_binary": 0.6646087939344992,
+      "train_loss_multilabel": 1.2818727681017297,
+      "train_loss_selection": 1.2875395060524226,
+      "val_binary_macro_f1": 0.7389060887512899,
+      "val_multilabel_macro_f1": 0.22885397672323612,
+      "val_selector_f1": 0.4737484737484738,
+      "val_criterion": 0.4805028464076666
+    },
+    {
+      "epoch": 2,
+      "train_loss_binary": 0.5328414025973147,
+      "train_loss_multilabel": 1.1950711617319603,
+      "train_loss_selection": 1.0536905484875356,
+      "val_binary_macro_f1": 0.7684967320261438,
+      "val_multilabel_macro_f1": 0.26326502327691703,
+      "val_selector_f1": 0.49805447470817127,
+      "val_criterion": 0.5099387433370773
+    },
+    {
+      "epoch": 3,
+      "train_loss_binary": 0.4059947037438708,
+      "train_loss_multilabel": 1.1124978175782783,
+      "train_loss_selection": 0.8515739032602686,
+      "val_binary_macro_f1": 0.7707443365695793,
+      "val_multilabel_macro_f1": 0.2877430453568974,
+      "val_selector_f1": 0.5029940119760479,
+      "val_criterion": 0.5204937979675082
+    },
+    {
+      "epoch": 4,
+      "train_loss_binary": 0.26781770918430303,
+      "train_loss_multilabel": 1.0069832076707224,
+      "train_loss_selection": 0.7107399699725504,
+      "val_binary_macro_f1": 0.7751481237656352,
+      "val_multilabel_macro_f1": 0.3335611297656302,
+      "val_selector_f1": 0.4820846905537459,
+      "val_criterion": 0.5302646480283372
+    },
+    {
+      "epoch": 5,
+      "train_loss_binary": 0.15608900754646524,
+      "train_loss_multilabel": 0.9439742755232834,
+      "train_loss_selection": 0.600371517534331,
+      "val_binary_macro_f1": 0.7834759710335748,
+      "val_multilabel_macro_f1": 0.33252823351562844,
+      "val_selector_f1": 0.47261345852895154,
+      "val_criterion": 0.5295392210260516
+    }
+  ],
+  "splits": {
+    "val": {
+      "n_rows": 253,
+      "selection_rows_by_reason": {
+        "labelled": 157,
+        "no_distortion": 95,
+        "span_unlocated": 1
+      },
+      "binary": {
+        "specificity": 0.8526315789473684,
+        "fpr": 0.1473684210526316,
+        "sensitivity": 0.7658227848101266,
+        "macro_f1": 0.7932509734172956,
+        "positive_class_f1": 0.825938566552901,
+        "macro_f1_argmax": 0.7751481237656352,
+        "tn": 81,
+        "fp": 14,
+        "n_non_distorted": 95,
+        "n_distorted": 158
+      },
+      "multilabel": {
+        "macro_f1": 0.3335611297656302,
+        "micro_f1": 0.32727272727272727,
+        "macro_f1_distorted_rows": 0.3448104650934285,
+        "per_type_f1": {
+          "emotional_reasoning": 0.3018867924528302,
+          "overgeneralization": 0.2857142857142857,
+          "mental_filter": 0.25287356321839083,
+          "should_statements": 0.43478260869565216,
+          "all_or_nothing": 0.21428571428571427,
+          "mind_reading": 0.4675324675324675,
+          "fortune_telling": 0.4117647058823529,
+          "magnification": 0.27586206896551724,
+          "personalization": 0.36363636363636365,
+          "labeling": 0.32727272727272727
+        },
+        "n_rows": 253
+      },
+      "selector": {
+        "precision": 0.43023255813953487,
+        "recall": 0.5481481481481482,
+        "f1": 0.4820846905537459,
+        "row_hit_rate": 0.7388535031847133,
+        "n_rows": 157,
+        "n_sentences": 1586,
+        "n_gold_sentences": 270,
+        "n_selected": 344,
+        "threshold": 0.5578,
+        "n_sentences_truncated": 7
+      }
+    },
+    "test": {
+      "n_rows": 253,
+      "selection_rows_by_reason": {
+        "labelled": 159,
+        "no_distortion": 92,
+        "span_unlocated": 2
+      },
+      "binary": {
+        "specificity": 0.7391304347826086,
+        "fpr": 0.26086956521739135,
+        "sensitivity": 0.7577639751552795,
+        "macro_f1": 0.7391026795213854,
+        "positive_class_f1": 0.7947882736156352,
+        "macro_f1_argmax": 0.7630135153218253,
+        "tn": 68,
+        "fp": 24,
+        "n_non_distorted": 92,
+        "n_distorted": 161
+      },
+      "multilabel": {
+        "macro_f1": 0.24592485081326193,
+        "micro_f1": 0.2524271844660194,
+        "macro_f1_distorted_rows": 0.26508795864613915,
+        "per_type_f1": {
+          "emotional_reasoning": 0.3728813559322034,
+          "overgeneralization": 0.3,
+          "mental_filter": 0.1782178217821782,
+          "should_statements": 0.15,
+          "all_or_nothing": 0.2,
+          "mind_reading": 0.36923076923076925,
+          "fortune_telling": 0.15384615384615385,
+          "magnification": 0.2972972972972973,
+          "personalization": 0.16326530612244897,
+          "labeling": 0.27450980392156865
+        },
+        "n_rows": 253
+      },
+      "selector": {
+        "precision": 0.45014245014245013,
+        "recall": 0.5448275862068965,
+        "f1": 0.49297971918876754,
+        "row_hit_rate": 0.7169811320754716,
+        "n_rows": 159,
+        "n_sentences": 1591,
+        "n_gold_sentences": 290,
+        "n_selected": 351,
+        "threshold": 0.5578,
+        "n_sentences_truncated": 4
+      }
+    }
+  }
+}
