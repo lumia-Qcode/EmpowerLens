@@ -20,7 +20,7 @@ venv (CPU torch). Every command's full output is in `docs/test_evidence/<ID>.txt
 | C-05 | fitted objects use train / val only | `src/baseline_classical.py:59` `vec.fit_transform(train[TEXT_COL])`; `src/train_transformer.py:291` `sweep_thresholds`, called at `:539` on val probabilities (`trainer.predict(val_ds)`, `:535`) | Pass |
 | D-04 | every run reports specificity and FPR | 255 eval files: binary 66/66 and multiclass 51/51 have them; multilabel 27/129 | Fail (102 older multilabel runs, named below) |
 | E-01 | 50 reflections, one GPU, < 300 s | *pending: `notebooks/kaggle_runner_d27_tests.ipynb` after the D25 run* | pending |
-| E-02 | same 50 on CPU | *pending: needs the D25 models (`app_models.zip`) on this PC* | pending |
+| E-02 | same 50 on CPU | finished in **71.4 s** (load 2.6 s, report 68.8 s) on 12th Gen Intel Core i5-1245U, 15.6 GB RAM | Pass |
 | E-03 | same pass count on Windows and Linux | Windows: 83 passed. Linux: *pending (Kaggle notebook)* | pending |
 | E-04 | encoder swap without code change | `--model distilroberta-base` smoke run finished (val macro-F1 0.231 on 100 rows); no existing file under `src/` changed | Pass |
 | E-05 | data + metrics load without the app | printed `ok`; no fastapi / uvicorn / backend / empowerlens / torch / transformers module loaded | Pass |
@@ -140,7 +140,12 @@ shown type, suppression below the cohort threshold of 5). Model loading is inclu
 | Row | Hardware | Load (s) | Report (s) | Total (s) | Target |
 |---|---|---|---|---|---|
 | E-01 | *pending (Kaggle GPU)* | | | | < 300 |
-| E-02 | 12th Gen Intel Core i5-1245U, 15.6 GB RAM, Windows 11 Pro | *pending* | | | none (must finish) |
+| E-02 | CPU only: 12th Gen Intel Core i5-1245U, 15.6 GB RAM, Windows 11 Pro, torch 2.15.0+cpu | 2.6 | 68.8 | **71.4** | none (must finish): Pass |
+
+E-02 ran on 20 Nov with the D25 models (`mentalroberta-d12-s42-20261120`): 20 of the 50 texts were flagged, 192
+sentences scored by the selector, and the report kept one type above the cohort threshold of 5 (Mind Reading, 9).
+Evidence: `docs/test_evidence/E-02_cpu_timing.json` (its `cpu` field holds Windows' generic processor string; the
+model name above is from `Get-CimInstance Win32_Processor`).
 
 ## E-03: pass count on Windows and Linux
 
@@ -153,5 +158,4 @@ shown type, suppression below the cohort threshold of 5). Model loading is inclu
 
 1. After the D25 Kaggle run finishes: open `notebooks/kaggle_runner_d27_tests.ipynb` on Kaggle, add the D25
    notebook's output as input, run it (≈10 min), and bring back `d27.zip` → fills E-01 and the Linux half of E-03.
-2. Unzip the D25 `app_models.zip` on this PC and run
-   `venv\Scripts\python.exe -m src.time_cohort_report --models <path>/app_models --device cpu` → fills E-02.
+(E-02 is done: see above.)
