@@ -87,11 +87,19 @@ sentences. Going over is a failure even if the writing is good."""
 SYSTEM_GENERATOR = build_generator_system("snippet")
 
 
+# Ids of the seeds shown in the most recent generator prompt. generate.py copies
+# them onto every output row (S06 needs "the seed it was prompted with").
+# Single-threaded pipeline, so a module-level record is enough.
+LAST_SEED_IDS: list[str] = []
+
+
 def _seed_examples(seeds: list[dict], k: int, rng) -> str:
     """Format up to k rotating seed exemplars as few-shot demonstrations."""
+    LAST_SEED_IDS.clear()
     if not seeds:
         return ""
     chosen = rng.sample(seeds, min(k, len(seeds)))
+    LAST_SEED_IDS.extend(s.get("id") for s in chosen)
     lines = []
     for s in chosen:
         lines.append(f'[{s.get("dominant_distortion", "?")}] {s["text"]}')

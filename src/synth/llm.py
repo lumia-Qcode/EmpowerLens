@@ -51,6 +51,155 @@ def _gemini():
     return _clients["gemini"]
 
 
+# --------------------------------------------------------------------------- #
+# NVIDIA NIM (OpenAI-compatible, build.nvidia.com)                            #
+# --------------------------------------------------------------------------- #
+# Key: NVIDIA_NIMS_KEY (or NVIDIA_API_KEY), read from the environment or from a
+# local, gitignored `.env` at the repo root. The key is never printed or logged.
+# The free tier is rate-limited (~40 requests/min), so calls are paced and
+# retried. Free-credit calls cost $0, so PRICES has no NVIDIA entries; the
+# number of requests is counted instead (REQUEST_COUNT).
+
+NIM_BASE_URL = "https://integrate.api.nvidia.com/v1"
+NIM_MIN_INTERVAL = 60.0 / 35          # stay under ~35 requests/min
+REQUEST_COUNT = {"nvidia": 0}
+NIM_LOG = os.getenv("NIM_LOG", "1") != "0"   # one line per call: model, seconds, output tokens
+_last_call = [0.0]
+
+
+def _load_dotenv(path=".env") -> None:
+    """Minimal KEY=VALUE reader (no dependency). Never overrides a variable already set."""
+    from pathlib import Path
+    p = Path(path)
+    if not p.exists():
+        return
+    for line in p.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        k, v = line.split("=", 1)
+        k, v = k.strip().removeprefix("export ").strip(), v.strip().strip('"').strip("'")
+        os.environ.setdefault(k, v)
+
+
+def _nvidia():
+    if "nvidia" not in _clients:
+        from openai import OpenAI
+        _load_dotenv()
+        key = os.getenv("NVIDIA_NIMS_KEY") or os.getenv("NVIDIA_API_KEY")
+        if not key:
+            raise RuntimeError("Set NVIDIA_NIMS_KEY (in .env or the environment) for NVIDIA NIM models.")
+        _clients["nvidia"] = OpenAI(base_url=NIM_BASE_URL, api_key=key, max_retries=0, timeout=180)
+    return _clients["nvidia"]
+
+
+def strip_reasoning(text: str) -> str:
+    """Drop <think>...</think> blocks some open models put before the answer."""
+    import re
+    text = re.sub(r"<think>.*?</think>", "", text or "", flags=re.S)
+    if "</think>" in text:                     # opening tag swallowed by the server
+        text = text.split("</think>", 1)[1]
+    return text.strip()
+
+
+def extract_json(text: str):
+    """Parse a JSON object from model text: whole string, ```json fences, or first {...} block."""
+    import re
+    text = strip_reasoning(text)
+    for cand in (text, *re.findall(r"```(?:json)?\s*(\{.*?\})\s*```", text, flags=re.S)):
+        try:
+            return json.loads(cand)
+        except (json.JSONDecodeError, TypeError):
+            pass
+    start = text.find("{")
+    while start >= 0:
+        depth, in_str, esc = 0, False, False
+        for i in range(start, len(text)):
+            ch = text[i]
+            if in_str:
+                esc = (ch == "\\") and not esc
+                if ch == '"' and not esc:
+                    in_str = False
+                continue
+            if ch == '"':
+                in_str = True
+            elif ch == "{":
+                depth += 1
+            elif ch == "}":
+                depth -= 1
+                if depth == 0:
+                    try:
+                        return json.loads(text[start:i + 1])
+                    except json.JSONDecodeError:
+                        break
+        start = text.find("{", start + 1)
+    return None
+
+
+# Per-model request options. Kimi reasons before writing by default (hundreds of
+# hidden tokens for a 40-word reflection); the generator only needs the text.
+NIM_EXTRA_BODY = {
+    "moonshotai/kimi-k3.1-pro": {"chat_template_kwargs": {"thinking": False}},
+}
+NIM_TIMEOUT = 120          # seconds per attempt; the free tier queues, it rarely streams slowly
+NIM_ATTEMPTS = 3           # then give up, so the caller can fall back to another model
+
+
+class NimUnavailable(RuntimeError):
+    """A NIM model did not answer after NIM_ATTEMPTS tries (timeouts, 5xx, overload)."""
+
+
+def _nvidia_call(model, system, user, max_tokens, temperature=None, as_json=False):
+    import time
+    import openai
+    client = _nvidia().with_options(timeout=NIM_TIMEOUT)
+    kwargs = dict(model=model, max_tokens=max_tokens,
+                  messages=[{"role": "system", "content": system}, {"role": "user", "content": user}])
+    if temperature is not None:
+        kwargs["temperature"] = temperature
+    if as_json:
+        kwargs["response_format"] = {"type": "json_object"}
+    if model in NIM_EXTRA_BODY:
+        kwargs["extra_body"] = NIM_EXTRA_BODY[model]
+    for attempt in range(NIM_ATTEMPTS):
+        wait = NIM_MIN_INTERVAL - (time.monotonic() - _last_call[0])
+        if wait > 0:
+            time.sleep(wait)
+        _last_call[0] = t0 = time.monotonic()
+        REQUEST_COUNT["nvidia"] += 1
+        try:
+            resp = client.chat.completions.create(**kwargs)
+            if NIM_LOG:
+                u = getattr(resp, "usage", None)
+                print(f"    [nim] {model} {time.monotonic() - t0:.1f}s "
+                      f"out={getattr(u, 'completion_tokens', '?')}", flush=True)
+            break
+        except openai.BadRequestError:
+            if as_json and "response_format" in kwargs:   # model doesn't support JSON mode: ask in-prompt instead
+                kwargs.pop("response_format")
+                continue
+            raise
+        except (openai.RateLimitError, openai.APIConnectionError, openai.APITimeoutError,
+                openai.InternalServerError) as e:
+            if NIM_LOG:
+                print(f"    [nim] {model} attempt {attempt + 1} failed after {time.monotonic() - t0:.1f}s: "
+                      f"{type(e).__name__}", flush=True)
+            if attempt + 1 < NIM_ATTEMPTS:
+                time.sleep(5 * 2 ** attempt)
+    else:
+        raise NimUnavailable(f"NVIDIA NIM: {model} did not answer after {NIM_ATTEMPTS} attempts")
+    msg = resp.choices[0].message
+    text = strip_reasoning(msg.content or "")
+    u = getattr(resp, "usage", None)
+    usage = {"in": getattr(u, "prompt_tokens", 0) or 0, "out": getattr(u, "completion_tokens", 0) or 0}
+    return text, usage
+
+
+def nvidia_models() -> list[str]:
+    """IDs the key can call right now (GET /v1/models)."""
+    return sorted(m.id for m in _nvidia().models.list())
+
+
 def estimate_cost(provider: str, model: str, usage: dict) -> float:
     pi, po = PRICES.get((provider, model), (0.0, 0.0))
     return (usage.get("in", 0) / 1e6) * pi + (usage.get("out", 0) / 1e6) * po
@@ -114,6 +263,8 @@ def complete_text(provider, model, system, user, max_tokens, temperature=None):
         return _anthropic_call(model, system, user, max_tokens)  # temperature not allowed
     if provider == "gemini":
         return _gemini_call(model, system, user, max_tokens, temperature=temperature)
+    if provider == "nvidia":
+        return _nvidia_call(model, system, user, max_tokens, temperature=temperature)
     raise ValueError(f"unknown provider: {provider}")
 
 
@@ -123,6 +274,9 @@ def complete_json(provider, model, system, user, max_tokens, temperature=None, j
         text, usage = _anthropic_call(model, system, user, max_tokens, json_schema=json_schema)
     elif provider == "gemini":
         text, usage = _gemini_call(model, system, user, max_tokens, temperature=temperature, as_json=True)
+    elif provider == "nvidia":
+        text, usage = _nvidia_call(model, system, user, max_tokens, temperature=temperature, as_json=True)
+        return extract_json(text), usage
     else:
         raise ValueError(f"unknown provider: {provider}")
     try:

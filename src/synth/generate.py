@@ -174,8 +174,36 @@ def run(args) -> None:
     specs = PL.build_specs(args.n, seed=args.seed)
     rng = random.Random(args.seed)
 
+    # --critic-models gives one critic per model (a cross-family panel); otherwise
+    # n_critics copies of --critic-model, decorrelated by temperature only.
+    # Each comma-separated slot may list backups with "|": "a|a2,b|b2,c".
+    critic_slots = [[m.strip() for m in slot.split("|") if m.strip()]
+                    for slot in (args.critic_models or "").split(",") if slot.strip()]
+    if critic_slots:
+        args.n_critics = len(critic_slots)
     temps = [float(t) for t in args.critic_temps.split(",") if t.strip()]
     critic_temps = [temps[i % len(temps)] for i in range(args.n_critics)]
+    critics = [(critic_slots[i] if critic_slots else [args.critic_model], critic_temps[i])
+               for i in range(args.n_critics)]
+    # NIM-hosted open models often reason before answering, and those tokens count
+    # against max_tokens; free-tier calls cost nothing, so give them room.
+    gen_max_tokens = 4000 if args.gen_provider == "nvidia" else 800
+    critic_max_tokens = 6000 if args.critic_provider == "nvidia" else 1100
+
+    if args.check_models:
+        if "nvidia" not in (args.gen_provider, args.critic_provider):
+            sys.exit("--check-models only applies to the nvidia provider")
+        live = set(llm.nvidia_models())
+        want = ([args.gen_model] if args.gen_provider == "nvidia" else []) + \
+               ([m for slot, _ in critics for m in slot] if args.critic_provider == "nvidia" else [])
+        missing = [m for m in want if m not in live]
+        for m in want:
+            print(f"  {'OK     ' if m in live else 'MISSING'} {m}")
+        if missing:
+            sys.exit(f"{len(missing)} configured model(s) not available to this key; "
+                     f"available: {', '.join(sorted(live))}")
+        print("all configured models are available")
+        return
 
     print(f"[planner] {len(specs)} specs | primary distribution:")
     for lab, c in PL.distribution(specs).items():
@@ -188,8 +216,7 @@ def run(args) -> None:
           f"{len({(s['primary'], s['trigger']) for s in specs})}")
     print(f"[planner] English seeds loaded: {len(seeds)}")
     print(f"[panel] generator = {args.gen_provider}:{args.gen_model}")
-    print(f"[panel] critics   = {args.n_critics} x {args.critic_provider}:{args.critic_model} "
-          f"@ temps {critic_temps}")
+    print(f"[panel] critics   = " + ", ".join(f"{args.critic_provider}:{'|'.join(slot)}@{t}" for slot, t in critics))
 
     if args.dry_run:
         print("\n[dry-run] sample generator user prompt for spec[0]:\n")
@@ -235,6 +262,8 @@ def run(args) -> None:
     # that do pass, not just the pass rate.
     nd_accept_margin: list[int] = []
 
+    last_panel: list[str] = []   # critic models that actually voted on the current text
+
     def _gen(spec, prior=None, note=None):
         nonlocal cost
         # Only the last 12 openers are injected: the list is a diversity nudge,
@@ -256,19 +285,36 @@ def run(args) -> None:
         # thinking and truncated the reflection mid-sentence (which then failed
         # the word-count filter below). Billing is on tokens produced, not the
         # cap, so the headroom is free.
+        # Record which seeds this prompt showed (revisions add theirs too).
+        seen = spec.setdefault("seed_ids", [])
+        seen.extend(s for s in P.LAST_SEED_IDS if s not in seen)
         system = P.build_generator_system(spec.get("granularity", "snippet"))
-        text, u = llm.complete_text(args.gen_provider, args.gen_model, system, user, 800)
+        text, u = llm.complete_text(args.gen_provider, args.gen_model, system, user, gen_max_tokens)
         cost += llm.estimate_cost(args.gen_provider, args.gen_model, u)
         return text
 
     def _critique(text):
         nonlocal cost
         verdicts = []
-        for t in critic_temps:
-            v, u = llm.complete_json(args.critic_provider, args.critic_model,
-                                     P.SYSTEM_CRITIC, P.build_critic_user(text),
-                                     1100, temperature=t, json_schema=P.CRITIC_SCHEMA)
-            cost += llm.estimate_cost(args.critic_provider, args.critic_model, u)
+        last_panel.clear()
+        for slot, t in critics:
+            # A slot is one critic; its models are tried in order, so a model that
+            # is down on the free tier is replaced by the slot's backup (same slot
+            # never shares a family with the other slots or with the generator).
+            v = None
+            for model in slot:
+                try:
+                    v, u = llm.complete_json(args.critic_provider, model,
+                                             P.SYSTEM_CRITIC, P.build_critic_user(text),
+                                             critic_max_tokens, temperature=t, json_schema=P.CRITIC_SCHEMA)
+                except llm.NimUnavailable as e:
+                    print(f"    [panel] {e}; trying the slot's next model", flush=True)
+                    continue
+                cost += llm.estimate_cost(args.critic_provider, model, u)
+                if v is not None:
+                    v["critic_model"] = model
+                    last_panel.append(model)
+                    break
             if v is None:
                 continue
             # The prompt says: cannot find two supporting sentences -> Unknown.
@@ -311,6 +357,9 @@ def run(args) -> None:
                 "stage": spec["stage"],
                 "sector": spec["sector"],
                 "cultural_marker": spec["cultural_marker"],
+                "seed_ids": spec.get("seed_ids", []),
+                "gen_model": args.gen_model,
+                "critic_models": list(last_panel),
                 "revised": revised,
                 "text": text,
                 "critic_note": note,
@@ -343,6 +392,7 @@ def run(args) -> None:
             rfh.write(json.dumps(row, ensure_ascii=False) + "\n")
 
         for i, spec in enumerate(specs):
+            last_panel.clear()
             attempted_by_label[spec["primary"]] = \
                 attempted_by_label.get(spec["primary"], 0) + 1
             try:
@@ -442,6 +492,9 @@ def run(args) -> None:
                 "cultural_marker": spec["cultural_marker"],
                 "intended_primary": spec["primary"],
                 "intended_secondary": spec["secondary"],
+                "seed_ids": spec.get("seed_ids", []),
+                "gen_model": args.gen_model,
+                "critic_models": list(last_panel),
                 "source": "synthetic",
             }, ensure_ascii=False) + "\n")
             accepted_texts.append(text)
@@ -521,6 +574,8 @@ def run(args) -> None:
                   f"unanimous {args.n_critics}/{args.n_critics} No-Distortion vote")
 
     print(f"\n[cost] est ${cost:.2f} (sync; ignores Anthropic cache discount and Gemini free tier)")
+    if llm.REQUEST_COUNT.get("nvidia"):
+        print(f"[cost] NVIDIA NIM requests: {llm.REQUEST_COUNT['nvidia']} (free-tier credits; $0)")
     print(f"[out]      {out_path}")
     print(f"[rejects]  {rej_path}")
 
@@ -531,10 +586,23 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--seeds", default="data/synthetic_gen/seeds/entrepreneurial_seeds.jsonl")
     ap.add_argument("--out", default="data/synthetic/synthetic_train_en.jsonl")
-    ap.add_argument("--gen-provider", default="anthropic", choices=["anthropic", "gemini"])
-    ap.add_argument("--gen-model", default="claude-sonnet-5")
-    ap.add_argument("--critic-provider", default="gemini", choices=["anthropic", "gemini"])
-    ap.add_argument("--critic-model", default="gemini-2.5-flash")
+    # Defaults (S05): every model on NVIDIA NIM (key NVIDIA_NIMS_KEY in .env), the
+    # generator and the three critics from four different model families. Pass
+    # --gen-provider anthropic --gen-model claude-sonnet-5 / --critic-provider gemini
+    # --critic-model gemini-2.5-flash --critic-models "" for the original setup.
+    ap.add_argument("--gen-provider", default="nvidia", choices=["anthropic", "gemini", "nvidia"])
+    ap.add_argument("--gen-model", default="moonshotai/kimi-k3.1-pro")
+    ap.add_argument("--critic-provider", default="nvidia", choices=["anthropic", "gemini", "nvidia"])
+    ap.add_argument("--critic-model", default="gemini-2.5-flash",
+                    help="single critic model, used n-critics times, when --critic-models is empty")
+    ap.add_argument("--critic-models",
+                    default=("nvidia/nemotron-3-ultra-550b-a55b|nvidia/nemotron-3.5-lightning-30b-a3b,"
+                             "mistralai/mistral-large-4-1t-a52b|google/gemma-4-31b-it,"
+                             "minimaxai/minimax-m3.1-flash|stepfun-ai/step-5-preview"),
+                    help="comma-separated critic slots, one critic each; '|' lists a slot's backups, tried in "
+                         "order when a free-tier model is down. Empty to use --critic-model.")
+    ap.add_argument("--check-models", action="store_true",
+                    help="nvidia only: check the configured models are available to the key, then stop")
     ap.add_argument("--n-critics", type=int, default=3)
     ap.add_argument("--critic-temps", default="0.3,0.6,0.9",
                     help="comma-separated temperatures cycled across critics (decorrelation)")
