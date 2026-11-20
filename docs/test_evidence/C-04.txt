@@ -1,0 +1,55 @@
+$ git grep -l -E "\"test\"|'test'|test\.csv" -- src notebooks
+39 files (27 on 4 Nov; new since: D13/D15/D17/D25/S03 work and the tutorial notebook).
+
+Groups: (a) scores a trained model / reports scores evaluate.py already computed
+        (b) writes split files
+        (c) only counts or describes rows
+        (d) fits, tunes or chooses something on test
+        (-) mentions test only in a comment or docstring (says it does NOT read it)
+
+file | group | reason
+src/evaluate.py | a | THE test reader: loads test.csv once, scores a trained checkpoint with val-fitted thresholds
+src/evaluate_cascade.py | a | scores the two-stage model on val and test with fixed thresholds
+src/eval_two_exams.py | a | shells out to src.evaluate, then reads its eval JSON
+src/eval_thresholds.py | a | scores one checkpoint 4 ways (flat 0.5 / val-swept thresholds x cap 0 / 2) via evaluate.py. RISK: prints a "best" row picked on test macro-F1. No reported setting comes from it: the cap of 2 rests on the data (no row has > 2 labels), the D13 binary threshold is fitted on val by fit_binary_threshold.py, multilabel thresholds by sweep_thresholds on val
+src/train_span_selector.py | a | after training, scores test sentences once with the val-chosen epoch and threshold
+src/span_baselines.py | a | scores first/last/random sentence baselines on val and test sentence labels (no fitting)
+src/predict.py | a | prints predictions vs ground truth for N rows; --split defaults to test (display only, nothing fitted). Note: it reads test.csv itself, so "only evaluate.py reads test" is not literally true
+src/tutorial_distilbert.py | a | all its own numbers are val; test numbers only via src.evaluate
+src/aggregate.py | a | rolls eval JSONs into summary tables (test rows of already-computed scores)
+src/aggregate_cascade_inputs.py | a | D17 summary from eval JSONs; never opens test.csv
+src/compare_models.py | a | pivots eval JSONs by split; no re-scoring
+src/compile_results.py | a | compiles eval JSONs into a CSV; mean +/- std on test rows; flags leaked-split runs
+src/make_results_table.py | a | results table from eval JSONs (test rows)
+src/make_rerun_table.py | a | rerun tables from eval JSONs; "test-set confirmation" section after choosing on val
+notebooks/cascade_bootstrap.py | a | reads test metrics from eval JSONs to print a summary
+notebooks/sequential_bootstrap.py | a | reads test metrics from eval JSONs to print a summary
+notebooks/kaggle_runner_cascade.ipynb | a | runs evaluate_cascade (val + test per-class files)
+notebooks/wellally_distilbert_tutorial.ipynb | a | test read only in its last section, through src/evaluate.py
+src/make_splits.py | b | writes the frozen 80/10/10 splits (refuses to overwrite, C-02)
+src/make_splits_cascade.py | b | derives distorted-only splits from the frozen ones (same ids per partition)
+src/make_splits_cascade_inputs.py | b | builds D17 input versions of val/test (gold or selector sentences), labels unchanged
+src/make_splits_clean.py | b | copies val.csv and test.csv byte-identical; de-duplicates train against them
+src/make_splits_codipas.py | b | group split of the CODIPAS corpus (separate dataset)
+src/make_splits_codipas_classification.py | b | group split of CODIPAS for classification (separate dataset)
+src/make_splits_codipas_transfer.py | b | copies Annotated test.csv unchanged as the transfer yardstick; CODIPAS goes to train
+src/make_splits_combined.py | b | merges extra data into train only; val/test kept as the frozen files
+src/make_splits_patternreframe.py | b | builds PatternReframe train sets; eval splits copied from the frozen ones
+src/make_splits_relabelled.py | b | writes relabelled labels onto the same frozen ids per partition (D14)
+src/generate_clean_splits.py | b | rebuilds data/splits_combined: pools train+val+test of THAT folder and re-splits with train_test_split. Does not touch data/splits, but breaks the rule that only make_splits.py splits; compile_results.py marks results_combined valid=False ("LEAKED: 194/253 val + 189/253 test rows also in train"; must not be compared)
+src/audit_data.py | c | per-split label counts and truncation shares
+src/codipas_agreement.py | c | concatenates all partitions to measure CODIPAS-vs-annotation agreement
+src/cluster_label_errors.py | c | describes re-annotation verdicts on test rows (triage list vs random); no model or setting chosen
+src/experiments_flat_mentalroberta.py | c | data audit counts rows per split; test scores delegated to src.evaluate
+notebooks/kaggle_runner_patternreframe.ipynb | c | prints row counts of train/test per split folder (sanity check)
+notebooks/kaggle_runner_sequential.ipynb | c | prints row counts of train/val/test per split folder (sanity check)
+src/fit_binary_threshold.py | - | docstring: only val.csv is read; test stays with evaluate.py
+src/specificity.py | - | docstring: test.csv is never opened (reads eval JSONs)
+src/span_check.py | - | docstring: reads Annotated_data.csv only
+src/synth/README.md | - | says test.csv stays 100% real and is read only by evaluate.py
+
+Result: 0 files in group (d). 18 (a), 11 (b), 6 (c), 4 (-).
+Caveats for Ch6: src/predict.py and the scoring scripts (train_span_selector.py, span_baselines.py,
+evaluate_cascade.py) read test themselves, so the sentence "Only the evaluation module reads the test
+partition" is too strong. Suggested wording (from the sheet): "Only evaluation and descriptive scripts
+read the test partition; nothing is fitted or chosen on it."

@@ -1,0 +1,10 @@
+$ venv\Scripts\python.exe -m src.make_splits
+REFUSING to overwrite existing split files (pass --force to override):
+  data\splits\train.csv
+  data\splits\val.csv
+  data\splits\test.csv
+  data\splits\split_manifest.json
+[exit code 1]
+
+$ git status --short data/splits
+[no output = no change]

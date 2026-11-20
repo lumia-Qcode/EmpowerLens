@@ -1,0 +1,27 @@
+$ venv\Scripts\python.exe -m pytest tests/test_input_repr.py -v
+============================= test session starts =============================
+platform win32 -- Python 3.12.10, pytest-9.2.0, pluggy-1.7.0 -- C:\Users\HF SYTORE\Desktop\EmpowerLens\venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\HF SYTORE\Desktop\EmpowerLens
+plugins: anyio-4.14.2, platformdirs-4.14.8
+collecting ... collected 8 items
+
+tests/test_input_repr.py::test_splits_carry_the_span_column PASSED       [ 12%]
+tests/test_input_repr.py::test_document_mode_is_untouched PASSED         [ 25%]
+tests/test_input_repr.py::test_span_crop_is_the_span_verbatim PASSED     [ 37%]
+tests/test_input_repr.py::test_span_marked_preserves_the_document PASSED [ 50%]
+tests/test_input_repr.py::test_span_marked_match_rate_is_near_total PASSED [ 62%]
+tests/test_input_repr.py::test_unlocatable_span_is_left_unmarked_not_dropped PASSED [ 75%]
+tests/test_input_repr.py::test_span_modes_reject_splits_without_the_column PASSED [ 87%]
+tests/test_input_repr.py::test_span_modes_reject_no_distortion_rows PASSED [100%]
+
+============================== warnings summary ===============================
+venv\Lib\site-packages\anyio\pytest_plugin.py:14
+  C:\Users\HF SYTORE\Desktop\EmpowerLens\venv\Lib\site-packages\anyio\pytest_plugin.py:14: PytestRemovedIn10Warning: _pytest.python.CallSpec2 has been renamed to CallSpec.
+  The CallSpec2 alias will be removed in pytest 10.
+  Update imports to use CallSpec instead.
+  See https://docs.pytest.org/en/stable/deprecations.html#callspec2-renamed
+    from _pytest.python import CallSpec2
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 8 passed, 1 warning in 7.64s =========================

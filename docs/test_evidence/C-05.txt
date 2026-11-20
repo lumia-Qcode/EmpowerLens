@@ -1,0 +1,13 @@
+src/baseline_classical.py:59  x_tr = vec.fit_transform(train[TEXT_COL])   # fit on train ONLY
+src/baseline_classical.py:60  x_va = vec.transform(val[TEXT_COL])   (val only transformed)
+src/baseline_classical.py:65,71,78  classifiers .fit(x_tr, train[...]) - train only
+
+src/train_transformer.py:291  def sweep_thresholds(probs, y_true)
+src/train_transformer.py:535  logits = trainer.predict(val_ds).predictions
+src/train_transformer.py:539  thresholds = sweep_thresholds(probs, y_val)   - val probabilities and val labels only
+
+$ grep -n test src/baseline_classical.py
+11:The test set is never read here — only train and val.
+[only the docstring (line 11) mentions test; the file never reads it]
+$ grep -n test_df\|"test" src/train_transformer.py
+[no output = train_transformer.py never loads test]

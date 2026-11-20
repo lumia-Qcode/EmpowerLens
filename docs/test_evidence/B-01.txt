@@ -1,0 +1,32 @@
+$ venv\Scripts\python.exe -m pytest tests/test_data.py -v
+============================= test session starts =============================
+platform win32 -- Python 3.12.10, pytest-9.2.0, pluggy-1.7.0 -- C:\Users\HF SYTORE\Desktop\EmpowerLens\venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\HF SYTORE\Desktop\EmpowerLens
+plugins: anyio-4.14.2, platformdirs-4.14.8
+collecting ... collected 13 items
+
+tests/test_data.py::test_row_count PASSED                                [  7%]
+tests/test_data.py::test_every_raw_label_maps PASSED                     [ 15%]
+tests/test_data.py::test_y_bin_distorted_count PASSED                    [ 23%]
+tests/test_data.py::test_y_mc_no_distortion_count PASSED                 [ 30%]
+tests/test_data.py::test_y_mc_is_11_class_no_nulls PASSED                [ 38%]
+tests/test_data.py::test_secondary_contribution_count PASSED             [ 46%]
+tests/test_data.py::test_y_bin_recoverable_from_y_ml PASSED              [ 53%]
+tests/test_data.py::test_y_mc_matches_y_ml_for_distorted PASSED          [ 61%]
+tests/test_data.py::test_shapes PASSED                                   [ 69%]
+tests/test_data.py::test_unmapped_label_raises PASSED                    [ 76%]
+tests/test_data.py::test_splits_disjoint_by_id PASSED                    [ 84%]
+tests/test_data.py::test_splits_cover_all_rows PASSED                    [ 92%]
+tests/test_data.py::test_all_11_classes_in_every_split PASSED            [100%]
+
+============================== warnings summary ===============================
+venv\Lib\site-packages\anyio\pytest_plugin.py:14
+  C:\Users\HF SYTORE\Desktop\EmpowerLens\venv\Lib\site-packages\anyio\pytest_plugin.py:14: PytestRemovedIn10Warning: _pytest.python.CallSpec2 has been renamed to CallSpec.
+  The CallSpec2 alias will be removed in pytest 10.
+  Update imports to use CallSpec instead.
+  See https://docs.pytest.org/en/stable/deprecations.html#callspec2-renamed
+    from _pytest.python import CallSpec2
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 13 passed, 1 warning in 0.67s ========================

@@ -1,0 +1,7 @@
+$ git log --oneline -- data/splits/
+51cafef Add clean no-leakage transformer pipeline (src/) for Month-1 baselines
+
+First commit: 51cafef. Compare Id_Number sets, now vs 51cafef (git show 51cafef:data/splits/<n>.csv):
+train now 2024 ids, first commit 2024 ids, identical: True, only-now 0, only-then 0
+val   now 253 ids, first commit 253 ids, identical: True, only-now 0, only-then 0
+test  now 253 ids, first commit 253 ids, identical: True, only-now 0, only-then 0

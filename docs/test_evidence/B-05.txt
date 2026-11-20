@@ -1,0 +1,13 @@
+$ venv\Scripts\python.exe -m pytest -q   (Windows 11, branch lumia-space, commit d210137)
+........................................................................ [ 86%]
+...........                                                              [100%]
+============================== warnings summary ===============================
+venv\Lib\site-packages\anyio\pytest_plugin.py:14
+  C:\Users\HF SYTORE\Desktop\EmpowerLens\venv\Lib\site-packages\anyio\pytest_plugin.py:14: PytestRemovedIn10Warning: _pytest.python.CallSpec2 has been renamed to CallSpec.
+  The CallSpec2 alias will be removed in pytest 10.
+  Update imports to use CallSpec instead.
+  See https://docs.pytest.org/en/stable/deprecations.html#callspec2-renamed
+    from _pytest.python import CallSpec2
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+83 passed, 1 warning in 10.05s
