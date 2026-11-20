@@ -1,0 +1,17 @@
+$ venv\Scripts\python.exe -m src.cluster_label_errors --only duplicates
+STAGE 2b near-duplicate pairs with conflicting labels
+  pairs at cosine >= 0.8: 16
+  of those, labels conflict      : 2 (12%) <- label-error candidates
+  of those, cross split boundary : 2 <- leakage candidates
+wrote -> results\results_cluster_label_errors
+
+$ git status --short results/results_cluster_label_errors/near_duplicates.csv
+[no output = the committed file was reproduced unchanged]
+
+Cross-split pairs in near_duplicates.csv (cross_split == True):
+ id_a  id_b  similarity         label_a         label_b split_a split_b
+  304   336      0.9905 Fortune-telling Fortune-telling    test   train
+  137   139      0.9749   No Distortion   No Distortion    test   train
+
+Result: 2 cross-split pairs (expected 0) -> Fail. Same post entered twice in the source data (98% word overlap).
+Splits not changed. Effect on headline test metrics: results/results_cluster_label_errors/duplicates_report.md (task C02).
