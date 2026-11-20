@@ -19,9 +19,9 @@ venv (CPU torch). Every command's full output is in `docs/test_evidence/<ID>.txt
 | C-04 | who reads the test split | 39 files: 18 (a), 11 (b), 6 (c), 4 comment only, **0 in (d)**; table below | Pass, with 2 notes |
 | C-05 | fitted objects use train / val only | `src/baseline_classical.py:59` `vec.fit_transform(train[TEXT_COL])`; `src/train_transformer.py:291` `sweep_thresholds`, called at `:539` on val probabilities (`trainer.predict(val_ds)`, `:535`) | Pass |
 | D-04 | every run reports specificity and FPR | 255 eval files: binary 66/66 and multiclass 51/51 have them; multilabel 27/129 | Fail (102 older multilabel runs, named below) |
-| E-01 | 50 reflections, one GPU, < 300 s | *pending: `notebooks/kaggle_runner_d27_tests.ipynb` after the D25 run* | pending |
+| E-01 | 50 reflections, one GPU, < 300 s | **69.0 s** on one Tesla T4 (load 64.5 s, report 4.5 s) | Pass |
 | E-02 | same 50 on CPU | finished in **71.4 s** (load 2.6 s, report 68.8 s) on 12th Gen Intel Core i5-1245U, 15.6 GB RAM | Pass |
-| E-03 | same pass count on Windows and Linux | Windows: 83 passed. Linux: *pending (Kaggle notebook)* | pending |
+| E-03 | same pass count on Windows and Linux | Windows 83 passed; Linux (Kaggle) 83 passed | Pass |
 | E-04 | encoder swap without code change | `--model distilroberta-base` smoke run finished (val macro-F1 0.231 on 100 rows); no existing file under `src/` changed | Pass |
 | E-05 | data + metrics load without the app | printed `ok`; no fastapi / uvicorn / backend / empowerlens / torch / transformers module loaded | Pass |
 
@@ -139,7 +139,7 @@ shown type, suppression below the cohort threshold of 5). Model loading is inclu
 
 | Row | Hardware | Load (s) | Report (s) | Total (s) | Target |
 |---|---|---|---|---|---|
-| E-01 | *pending (Kaggle GPU)* | | | | < 300 |
+| E-01 | one **Tesla T4** (Kaggle; host Intel Xeon @ 2.00 GHz, 31.3 GB RAM, Linux), torch 2.11.0+cu130 | 64.5 | 4.5 | **69.0** | < 300: Pass |
 | E-02 | CPU only: 12th Gen Intel Core i5-1245U, 15.6 GB RAM, Windows 11 Pro, torch 2.15.0+cpu | 2.6 | 68.8 | **71.4** | none (must finish): Pass |
 
 E-02 ran on 20 Nov with the D25 models (`mentalroberta-d12-s42-20261120`): 20 of the 50 texts were flagged, 192
@@ -147,15 +147,21 @@ sentences scored by the selector, and the report kept one type above the cohort 
 Evidence: `docs/test_evidence/E-02_cpu_timing.json` (its `cpu` field holds Windows' generic processor string; the
 model name above is from `Get-CimInstance Win32_Processor`).
 
+E-01 ran on Kaggle (`notebooks/kaggle_runner_d27_tests.ipynb`, D25 notebook output attached) with the same models
+and texts and produced the same report: 20 flagged, 192 sentences scored, Mind Reading 9. Almost all of the GPU
+total is loading the three models from Kaggle's input disk; the report itself took 4.5 s. Evidence:
+`docs/test_evidence/E-01_gpu_timing.json`.
+
 ## E-03: pass count on Windows and Linux
 
 | OS | Command | Result |
 |---|---|---|
 | Windows 11 Pro | `venv\Scripts\python.exe -m pytest -q` | 83 passed, 0 failed |
-| Linux (Kaggle) | `python -m pytest -q` | *pending (`notebooks/kaggle_runner_d27_tests.ipynb`)* |
+| Linux (Kaggle, glibc 2.39) | `python -m pytest -q` | 83 passed, 0 failed (`docs/test_evidence/E-03_pytest_linux.txt`) |
 
-## Still to do
+Same count on both: Pass.
 
-1. After the D25 Kaggle run finishes: open `notebooks/kaggle_runner_d27_tests.ipynb` on Kaggle, add the D25
-   notebook's output as input, run it (≈10 min), and bring back `d27.zip` → fills E-01 and the Linux half of E-03.
-(E-02 is done: see above.)
+## Status
+
+All 16 D27 rows are filled in the sheet: 15 Pass, 1 Fail (D-04: 102 older multilabel runs without specificity,
+named above for Ch9). B-05 is to be re-run on `main` after the D28 merge, as the sheet asks.
