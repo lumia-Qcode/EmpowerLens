@@ -133,3 +133,28 @@ def test_workbook_roundtrip(tmp_path):
     back = read_workbook(p)
     assert list(back.item_id) == list(df.item_id)
     assert (back.dominant == "").all() and not back.unsure.any()
+
+
+def test_workbook_reads_filled_and_sorted_rows(tmp_path):
+    from openpyxl import load_workbook
+    from src.supplementary_labels import SHEET_COLS
+    df = _supp(n=4, per_thread=2)
+    p = tmp_path / "labels_izza.xlsx"
+    write_workbook(p, df, shared_ids={"sup_001"}, annotator="izza")
+    wb = load_workbook(p)
+    assert wb.sheetnames == ["Start here", "Label", "Label guide"]
+    ws = wb["Label"]
+    c = {n: SHEET_COLS.index(n) + 1 for n in SHEET_COLS}
+    assert ws.cell(2, c["block"]).value == "Shared" and ws.cell(3, c["block"]).value == "Yours"
+    # annotator sorts rows (reversed) and fills two of them
+    vals = [[ws.cell(r, k).value for k in range(1, len(SHEET_COLS) + 1)] for r in range(2, 6)][::-1]
+    for r, v in enumerate(vals, start=2):
+        for k, x in enumerate(v, start=1):
+            ws.cell(r, k).value = x
+    ws.cell(2, c["dominant"]).value = "Labeling"
+    ws.cell(2, c["distorted_part"]).value = "text"
+    ws.cell(2, c["unsure"]).value = "Yes"
+    wb.save(p)
+    back = read_workbook(p).set_index("item_id")
+    assert back.loc["sup_004", "dominant"] == "Labeling" and back.loc["sup_004", "unsure"]
+    assert back.loc["sup_001", "dominant"] == "" and not back.loc["sup_001", "unsure"]
