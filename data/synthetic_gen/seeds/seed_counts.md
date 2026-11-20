@@ -90,3 +90,7 @@ the writer's gender."
 - **seed_040 (sup_384, Should statements).** The quoted "You should take your technology…" may be advice someone
   gave the writer rather than the writer's own rule. If so, the S03 label should be No Distortion and this seed
   dropped.
+
+**Review recorded (21 Nov 2026):** Lumia reviewed all 12 team seeds (`team_new_01` … `team_new_12`) and seed_040.
+No changes were made: the 12 seeds stay as written, seed_040 stays in the seed file, and sup_384 keeps its S03 label
+(Should statements).

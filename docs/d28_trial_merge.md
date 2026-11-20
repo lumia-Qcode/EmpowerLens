@@ -104,3 +104,22 @@ cd C:\el
 #   then re-run the check list above: planning/ absent, data/splits unchanged,
 #   frozen files unchanged, every cited file present.
 ```
+
+---
+
+## Real D28 (21 Nov 2026)
+
+| Branch | State on 21 Nov | What happened |
+|---|---|---|
+| `lumia-space` | all earlier work already in `main` via PRs #10–#13 | PR #15 merges the last commits: S04/S05 sign-offs, the README typo fix, and the `nayab-space` merge below |
+| `izza-space` (`4c89cbe`) | 38 behind / 0 ahead of `main` | nothing to merge: GitHub refuses a PR with no new commits ("No commits between main and izza-space"); all its work is already in `main` |
+| `nayab-space` (`8a8f5db`) | 1 ahead, conflicts in `src/synth/generate.py` | PR #14; conflict resolved on `lumia-space` in `3f03491` with **option (a)**: the four `src/synth` files keep the revision path; #14 is marked merged when #15 lands |
+
+**Option (a), as recommended above.** The committed S05–S10 data and analyses were produced with the critic-informed
+revision, so Ch7/Ch9 should say S06 used one critic-informed revision (80 of 300 specs), not a regeneration from the
+spec. Nayab's retry design (which also sends retries through the filters) goes to the FYP-2 plan.
+
+**README.md** (frozen) changed by one word ("thes" → "the", line 110), approved by Lumia as an exception to the
+freeze rule.
+
+**Tests:** 170 passed on `lumia-space` after the merge; the fresh-checkout run on `main` is recorded below.
