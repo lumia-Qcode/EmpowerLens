@@ -1,0 +1,273 @@
+{
+  "n_requested": 300,
+  "accepted": 258,
+  "rejected": 42,
+  "revised": 80,
+  "filtered_length": 1,
+  "filtered_named_own_pattern": 0,
+  "critics_unknown": 0,
+  "attempted_by_label": {
+    "Mind Reading": 21,
+    "No Distortion": 90,
+    "Personalization": 21,
+    "Fortune-telling": 21,
+    "Labeling": 21,
+    "Overgeneralization": 21,
+    "Emotional Reasoning": 21,
+    "Magnification": 21,
+    "All-or-nothing thinking": 21,
+    "Should statements": 21,
+    "Mental filter": 21
+  },
+  "abandoned_by_label": {
+    "Emotional Reasoning": 4,
+    "No Distortion": 6,
+    "Magnification": 14,
+    "Mental filter": 10,
+    "Should statements": 2,
+    "All-or-nothing thinking": 5,
+    "Overgeneralization": 1
+  },
+  "critic_rejected_by_label": {
+    "No Distortion": 6,
+    "Magnification": 14,
+    "Mental filter": 10,
+    "Should statements": 2,
+    "Emotional Reasoning": 3,
+    "All-or-nothing thinking": 5,
+    "Overgeneralization": 1
+  },
+  "unknown_by_label": {},
+  "confusion": [
+    {
+      "intended": "Magnification",
+      "leaned": "Fortune-telling",
+      "n": 6
+    },
+    {
+      "intended": "Mental filter",
+      "leaned": "Mind Reading",
+      "n": 5
+    },
+    {
+      "intended": "Magnification",
+      "leaned": "Mind Reading",
+      "n": 3
+    },
+    {
+      "intended": "Magnification",
+      "leaned": "Labeling",
+      "n": 3
+    },
+    {
+      "intended": "No Distortion",
+      "leaned": "Labeling",
+      "n": 2
+    },
+    {
+      "intended": "Mental filter",
+      "leaned": "Overgeneralization",
+      "n": 2
+    },
+    {
+      "intended": "Should statements",
+      "leaned": "Mind Reading",
+      "n": 2
+    },
+    {
+      "intended": "All-or-nothing thinking",
+      "leaned": "Overgeneralization",
+      "n": 2
+    },
+    {
+      "intended": "Emotional Reasoning",
+      "leaned": "Fortune-telling",
+      "n": 2
+    },
+    {
+      "intended": "No Distortion",
+      "leaned": "Mind Reading",
+      "n": 2
+    },
+    {
+      "intended": "All-or-nothing thinking",
+      "leaned": "Fortune-telling",
+      "n": 2
+    },
+    {
+      "intended": "No Distortion",
+      "leaned": "Personalization",
+      "n": 2
+    },
+    {
+      "intended": "Magnification",
+      "leaned": "Overgeneralization",
+      "n": 1
+    },
+    {
+      "intended": "Emotional Reasoning",
+      "leaned": "Mind Reading",
+      "n": 1
+    },
+    {
+      "intended": "Mental filter",
+      "leaned": "Labeling",
+      "n": 1
+    },
+    {
+      "intended": "Mental filter",
+      "leaned": "Magnification",
+      "n": 1
+    },
+    {
+      "intended": "Mental filter",
+      "leaned": "Fortune-telling",
+      "n": 1
+    },
+    {
+      "intended": "Overgeneralization",
+      "leaned": "Fortune-telling",
+      "n": 1
+    },
+    {
+      "intended": "All-or-nothing thinking",
+      "leaned": "Personalization",
+      "n": 1
+    },
+    {
+      "intended": "Magnification",
+      "leaned": "Emotional Reasoning",
+      "n": 1
+    }
+  ],
+  "no_distortion_accept_margin": [
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    3,
+    2,
+    3,
+    2,
+    2,
+    2,
+    3,
+    3,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    3,
+    2,
+    2,
+    2,
+    2,
+    3,
+    3,
+    3,
+    2,
+    3,
+    2,
+    2,
+    2,
+    3,
+    2,
+    2,
+    2,
+    3,
+    2,
+    3,
+    2,
+    2,
+    3,
+    2,
+    2,
+    2,
+    3,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    3,
+    2,
+    2,
+    3,
+    2,
+    2,
+    3,
+    3,
+    2,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3
+  ],
+  "est_cost_usd": 0.0,
+  "accepted_by_type": {
+    "No Distortion": 84,
+    "Mind Reading": 21,
+    "Personalization": 21,
+    "Fortune-telling": 21,
+    "Labeling": 21,
+    "Overgeneralization": 20,
+    "Should statements": 19,
+    "Emotional Reasoning": 17,
+    "All-or-nothing thinking": 16,
+    "Mental filter": 11,
+    "Magnification": 7
+  },
+  "gen_models_used": [
+    "Qwen/Qwen3-14B-AWQ"
+  ],
+  "critic_slots": [
+    [
+      "casperhansen/mistral-small-24b-instruct-2501-awq"
+    ],
+    [
+      "stelterlab/phi-4-AWQ"
+    ],
+    [
+      "hugging-quants/Meta-Llama-3.1-8B-Instruct-AWQ-INT4",
+      "ibm-granite/granite-3.3-8b-instruct"
+    ]
+  ],
+  "critic_temps": [
+    0.3,
+    0.6,
+    0.9
+  ],
+  "chunk": 75,
+  "seed": 42,
+  "seconds_by_phase": {
+    "generate": 3153.9,
+    "critique": 2603.9,
+    "revise": 1772.4
+  },
+  "seconds_total": 7530.1,
+  "cost_usd": 0.0,
+  "note": "local open models on the notebook GPU; no API cost"
+}
