@@ -60,7 +60,7 @@ No-Distortion vote; the other 4 passed 2/3. The panel is quick to find a distort
 About two-thirds of that time is loading models (4–6 min per load), not writing. Cost per accepted row is $0, or
 about 2.8 GPU-minutes.
 
-## Do the accepted rows show their label? (Claude's reading; Lumia/Izza to confirm)
+## Do the accepted rows show their label? (Claude's reading, confirmed by the team)
 
 Read all 17 accepted rows and all 3 rejected rows.
 
@@ -119,4 +119,4 @@ The 3 rejected rows were rightly rejected:
 - **After S06:**
   - read the Emotional Reasoning, Labeling and Overgeneralization rows first;
   - run S07's keyword and overlap checks with "not cut out for this" in mind;
-  - have Lumia/Izza confirm the yes/no column above.
+  - the yes/no column above was confirmed by the team on 21 Nov 2026, with no changes.
