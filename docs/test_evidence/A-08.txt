@@ -1,0 +1,18 @@
+A-08  A trainer cannot open another trainer's cohort, and the attempt is logged
+Throwaway DB, test accounts: trainer A = trainer@empowerlens.demo (user 1), trainer B = trainerb@test.local (user 3, created for this test), cohort 4 'TEST Trainer B cohort' owned by trainer B.
+The trainer UI keeps the selected cohort in page state, not in the URL, so the cohort ID was changed in the report API URL the UI calls.
+
+### A-08
+$ GET /api/trainer/cohorts/4/report  (signed in as trainer A = user 1, Demo Trainer; cohort 4 belongs to trainer B = user 3)
+{"detail":"You do not own this cohort"} HTTP 403
+$ GET /api/trainer/cohorts/4/export?format=json (same)
+{"detail":"You do not own this cohort"} HTTP 403
+access_log rows added:
+Whole access_log table after the attempts:
+{"log_id": 1, "user_id": 1, "cohort_id": 1, "action": "view_report", "outcome": "allowed", "logged_at": "2026-11-20T12:38:15+00:00"}
+{"log_id": 2, "user_id": 1, "cohort_id": 2, "action": "view_report", "outcome": "allowed", "logged_at": "2026-11-20T12:38:28+00:00"}
+
+Result: Fail. The request is refused (403) but NO 'refused' row is written to access_log.
+Cause (backend/app.py _report): db.log_access(... 'refused') runs inside 'with db.connect() as c:' and the HTTPException is raised inside the same block,
+so db.connect() skips conn.commit() and the log row is rolled back. Same for /export. Not fixed (out of scope for this test run).
+log_id 2 above is the A-07 reuse of a signed-out token (12:38:28), see A-07.txt.

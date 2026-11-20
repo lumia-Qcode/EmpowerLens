@@ -1,0 +1,16 @@
+A-15  A trainer cannot reach the researcher view
+Account: trainer B (trainerb@test.local, user 3, role trainer, not on the project team; test account).
+
+1) Browser: opened http://localhost:5173/researcher. The trainer session is stored per role, so the page shows
+   "Sign in as researcher". Signing in there with the trainer B credentials (A-15.png):
+   "This account has the trainer role, not researcher."  -> refused in the browser. This check is client-side
+   (POST /api/auth/login succeeds and issues a token; the page rejects the role), and it writes NO access_log row.
+2) The researcher view's data endpoints called with trainer B's bearer token:
+   GET  /api/researcher/cohorts               -> {"detail":"This surface is restricted to the researcher role"} HTTP 403
+   GET  /api/researcher/cohorts/1/reflections -> same, HTTP 403
+   GET  /api/researcher/export?format=json    -> same, HTTP 403
+   POST /api/researcher/analyze               -> same, HTTP 403
+   access_log rows written (one per request):
+   {"log_id": 15, "user_id": 3, "cohort_id": null, "action": "researcher_surface", "outcome": "refused", "logged_at": "2026-11-20T12:43:29+00:00"}
+   {"log_id": 16, ...same...}  {"log_id": 17, ...}  {"log_id": 18, ...}
+Result: refused, and refusals by a signed-in trainer reaching the researcher API are logged as 'refused'.

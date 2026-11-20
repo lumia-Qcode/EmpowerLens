@@ -2,9 +2,12 @@
 
 Hand-curated, small seed set of entrepreneurial self-reflections labeled with CBT
 cognitive distortions. **Purpose: grounding a multi-agent synthetic data
-generator** — not a training set. It anchors the entrepreneurial register, the
-Pakistani women-entrepreneur voice (incl. Urdu-English code-mix and cultural
-markers), and defensible distortion labels that the generator would otherwise miss.
+generator** — not a training set. It anchors the entrepreneurial register and
+defensible distortion labels that the generator would otherwise miss. Since S04 it is
+English only and not conditioned on gender (see `seed_counts.md`). It is **built** by
+`python -m src.synth.build_seeds` from `team_seeds.jsonl` (team-authored) and the S03
+seed pool (`data/supplementary/supplementary_labelled.csv`, role `seed`); edit those, not
+`entrepreneurial_seeds.jsonl`.
 
 These seeds are **not** part of the frozen `Annotated_data.csv` benchmark and are
 never mixed into `data/splits/`.
@@ -14,17 +17,21 @@ never mixed into `data/splits/`.
 | field | notes |
 |---|---|
 | `id` | `seed_NNN` |
-| `text` | the reflection (1–3 sentences) |
+| `text` | the reflection (team seeds 1–3 sentences; scraped seeds whole if ≤ 120 words, else a verbatim excerpt) |
 | `distorted_part` | span carrying the distortion, or `null` for No Distortion |
 | `dominant_distortion` | **exact raw label string** from `LABEL_CANON` in `src/data.py` (e.g. `"Mind Reading"`, `"All-or-nothing thinking"`, `"No Distortion"`) |
 | `secondary_distortion` | optional second label or `null` |
 | `trigger` | situational axis (e.g. `investor_rejection`, `family_disapproval`, `cofounder_conflict`) |
-| `register` | `english_formal` \| `english_casual` \| `urdu_english_codemix` |
-| `cultural_marker` | e.g. `log_kya_kahenge`, `gender_expectation`, or `null` |
+| `register` | `english_formal` \| `english_casual` (code-mix seeds removed in S04) |
+| `cultural_marker` | e.g. `family_pressure`, or `null` (`gender_expectation` removed in S04) |
 | `source` | provenance — `authored_from_<X>_pattern` (public-post pattern, re-authored) or `authored_from_pakistani_women_entrepreneur_voice` or primary-collected |
 
 `dominant_distortion` / `secondary_distortion` use the raw strings so they map
 straight through `_canon` → `y_bin` / `y_mc` / `y_ml` without new mappings.
+
+Added in S04: `seed_source` (`supplementary` | `team-authored`, on every seed), `item_id`
+(scraped seeds: the S03 row), `excerpt` (scraped seed cut to its span ± 1 sentence),
+`calibrated_pessimism`, `team_id` (team seeds: id in `team_seeds.jsonl`).
 
 ## Coverage (expand toward ~2–3 per distortion × spread of triggers)
 
@@ -32,8 +39,9 @@ straight through `_canon` → `y_bin` / `y_mc` / `y_ml` without new mappings.
   pessimism — feeds novelty direction D1: distortion vs. calibrated pessimism).
 - **Triggers:** investor/loan rejection, cofounder conflict, low sales, family
   disapproval, imposter feelings, competitor comparison, customer criticism.
-- **Register:** English formal/casual + Urdu-English code-mix.
-- **Cultural markers:** `log kya kahenge`, family/gender expectation, none.
+- **Register:** English formal/casual (English only since S04).
+- **Cultural markers:** family pressure, none (no gender markers since S04).
+- **Current counts:** 4 per distortion type (Mind Reading 5) + 3 No Distortion; see `seed_counts.md`.
 
 ## Provenance & ethics
 

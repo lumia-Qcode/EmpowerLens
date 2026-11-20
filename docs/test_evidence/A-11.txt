@@ -1,0 +1,54 @@
+A-11  A rare pattern is suppressed
+Seed test cohort 1 (demo reflections written by hand, not survey data), threshold 3, 18 submissions.
+
+Per-reflection predictions, cohort 1 'Spring Founders 2026' (GET /api/researcher/cohorts/1/reflections, researcher account):
+reflection_id | is_distorted | p_distorted | predicted types
+  1 | True  | 0.9779 | All-or-nothing thinking, Should statements
+  2 | False | 0.0401 | -
+  3 | False | 0.2228 | -
+  4 | True  | 0.9849 | -
+  5 | False | 0.0140 | -
+  6 | True  | 0.9917 | Personalization, Labeling
+  7 | False | 0.0486 | -
+  8 | False | 0.9565 | -
+  9 | True  | 0.9859 | Personalization
+ 10 | True  | 0.9914 | Personalization, Labeling
+ 11 | False | 0.4958 | -
+ 12 | False | 0.0461 | -
+ 13 | False | 0.4879 | -
+ 14 | False | 0.1039 | -
+ 15 | False | 0.2819 | -
+ 16 | False | 0.1273 | -
+ 17 | False | 0.0236 | -
+ 18 | False | 0.3035 | -
+
+Hand count of types: {'All-or-nothing thinking': 1, 'Should statements': 1, 'Personalization': 3, 'Labeling': 2}
+
+Trainer report (GET /api/trainer/cohorts/1/report, trainer A):
+{
+ "status": "ok",
+ "submissions": 18,
+ "threshold": 3,
+ "types_shown": 1,
+ "types_suppressed": 3,
+ "most_frequent": "Personalization",
+ "share_with_distorted_reasoning": 0.278,
+ "distribution": [
+  {
+   "label": "Personalization",
+   "count": 3,
+   "share": 0.167
+  }
+ ],
+ "examples": [
+  {
+   "text": "I feel like a fraud, so I must be one.",
+   "label": "Personalization"
+  }
+ ]
+}
+
+Types predicted for fewer than 3 submissions: Labeling (2), All-or-nothing thinking (1), Should statements (1).
+Search of the report JSON and of the trainer page text (A-09.png / A-11.png) for "Labeling", "All-or-nothing",
+"Should statements": 0 hits. The only type shown is Personalization (3); the only example sentence is tagged Personalization.
+The page states only the number hidden ("3 rarer type(s) are hidden"), not their names.

@@ -47,3 +47,6 @@ data/splits_pr_only/
 results_*_smoke/
 
 D3/
+
+# Local secrets (API keys) - never commit
+.env

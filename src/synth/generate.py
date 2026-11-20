@@ -166,30 +166,342 @@ def decide(spec, agg, n_critics):
 
 
 # --------------------------------------------------------------------------- #
+# Shared row building + run statistics (used by run() and batch_generate.py)   #
+# --------------------------------------------------------------------------- #
+
+def prefilter(text: str, spec: dict, accepted_texts: list[str]) -> tuple[str, str | None] | None:
+    """Cheap checks before the critic panel. Returns (reason, detail) or None if the text passes."""
+    # Length bounds come from the spec's granularity, not one global range — a
+    # 30-50 word snippet and a 150-word reflection cannot share a filter.
+    g = A.GRANULARITIES[spec.get("granularity", "snippet")]
+    wc = _word_count(text)
+    if not (g["min_words"] <= wc <= g["max_words"]):
+        return "length", f"{wc} words"
+    banned = _contains_banned_term(text)
+    if banned is not None:
+        return "named_own_pattern", banned
+    if not _english_dominant(text):
+        return "not_english", None
+    if D.is_duplicate(text, accepted_texts):
+        return "duplicate", None
+    return None
+
+
+def enforce_evidence(v: dict) -> dict:
+    """The prompt says: cannot find two supporting sentences -> Unknown.
+
+    Enforce it rather than trust it. A label asserted without the evidence it
+    was told to produce is exactly the speculative verdict the evidence rule
+    exists to prevent.
+    """
+    ev = v.get("evidence") or []
+    if len(ev) < 2 and v.get("primary") not in (A.UNKNOWN,):
+        v["primary"] = A.UNKNOWN
+        v["present"] = [A.UNKNOWN]
+        v["coerced_unknown"] = True
+    return v
+
+
+def _leaned(agg) -> str:
+    """The label the panel actually gravitated to, when the target failed."""
+    if agg is None or not any(agg["votes"].values()):
+        return A.NO_DISTORTION
+    return max(agg["votes"], key=agg["votes"].get)
+
+
+def rejected_row(spec, reason, *, text=None, agg=None, agg_first=None, note=None,
+                 revised=False, detail=None, gen_model=None, critic_models=None) -> dict:
+    row = {
+        "spec_id": spec["spec_id"],
+        "reason": reason,
+        "detail": detail,
+        "intended_primary": spec["primary"],
+        "intended_secondary": spec["secondary"],
+        "granularity": spec.get("granularity", "snippet"),
+        "trigger": spec["trigger"],
+        "register": spec["register"],
+        "stage": spec["stage"],
+        "sector": spec["sector"],
+        "cultural_marker": spec["cultural_marker"],
+        "seed_ids": spec.get("seed_ids", []),
+        "gen_model": gen_model,
+        "critic_models": list(critic_models or []),
+        "revised": revised,
+        "text": text,
+        "critic_note": note,
+    }
+    # Only critic rejections carry a verdict — filter rejections never
+    # reached the panel.
+    if agg is not None:
+        row.update({
+            "critic_votes": agg["votes"],
+            "y_soft": agg["soft"],
+            "no_distortion_votes": agg["no_distortion_votes"],
+            "unknown_votes": agg["unknown_votes"],
+            "span_agreement": agg["span_agreement"],
+        })
+        if reason == "critics_disagreed":
+            row["critics_leaned"] = _leaned(agg)
+    if agg_first is not None:
+        row["first_attempt_votes"] = agg_first["votes"]
+        row["first_attempt_leaned"] = _leaned(agg_first)
+    return row
+
+
+def accepted_row(i, spec, text, dominant, secondary, agg, verdicts, *, revised, n_critics,
+                 gen_model, critic_models) -> dict:
+    return {
+        "id": f"syn_{i:05d}",
+        "text": text,
+        "dominant_distortion": dominant,
+        "secondary_distortion": secondary,
+        # Maps onto the `Distorted part` column in Annotated_data.csv.
+        "distorted_part": agg["span"],
+        "span_agreement": agg["span_agreement"],
+        # Sentence-level evidence and the causal chain from the critic
+        # whose verdict matched. Free span-level explainability material
+        # to sit alongside SHAP/Captum later.
+        "evidence": next((v.get("evidence") for v in verdicts
+                          if v.get("primary") == dominant), None),
+        "critic_reasoning": next((v.get("reasoning") for v in verdicts
+                                  if v.get("primary") == dominant), None),
+        "y_soft": agg["soft"],
+        "critic_votes": agg["votes"],
+        # How decisively the panel called it No Distortion — the
+        # calibrated-pessimism margin. 3/3 is clean; 2/3 is contested.
+        "no_distortion_votes": agg["no_distortion_votes"],
+        "n_critics": n_critics,
+        "granularity": spec.get("granularity", "snippet"),
+        # True if this row is a revision. Revised rows are generated
+        # while being told what the critics objected to, so they risk
+        # overcorrecting into caricature — keep the flag so accepted
+        # revised rows can be compared against first-pass ones.
+        "revised": revised,
+        "trigger": spec["trigger"],
+        "register": spec["register"],
+        "stage": spec["stage"],
+        "sector": spec["sector"],
+        "cultural_marker": spec["cultural_marker"],
+        "intended_primary": spec["primary"],
+        "intended_secondary": spec["secondary"],
+        "seed_ids": spec.get("seed_ids", []),
+        "gen_model": gen_model,
+        "critic_models": list(critic_models or []),
+        "source": "synthetic",
+    }
+
+
+class RunStats:
+    """Counters for the end-of-run report (shared by the sequential and batch runs)."""
+
+    OVERUSED_AT = 3                       # ban an opening bigram once it's clearly a default
+
+    def __init__(self, n_critics: int):
+        self.n_critics = n_critics
+        self.cost = 0.0
+        self.n_accepted = self.n_rejected = self.n_revised = 0
+        self.n_banned_term = self.n_length = self.n_unknown = 0
+        self.used_openers: list[str] = []          # 4-word openers, for the ban display
+        self.opener_starts: dict[str, int] = {}    # opening bigram -> count
+        self.abandoned_by_label: dict[str, int] = {}
+        self.attempted_by_label: dict[str, int] = {}
+        self.confusion: dict[tuple[str, str], int] = {}   # (intended, what critics leaned)
+        # Split out the abandonments that actually reached the panel — a spec
+        # dropped by the length or dedup filter says nothing about the taxonomy.
+        self.critic_rejected_by_label: dict[str, int] = {}
+        self.unknown_by_label: dict[str, int] = {}
+        # Calibrated pessimism is the central domain risk: "I probably won't close
+        # this round in this market" is realistic, not Fortune-telling. Track the
+        # margin on the ones that do pass, not just the pass rate.
+        self.nd_accept_margin: list[int] = []
+
+    # -- opener nudges ------------------------------------------------------ #
+    def recent_openers(self) -> list[str]:
+        # Only the last 12 openers are injected: the list is a diversity nudge,
+        # not an exhaustive constraint, and an ever-growing block would bloat
+        # every prompt and eventually crowd out the seed exemplars.
+        return self.used_openers[-12:]
+
+    def overused_starts(self) -> list[str]:
+        # A 4-word ban is weaker than it looks — same tic, different 4-gram. So
+        # also surface the short starts that have already become habitual.
+        return [s for s, c in sorted(self.opener_starts.items(), key=lambda kv: -kv[1])
+                if c >= self.OVERUSED_AT]
+
+    def note_opener(self, text: str) -> None:
+        self.used_openers.append(_opener(text))
+        bg = _opener(text, 2)
+        self.opener_starts[bg] = self.opener_starts.get(bg, 0) + 1
+
+    # -- outcomes ----------------------------------------------------------- #
+    def attempt(self, spec) -> None:
+        lab = spec["primary"]
+        self.attempted_by_label[lab] = self.attempted_by_label.get(lab, 0) + 1
+
+    def reject(self, spec, reason, agg=None) -> None:
+        self.n_rejected += 1
+        lab = spec["primary"]
+        self.abandoned_by_label[lab] = self.abandoned_by_label.get(lab, 0) + 1
+        if reason == "length":
+            self.n_length += 1
+        elif reason == "named_own_pattern":
+            self.n_banned_term += 1
+        elif reason == "critics_unknown":
+            self.n_unknown += 1
+            self.unknown_by_label[lab] = self.unknown_by_label.get(lab, 0) + 1
+        elif reason == "critics_disagreed" and agg is not None:
+            # Only a genuine label disagreement is taxonomy evidence. An
+            # Unknown majority means the text was unjudgeable, which says
+            # nothing about whether the clinical label fits founder thinking.
+            leaned = _leaned(agg)
+            self.confusion[(lab, leaned)] = self.confusion.get((lab, leaned), 0) + 1
+            self.critic_rejected_by_label[lab] = self.critic_rejected_by_label.get(lab, 0) + 1
+
+    def accept(self, text, dominant, agg) -> None:
+        self.n_accepted += 1
+        self.note_opener(text)
+        if dominant == A.NO_DISTORTION:
+            self.nd_accept_margin.append(agg["no_distortion_votes"])
+
+    # -- report ------------------------------------------------------------- #
+    def to_dict(self) -> dict:
+        return {
+            "accepted": self.n_accepted, "rejected": self.n_rejected, "revised": self.n_revised,
+            "filtered_length": self.n_length, "filtered_named_own_pattern": self.n_banned_term,
+            "critics_unknown": self.n_unknown,
+            "attempted_by_label": self.attempted_by_label,
+            "abandoned_by_label": self.abandoned_by_label,
+            "critic_rejected_by_label": self.critic_rejected_by_label,
+            "unknown_by_label": self.unknown_by_label,
+            "confusion": [{"intended": a, "leaned": b, "n": c} for (a, b), c in
+                          sorted(self.confusion.items(), key=lambda kv: -kv[1])],
+            "no_distortion_accept_margin": self.nd_accept_margin,
+            "est_cost_usd": round(self.cost, 4),
+        }
+
+    def print_summary(self) -> None:
+        print(f"\n[done] accepted {self.n_accepted} | rejected {self.n_rejected} | revised {self.n_revised}")
+        print(f"[filters] length {self.n_length} | named-own-pattern {self.n_banned_term}")
+        # Unknown is a generation-quality counter, not a taxonomy one. A high number
+        # means the generator is producing bare vents or plain situation reports with
+        # no reasoning in them — fix the prompt, not the taxonomy.
+        print(f"[unjudgeable] critics returned Unknown on {self.n_unknown} specs")
+        # distinct-n at three widths. The 4-word figure flatters: "I have always
+        # felt" and "I have never felt" are distinct 4-grams but the same tic, so
+        # watch the 1- and 2-word columns for real opener collapse.
+        if self.used_openers:
+            d1 = len({o.split()[0] for o in self.used_openers if o.split()})
+            d2 = len(self.opener_starts)
+            d4 = len(set(self.used_openers))
+            n = len(self.used_openers)
+            print(f"[diversity] distinct openers among {n} accepted rows: "
+                  f"1-word {d1}/{n} | 2-word {d2}/{n} | 4-word {d4}/{n}")
+            top = sorted(self.opener_starts.items(), key=lambda kv: -kv[1])[:3]
+            if top and top[0][1] > 1:
+                print("            most repeated starts: "
+                      + " | ".join(f'"{s}" x{c}' for s, c in top if c > 1))
+
+        # Abandonment rate per intended label. A label that abandons far above the
+        # mean is one the critics could not find in entrepreneurial text — evidence
+        # for taxonomy inadequacy, not a generation bug.
+        if self.abandoned_by_label:
+            print("\n[abandonment] intended label -> abandoned / attempted")
+            rows = sorted(
+                ((lab, self.abandoned_by_label.get(lab, 0), n) for lab, n in self.attempted_by_label.items()),
+                key=lambda r: -(r[1] / r[2]) if r[2] else 0,
+            )
+            for lab, bad, tot in rows:
+                pct = 100 * bad / tot if tot else 0.0
+                print(f"    {pct:5.1f}%  {bad:>3}/{tot:<3}  {lab}")
+
+        if self.confusion:
+            print("\n[taxonomy] asked for X, panel read Y (critic rejections only)")
+            for (intended, leaned), c in sorted(self.confusion.items(), key=lambda kv: -kv[1])[:15]:
+                print(f"    {c:>3}x  {intended}  ->  {leaned}")
+
+        # The calibrated-pessimism readout, called out separately because it is the
+        # central domain risk rather than one row in the table above.
+        nd_tot = self.attempted_by_label.get(A.NO_DISTORTION, 0)
+        if nd_tot:
+            nd_bad = self.abandoned_by_label.get(A.NO_DISTORTION, 0)
+            # Only the critic rejections are evidence about the distinction — a row
+            # dropped by the length or dedup filter never reached the panel.
+            nd_critic = self.critic_rejected_by_label.get(A.NO_DISTORTION, 0)
+            nd_unknown = self.unknown_by_label.get(A.NO_DISTORTION, 0)
+            nd_filtered = nd_bad - nd_critic - nd_unknown
+            print(f"\n[calibrated-pessimism] No-Distortion specs: {nd_tot} attempted, "
+                  f"{nd_bad} abandoned ({100 * nd_bad / nd_tot:.1f}%)")
+            print(f"    {nd_critic} read as distorted by the panel  <- the number that matters")
+            print(f"    {nd_unknown} judged unjudgeable (Unknown)   <- generator problem")
+            print(f"    {nd_filtered} dropped before reaching the panel (length / dedup / etc.)")
+            misread = {lean: c for (intended, lean), c in self.confusion.items()
+                       if intended == A.NO_DISTORTION}
+            if misread:
+                parts = " | ".join(f"{lab} {c}x" for lab, c in
+                                   sorted(misread.items(), key=lambda kv: -kv[1]))
+                print(f"    critics read a distortion instead: {parts}")
+            if self.nd_accept_margin:
+                clean = sum(1 for m in self.nd_accept_margin if m == self.n_critics)
+                print(f"    accepted margin: {clean}/{len(self.nd_accept_margin)} rows had a "
+                      f"unanimous {self.n_critics}/{self.n_critics} No-Distortion vote")
+
+
+def failure_reason(agg, n_critics) -> str:
+    """Two different failures, kept apart. "critics_unknown" = the text was
+    unjudgeable (generator problem). "critics_disagreed" = asked for X, two
+    independent rounds of blind critics read something else (taxonomy signal)."""
+    majority = math.ceil(n_critics / 2)
+    return "critics_unknown" if agg.get("unknown_votes", 0) >= majority else "critics_disagreed"
+
+
+# --------------------------------------------------------------------------- #
 # Main                                                                         #
 # --------------------------------------------------------------------------- #
+
+def parse_critic_slots(critic_models: str) -> list[list[str]]:
+    """"a|a2,b|b2,c" -> [["a","a2"],["b","b2"],["c"]] (each slot = one critic, '|' = backups)."""
+    return [[m.strip() for m in slot.split("|") if m.strip()]
+            for slot in (critic_models or "").split(",") if slot.strip()]
+
 
 def run(args) -> None:
     seeds = load_seeds(args.seeds, english_only=True)
     specs = PL.build_specs(args.n, seed=args.seed)
     rng = random.Random(args.seed)
 
+    # --critic-models gives one critic per model (a cross-family panel); otherwise
+    # n_critics copies of --critic-model, decorrelated by temperature only.
+    # Each comma-separated slot may list backups with "|": "a|a2,b|b2,c".
+    critic_slots = parse_critic_slots(args.critic_models)
+    if critic_slots:
+        args.n_critics = len(critic_slots)
     temps = [float(t) for t in args.critic_temps.split(",") if t.strip()]
     critic_temps = [temps[i % len(temps)] for i in range(args.n_critics)]
+    critics = [(critic_slots[i] if critic_slots else [args.critic_model], critic_temps[i])
+               for i in range(args.n_critics)]
+    # NIM-hosted open models often reason before answering, and those tokens count
+    # against max_tokens; free-tier calls cost nothing, so give them room.
+    gen_max_tokens = 4000 if args.gen_provider == "nvidia" else 800
+    critic_max_tokens = 6000 if args.critic_provider == "nvidia" else 1100
 
-    print(f"[planner] {len(specs)} specs | primary distribution:")
-    for lab, c in PL.distribution(specs).items():
-        print(f"    {c:>4}  {lab}")
-    gran_counts: dict[str, int] = {}
-    for s in specs:
-        gran_counts[s["granularity"]] = gran_counts.get(s["granularity"], 0) + 1
-    print(f"[planner] granularity: {gran_counts}")
-    print(f"[planner] distinct (distortion x trigger) cells covered: "
-          f"{len({(s['primary'], s['trigger']) for s in specs})}")
-    print(f"[planner] English seeds loaded: {len(seeds)}")
+    if args.check_models:
+        if "nvidia" not in (args.gen_provider, args.critic_provider):
+            sys.exit("--check-models only applies to the nvidia provider")
+        live = set(llm.nvidia_models())
+        want = ([args.gen_model] if args.gen_provider == "nvidia" else []) + \
+               ([m for slot, _ in critics for m in slot] if args.critic_provider == "nvidia" else [])
+        missing = [m for m in want if m not in live]
+        for m in want:
+            print(f"  {'OK     ' if m in live else 'MISSING'} {m}")
+        if missing:
+            sys.exit(f"{len(missing)} configured model(s) not available to this key; "
+                     f"available: {', '.join(sorted(live))}")
+        print("all configured models are available")
+        return
+
+    print_plan(specs, seeds)
     print(f"[panel] generator = {args.gen_provider}:{args.gen_model}")
-    print(f"[panel] critics   = {args.n_critics} x {args.critic_provider}:{args.critic_model} "
-          f"@ temps {critic_temps}")
+    print(f"[panel] critics   = " + ", ".join(f"{args.critic_provider}:{'|'.join(slot)}@{t}" for slot, t in critics))
 
     if args.dry_run:
         print("\n[dry-run] sample generator user prompt for spec[0]:\n")
@@ -214,37 +526,11 @@ def run(args) -> None:
     rej_path = out_path.with_suffix(".rejected.jsonl")
 
     accepted_texts = [s["text"] for s in seeds]
-    used_openers: list[str] = []          # 4-word openers, for the ban display
-    opener_starts: dict[str, int] = {}    # opening bigram -> count
-    OVERUSED_AT = 3                       # ban a bigram once it's clearly a default
-    cost = 0.0
-    n_accepted = n_rejected = n_revised = 0
-    n_banned_term = n_length = n_unknown = 0
-    abandoned_by_label: dict[str, int] = {}
-    attempted_by_label: dict[str, int] = {}
-    confusion: dict[tuple[str, str], int] = {}   # (intended, what critics leaned)
-    # Split out the abandonments that actually reached the panel — a spec
-    # dropped by the length or dedup filter says nothing about the taxonomy.
-    critic_rejected_by_label: dict[str, int] = {}
-    unknown_by_label: dict[str, int] = {}
-    # Calibrated pessimism is the central domain risk: "I probably won't close
-    # this round in this market" is realistic, not Fortune-telling. If the panel
-    # cannot reliably pass intended No-Distortion rows, that is itself a result
-    # about how hard the distinction is — and it means the No-Distortion class
-    # will come out under-populated and skewed. Track the margin on the ones
-    # that do pass, not just the pass rate.
-    nd_accept_margin: list[int] = []
+    stats = RunStats(args.n_critics)
+    last_panel: list[str] = []   # critic models that actually voted on the current text
 
     def _gen(spec, prior=None, note=None):
-        nonlocal cost
-        # Only the last 12 openers are injected: the list is a diversity nudge,
-        # not an exhaustive constraint, and an ever-growing block would bloat
-        # every prompt and eventually crowd out the seed exemplars.
-        recent = used_openers[-12:]
-        # A 4-word ban is weaker than it looks — same tic, different 4-gram. So
-        # also surface the short starts that have already become habitual.
-        overused = [s for s, c in sorted(opener_starts.items(), key=lambda kv: -kv[1])
-                    if c >= OVERUSED_AT]
+        recent, overused = stats.recent_openers(), stats.overused_starts()
         if prior is None:
             user = P.build_generator_user(spec, seeds, rng, recent_openers=recent,
                                           overused_starts=overused)
@@ -256,95 +542,52 @@ def run(args) -> None:
         # thinking and truncated the reflection mid-sentence (which then failed
         # the word-count filter below). Billing is on tokens produced, not the
         # cap, so the headroom is free.
+        # Record which seeds this prompt showed (revisions add theirs too).
+        seen = spec.setdefault("seed_ids", [])
+        seen.extend(s for s in P.LAST_SEED_IDS if s not in seen)
         system = P.build_generator_system(spec.get("granularity", "snippet"))
-        text, u = llm.complete_text(args.gen_provider, args.gen_model, system, user, 800)
-        cost += llm.estimate_cost(args.gen_provider, args.gen_model, u)
+        text, u = llm.complete_text(args.gen_provider, args.gen_model, system, user, gen_max_tokens)
+        stats.cost += llm.estimate_cost(args.gen_provider, args.gen_model, u)
         return text
 
     def _critique(text):
-        nonlocal cost
         verdicts = []
-        for t in critic_temps:
-            v, u = llm.complete_json(args.critic_provider, args.critic_model,
-                                     P.SYSTEM_CRITIC, P.build_critic_user(text),
-                                     1100, temperature=t, json_schema=P.CRITIC_SCHEMA)
-            cost += llm.estimate_cost(args.critic_provider, args.critic_model, u)
+        last_panel.clear()
+        for slot, t in critics:
+            # A slot is one critic; its models are tried in order, so a model that
+            # is down on the free tier is replaced by the slot's backup (same slot
+            # never shares a family with the other slots or with the generator).
+            v = None
+            for model in slot:
+                try:
+                    v, u = llm.complete_json(args.critic_provider, model,
+                                             P.SYSTEM_CRITIC, P.build_critic_user(text),
+                                             critic_max_tokens, temperature=t, json_schema=P.CRITIC_SCHEMA)
+                except llm.NimUnavailable as e:
+                    print(f"    [panel] {e}; trying the slot's next model", flush=True)
+                    continue
+                stats.cost += llm.estimate_cost(args.critic_provider, model, u)
+                if v is not None:
+                    v["critic_model"] = model
+                    last_panel.append(model)
+                    break
             if v is None:
                 continue
-            # The prompt says: cannot find two supporting sentences -> Unknown.
-            # Enforce it rather than trust it. A label asserted without the
-            # evidence it was told to produce is exactly the speculative verdict
-            # the evidence rule exists to prevent.
-            ev = v.get("evidence") or []
-            if len(ev) < 2 and v.get("primary") not in (A.UNKNOWN,):
-                v["primary"] = A.UNKNOWN
-                v["present"] = [A.UNKNOWN]
-                v["coerced_unknown"] = True
-            verdicts.append(v)
+            verdicts.append(enforce_evidence(v))
         return verdicts
 
     with out_path.open("w", encoding="utf-8") as fh, \
             rej_path.open("w", encoding="utf-8") as rfh:
 
-        def _leaned(agg) -> str:
-            """The label the panel actually gravitated to, when the target failed."""
-            if agg is None or not any(agg["votes"].values()):
-                return A.NO_DISTORTION
-            return max(agg["votes"], key=agg["votes"].get)
-
-        def _reject(spec, reason, text=None, agg=None, agg_first=None,
-                    note=None, revised=False, detail=None):
-            nonlocal n_rejected
-            n_rejected += 1
-            lab = spec["primary"]
-            abandoned_by_label[lab] = abandoned_by_label.get(lab, 0) + 1
-
-            row = {
-                "spec_id": spec["spec_id"],
-                "reason": reason,
-                "detail": detail,
-                "intended_primary": lab,
-                "intended_secondary": spec["secondary"],
-                "granularity": spec.get("granularity", "snippet"),
-                "trigger": spec["trigger"],
-                "register": spec["register"],
-                "stage": spec["stage"],
-                "sector": spec["sector"],
-                "cultural_marker": spec["cultural_marker"],
-                "revised": revised,
-                "text": text,
-                "critic_note": note,
-            }
-            # Only critic rejections carry a verdict — filter rejections never
-            # reached the panel.
-            if agg is not None:
-                row.update({
-                    "critic_votes": agg["votes"],
-                    "y_soft": agg["soft"],
-                    "no_distortion_votes": agg["no_distortion_votes"],
-                    "unknown_votes": agg["unknown_votes"],
-                    "span_agreement": agg["span_agreement"],
-                })
-                # Only a genuine label disagreement is taxonomy evidence. An
-                # Unknown majority means the text was unjudgeable, which says
-                # nothing about whether the clinical label fits founder thinking
-                # — counting it would corrupt the figure.
-                if reason == "critics_disagreed":
-                    leaned = _leaned(agg)
-                    confusion[(lab, leaned)] = confusion.get((lab, leaned), 0) + 1
-                    critic_rejected_by_label[lab] = \
-                        critic_rejected_by_label.get(lab, 0) + 1
-                    row["critics_leaned"] = leaned
-                elif reason == "critics_unknown":
-                    unknown_by_label[lab] = unknown_by_label.get(lab, 0) + 1
-            if agg_first is not None:
-                row["first_attempt_votes"] = agg_first["votes"]
-                row["first_attempt_leaned"] = _leaned(agg_first)
-            rfh.write(json.dumps(row, ensure_ascii=False) + "\n")
+        def _reject(spec, reason, **kw):
+            stats.reject(spec, reason, kw.get("agg"))
+            rfh.write(json.dumps(rejected_row(spec, reason, gen_model=args.gen_model,
+                                              critic_models=last_panel, **kw),
+                                 ensure_ascii=False) + "\n")
 
         for i, spec in enumerate(specs):
-            attempted_by_label[spec["primary"]] = \
-                attempted_by_label.get(spec["primary"], 0) + 1
+            last_panel.clear()
+            stats.attempt(spec)
             try:
                 text = _gen(spec)
             except Exception as e:  # noqa: BLE001
@@ -352,28 +595,12 @@ def run(args) -> None:
                 _reject(spec, "generator_error", detail=str(e))
                 continue
 
-            # Length bounds now come from the spec's granularity, not one global
-            # range — a 30-50 word snippet and a 150-word reflection cannot
-            # share a filter.
-            g = A.GRANULARITIES[spec.get("granularity", "snippet")]
-            wc = _word_count(text)
-            if not (g["min_words"] <= wc <= g["max_words"]):
-                n_length += 1
-                _reject(spec, "length", text=text, detail=f"{wc} words")
-                continue
-
-            banned = _contains_banned_term(text)
-            if banned is not None:
-                print(f"[{spec['spec_id']}] dropped: named its own pattern ({banned!r})")
-                n_banned_term += 1
-                _reject(spec, "named_own_pattern", text=text, detail=banned)
-                continue
-
-            if not _english_dominant(text):
-                _reject(spec, "not_english", text=text)
-                continue
-            if D.is_duplicate(text, accepted_texts):
-                _reject(spec, "duplicate", text=text)
+            failed = prefilter(text, spec, accepted_texts)
+            if failed is not None:
+                reason, detail = failed
+                if reason == "named_own_pattern":
+                    print(f"[{spec['spec_id']}] dropped: named its own pattern ({detail!r})")
+                _reject(spec, reason, text=text, detail=detail)
                 continue
 
             verdicts = _critique(text)
@@ -385,7 +612,7 @@ def run(args) -> None:
             if not ok:
                 try:
                     text = _gen(spec, prior=text, note=note)
-                    n_revised += 1
+                    stats.n_revised += 1
                     verdicts = _critique(text)
                     agg = aggregate(verdicts, args.n_critics)
                     ok, dominant, secondary, note = decide(spec, agg, args.n_critics)
@@ -394,135 +621,39 @@ def run(args) -> None:
                     text = first_text
 
             if not ok:
-                # Two different failures, kept apart. "critics_unknown" = the
-                # text was unjudgeable (generator problem). "critics_disagreed" =
-                # asked for X, two independent rounds of blind critics read
-                # something else (taxonomy signal).
-                majority = math.ceil(args.n_critics / 2)
-                reason = ("critics_unknown"
-                          if agg.get("unknown_votes", 0) >= majority
-                          else "critics_disagreed")
-                if reason == "critics_unknown":
-                    n_unknown += 1
-                _reject(spec, reason, text=text, agg=agg,
+                _reject(spec, failure_reason(agg, args.n_critics), text=text, agg=agg,
                         agg_first=agg_first, note=note, revised=True)
                 continue
 
-            fh.write(json.dumps({
-                "id": f"syn_{i:05d}",
-                "text": text,
-                "dominant_distortion": dominant,
-                "secondary_distortion": secondary,
-                # Maps onto the `Distorted part` column in Annotated_data.csv.
-                "distorted_part": agg["span"],
-                "span_agreement": agg["span_agreement"],
-                # Sentence-level evidence and the causal chain from the critic
-                # whose verdict matched. Free span-level explainability material
-                # to sit alongside SHAP/Captum later.
-                "evidence": next((v.get("evidence") for v in verdicts
-                                  if v.get("primary") == dominant), None),
-                "critic_reasoning": next((v.get("reasoning") for v in verdicts
-                                          if v.get("primary") == dominant), None),
-                "y_soft": agg["soft"],
-                "critic_votes": agg["votes"],
-                # How decisively the panel called it No Distortion — the
-                # calibrated-pessimism margin. 3/3 is clean; 2/3 is contested.
-                "no_distortion_votes": agg["no_distortion_votes"],
-                "n_critics": args.n_critics,
-                "granularity": spec.get("granularity", "snippet"),
-                # True if this row is a revision. Revised rows are generated
-                # while being told what the critics objected to, so they risk
-                # overcorrecting into caricature — keep the flag so accepted
-                # revised rows can be compared against first-pass ones.
-                "revised": agg_first is not None,
-                "trigger": spec["trigger"],
-                "register": spec["register"],
-                "stage": spec["stage"],
-                "sector": spec["sector"],
-                "cultural_marker": spec["cultural_marker"],
-                "intended_primary": spec["primary"],
-                "intended_secondary": spec["secondary"],
-                "source": "synthetic",
-            }, ensure_ascii=False) + "\n")
+            fh.write(json.dumps(accepted_row(i, spec, text, dominant, secondary, agg, verdicts,
+                                             revised=agg_first is not None, n_critics=args.n_critics,
+                                             gen_model=args.gen_model, critic_models=last_panel),
+                                ensure_ascii=False) + "\n")
             accepted_texts.append(text)
-            used_openers.append(_opener(text))
-            bg = _opener(text, 2)
-            opener_starts[bg] = opener_starts.get(bg, 0) + 1
-            if dominant == A.NO_DISTORTION:
-                nd_accept_margin.append(agg["no_distortion_votes"])
-            n_accepted += 1
+            stats.accept(text, dominant, agg)
 
             if (i + 1) % 25 == 0:
-                print(f"  ...{i + 1}/{len(specs)} | accepted {n_accepted} | est ${cost:.2f}")
+                print(f"  ...{i + 1}/{len(specs)} | accepted {stats.n_accepted} | est ${stats.cost:.2f}")
 
-    print(f"\n[done] accepted {n_accepted} | rejected {n_rejected} | revised {n_revised}")
-    print(f"[filters] length {n_length} | named-own-pattern {n_banned_term}")
-    # Unknown is a generation-quality counter, not a taxonomy one. A high number
-    # means the generator is producing bare vents or plain situation reports with
-    # no reasoning in them — fix the prompt, not the taxonomy.
-    print(f"[unjudgeable] critics returned Unknown on {n_unknown} specs")
-    # distinct-n at three widths. The 4-word figure flatters: "I have always
-    # felt" and "I have never felt" are distinct 4-grams but the same tic, so
-    # watch the 1- and 2-word columns for real opener collapse.
-    if used_openers:
-        d1 = len({o.split()[0] for o in used_openers if o.split()})
-        d2 = len(opener_starts)
-        d4 = len(set(used_openers))
-        n = len(used_openers)
-        print(f"[diversity] distinct openers among {n} accepted rows: "
-              f"1-word {d1}/{n} | 2-word {d2}/{n} | 4-word {d4}/{n}")
-        top = sorted(opener_starts.items(), key=lambda kv: -kv[1])[:3]
-        if top and top[0][1] > 1:
-            print("            most repeated starts: "
-                  + " | ".join(f'"{s}" x{c}' for s, c in top if c > 1))
-
-    # Abandonment rate per intended label. A label that abandons far above the
-    # mean is one the critics could not find in entrepreneurial text — evidence
-    # for taxonomy inadequacy, not a generation bug.
-    if abandoned_by_label:
-        print("\n[abandonment] intended label -> abandoned / attempted")
-        rows = sorted(
-            ((lab, abandoned_by_label.get(lab, 0), n) for lab, n in attempted_by_label.items()),
-            key=lambda r: -(r[1] / r[2]) if r[2] else 0,
-        )
-        for lab, bad, tot in rows:
-            pct = 100 * bad / tot if tot else 0.0
-            print(f"    {pct:5.1f}%  {bad:>3}/{tot:<3}  {lab}")
-
-    if confusion:
-        print("\n[taxonomy] asked for X, panel read Y (critic rejections only)")
-        for (intended, leaned), c in sorted(confusion.items(), key=lambda kv: -kv[1])[:15]:
-            print(f"    {c:>3}x  {intended}  ->  {leaned}")
-
-    # The calibrated-pessimism readout, called out separately because it is the
-    # central domain risk rather than one row in the table above.
-    nd_tot = attempted_by_label.get(A.NO_DISTORTION, 0)
-    if nd_tot:
-        nd_bad = abandoned_by_label.get(A.NO_DISTORTION, 0)
-        # Only the critic rejections are evidence about the distinction — a row
-        # dropped by the length or dedup filter never reached the panel.
-        nd_critic = critic_rejected_by_label.get(A.NO_DISTORTION, 0)
-        nd_unknown = unknown_by_label.get(A.NO_DISTORTION, 0)
-        nd_filtered = nd_bad - nd_critic - nd_unknown
-        print(f"\n[calibrated-pessimism] No-Distortion specs: {nd_tot} attempted, "
-              f"{nd_bad} abandoned ({100 * nd_bad / nd_tot:.1f}%)")
-        print(f"    {nd_critic} read as distorted by the panel  <- the number that matters")
-        print(f"    {nd_unknown} judged unjudgeable (Unknown)   <- generator problem")
-        print(f"    {nd_filtered} dropped before reaching the panel (length / dedup / etc.)")
-        misread = {lean: c for (intended, lean), c in confusion.items()
-                   if intended == A.NO_DISTORTION}
-        if misread:
-            parts = " | ".join(f"{lab} {c}x" for lab, c in
-                               sorted(misread.items(), key=lambda kv: -kv[1]))
-            print(f"    critics read a distortion instead: {parts}")
-        if nd_accept_margin:
-            clean = sum(1 for m in nd_accept_margin if m == args.n_critics)
-            print(f"    accepted margin: {clean}/{len(nd_accept_margin)} rows had a "
-                  f"unanimous {args.n_critics}/{args.n_critics} No-Distortion vote")
-
-    print(f"\n[cost] est ${cost:.2f} (sync; ignores Anthropic cache discount and Gemini free tier)")
+    stats.print_summary()
+    print(f"\n[cost] est ${stats.cost:.2f} (sync; ignores Anthropic cache discount and Gemini free tier)")
+    if llm.REQUEST_COUNT.get("nvidia"):
+        print(f"[cost] NVIDIA NIM requests: {llm.REQUEST_COUNT['nvidia']} (free-tier credits; $0)")
     print(f"[out]      {out_path}")
     print(f"[rejects]  {rej_path}")
+
+
+def print_plan(specs, seeds) -> None:
+    print(f"[planner] {len(specs)} specs | primary distribution:")
+    for lab, c in PL.distribution(specs).items():
+        print(f"    {c:>4}  {lab}")
+    gran_counts: dict[str, int] = {}
+    for s in specs:
+        gran_counts[s["granularity"]] = gran_counts.get(s["granularity"], 0) + 1
+    print(f"[planner] granularity: {gran_counts}")
+    print(f"[planner] distinct (distortion x trigger) cells covered: "
+          f"{len({(s['primary'], s['trigger']) for s in specs})}")
+    print(f"[planner] English seeds loaded: {len(seeds)}")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -531,10 +662,23 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--seeds", default="data/synthetic_gen/seeds/entrepreneurial_seeds.jsonl")
     ap.add_argument("--out", default="data/synthetic/synthetic_train_en.jsonl")
-    ap.add_argument("--gen-provider", default="anthropic", choices=["anthropic", "gemini"])
-    ap.add_argument("--gen-model", default="claude-sonnet-5")
-    ap.add_argument("--critic-provider", default="gemini", choices=["anthropic", "gemini"])
-    ap.add_argument("--critic-model", default="gemini-2.5-flash")
+    # Defaults (S05): every model on NVIDIA NIM (key NVIDIA_NIMS_KEY in .env), the
+    # generator and the three critics from four different model families. Pass
+    # --gen-provider anthropic --gen-model claude-sonnet-5 / --critic-provider gemini
+    # --critic-model gemini-2.5-flash --critic-models "" for the original setup.
+    ap.add_argument("--gen-provider", default="nvidia", choices=["anthropic", "gemini", "nvidia"])
+    ap.add_argument("--gen-model", default="moonshotai/kimi-k3.1-pro")
+    ap.add_argument("--critic-provider", default="nvidia", choices=["anthropic", "gemini", "nvidia"])
+    ap.add_argument("--critic-model", default="gemini-2.5-flash",
+                    help="single critic model, used n-critics times, when --critic-models is empty")
+    ap.add_argument("--critic-models",
+                    default=("nvidia/nemotron-3-ultra-550b-a55b|nvidia/nemotron-3.5-lightning-30b-a3b,"
+                             "mistralai/mistral-large-4-1t-a52b|google/gemma-4-31b-it,"
+                             "minimaxai/minimax-m3.1-flash|stepfun-ai/step-5-preview"),
+                    help="comma-separated critic slots, one critic each; '|' lists a slot's backups, tried in "
+                         "order when a free-tier model is down. Empty to use --critic-model.")
+    ap.add_argument("--check-models", action="store_true",
+                    help="nvidia only: check the configured models are available to the key, then stop")
     ap.add_argument("--n-critics", type=int, default=3)
     ap.add_argument("--critic-temps", default="0.3,0.6,0.9",
                     help="comma-separated temperatures cycled across critics (decorrelation)")

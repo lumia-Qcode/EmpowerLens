@@ -3,7 +3,9 @@
 #   venv\Scripts\python.exe -m pip install -r requirements-synth.txt
 anthropic>=0.69          # generator (Claude Sonnet)
 google-genai>=1.0        # critic panel (Gemini)
+openai>=1.40             # NVIDIA NIM (OpenAI-compatible endpoint); key NVIDIA_NIMS_KEY in .env
 # Dedup is dependency-free (token Jaccard). For optional semantic dedup later,
 # add: sentence-transformers  (pulls torch — set KMP_DUPLICATE_LIB_OK=TRUE on Windows).
 #
-# Keys: ANTHROPIC_API_KEY (generator) + GEMINI_API_KEY or GOOGLE_API_KEY (critics).
+# Keys: ANTHROPIC_API_KEY (generator) + GEMINI_API_KEY or GOOGLE_API_KEY (critics),
+# or NVIDIA_NIMS_KEY for the NIM defaults. Keys live in .env (gitignored), never in git.

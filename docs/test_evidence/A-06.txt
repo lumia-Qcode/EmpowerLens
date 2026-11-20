@@ -1,0 +1,13 @@
+A-06  A finished link accepts nothing more
+After A-05 (token P-C46BC01D, completed):
+  reflections stored for P-C46BC01D before: 1
+  POST /api/participant/submit {"participant_token":"P-C46BC01D","responses":[{"prompt_id":1,"text":"second attempt after finishing"}]}
+  -> {"detail":"This exercise has already been submitted"} HTTP 409
+  reflections stored for P-C46BC01D after: 1   (no new row)
+Re-opening the participant link in the browser (http://localhost:5173/participant, A-06.png):
+  the app shows a fresh consent screen ("Before you begin", "I agree, start"), not "exercise closed".
+  The link is shared per workshop, not per participant; the token lives only in page state, so re-opening the
+  link starts a new anonymous exercise and a further answer can be submitted under a new token.
+  (The "Responses received" screen also offers a "Start a new exercise" button.)
+Related: consent on a closed cohort is refused:
+  POST /api/participant/consent {"cohort_id":1,"consent":true} -> {"detail":"This exercise is not open"} HTTP 400

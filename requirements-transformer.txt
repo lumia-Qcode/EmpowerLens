@@ -9,3 +9,4 @@ iterative-stratification
 scipy
 matplotlib
 wandb
+captum==0.9.0

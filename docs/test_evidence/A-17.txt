@@ -1,0 +1,49 @@
+A-17  The export for annotation keeps the text exactly as written
+Submitted 3 test reflections through the participant UI (Playwright, cohort 6 "TEST participant flow"), each with a
+curly apostrophe/quote, an em-dash, an emoji and a line break. The textarea value equalled the intended string (=== true x3).
+Typed (saved as JSON, \u escapes):
+[
+ "A-17 test one: I don’t think it’ll work — investors won’t care 😞\nMaybe next month.",
+ "A-17 test two: We’re behind — again.\nIt’s fine 🙂 but I worry.",
+ "A-17 test three: My co-founder said “no” 🚀\nSecond line — done."
+]
+Ran the annotation export as the researcher: GET /api/researcher/export?cohort_id=6&format=xlsx|json|docx|pdf (all HTTP 200).
+Compared typed vs exported with Python ==:
+
+annot.json decodes as UTF-8: True | contains mojibake 'â€': False
+
+[json] 3 A-17 rows exported
+  typed == exported: True | "A-17 test one: I don\u2019t think it\u2019ll work \u2014 investors won\u2019t care \ud83d\ude1e\nMaybe next month."
+  typed == exported: True | "A-17 test two: We\u2019re behind \u2014 again.\nIt\u2019s fine \ud83d\ude42 but I worry."
+  typed == exported: True | "A-17 test three: My co-founder said \u201cno\u201d \ud83d\ude80\nSecond line \u2014 done."
+
+[xlsx] 3 A-17 rows exported
+  typed == exported: True | "A-17 test one: I don\u2019t think it\u2019ll work \u2014 investors won\u2019t care \ud83d\ude1e\nMaybe next month."
+  typed == exported: True | "A-17 test two: We\u2019re behind \u2014 again.\nIt\u2019s fine \ud83d\ude42 but I worry."
+  typed == exported: True | "A-17 test three: My co-founder said \u201cno\u201d \ud83d\ude80\nSecond line \u2014 done."
+
+[docx] 3 A-17 rows exported
+  typed == exported: True | "A-17 test one: I don\u2019t think it\u2019ll work \u2014 investors won\u2019t care \ud83d\ude1e\nMaybe next month."
+  typed == exported: True | "A-17 test two: We\u2019re behind \u2014 again.\nIt\u2019s fine \ud83d\ude42 but I worry."
+  typed == exported: True | "A-17 test three: My co-founder said \u201cno\u201d \ud83d\ude80\nSecond line \u2014 done."
+
+[pdf] text extracted from the A-17 rows (PDF is a rendered table, so == is checked per character class):
+   "A-17 test one: I don\u2019t think it\u2019ll work \u2014investors won\u2019t care Maybe next month. 20 Nov 2026,12:44 UTC\n"
+     curly apostrophe present in PDF text: True
+     em-dash present in PDF text: True
+     emoji 1 present in PDF text: False
+   "A-17 test two: We\u2019re behind \u2014 again.It\u2019s fine  but I worry. 20 Nov 2026,12:44 UTC"
+     curly apostrophe present in PDF text: True
+     em-dash present in PDF text: True
+     emoji 2 present in PDF text: False
+   "A-17 test three: My co-founder said \u201cno\u201d Second line \u2014 done. 20 Nov 2026,12:44 UTC"
+     em-dash present in PDF text: True
+     emoji 3 present in PDF text: False
+     left curly quote present in PDF text: True
+
+Result: Pass for the annotation formats. xlsx (the default export), json and docx are identical character for character
+(curly quotes, em-dashes, emoji and line breaks kept); the JSON file decodes as UTF-8 with no mojibake.
+Notes (not part of the pass rule, recorded as findings):
+- The PDF export drops the emoji (and renders the line break as a space); it is a readable copy, not lossless.
+- In xlsx/docx/pdf an empty reflection (A-04's row survey-35) is written as "–" (en dash) instead of an empty cell
+  (exports._cell). JSON keeps "".

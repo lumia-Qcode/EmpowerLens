@@ -1,0 +1,101 @@
+item_id,pair_id,distortion_type,intended,source_file
+c001,I-MR-02,Mind Reading,distorted,pairs_izza.csv
+c002,I-PER-02,Personalization,distorted,pairs_izza.csv
+c003,I-ER-01,Emotional Reasoning,justified,pairs_izza.csv
+c004,L-LB-03,Labeling,distorted,pairs_lumia.csv
+c005,L-LB-03,Labeling,justified,pairs_lumia.csv
+c006,L-SS-05,Should statements,distorted,pairs_lumia.csv
+c007,L-MF-02,Mental filter,justified,pairs_lumia.csv
+c008,I-MR-01,Mind Reading,justified,pairs_izza.csv
+c009,L-OG-01,Overgeneralization,justified,pairs_lumia.csv
+c010,L-AON-01,All-or-nothing thinking,justified,pairs_lumia.csv
+c011,L-OG-05,Overgeneralization,justified,pairs_lumia.csv
+c012,L-SS-01,Should statements,justified,pairs_lumia.csv
+c013,I-ER-02,Emotional Reasoning,distorted,pairs_izza.csv
+c014,L-SS-02,Should statements,distorted,pairs_lumia.csv
+c015,I-FT-01,Fortune-telling,justified,pairs_izza.csv
+c016,L-AON-03,All-or-nothing thinking,justified,pairs_lumia.csv
+c017,I-ER-04,Emotional Reasoning,justified,pairs_izza.csv
+c018,I-ER-04,Emotional Reasoning,distorted,pairs_izza.csv
+c019,L-OG-02,Overgeneralization,justified,pairs_lumia.csv
+c020,L-SS-01,Should statements,distorted,pairs_lumia.csv
+c021,I-PER-03,Personalization,distorted,pairs_izza.csv
+c022,I-MR-05,Mind Reading,justified,pairs_izza.csv
+c023,L-MF-04,Mental filter,justified,pairs_lumia.csv
+c024,L-LB-02,Labeling,justified,pairs_lumia.csv
+c025,I-MAG-05,Magnification,distorted,pairs_izza.csv
+c026,L-OG-03,Overgeneralization,distorted,pairs_lumia.csv
+c027,L-LB-01,Labeling,justified,pairs_lumia.csv
+c028,I-FT-04,Fortune-telling,justified,pairs_izza.csv
+c029,L-AON-05,All-or-nothing thinking,distorted,pairs_lumia.csv
+c030,I-ER-02,Emotional Reasoning,justified,pairs_izza.csv
+c031,L-OG-01,Overgeneralization,distorted,pairs_lumia.csv
+c032,L-LB-04,Labeling,distorted,pairs_lumia.csv
+c033,I-MR-03,Mind Reading,distorted,pairs_izza.csv
+c034,L-MF-05,Mental filter,justified,pairs_lumia.csv
+c035,I-FT-02,Fortune-telling,distorted,pairs_izza.csv
+c036,L-AON-03,All-or-nothing thinking,distorted,pairs_lumia.csv
+c037,I-MAG-04,Magnification,justified,pairs_izza.csv
+c038,I-MAG-03,Magnification,distorted,pairs_izza.csv
+c039,L-SS-03,Should statements,distorted,pairs_lumia.csv
+c040,L-OG-04,Overgeneralization,justified,pairs_lumia.csv
+c041,L-LB-05,Labeling,distorted,pairs_lumia.csv
+c042,L-SS-03,Should statements,justified,pairs_lumia.csv
+c043,L-AON-04,All-or-nothing thinking,distorted,pairs_lumia.csv
+c044,I-FT-03,Fortune-telling,distorted,pairs_izza.csv
+c045,L-MF-04,Mental filter,distorted,pairs_lumia.csv
+c046,L-OG-05,Overgeneralization,distorted,pairs_lumia.csv
+c047,I-MR-01,Mind Reading,distorted,pairs_izza.csv
+c048,L-MF-03,Mental filter,distorted,pairs_lumia.csv
+c049,I-MAG-02,Magnification,justified,pairs_izza.csv
+c050,L-OG-02,Overgeneralization,distorted,pairs_lumia.csv
+c051,L-MF-03,Mental filter,justified,pairs_lumia.csv
+c052,L-AON-02,All-or-nothing thinking,distorted,pairs_lumia.csv
+c053,L-OG-04,Overgeneralization,distorted,pairs_lumia.csv
+c054,L-SS-05,Should statements,justified,pairs_lumia.csv
+c055,L-AON-05,All-or-nothing thinking,justified,pairs_lumia.csv
+c056,I-ER-05,Emotional Reasoning,justified,pairs_izza.csv
+c057,L-AON-04,All-or-nothing thinking,justified,pairs_lumia.csv
+c058,I-MAG-03,Magnification,justified,pairs_izza.csv
+c059,L-SS-04,Should statements,justified,pairs_lumia.csv
+c060,I-MR-05,Mind Reading,distorted,pairs_izza.csv
+c061,I-PER-04,Personalization,justified,pairs_izza.csv
+c062,I-FT-05,Fortune-telling,distorted,pairs_izza.csv
+c063,I-PER-03,Personalization,justified,pairs_izza.csv
+c064,L-LB-02,Labeling,distorted,pairs_lumia.csv
+c065,I-PER-01,Personalization,justified,pairs_izza.csv
+c066,I-MAG-04,Magnification,distorted,pairs_izza.csv
+c067,L-LB-04,Labeling,justified,pairs_lumia.csv
+c068,I-MAG-05,Magnification,justified,pairs_izza.csv
+c069,I-MAG-01,Magnification,distorted,pairs_izza.csv
+c070,I-FT-04,Fortune-telling,distorted,pairs_izza.csv
+c071,I-ER-05,Emotional Reasoning,distorted,pairs_izza.csv
+c072,L-LB-01,Labeling,distorted,pairs_lumia.csv
+c073,I-PER-05,Personalization,justified,pairs_izza.csv
+c074,L-LB-05,Labeling,justified,pairs_lumia.csv
+c075,I-FT-05,Fortune-telling,justified,pairs_izza.csv
+c076,I-PER-04,Personalization,distorted,pairs_izza.csv
+c077,I-ER-03,Emotional Reasoning,distorted,pairs_izza.csv
+c078,L-SS-02,Should statements,justified,pairs_lumia.csv
+c079,I-FT-03,Fortune-telling,justified,pairs_izza.csv
+c080,I-PER-05,Personalization,distorted,pairs_izza.csv
+c081,I-MAG-02,Magnification,distorted,pairs_izza.csv
+c082,I-MR-03,Mind Reading,justified,pairs_izza.csv
+c083,L-SS-04,Should statements,distorted,pairs_lumia.csv
+c084,L-MF-05,Mental filter,distorted,pairs_lumia.csv
+c085,L-AON-01,All-or-nothing thinking,distorted,pairs_lumia.csv
+c086,I-PER-02,Personalization,justified,pairs_izza.csv
+c087,L-MF-01,Mental filter,distorted,pairs_lumia.csv
+c088,L-AON-02,All-or-nothing thinking,justified,pairs_lumia.csv
+c089,L-MF-02,Mental filter,distorted,pairs_lumia.csv
+c090,I-MR-04,Mind Reading,distorted,pairs_izza.csv
+c091,I-FT-01,Fortune-telling,distorted,pairs_izza.csv
+c092,I-ER-03,Emotional Reasoning,justified,pairs_izza.csv
+c093,I-MR-04,Mind Reading,justified,pairs_izza.csv
+c094,I-MR-02,Mind Reading,justified,pairs_izza.csv
+c095,L-MF-01,Mental filter,justified,pairs_lumia.csv
+c096,I-MAG-01,Magnification,justified,pairs_izza.csv
+c097,I-ER-01,Emotional Reasoning,distorted,pairs_izza.csv
+c098,L-OG-03,Overgeneralization,justified,pairs_lumia.csv
+c099,I-FT-02,Fortune-telling,justified,pairs_izza.csv
+c100,I-PER-01,Personalization,distorted,pairs_izza.csv

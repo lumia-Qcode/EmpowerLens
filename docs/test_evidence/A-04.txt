@@ -1,0 +1,17 @@
+A-04  A blank answer is accepted and recorded as unanswered
+The app has one prompt only (no "prompt 2" exists), so the test was run on that prompt.
+
+UI (A-04.png): consented in cohort 6, left the answer empty.
+  {"submitDisabled": true, "textarea": "", "requiredAttr": false}
+  -> no "this field is required" message, but the "Submit answer" button is disabled while the box is empty
+     (ParticipantView.jsx: disabled={!words || over || busy}), so a blank answer cannot be submitted from the UI.
+  Side effect: the consent click already created participant row P-... with completed_at NULL; abandoning here
+  leaves a consented participant with no reflection.
+
+API (same endpoint the UI calls), fresh consented token:
+  POST /api/participant/submit {"participant_token":"P-07A44A16","responses":[{"prompt_id":1,"text":""}]}
+  -> {"received":true} HTTP 200
+  Stored: {"reflection_id": 35, "participant_token": "P-07A44A16", "prompt_id": 1, "text": "", ...}
+  reflection table columns: reflection_id, participant_token, prompt_id, text, submitted_at  -> there is NO unanswered flag.
+
+Result: Fail. Blank answers are blocked in the UI and, via the API, stored as empty text with no unanswered flag.

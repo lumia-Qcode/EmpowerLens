@@ -1,0 +1,592 @@
+D-01  Inference returns all three outputs
+Code: empowerlens.inference.Predictor(Path('models'), 'auto', device='cpu') -- the exact call backend/app.py makes -- resolved to
+architecture classifier_pair (models/d12, MentalRoBERTa mentalroberta-d12-s42-20261120). Input: first 5 rows of
+EmpowerLens data/splits/val.csv ('Patient Question'). CPU. Script: d01_run.py (scratchpad), run from the empowerlens-demo root.
+
+Summary: val_row Id_Number is_distorted p_distorted types selected-sentences
+0 4508 False 0.009 [] 0 selected of 4
+1 4522 True 0.984 ['Personalization', 'Should statements'] 3 selected of 22
+2 4541 False 0.9362 [] 0 selected of 8
+3 4543 False 0.5704 [] 0 selected of 9
+4 4549 False 0.586 [] 0 selected of 11
+
+Each row has: is_distorted (yes/no), labels (0-2 types, cap max_labels=2), sentences (every sentence with score and selected flag).
+
+Full output (run 1):
+{
+ "model": {
+  "architecture": "classifier_pair",
+  "model_name": "MentalRoBERTa",
+  "model_version": "mentalroberta-d12-s42-20261120"
+ },
+ "rows": [
+  {
+   "val_row": 0,
+   "Id_Number": "4508",
+   "text": "Having the structure of our family to focus on seemed to help my schizophrenic mother hold it together while we were growing up. We saw her first psychotic episode when I was a senior in high school the oldest child. Mom did spend time in state mental hospitals before she was married. My father was a verbally abusive alcoholic.",
+   "prediction": {
+    "is_distorted": false,
+    "p_distorted": 0.009,
+    "binary_threshold": 0.9767410755157471,
+    "labels": [],
+    "label_scores": {
+     "Emotional Reasoning": 0.1243,
+     "Overgeneralization": 0.3746,
+     "Mental filter": 0.1208,
+     "Should statements": 0.0907,
+     "All-or-nothing thinking": 0.0991,
+     "Mind Reading": 0.1877,
+     "Fortune-telling": 0.0858,
+     "Magnification": 0.1023,
+     "Personalization": 0.1275,
+     "Labeling": 0.3148
+    },
+    "sentences": [
+     {
+      "index": 0,
+      "text": "Having the structure of our family to focus on seemed to help my schizophrenic mother hold it together while we were growing up.",
+      "start": 0,
+      "end": 128,
+      "score": null,
+      "selected": false
+     },
+     {
+      "index": 1,
+      "text": "We saw her first psychotic episode when I was a senior in high school the oldest child.",
+      "start": 129,
+      "end": 216,
+      "score": null,
+      "selected": false
+     },
+     {
+      "index": 2,
+      "text": "Mom did spend time in state mental hospitals before she was married.",
+      "start": 217,
+      "end": 285,
+      "score": null,
+      "selected": false
+     },
+     {
+      "index": 3,
+      "text": "My father was a verbally abusive alcoholic.",
+      "start": 286,
+      "end": 329,
+      "score": null,
+      "selected": false
+     }
+    ]
+   }
+  },
+  {
+   "val_row": 1,
+   "Id_Number": "4522",
+   "text": "I don’t know what to do. I have been seeing my therapist for 3 years. I suffer with body image issues and distorted eating. My therapist has always been thin/healthy. Sometimes her weight drops and I am very sensitive to it. We have talked about it before and I am very open with it if I feel triggered by her. I saw her today and she looks like an eating disordered patient. She said she is aware of it and working on it. She said she has medical issues that make her body do things if she’s not careful and stress plays a part. I believe she is OK and she will work at getting back up to a healthy weight, but its really hard for me to make sense of. Why can she look like that but I have to work to keep myself healthy? Why are such high expectations put on me that she doesn’t live up to? She is my biggest role model, and all I can think of at this moment is starving myself until I look like her. She is happy, successful, smart, has a family and is pretty. She said, “I hope you’re not jealous of this (her body)” and she said that she wished she was in a different place. I just can’t get the picture of her out of my mind. Oh and she’s been getting sick a lot recently. It scares me. I want her to be healthy. She’s MY motivation to be healthy. But when she’s not…my motivation goes away and I want to restrict. How do I make sense of this?",
+   "prediction": {
+    "is_distorted": true,
+    "p_distorted": 0.984,
+    "binary_threshold": 0.9767410755157471,
+    "labels": [
+     {
+      "label": "Personalization",
+      "score": 0.7949,
+      "threshold": 0.65
+     },
+     {
+      "label": "Should statements",
+      "score": 0.7447,
+      "threshold": 0.45
+     }
+    ],
+    "label_scores": {
+     "Emotional Reasoning": 0.3366,
+     "Overgeneralization": 0.3984,
+     "Mental filter": 0.2514,
+     "Should statements": 0.7447,
+     "All-or-nothing thinking": 0.7234,
+     "Mind Reading": 0.2863,
+     "Fortune-telling": 0.2725,
+     "Magnification": 0.499,
+     "Personalization": 0.7949,
+     "Labeling": 0.7322
+    },
+    "sentences": [
+     {
+      "index": 0,
+      "text": "I don’t know what to do.",
+      "start": 0,
+      "end": 24,
+      "score": 0.084,
+      "selected": false
+     },
+     {
+      "index": 1,
+      "text": "I have been seeing my therapist for 3 years.",
+      "start": 25,
+      "end": 69,
+      "score": 0.0772,
+      "selected": false
+     },
+     {
+      "index": 2,
+      "text": "I suffer with body image issues and distorted eating.",
+      "start": 70,
+      "end": 123,
+      "score": 0.132,
+      "selected": false
+     },
+     {
+      "index": 3,
+      "text": "My therapist has always been thin/healthy.",
+      "start": 124,
+      "end": 166,
+      "score": 0.1141,
+      "selected": false
+     },
+     {
+      "index": 4,
+      "text": "Sometimes her weight drops and I am very sensitive to it.",
+      "start": 167,
+      "end": 224,
+      "score": 0.3026,
+      "selected": false
+     },
+     {
+      "index": 5,
+      "text": "We have talked about it before and I am very open with it if I feel triggered by her.",
+      "start": 225,
+      "end": 310,
+      "score": 0.2588,
+      "selected": false
+     },
+     {
+      "index": 6,
+      "text": "I saw her today and she looks like an eating disordered patient.",
+      "start": 311,
+      "end": 375,
+      "score": 0.0925,
+      "selected": false
+     },
+     {
+      "index": 7,
+      "text": "She said she is aware of it and working on it.",
+      "start": 376,
+      "end": 422,
+      "score": 0.0873,
+      "selected": false
+     },
+     {
+      "index": 8,
+      "text": "She said she has medical issues that make her body do things if she’s not careful and stress plays a part.",
+      "start": 423,
+      "end": 529,
+      "score": 0.1441,
+      "selected": false
+     },
+     {
+      "index": 9,
+      "text": "I believe she is OK and she will work at getting back up to a healthy weight, but its really hard for me to make sense of.",
+      "start": 530,
+      "end": 652,
+      "score": 0.1311,
+      "selected": false
+     },
+     {
+      "index": 10,
+      "text": "Why can she look like that but I have to work to keep myself healthy?",
+      "start": 653,
+      "end": 722,
+      "score": 0.1652,
+      "selected": false
+     },
+     {
+      "index": 11,
+      "text": "Why are such high expectations put on me that she doesn’t live up to?",
+      "start": 723,
+      "end": 792,
+      "score": 0.9277,
+      "selected": true
+     },
+     {
+      "index": 12,
+      "text": "She is my biggest role model, and all I can think of at this moment is starving myself until I look like her.",
+      "start": 793,
+      "end": 902,
+      "score": 0.8468,
+      "selected": true
+     },
+     {
+      "index": 13,
+      "text": "She is happy, successful, smart, has a family and is pretty.",
+      "start": 903,
+      "end": 963,
+      "score": 0.1311,
+      "selected": false
+     },
+     {
+      "index": 14,
+      "text": "She said, “I hope you’re not jealous of this (her body)” and she said that she wished she was in a different place.",
+      "start": 964,
+      "end": 1079,
+      "score": 0.0929,
+      "selected": false
+     },
+     {
+      "index": 15,
+      "text": "I just can’t get the picture of her out of my mind.",
+      "start": 1080,
+      "end": 1131,
+      "score": 0.5187,
+      "selected": false
+     },
+     {
+      "index": 16,
+      "text": "Oh and she’s been getting sick a lot recently.",
+      "start": 1132,
+      "end": 1178,
+      "score": 0.0921,
+      "selected": false
+     },
+     {
+      "index": 17,
+      "text": "It scares me.",
+      "start": 1179,
+      "end": 1192,
+      "score": 0.418,
+      "selected": false
+     },
+     {
+      "index": 18,
+      "text": "I want her to be healthy.",
+      "start": 1193,
+      "end": 1218,
+      "score": 0.1231,
+      "selected": false
+     },
+     {
+      "index": 19,
+      "text": "She’s MY motivation to be healthy.",
+      "start": 1219,
+      "end": 1253,
+      "score": 0.3442,
+      "selected": false
+     },
+     {
+      "index": 20,
+      "text": "But when she’s not…my motivation goes away and I want to restrict.",
+      "start": 1254,
+      "end": 1320,
+      "score": 0.7875,
+      "selected": true
+     },
+     {
+      "index": 21,
+      "text": "How do I make sense of this?",
+      "start": 1321,
+      "end": 1349,
+      "score": 0.0892,
+      "selected": false
+     }
+    ]
+   }
+  },
+  {
+   "val_row": 2,
+   "Id_Number": "4541",
+   "text": "I have been married for 15 years. I have grown very much but he has not. He will not deal with any issues between us. He is really immature. He never accepts responsibility for his part in any problem. (Everything is always my fault according to him.) We went to counseling two times but the same thing happened. He only argued with the counselor and she said she couldn’t talk to him.",
+   "prediction": {
+    "is_distorted": false,
+    "p_distorted": 0.9362,
+    "binary_threshold": 0.9767410755157471,
+    "labels": [],
+    "label_scores": {
+     "Emotional Reasoning": 0.1525,
+     "Overgeneralization": 0.7736,
+     "Mental filter": 0.1525,
+     "Should statements": 0.1192,
+     "All-or-nothing thinking": 0.1215,
+     "Mind Reading": 0.4181,
+     "Fortune-telling": 0.1197,
+     "Magnification": 0.1115,
+     "Personalization": 0.2352,
+     "Labeling": 0.4297
+    },
+    "sentences": [
+     {
+      "index": 0,
+      "text": "I have been married for 15 years.",
+      "start": 0,
+      "end": 33,
+      "score": null,
+      "selected": false
+     },
+     {
+      "index": 1,
+      "text": "I have grown very much but he has not.",
+      "start": 34,
+      "end": 72,
+      "score": null,
+      "selected": false
+     },
+     {
+      "index": 2,
+      "text": "He will not deal with any issues between us.",
+      "start": 73,
+      "end": 117,
+      "score": null,
+      "selected": false
+     },
+     {
+      "index": 3,
+      "text": "He is really immature.",
+      "start": 118,
+      "end": 140,
+      "score": null,
+      "selected": false
+     },
+     {
+      "index": 4,
+      "text": "He never accepts responsibility for his part in any problem.",
+      "start": 141,
+      "end": 201,
+      "score": null,
+      "selected": false
+     },
+     {
+      "index": 5,
+      "text": "(Everything is always my fault according to him.)",
+      "start": 202,
+      "end": 251,
+      "score": null,
+      "selected": false
+     },
+     {
+      "index": 6,
+      "text": "We went to counseling two times but the same thing happened.",
+      "start": 252,
+      "end": 312,
+      "score": null,
+      "selected": false
+     },
+     {
+      "index": 7,
+      "text": "He only argued with the counselor and she said she couldn’t talk to him.",
+      "start": 313,
+      "end": 385,
+      "score": null,
+      "selected": false
+     }
+    ]
+   }
+  },
+  {
+   "val_row": 3,
+   "Id_Number": "4543",
+   "text": "Me and my twin sister are 13 and we always have fights. At the end she always say, ” I don’t feel like fight with you ok”. Also I feel like I am lonely at my house. Llike my sister has a boyfriend which she talks to 24/7. So does my mom. And I don’t. I hardly talk to my friends. So I don’t know if I am the reason that I cause it because we are different. But I think we need help so please HELP ME!!!!",
+   "prediction": {
+    "is_distorted": false,
+    "p_distorted": 0.5704,
+    "binary_threshold": 0.9767410755157471,
+    "labels": [],
+    "label_scores": {
+     "Emotional Reasoning": 0.1851,
+     "Overgeneralization": 0.5111,
+     "Mental filter": 0.2075,
+     "Should statements": 0.1598,
+     "All-or-nothing thinking": 0.1438,
+     "Mind Reading": 0.7389,
+     "Fortune-telling": 0.2065,
+     "Magnification": 0.2643,
+     "Personalization": 0.3668,
+     "Labeling": 0.327
+    },
+    "sentences": [
+     {
+      "index": 0,
+      "text": "Me and my twin sister are 13 and we always have fights.",
+      "start": 0,
+      "end": 55,
+      "score": null,
+      "selected": false
+     },
+     {
+      "index": 1,
+      "text": "At the end she always say, ” I don’t feel like fight with you ok”.",
+      "start": 56,
+      "end": 122,
+      "score": null,
+      "selected": false
+     },
+     {
+      "index": 2,
+      "text": "Also I feel like I am lonely at my house.",
+      "start": 123,
+      "end": 164,
+      "score": null,
+      "selected": false
+     },
+     {
+      "index": 3,
+      "text": "Llike my sister has a boyfriend which she talks to 24/7.",
+      "start": 165,
+      "end": 221,
+      "score": null,
+      "selected": false
+     },
+     {
+      "index": 4,
+      "text": "So does my mom.",
+      "start": 222,
+      "end": 237,
+      "score": null,
+      "selected": false
+     },
+     {
+      "index": 5,
+      "text": "And I don’t.",
+      "start": 238,
+      "end": 250,
+      "score": null,
+      "selected": false
+     },
+     {
+      "index": 6,
+      "text": "I hardly talk to my friends.",
+      "start": 251,
+      "end": 279,
+      "score": null,
+      "selected": false
+     },
+     {
+      "index": 7,
+      "text": "So I don’t know if I am the reason that I cause it because we are different.",
+      "start": 280,
+      "end": 356,
+      "score": null,
+      "selected": false
+     },
+     {
+      "index": 8,
+      "text": "But I think we need help so please HELP ME!!!!",
+      "start": 357,
+      "end": 403,
+      "score": null,
+      "selected": false
+     }
+    ]
+   }
+  },
+  {
+   "val_row": 4,
+   "Id_Number": "4549",
+   "text": "I have been married for less than a year to a wife I truly adore. We have had many ups and downs this year. However, she is subject to raging anger directed towards me. Any time that we try to resolve an issue, she blows up uses the F-word, tells me she doesn’t care about me, and doesn’t want to be in the same room with me. We are talking screaming here. Three therapists have told me that she is being irrational and suggested the possibility of emotional abuse. I have not been perfect, but I always own up to my mistakes and apologize. All I want to do is resolve an issue, and she wants to ignore it. If I try to force things she reacts (according to my therapists) WAY over the top. They have also said that she stonewalls me. My family is suggesting that I give up on the relationship, but I am not ready for that.",
+   "prediction": {
+    "is_distorted": false,
+    "p_distorted": 0.586,
+    "binary_threshold": 0.9767410755157471,
+    "labels": [],
+    "label_scores": {
+     "Emotional Reasoning": 0.2188,
+     "Overgeneralization": 0.5052,
+     "Mental filter": 0.1977,
+     "Should statements": 0.2046,
+     "All-or-nothing thinking": 0.1695,
+     "Mind Reading": 0.8091,
+     "Fortune-telling": 0.4213,
+     "Magnification": 0.2095,
+     "Personalization": 0.323,
+     "Labeling": 0.3012
+    },
+    "sentences": [
+     {
+      "index": 0,
+      "text": "I have been married for less than a year to a wife I truly adore.",
+      "start": 0,
+      "end": 65,
+      "score": null,
+      "selected": false
+     },
+     {
+      "index": 1,
+      "text": "We have had many ups and downs this year.",
+      "start": 66,
+      "end": 107,
+      "score": null,
+      "selected": false
+     },
+     {
+      "index": 2,
+      "text": "However, she is subject to raging anger directed towards me.",
+      "start": 108,
+      "end": 168,
+      "score": null,
+      "selected": false
+     },
+     {
+      "index": 3,
+      "text": "Any time that we try to resolve an issue, she blows up uses the F-word, tells me she doesn’t care about me, and doesn’t want to be in the same room with me.",
+      "start": 169,
+      "end": 325,
+      "score": null,
+      "selected": false
+     },
+     {
+      "index": 4,
+      "text": "We are talking screaming here.",
+      "start": 326,
+      "end": 356,
+      "score": null,
+      "selected": false
+     },
+     {
+      "index": 5,
+      "text": "Three therapists have told me that she is being irrational and suggested the possibility of emotional abuse.",
+      "start": 357,
+      "end": 465,
+      "score": null,
+      "selected": false
+     },
+     {
+      "index": 6,
+      "text": "I have not been perfect, but I always own up to my mistakes and apologize.",
+      "start": 466,
+      "end": 540,
+      "score": null,
+      "selected": false
+     },
+     {
+      "index": 7,
+      "text": "All I want to do is resolve an issue, and she wants to ignore it.",
+      "start": 541,
+      "end": 606,
+      "score": null,
+      "selected": false
+     },
+     {
+      "index": 8,
+      "text": "If I try to force things she reacts (according to my therapists) WAY over the top.",
+      "start": 607,
+      "end": 689,
+      "score": null,
+      "selected": false
+     },
+     {
+      "index": 9,
+      "text": "They have also said that she stonewalls me.",
+      "start": 690,
+      "end": 733,
+      "score": null,
+      "selected": false
+     },
+     {
+      "index": 10,
+      "text": "My family is suggesting that I give up on the relationship, but I am not ready for that.",
+      "start": 734,
+      "end": 822,
+      "score": null,
+      "selected": false
+     }
+    ]
+   }
+  }
+ ]
+}

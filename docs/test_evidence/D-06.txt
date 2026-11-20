@@ -1,0 +1,20 @@
+D-06  The same input always gives the same output
+Ran D-01 twice (two separate Python processes, each loading the models fresh): d01_run1.json and d01_run2.json.
+Models are put in eval mode at load (classifier_pair.py: .eval() on binary, multilabel and selector; inference under torch.no_grad).
+
+Run 1 summary:
+0 4508 False 0.009 [] 0 selected of 4
+1 4522 True 0.984 ['Personalization', 'Should statements'] 3 selected of 22
+2 4541 False 0.9362 [] 0 selected of 8
+3 4543 False 0.5704 [] 0 selected of 9
+4 4549 False 0.586 [] 0 selected of 11
+Run 2 summary:
+0 4508 False 0.009 [] 0 selected of 4
+1 4522 True 0.984 ['Personalization', 'Should statements'] 3 selected of 22
+2 4541 False 0.9362 [] 0 selected of 8
+3 4543 False 0.5704 [] 0 selected of 9
+4 4549 False 0.586 [] 0 selected of 11
+
+Byte comparison of the full JSON outputs (cmp d01_run1.json d01_run2.json): IDENTICAL
+sha256 run1: d216513eeb795673bc76508f613f898c386545374a2827d9f807b954e9883364
+sha256 run2: d216513eeb795673bc76508f613f898c386545374a2827d9f807b954e9883364

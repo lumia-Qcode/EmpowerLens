@@ -1,0 +1,13 @@
+{
+  "check": "TF-IDF (1-2 grams, sublinear tf) + logistic regression, 5-fold stratified CV, seed 42",
+  "target": "F1 of 'distorted' (justified vs distorted)",
+  "n_items": 100,
+  "n_pairs": 50,
+  "f1_distorted": 0.1837,
+  "limit": 0.75,
+  "verdict": "OK",
+  "per_file_f1": {
+    "pairs_izza.csv": 0.0417,
+    "pairs_lumia.csv": 0.1961
+  }
+}

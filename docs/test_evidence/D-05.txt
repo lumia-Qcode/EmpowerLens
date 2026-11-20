@@ -1,0 +1,84 @@
+D-05  The app runs the chosen model
+Researcher view model panel (D-05.png, same screen as A-16.png): Model MentalRoBERTa, Version mentalroberta-d12-s42-20261120,
+Architecture classifier_pair, Encoder mental/mental-roberta-base, checkpoints binary_mental-roberta-base_42, multilabel_mental-roberta-base_42, span_selector/model.pt.
+
+App path: POST /api/researcher/analyze (researcher account) with val.csv row 1 text.
+Eval path: (EmpowerLens repo) venv\Scripts\python.exe -m src.app_parity --models ../empowerlens-demo/models/d12 --val-row 1
+  (uses src.evaluate.predict_logits / predictions_from_logits on the same checkpoints).
+
+Researcher view / /api/health model: MentalRoBERTa | mental/mental-roberta-base | version mentalroberta-d12-s42-20261120
+docs/model_selection.md winner line: | **MentalRoBERTa** | 0.853 ± 0.000 | **0.315 ± 0.011** |
+
+Text: val.csv row 1 (Id_Number 4522); same text sent to both (equal: True)
+field                             app  eval script  equal@3dp
+p_distorted                    0.9840       0.9840       True
+is_distorted                     True         True       True
+allornothing                   0.7234       0.7234       True
+emotionalreasoning             0.3366       0.3366       True
+fortunetelling                 0.2725       0.2725       True
+labeling                       0.7322       0.7322       True
+magnification                  0.4990       0.4990       True
+mentalfilter                   0.2514       0.2514       True
+mindreading                    0.2863       0.2863       True
+overgeneralization             0.3984       0.3984       True
+personalization                0.7949       0.7949       True
+shouldstatements               0.7447       0.7447       True
+
+predicted types  app: ['Personalization', 'Should statements']  eval: ['should_statements', 'personalization']  same: True
+ALL MATCH: True
+
+--- app response (prediction fields):
+{
+ "is_distorted": true,
+ "p_distorted": 0.984,
+ "binary_threshold": 0.9767410755157471,
+ "labels": [
+  {
+   "label": "Personalization",
+   "score": 0.7949,
+   "threshold": 0.65
+  },
+  {
+   "label": "Should statements",
+   "score": 0.7447,
+   "threshold": 0.45
+  }
+ ],
+ "label_scores": {
+  "Emotional Reasoning": 0.3366,
+  "Overgeneralization": 0.3984,
+  "Mental filter": 0.2514,
+  "Should statements": 0.7447,
+  "All-or-nothing thinking": 0.7234,
+  "Mind Reading": 0.2863,
+  "Fortune-telling": 0.2725,
+  "Magnification": 0.499,
+  "Personalization": 0.7949,
+  "Labeling": 0.7322
+ }
+}
+--- eval script output:
+{
+  "source": "val.csv row 1 (Id_Number 4522)",
+  "text": "I don’t know what to do. I have been seeing my therapist for 3 years. I suffer with body image issues and distorted eating. My therapist has always been thin/healthy. Sometimes her weight drops and I am very sensitive to it. We have talked about it before and I am very open with it if I feel triggered by her. I saw her today and she looks like an eating disordered patient. She said she is aware of it and working on it. She said she has medical issues that make her body do things if she’s not careful and stress plays a part. I believe she is OK and she will work at getting back up to a healthy weight, but its really hard for me to make sense of. Why can she look like that but I have to work to keep myself healthy? Why are such high expectations put on me that she doesn’t live up to? She is my biggest role model, and all I can think of at this moment is starving myself until I look like her. She is happy, successful, smart, has a family and is pretty. She said, “I hope you’re not jealous of this (her body)” and she said that she wished she was in a different place. I just can’t get the picture of her out of my mind. Oh and she’s been getting sick a lot recently. It scares me. I want her to be healthy. She’s MY motivation to be healthy. But when she’s not…my motivation goes away and I want to restrict. How do I make sense of this?",
+  "model_version": "mentalroberta-d12-s42-20261120",
+  "is_distorted": true,
+  "p_distorted": 0.984,
+  "binary_threshold": 0.9767410755157471,
+  "label_scores": {
+    "emotional_reasoning": 0.3366,
+    "overgeneralization": 0.3984,
+    "mental_filter": 0.2514,
+    "should_statements": 0.7447,
+    "all_or_nothing": 0.7234,
+    "mind_reading": 0.2863,
+    "fortune_telling": 0.2725,
+    "magnification": 0.499,
+    "personalization": 0.7949,
+    "labeling": 0.7322
+  },
+  "multilabel_predicted": [
+    "should_statements",
+    "personalization"
+  ]
+}

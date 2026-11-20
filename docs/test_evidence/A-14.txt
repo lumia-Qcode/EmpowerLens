@@ -1,0 +1,117 @@
+A-14  The exported report holds the same aggregated content as the screen
+Exported the A-12 report (cohort 1) via GET /api/trainer/cohorts/1/export?format=json|xlsx|docx|pdf (the four options of the Export menu), all HTTP 200.
+
+Screen (A-09.png): Submissions 18 | Threshold 3 | Types shown 1 | Most frequent Personalization | 3 rarer types hidden | Personalization 3 · 17% | example 'I feel like a fraud, so I must be one.'
+
+=== PDF text
+Cohort report: Spring Founders 2026
+EmpowerLens · generated 20 Nov 2026, 12:42 UTC · aggregate patterns only, no individual is identified
+Cohort
+Status: closed
+Submissions: 18
+Reporting threshold: 3
+Created: 20 Nov 2026, 12:31 UTC
+Closed: 20 Nov 2026, 12:31 UTC
+Summary
+Most frequent pattern: Personalization
+Share of reflections with distorted reasoning: 28%
+Pattern types shown: 1
+Pattern types hidden (fewer submissions than the threshold): 3
+Distribution of thinking patterns
+Pattern Reflections Share of cohort
+Personalization 3 17%
+Example sentences (unattributed)
+Pattern Sentence
+Personalization I feel like a fraud, so I must be one.
+=== XLSX cells
+## sheet Summary
+Cohort report: Spring Founders 2026 | 
+EmpowerLens · generated 20 Nov 2026, 12:42 UTC · aggregate patterns only, no individual is identified | 
+ | 
+Cohort | 
+Status | closed
+Submissions | 18
+Reporting threshold | 3
+Created | 20 Nov 2026, 12:31 UTC
+Closed | 20 Nov 2026, 12:31 UTC
+ | 
+Summary | 
+Most frequent pattern | Personalization
+Share of reflections with distorted reasoning | 28%
+Pattern types shown | 1
+Pattern types hidden (fewer submissions than the threshold) | 3
+## sheet Distribution
+Pattern | Reflections | Share of cohort
+Personalization | 3 | 17%
+## sheet Example sentences
+Pattern | Sentence
+Personalization | I feel like a fraud, so I must be one.
+=== DOCX text
+Cohort report: Spring Founders 2026
+EmpowerLens · generated 20 Nov 2026, 12:42 UTC · aggregate patterns only, no individual is identified
+Cohort
+Status: closed
+Submissions: 18
+Reporting threshold: 3
+Created: 20 Nov 2026, 12:31 UTC
+Closed: 20 Nov 2026, 12:31 UTC
+Summary
+Most frequent pattern: Personalization
+Share of reflections with distorted reasoning: 28%
+Pattern types shown: 1
+Pattern types hidden (fewer submissions than the threshold): 3
+Distribution of thinking patterns
+Example sentences (unattributed)
+Pattern
+Reflections
+Share of cohort
+Personalization
+3
+17%
+Pattern
+Sentence
+Personalization
+I feel like a fraud, so I must be one.
+=== JSON
+{
+  "cohort": {
+    "cohort_id": 1,
+    "trainer_id": 1,
+    "name": "Spring Founders 2026",
+    "status": "closed",
+    "report_threshold": 3,
+    "created_at": "2026-11-20T12:31:54+00:00",
+    "closed_at": "2026-11-20T12:31:54+00:00",
+    "submissions": 18
+  },
+  "status": "ok",
+  "submissions": 18,
+  "threshold": 3,
+  "types_shown": 1,
+  "types_suppressed": 3,
+  "most_frequent": "Personalization",
+  "share_with_distorted_reasoning": 0.278,
+  "distribution": [
+    {
+      "label": "Personalization",
+      "count": 3,
+      "share": 0.167
+    }
+  ],
+  "examples": [
+    {
+      "text": "I feel like a fraud, so I must be one.",
+      "label": "Personalization"
+    }
+  ]
+}
+=== A-13 search repeated on the exported files
+- export .json: 679 chars, hits: ['2026-11-20T12:31:54+00:00']
+- export .xlsx (all cells): 682 chars, hits: none
+- export .docx (all text): 642 chars, hits: none
+- export .pdf (all text): 642 chars, hits: none
+
+Same types (Personalization only) and same counts (3, 17%; 3 hidden; 18 submissions; share 28%) as the screen.
+Beyond the screen, the exports add cohort metadata only: status, created and closed dates (and, in JSON, cohort_id and
+trainer_id). No participant-level content. The A-13 search finds nothing in the files (the JSON timestamp hit is the
+cohort created_at, see A-13).

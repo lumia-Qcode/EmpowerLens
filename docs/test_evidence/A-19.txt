@@ -1,0 +1,46 @@
+A-19  50 people can submit at the same moment
+Script: Python, 50 threads released together by a threading.Barrier, against the local backend (uvicorn, single worker, SQLite
+throwaway copy), test cohort 6. Phase 1: 50 simultaneous consents (each gets its own token = its own 'link').
+Phase 2: 50 simultaneous POST /api/participant/submit, each with a different answer that embeds its own token.
+Then every stored row is checked against the answer sent for that token.
+
+Output:
+Phase 1, 50 simultaneous consents: 50/50 HTTP 200 in 1.85s; errors: []
+Phase 2, 50 simultaneous submits: 50/50 HTTP 200 in 1.18s (slowest request 1.15s); errors: []
+Reflections in DB: before 40, after 90 (+50); A-19 rows stored: 50; stored under the wrong participant: 0; tokens with >1 row: 0
+All 50 stored, no errors, none misattributed: True
+
+Script used:
+"""A-19: 50 participants submit at the same moment (local backend, throwaway DB, test cohort 6)."""
+import json, sqlite3, sys, threading, time, urllib.request, urllib.error
+BASE = "http://127.0.0.1:8000"; N = 50; COHORT = 6; DB = sys.argv[1]
+def post(path, body):
+    req = urllib.request.Request(BASE + path, data=json.dumps(body).encode(), headers={"Content-Type": "application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=60) as r: return r.status, json.loads(r.read())
+    except urllib.error.HTTPError as e: return e.code, e.read().decode()
+    except Exception as e: return None, repr(e)
+def run_phase(fn):
+    res = [None] * N; barrier = threading.Barrier(N)
+    def w(i):
+        barrier.wait(); t = time.perf_counter(); res[i] = (*fn(i), time.perf_counter() - t)
+    ts = [threading.Thread(target=w, args=(i,)) for i in range(N)]; t0 = time.perf_counter()
+    [t.start() for t in ts]; [t.join() for t in ts]; return res, time.perf_counter() - t0
+before = sqlite3.connect(DB).execute("select count(*) from reflection").fetchone()[0]
+cons, tc = run_phase(lambda i: post("/api/participant/consent", {"cohort_id": COHORT, "consent": True}))
+tokens = [c[1]["participant_token"] if c[0] == 200 else None for c in cons]
+print(f"Phase 1, 50 simultaneous consents: {sum(c[0]==200 for c in cons)}/50 HTTP 200 in {tc:.2f}s; errors: {[c[:2] for c in cons if c[0]!=200]}")
+answers = {tokens[i]: f"A-19 load test answer number {i:02d} from participant {tokens[i]}" for i in range(N) if tokens[i]}
+subs, ts_ = run_phase(lambda i: post("/api/participant/submit", {"participant_token": tokens[i], "responses": [{"prompt_id": 1, "text": answers.get(tokens[i], "")}]}))
+print(f"Phase 2, 50 simultaneous submits: {sum(s[0]==200 for s in subs)}/50 HTTP 200 in {ts_:.2f}s "
+      f"(slowest request {max(s[2] for s in subs):.2f}s); errors: {[s[:2] for s in subs if s[0]!=200]}")
+c = sqlite3.connect(DB)
+after = c.execute("select count(*) from reflection").fetchone()[0]
+rows = c.execute("select participant_token, text from reflection where text like 'A-19 load test%'").fetchall()
+wrong = [(t, x) for t, x in rows if answers.get(t) != x]
+dupes = len(rows) - len({t for t, _ in rows})
+print(f"Reflections in DB: before {before}, after {after} (+{after-before}); A-19 rows stored: {len(rows)}; "
+      f"stored under the wrong participant: {len(wrong)}; tokens with >1 row: {dupes}")
+print("All 50 stored, no errors, none misattributed:", len(rows) == N and not wrong and dupes == 0 and all(s[0] == 200 for s in subs))
+
+Limitation: one machine, loopback network, prediction is not part of submission (the model runs only when a report is opened).

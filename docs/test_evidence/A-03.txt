@@ -1,0 +1,7 @@
+A-03  Declining consent stores nothing
+DB before (after A-01/A-02): {"n_participants": 34, "n_reflections": 34, "n_cohort6": 1}
+UI: fresh /participant, cohort "TEST participant flow", clicked "I do not agree".
+  Screen (A-03.png): "Nothing was stored. You declined consent, so no text and no record of you were kept."
+  Network requests on that page: only GET /api/participant/cohorts and GET /api/prompts (the UI sends no request on decline).
+API check of the same path: POST /api/participant/consent {"cohort_id":6,"consent":false} -> {"stored":false}
+DB after: {"n_participants": 34, "n_reflections": 34}  (unchanged; still 1 participant in cohort 6, the A-02 one)

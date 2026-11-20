@@ -46,7 +46,7 @@ def build_generator_system(granularity: str = "snippet") -> str:
         if g["multi"] else
         "Exactly ONE thinking pattern. Do not blend in a second."
     )
-    return f"""You write short, realistic first-person self-reflections from women \
+    return f"""You write short, realistic first-person self-reflections from \
 entrepreneurs in Pakistani startup incubators, for an academic research dataset \
 on cognitive distortions.
 
@@ -65,8 +65,8 @@ venting, not an essay and not a case study.
 - GROUND IT IN A SPECIFIC SITUATION. State when/where it happened and what \
 concretely occurred — a named meeting, a number, a message, a room. No floating \
 aphorisms.
-- BUILD A CAUSE-AND-EFFECT CHAIN: something happened -> she thought X about it \
--> therefore she concluded / felt / decided Y. The distortion must live in the \
+- BUILD A CAUSE-AND-EFFECT CHAIN: something happened -> the writer thought X about it \
+-> therefore the writer concluded / felt / decided Y. The distortion must live in the \
 link between the event and the conclusion.
 - The target pattern must be the dominant way of thinking in the text.
 - NEVER name the pattern or use clinical vocabulary. Forbidden anywhere in the \
@@ -87,11 +87,19 @@ sentences. Going over is a failure even if the writing is good."""
 SYSTEM_GENERATOR = build_generator_system("snippet")
 
 
+# Ids of the seeds shown in the most recent generator prompt. generate.py copies
+# them onto every output row (S06 needs "the seed it was prompted with").
+# Single-threaded pipeline, so a module-level record is enough.
+LAST_SEED_IDS: list[str] = []
+
+
 def _seed_examples(seeds: list[dict], k: int, rng) -> str:
     """Format up to k rotating seed exemplars as few-shot demonstrations."""
+    LAST_SEED_IDS.clear()
     if not seeds:
         return ""
     chosen = rng.sample(seeds, min(k, len(seeds)))
+    LAST_SEED_IDS.extend(s.get("id") for s in chosen)
     lines = []
     for s in chosen:
         lines.append(f'[{s.get("dominant_distortion", "?")}] {s["text"]}')
@@ -217,7 +225,7 @@ Method (Diagnosis of Thought):
 1. Separate the objective FACTS of the situation from the writer's THOUGHTS / \
 interpretations about them.
 2. For the main thoughts, weigh the evidence FOR and AGAINST them.
-3. Trace the cause-and-effect chain: what happened -> what she concluded from \
+3. Trace the cause-and-effect chain: what happened -> what the writer concluded from \
 it -> why that step does or does not follow.
 4. Decide which distortion schema(s), if any, are actually present.
 
@@ -238,7 +246,7 @@ Then return your verdict as a JSON object with exactly these fields:
 - "facts": string (one line)
 - "thoughts": string (one line)
 - "reasoning": string — the cause-and-effect chain from step 3, in complete \
-sentences: what happened, what she concluded, why that step does or does not follow
+sentences: what happened, what the writer concluded, why that step does or does not follow
 - "evidence": array of at least two verbatim sentences from the text
 - "present": array of distortion names actually present (use the exact names \
 above; ["No Distortion"] if the reasoning is sound; ["{A.UNKNOWN}"] if unjudgeable)

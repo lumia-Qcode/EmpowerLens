@@ -1,0 +1,20 @@
+A-13  The report holds no identifier and no reflection that can be traced to a person
+Report: cohort 1 'Spring Founders 2026' as trainer A (screen A-09.png). Page DOM and page source captured with Playwright; report API response saved with curl.
+
+Searched for: 36 participant tokens (all in DB), the 'P-' token pattern, 3 account names, 3 emails, any '@...' email,
+'reflection_id' / 'survey-<id>' / 'participant_token' / 'gender' keys, and submitted_at timestamps of the 36 reflections.
+- trainer page DOM (rendered report): 34304 chars, hits: ['Demo Trainer']
+- trainer page source (Ctrl+U equivalent: GET /trainer): 563 chars, hits: none
+- report API JSON (GET /api/trainer/cohorts/1/report): 521 chars, hits: ['2026-11-20T12:31:54+00:00']
+- export .json: 679 chars, hits: ['2026-11-20T12:31:54+00:00']
+- export .xlsx (all cells): 682 chars, hits: none
+- export .docx (all text): 642 chars, hits: none
+- export .pdf (all text): 642 chars, hits: none
+
+Hits explained:
+- 'Demo Trainer' in the DOM is the signed-in trainer's own name in the header ("Signed in as Demo Trainer"), not a participant.
+- '2026-11-20T12:31:54+00:00' in the JSON is the cohort's created_at/closed_at. The seed script inserted the cohort and
+  its reflections in the same second, so the string also equals those reflections' submitted_at; it is a cohort field,
+  not attached to any sentence.
+The one example sentence ("I feel like a fraud, so I must be one.") carries no name, token or date.
+No participant token, participant name/email, reflection ID or per-reflection date found.
