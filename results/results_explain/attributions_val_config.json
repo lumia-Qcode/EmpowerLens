@@ -1,0 +1,14 @@
+{
+  "checkpoint": "/kaggle/temp/ckpt_d22/multilabel_mental-roberta-base_42",
+  "model": "mental/mental-roberta-base",
+  "seed": 42,
+  "max_length": 512,
+  "truncation": "head",
+  "n_steps": 50,
+  "layer": "model.roberta.embeddings",
+  "baseline": "<pad> with <s>/</s> kept",
+  "target": "argmax of the 10 multilabel logits",
+  "split": "val, y_bin == 1",
+  "n_rows": 158,
+  "limit": 0
+}
