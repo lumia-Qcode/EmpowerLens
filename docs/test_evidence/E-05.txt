@@ -1,0 +1,5 @@
+$ venv\Scripts\python.exe -c "from src.data import load_raw, make_targets; import src.metrics; print('ok')"
+ok
+
+Modules loaded from the app or web stack (fastapi, uvicorn, backend, empowerlens, torch, transformers):
+none

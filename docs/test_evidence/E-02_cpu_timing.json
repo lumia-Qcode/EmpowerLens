@@ -1,0 +1,27 @@
+{
+  "n_reflections": 50,
+  "source": "data/splits/val.csv first 50 rows",
+  "model_version": "mentalroberta-d12-s42-20261120",
+  "device": "cpu",
+  "gpu": null,
+  "cpu": "Intel64 Family 6 Model 154 Stepping 4, GenuineIntel",
+  "ram_gb": 15.6,
+  "torch": "2.15.0+cpu",
+  "os": "Windows-11-10.0.26200-SP0",
+  "seconds_load_models": 2.6,
+  "seconds_report": 68.81,
+  "seconds_total": 71.42,
+  "target_seconds_gpu": 300,
+  "n_sentences_scored": 192,
+  "report": {
+    "submissions": 50,
+    "share_flagged": 0.4,
+    "distribution": {
+      "mind_reading": 9
+    },
+    "types_suppressed": 7,
+    "examples": {
+      "mind_reading": "From a teen in Canada: The relationship with my mom has worsened due to a lie I told back in February, which I took full responsibility for and I am aware that hiding my depression from her and the fact that I was seeing a physiologist without her knowing was not okay, but I felt as if she wouldn’t understand, because she’s always told me I make a big deal out of everything and that I want to make it seem like I’m a victim when I cry, so I was ashamed to tell her and face her criticism."
+    }
+  }
+}

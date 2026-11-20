@@ -1,0 +1,46 @@
+255 eval files, 510 (file, split) rows
+
+files with specificity on every split, by task:
+            with  files
+task                   
+binary        66     66
+multiclass    51     51
+multilabel    27    129
+
+folders with runs missing specificity (34):
+  results/results_RUN1/results  [multilabel]  6 file(s)
+  results/results_RUN1/results_codipas  [multilabel]  3 file(s)
+  results/results_RUN1/results_combined  [multilabel]  6 file(s)
+  results/results_RUN1/results_experiments  [multilabel]  6 file(s)
+  results/results_RUN1/results_experiments/exp6  [multilabel]  3 file(s)
+  results/results_RUN1/results_multilabel_flat  [multilabel]  3 file(s)
+  results/results_RUN1/results_multilabel_flat_codipas_cls  [multilabel]  3 file(s)
+  results/results_RUN1/results_seq_stageA  [multilabel]  3 file(s)
+  results/results_RUN1/results_seq_stageA_holdout  [multilabel]  3 file(s)
+  results/results_RUN1/results_seq_stageB  [multilabel]  3 file(s)
+  results/results_RUN1/results_stage2  [multilabel]  3 file(s)
+  results/results_RUN1/results_stage2_codipas_cls  [multilabel]  3 file(s)
+  results/results_RUN2/results_experiments/exp1  [multilabel]  1 file(s)
+  results/results_RUN2/results_experiments/exp2/annotated_only  [multilabel]  3 file(s)
+  results/results_RUN2/results_experiments/exp2/annotated_plus_codipas  [multilabel]  3 file(s)
+  results/results_RUN2/results_experiments/exp2/codipas_only  [multilabel]  3 file(s)
+  results/results_RUN2/results_experiments/exp2/home  [multilabel]  3 file(s)
+  results/results_RUN2/results_experiments/exp2_combmatched/annotated_plus_codipas  [multilabel]  3 file(s)
+  results/results_RUN2/results_experiments/exp2_combmatched/home  [multilabel]  3 file(s)
+  results/results_RUN2/results_experiments/exp2_matched/codipas_only  [multilabel]  3 file(s)
+  results/results_RUN2/results_experiments/exp2_matched/home  [multilabel]  3 file(s)
+  results/results_RUN2/results_experiments/exp6  [multilabel]  3 file(s)
+  results/results_RUN2/results_experiments/exp7/home  [multilabel]  3 file(s)
+  results/results_RUN2/results_multilabel_flat  [multilabel]  3 file(s)
+  results/results_RUN2/results_stage2  [multilabel]  3 file(s)
+  results/results_experiments  [multilabel]  6 file(s)
+  results/results_experiments/exp6  [multilabel]  3 file(s)
+  results/results_mentalroberta_frozensplits  [multilabel]  3 file(s)
+  results/results_model_triage  [multilabel]  3 file(s)
+  results_RUN2/results_tutorial_distilbert  [multilabel]  1 file(s)
+  results_RUN2/results_tutorial_distilbert/thr_fixed_cap0  [multilabel]  1 file(s)
+  results_RUN2/results_tutorial_distilbert/thr_fixed_cap2  [multilabel]  1 file(s)
+  results_RUN2/results_tutorial_distilbert/thr_tuned_cap0  [multilabel]  1 file(s)
+  results_RUN2/results_tutorial_distilbert/thr_tuned_cap2  [multilabel]  1 file(s)
+
+wrote docs/test_evidence/D-04_specificity_audit.csv

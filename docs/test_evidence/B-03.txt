@@ -1,0 +1,28 @@
+$ venv\Scripts\python.exe -m pytest tests/test_losses.py -v
+============================= test session starts =============================
+platform win32 -- Python 3.12.10, pytest-9.2.0, pluggy-1.7.0 -- C:\Users\HF SYTORE\Desktop\EmpowerLens\venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\HF SYTORE\Desktop\EmpowerLens
+plugins: anyio-4.14.2, platformdirs-4.14.8
+collecting ... collected 9 items
+
+tests/test_losses.py::test_bce_arm_matches_huggingface_builtin PASSED    [ 11%]
+tests/test_losses.py::test_pos_weights_are_negatives_over_positives PASSED [ 22%]
+tests/test_losses.py::test_pos_weights_survive_an_absent_label PASSED    [ 33%]
+tests/test_losses.py::test_pos_weight_raises_the_cost_of_missing_a_positive PASSED [ 44%]
+tests/test_losses.py::test_every_loss_arm_is_finite_and_differentiable PASSED [ 55%]
+tests/test_losses.py::test_unknown_loss_name_raises PASSED               [ 66%]
+tests/test_losses.py::test_asl_damps_easy_negatives_more_than_plain_bce PASSED [ 77%]
+tests/test_losses.py::test_focal_reduces_to_bce_at_gamma_zero PASSED     [ 88%]
+tests/test_losses.py::test_sigmoid_not_softmax_in_the_multilabel_path PASSED [100%]
+
+============================== warnings summary ===============================
+venv\Lib\site-packages\anyio\pytest_plugin.py:14
+  C:\Users\HF SYTORE\Desktop\EmpowerLens\venv\Lib\site-packages\anyio\pytest_plugin.py:14: PytestRemovedIn10Warning: _pytest.python.CallSpec2 has been renamed to CallSpec.
+  The CallSpec2 alias will be removed in pytest 10.
+  Update imports to use CallSpec instead.
+  See https://docs.pytest.org/en/stable/deprecations.html#callspec2-renamed
+    from _pytest.python import CallSpec2
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 9 passed, 1 warning in 6.84s =========================

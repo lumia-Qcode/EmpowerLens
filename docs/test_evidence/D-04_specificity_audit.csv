@@ -1,0 +1,511 @@
+folder,file,task,model,seed,split,specificity,fpr,basis
+results/results_cascade_inputs/crop_gold,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,val,0.925,0.075,macro_specificity_10 (per label)
+results/results_cascade_inputs/crop_gold,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,test,0.9032,0.0968,macro_specificity_10 (per label)
+results/results_cascade_inputs/crop_gold,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,val,0.903,0.097,macro_specificity_10 (per label)
+results/results_cascade_inputs/crop_gold,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,test,0.8895,0.1105,macro_specificity_10 (per label)
+results/results_cascade_inputs/crop_gold,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,val,0.887,0.113,macro_specificity_10 (per label)
+results/results_cascade_inputs/crop_gold,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,test,0.8801,0.1199,macro_specificity_10 (per label)
+results/results_cascade_inputs/crop_sel,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,val,0.8913,0.1087,macro_specificity_10 (per label)
+results/results_cascade_inputs/crop_sel,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,test,0.8823,0.1177,macro_specificity_10 (per label)
+results/results_cascade_inputs/crop_sel,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,val,0.8728,0.1272,macro_specificity_10 (per label)
+results/results_cascade_inputs/crop_sel,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,test,0.8724,0.1276,macro_specificity_10 (per label)
+results/results_cascade_inputs/crop_sel,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,val,0.8589,0.1411,macro_specificity_10 (per label)
+results/results_cascade_inputs/crop_sel,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,test,0.8509,0.1491,macro_specificity_10 (per label)
+results/results_cascade_inputs/full,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,val,0.8641,0.1359,macro_specificity_10 (per label)
+results/results_cascade_inputs/full,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,test,0.8436,0.1564,macro_specificity_10 (per label)
+results/results_cascade_inputs/full,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,val,0.8629,0.1371,macro_specificity_10 (per label)
+results/results_cascade_inputs/full,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,test,0.8469,0.1531,macro_specificity_10 (per label)
+results/results_cascade_inputs/full,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,val,0.8574,0.1426,macro_specificity_10 (per label)
+results/results_cascade_inputs/full,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,test,0.8396,0.1604,macro_specificity_10 (per label)
+results/results_cascade_inputs/marked_gold,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,val,0.8615,0.1385,macro_specificity_10 (per label)
+results/results_cascade_inputs/marked_gold,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,test,0.8451,0.1549,macro_specificity_10 (per label)
+results/results_cascade_inputs/marked_gold,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,val,0.8564,0.1436,macro_specificity_10 (per label)
+results/results_cascade_inputs/marked_gold,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,test,0.8488,0.1512,macro_specificity_10 (per label)
+results/results_cascade_inputs/marked_gold,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,val,0.8694,0.1306,macro_specificity_10 (per label)
+results/results_cascade_inputs/marked_gold,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,test,0.8517,0.1483,macro_specificity_10 (per label)
+results/results_cascade_inputs/marked_sel,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,val,0.8533,0.1467,macro_specificity_10 (per label)
+results/results_cascade_inputs/marked_sel,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,test,0.842,0.158,macro_specificity_10 (per label)
+results/results_cascade_inputs/marked_sel,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,val,0.8525,0.1475,macro_specificity_10 (per label)
+results/results_cascade_inputs/marked_sel,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,test,0.8416,0.1584,macro_specificity_10 (per label)
+results/results_cascade_inputs/marked_sel,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,val,0.8636,0.1364,macro_specificity_10 (per label)
+results/results_cascade_inputs/marked_sel,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,test,0.849,0.151,macro_specificity_10 (per label)
+results/results_experiments,eval_mental-bert-base-uncased_binary_1337.json,binary,mental/mental-bert-base-uncased,1337.0,val,0.7684,0.2316,recall of non_distorted
+results/results_experiments,eval_mental-bert-base-uncased_binary_1337.json,binary,mental/mental-bert-base-uncased,1337.0,test,0.6957,0.3043,recall of non_distorted
+results/results_experiments,eval_mental-bert-base-uncased_binary_2024.json,binary,mental/mental-bert-base-uncased,2024.0,val,0.7158,0.2842,recall of non_distorted
+results/results_experiments,eval_mental-bert-base-uncased_binary_2024.json,binary,mental/mental-bert-base-uncased,2024.0,test,0.6522,0.3478,recall of non_distorted
+results/results_experiments,eval_mental-bert-base-uncased_binary_42.json,binary,mental/mental-bert-base-uncased,42.0,val,0.7684,0.2316,recall of non_distorted
+results/results_experiments,eval_mental-bert-base-uncased_binary_42.json,binary,mental/mental-bert-base-uncased,42.0,test,0.663,0.337,recall of non_distorted
+results/results_experiments,eval_mental-bert-base-uncased_multiclass_1337.json,multiclass,mental/mental-bert-base-uncased,1337.0,val,0.5474,0.4526,recall of no_distortion
+results/results_experiments,eval_mental-bert-base-uncased_multiclass_1337.json,multiclass,mental/mental-bert-base-uncased,1337.0,test,0.5217,0.4783,recall of no_distortion
+results/results_experiments,eval_mental-bert-base-uncased_multiclass_2024.json,multiclass,mental/mental-bert-base-uncased,2024.0,val,0.6,0.4,recall of no_distortion
+results/results_experiments,eval_mental-bert-base-uncased_multiclass_2024.json,multiclass,mental/mental-bert-base-uncased,2024.0,test,0.4565,0.5435,recall of no_distortion
+results/results_experiments,eval_mental-bert-base-uncased_multiclass_42.json,multiclass,mental/mental-bert-base-uncased,42.0,val,0.5789,0.4211,recall of no_distortion
+results/results_experiments,eval_mental-bert-base-uncased_multiclass_42.json,multiclass,mental/mental-bert-base-uncased,42.0,test,0.5217,0.4783,recall of no_distortion
+results/results_experiments,eval_mental-bert-base-uncased_multilabel_1337.json,multilabel,mental/mental-bert-base-uncased,1337.0,val,,,not recorded
+results/results_experiments,eval_mental-bert-base-uncased_multilabel_1337.json,multilabel,mental/mental-bert-base-uncased,1337.0,test,,,not recorded
+results/results_experiments,eval_mental-bert-base-uncased_multilabel_2024.json,multilabel,mental/mental-bert-base-uncased,2024.0,val,,,not recorded
+results/results_experiments,eval_mental-bert-base-uncased_multilabel_2024.json,multilabel,mental/mental-bert-base-uncased,2024.0,test,,,not recorded
+results/results_experiments,eval_mental-bert-base-uncased_multilabel_42.json,multilabel,mental/mental-bert-base-uncased,42.0,val,,,not recorded
+results/results_experiments,eval_mental-bert-base-uncased_multilabel_42.json,multilabel,mental/mental-bert-base-uncased,42.0,test,,,not recorded
+results/results_experiments,eval_roberta-base_binary_1337.json,binary,roberta-base,1337.0,val,0.7895,0.2105,recall of non_distorted
+results/results_experiments,eval_roberta-base_binary_1337.json,binary,roberta-base,1337.0,test,0.7065,0.2935,recall of non_distorted
+results/results_experiments,eval_roberta-base_binary_2024.json,binary,roberta-base,2024.0,val,0.8,0.2,recall of non_distorted
+results/results_experiments,eval_roberta-base_binary_2024.json,binary,roberta-base,2024.0,test,0.6739,0.3261,recall of non_distorted
+results/results_experiments,eval_roberta-base_binary_42.json,binary,roberta-base,42.0,val,0.6947,0.3053,recall of non_distorted
+results/results_experiments,eval_roberta-base_binary_42.json,binary,roberta-base,42.0,test,0.587,0.413,recall of non_distorted
+results/results_experiments,eval_roberta-base_multiclass_1337.json,multiclass,roberta-base,1337.0,val,0.6421,0.3579,recall of no_distortion
+results/results_experiments,eval_roberta-base_multiclass_1337.json,multiclass,roberta-base,1337.0,test,0.5326,0.4674,recall of no_distortion
+results/results_experiments,eval_roberta-base_multiclass_2024.json,multiclass,roberta-base,2024.0,val,0.5053,0.4947,recall of no_distortion
+results/results_experiments,eval_roberta-base_multiclass_2024.json,multiclass,roberta-base,2024.0,test,0.4891,0.5109,recall of no_distortion
+results/results_experiments,eval_roberta-base_multiclass_42.json,multiclass,roberta-base,42.0,val,0.6632,0.3368,recall of no_distortion
+results/results_experiments,eval_roberta-base_multiclass_42.json,multiclass,roberta-base,42.0,test,0.5435,0.4565,recall of no_distortion
+results/results_experiments,eval_roberta-base_multilabel_1337.json,multilabel,roberta-base,1337.0,val,,,not recorded
+results/results_experiments,eval_roberta-base_multilabel_1337.json,multilabel,roberta-base,1337.0,test,,,not recorded
+results/results_experiments,eval_roberta-base_multilabel_2024.json,multilabel,roberta-base,2024.0,val,,,not recorded
+results/results_experiments,eval_roberta-base_multilabel_2024.json,multilabel,roberta-base,2024.0,test,,,not recorded
+results/results_experiments,eval_roberta-base_multilabel_42.json,multilabel,roberta-base,42.0,val,,,not recorded
+results/results_experiments,eval_roberta-base_multilabel_42.json,multilabel,roberta-base,42.0,test,,,not recorded
+results/results_experiments/exp6,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,val,,,not recorded
+results/results_experiments/exp6,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,test,,,not recorded
+results/results_experiments/exp6,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,val,,,not recorded
+results/results_experiments/exp6,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,test,,,not recorded
+results/results_experiments/exp6,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,val,,,not recorded
+results/results_experiments/exp6,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,test,,,not recorded
+results/results_mentalroberta_frozensplits,eval_mental-roberta-base_binary_1337.json,binary,mental/mental-roberta-base,1337.0,val,0.7684,0.2316,recall of non_distorted
+results/results_mentalroberta_frozensplits,eval_mental-roberta-base_binary_1337.json,binary,mental/mental-roberta-base,1337.0,test,0.6522,0.3478,recall of non_distorted
+results/results_mentalroberta_frozensplits,eval_mental-roberta-base_binary_2024.json,binary,mental/mental-roberta-base,2024.0,val,0.7263,0.2737,recall of non_distorted
+results/results_mentalroberta_frozensplits,eval_mental-roberta-base_binary_2024.json,binary,mental/mental-roberta-base,2024.0,test,0.6413,0.3587,recall of non_distorted
+results/results_mentalroberta_frozensplits,eval_mental-roberta-base_binary_42.json,binary,mental/mental-roberta-base,42.0,val,0.8105,0.1895,recall of non_distorted
+results/results_mentalroberta_frozensplits,eval_mental-roberta-base_binary_42.json,binary,mental/mental-roberta-base,42.0,test,0.7609,0.2391,recall of non_distorted
+results/results_mentalroberta_frozensplits,eval_mental-roberta-base_multiclass_1337.json,multiclass,mental/mental-roberta-base,1337.0,val,0.5474,0.4526,recall of no_distortion
+results/results_mentalroberta_frozensplits,eval_mental-roberta-base_multiclass_1337.json,multiclass,mental/mental-roberta-base,1337.0,test,0.5326,0.4674,recall of no_distortion
+results/results_mentalroberta_frozensplits,eval_mental-roberta-base_multiclass_2024.json,multiclass,mental/mental-roberta-base,2024.0,val,0.4947,0.5053,recall of no_distortion
+results/results_mentalroberta_frozensplits,eval_mental-roberta-base_multiclass_2024.json,multiclass,mental/mental-roberta-base,2024.0,test,0.4674,0.5326,recall of no_distortion
+results/results_mentalroberta_frozensplits,eval_mental-roberta-base_multiclass_42.json,multiclass,mental/mental-roberta-base,42.0,val,0.6316,0.3684,recall of no_distortion
+results/results_mentalroberta_frozensplits,eval_mental-roberta-base_multiclass_42.json,multiclass,mental/mental-roberta-base,42.0,test,0.5435,0.4565,recall of no_distortion
+results/results_mentalroberta_frozensplits,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,val,,,not recorded
+results/results_mentalroberta_frozensplits,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,test,,,not recorded
+results/results_mentalroberta_frozensplits,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,val,,,not recorded
+results/results_mentalroberta_frozensplits,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,test,,,not recorded
+results/results_mentalroberta_frozensplits,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,val,,,not recorded
+results/results_mentalroberta_frozensplits,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,test,,,not recorded
+results/results_model_triage,eval_mental-roberta-base_binary_1337.json,binary,mental/mental-roberta-base,1337.0,val,0.814,0.186,recall of non_distorted
+results/results_model_triage,eval_mental-roberta-base_binary_1337.json,binary,mental/mental-roberta-base,1337.0,test,0.7674,0.2326,recall of non_distorted
+results/results_model_triage,eval_mental-roberta-base_binary_2024.json,binary,mental/mental-roberta-base,2024.0,val,0.7326,0.2674,recall of non_distorted
+results/results_model_triage,eval_mental-roberta-base_binary_2024.json,binary,mental/mental-roberta-base,2024.0,test,0.7558,0.2442,recall of non_distorted
+results/results_model_triage,eval_mental-roberta-base_binary_42.json,binary,mental/mental-roberta-base,42.0,val,0.7907,0.2093,recall of non_distorted
+results/results_model_triage,eval_mental-roberta-base_binary_42.json,binary,mental/mental-roberta-base,42.0,test,0.7791,0.2209,recall of non_distorted
+results/results_model_triage,eval_mental-roberta-base_multiclass_1337.json,multiclass,mental/mental-roberta-base,1337.0,val,0.686,0.314,recall of no_distortion
+results/results_model_triage,eval_mental-roberta-base_multiclass_1337.json,multiclass,mental/mental-roberta-base,1337.0,test,0.686,0.314,recall of no_distortion
+results/results_model_triage,eval_mental-roberta-base_multiclass_2024.json,multiclass,mental/mental-roberta-base,2024.0,val,0.6395,0.3605,recall of no_distortion
+results/results_model_triage,eval_mental-roberta-base_multiclass_2024.json,multiclass,mental/mental-roberta-base,2024.0,test,0.7326,0.2674,recall of no_distortion
+results/results_model_triage,eval_mental-roberta-base_multiclass_42.json,multiclass,mental/mental-roberta-base,42.0,val,0.7326,0.2674,recall of no_distortion
+results/results_model_triage,eval_mental-roberta-base_multiclass_42.json,multiclass,mental/mental-roberta-base,42.0,test,0.7442,0.2558,recall of no_distortion
+results/results_model_triage,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,val,,,not recorded
+results/results_model_triage,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,test,,,not recorded
+results/results_model_triage,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,val,,,not recorded
+results/results_model_triage,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,test,,,not recorded
+results/results_model_triage,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,val,,,not recorded
+results/results_model_triage,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,test,,,not recorded
+results/results_relabelled/train_orig__test_orig,eval_mental-roberta-base_binary_1337.json,binary,mental/mental-roberta-base,1337.0,val,0.8526,0.1474,recall of non_distorted
+results/results_relabelled/train_orig__test_orig,eval_mental-roberta-base_binary_1337.json,binary,mental/mental-roberta-base,1337.0,test,0.8043,0.1957,recall of non_distorted
+results/results_relabelled/train_orig__test_orig,eval_mental-roberta-base_binary_2024.json,binary,mental/mental-roberta-base,2024.0,val,0.8526,0.1474,recall of non_distorted
+results/results_relabelled/train_orig__test_orig,eval_mental-roberta-base_binary_2024.json,binary,mental/mental-roberta-base,2024.0,test,0.8043,0.1957,recall of non_distorted
+results/results_relabelled/train_orig__test_orig,eval_mental-roberta-base_binary_42.json,binary,mental/mental-roberta-base,42.0,val,0.8526,0.1474,recall of non_distorted
+results/results_relabelled/train_orig__test_orig,eval_mental-roberta-base_binary_42.json,binary,mental/mental-roberta-base,42.0,test,0.7609,0.2391,recall of non_distorted
+results/results_relabelled/train_orig__test_orig,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,val,0.8924,0.1076,macro_specificity_10 (per label)
+results/results_relabelled/train_orig__test_orig,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,test,0.8799,0.1201,macro_specificity_10 (per label)
+results/results_relabelled/train_orig__test_orig,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,val,0.8991,0.1009,macro_specificity_10 (per label)
+results/results_relabelled/train_orig__test_orig,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,test,0.8921,0.1079,macro_specificity_10 (per label)
+results/results_relabelled/train_orig__test_orig,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,val,0.9022,0.0978,macro_specificity_10 (per label)
+results/results_relabelled/train_orig__test_orig,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,test,0.8897,0.1103,macro_specificity_10 (per label)
+results/results_relabelled/train_orig__test_relab,eval_mental-roberta-base_binary_1337.json,binary,mental/mental-roberta-base,1337.0,val,0.7832,0.2168,recall of non_distorted
+results/results_relabelled/train_orig__test_relab,eval_mental-roberta-base_binary_1337.json,binary,mental/mental-roberta-base,1337.0,test,0.7244,0.2756,recall of non_distorted
+results/results_relabelled/train_orig__test_relab,eval_mental-roberta-base_binary_2024.json,binary,mental/mental-roberta-base,2024.0,val,0.7552,0.2448,recall of non_distorted
+results/results_relabelled/train_orig__test_relab,eval_mental-roberta-base_binary_2024.json,binary,mental/mental-roberta-base,2024.0,test,0.7244,0.2756,recall of non_distorted
+results/results_relabelled/train_orig__test_relab,eval_mental-roberta-base_binary_42.json,binary,mental/mental-roberta-base,42.0,val,0.7622,0.2378,recall of non_distorted
+results/results_relabelled/train_orig__test_relab,eval_mental-roberta-base_binary_42.json,binary,mental/mental-roberta-base,42.0,test,0.7165,0.2835,recall of non_distorted
+results/results_relabelled/train_orig__test_relab,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,val,0.8874,0.1126,macro_specificity_10 (per label)
+results/results_relabelled/train_orig__test_relab,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,test,0.8756,0.1244,macro_specificity_10 (per label)
+results/results_relabelled/train_orig__test_relab,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,val,0.896,0.104,macro_specificity_10 (per label)
+results/results_relabelled/train_orig__test_relab,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,test,0.8878,0.1122,macro_specificity_10 (per label)
+results/results_relabelled/train_orig__test_relab,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,val,0.8982,0.1018,macro_specificity_10 (per label)
+results/results_relabelled/train_orig__test_relab,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,test,0.8883,0.1117,macro_specificity_10 (per label)
+results/results_relabelled/train_relab__test_orig,eval_mental-roberta-base_binary_1337.json,binary,mental/mental-roberta-base,1337.0,val,0.9053,0.0947,recall of non_distorted
+results/results_relabelled/train_relab__test_orig,eval_mental-roberta-base_binary_1337.json,binary,mental/mental-roberta-base,1337.0,test,0.8587,0.1413,recall of non_distorted
+results/results_relabelled/train_relab__test_orig,eval_mental-roberta-base_binary_2024.json,binary,mental/mental-roberta-base,2024.0,val,0.9053,0.0947,recall of non_distorted
+results/results_relabelled/train_relab__test_orig,eval_mental-roberta-base_binary_2024.json,binary,mental/mental-roberta-base,2024.0,test,0.913,0.087,recall of non_distorted
+results/results_relabelled/train_relab__test_orig,eval_mental-roberta-base_binary_42.json,binary,mental/mental-roberta-base,42.0,val,0.9053,0.0947,recall of non_distorted
+results/results_relabelled/train_relab__test_orig,eval_mental-roberta-base_binary_42.json,binary,mental/mental-roberta-base,42.0,test,0.8696,0.1304,recall of non_distorted
+results/results_relabelled/train_relab__test_orig,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,val,0.9258,0.0742,macro_specificity_10 (per label)
+results/results_relabelled/train_relab__test_orig,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,test,0.9091,0.0909,macro_specificity_10 (per label)
+results/results_relabelled/train_relab__test_orig,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,val,0.9338,0.0662,macro_specificity_10 (per label)
+results/results_relabelled/train_relab__test_orig,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,test,0.9261,0.0739,macro_specificity_10 (per label)
+results/results_relabelled/train_relab__test_orig,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,val,0.9256,0.0744,macro_specificity_10 (per label)
+results/results_relabelled/train_relab__test_orig,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,test,0.9108,0.0892,macro_specificity_10 (per label)
+results/results_relabelled/train_relab__test_relab,eval_mental-roberta-base_binary_1337.json,binary,mental/mental-roberta-base,1337.0,val,0.8531,0.1469,recall of non_distorted
+results/results_relabelled/train_relab__test_relab,eval_mental-roberta-base_binary_1337.json,binary,mental/mental-roberta-base,1337.0,test,0.748,0.252,recall of non_distorted
+results/results_relabelled/train_relab__test_relab,eval_mental-roberta-base_binary_2024.json,binary,mental/mental-roberta-base,2024.0,val,0.8531,0.1469,recall of non_distorted
+results/results_relabelled/train_relab__test_relab,eval_mental-roberta-base_binary_2024.json,binary,mental/mental-roberta-base,2024.0,test,0.8268,0.1732,recall of non_distorted
+results/results_relabelled/train_relab__test_relab,eval_mental-roberta-base_binary_42.json,binary,mental/mental-roberta-base,42.0,val,0.8531,0.1469,recall of non_distorted
+results/results_relabelled/train_relab__test_relab,eval_mental-roberta-base_binary_42.json,binary,mental/mental-roberta-base,42.0,test,0.7874,0.2126,recall of non_distorted
+results/results_relabelled/train_relab__test_relab,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,val,0.9282,0.0718,macro_specificity_10 (per label)
+results/results_relabelled/train_relab__test_relab,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,test,0.9095,0.0905,macro_specificity_10 (per label)
+results/results_relabelled/train_relab__test_relab,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,val,0.9361,0.0639,macro_specificity_10 (per label)
+results/results_relabelled/train_relab__test_relab,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,test,0.9252,0.0748,macro_specificity_10 (per label)
+results/results_relabelled/train_relab__test_relab,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,val,0.9292,0.0708,macro_specificity_10 (per label)
+results/results_relabelled/train_relab__test_relab,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,test,0.9117,0.0883,macro_specificity_10 (per label)
+results/results_RUN1/results,eval_mental-bert-base-uncased_binary_1337.json,binary,mental/mental-bert-base-uncased,1337.0,val,0.7684,0.2316,recall of non_distorted
+results/results_RUN1/results,eval_mental-bert-base-uncased_binary_1337.json,binary,mental/mental-bert-base-uncased,1337.0,test,0.6957,0.3043,recall of non_distorted
+results/results_RUN1/results,eval_mental-bert-base-uncased_binary_2024.json,binary,mental/mental-bert-base-uncased,2024.0,val,0.7158,0.2842,recall of non_distorted
+results/results_RUN1/results,eval_mental-bert-base-uncased_binary_2024.json,binary,mental/mental-bert-base-uncased,2024.0,test,0.6522,0.3478,recall of non_distorted
+results/results_RUN1/results,eval_mental-bert-base-uncased_binary_42.json,binary,mental/mental-bert-base-uncased,42.0,val,0.7684,0.2316,recall of non_distorted
+results/results_RUN1/results,eval_mental-bert-base-uncased_binary_42.json,binary,mental/mental-bert-base-uncased,42.0,test,0.663,0.337,recall of non_distorted
+results/results_RUN1/results,eval_mental-bert-base-uncased_multiclass_1337.json,multiclass,mental/mental-bert-base-uncased,1337.0,val,0.5474,0.4526,recall of no_distortion
+results/results_RUN1/results,eval_mental-bert-base-uncased_multiclass_1337.json,multiclass,mental/mental-bert-base-uncased,1337.0,test,0.5217,0.4783,recall of no_distortion
+results/results_RUN1/results,eval_mental-bert-base-uncased_multiclass_2024.json,multiclass,mental/mental-bert-base-uncased,2024.0,val,0.6,0.4,recall of no_distortion
+results/results_RUN1/results,eval_mental-bert-base-uncased_multiclass_2024.json,multiclass,mental/mental-bert-base-uncased,2024.0,test,0.4565,0.5435,recall of no_distortion
+results/results_RUN1/results,eval_mental-bert-base-uncased_multiclass_42.json,multiclass,mental/mental-bert-base-uncased,42.0,val,0.5789,0.4211,recall of no_distortion
+results/results_RUN1/results,eval_mental-bert-base-uncased_multiclass_42.json,multiclass,mental/mental-bert-base-uncased,42.0,test,0.5217,0.4783,recall of no_distortion
+results/results_RUN1/results,eval_mental-bert-base-uncased_multilabel_1337.json,multilabel,mental/mental-bert-base-uncased,1337.0,val,,,not recorded
+results/results_RUN1/results,eval_mental-bert-base-uncased_multilabel_1337.json,multilabel,mental/mental-bert-base-uncased,1337.0,test,,,not recorded
+results/results_RUN1/results,eval_mental-bert-base-uncased_multilabel_2024.json,multilabel,mental/mental-bert-base-uncased,2024.0,val,,,not recorded
+results/results_RUN1/results,eval_mental-bert-base-uncased_multilabel_2024.json,multilabel,mental/mental-bert-base-uncased,2024.0,test,,,not recorded
+results/results_RUN1/results,eval_mental-bert-base-uncased_multilabel_42.json,multilabel,mental/mental-bert-base-uncased,42.0,val,,,not recorded
+results/results_RUN1/results,eval_mental-bert-base-uncased_multilabel_42.json,multilabel,mental/mental-bert-base-uncased,42.0,test,,,not recorded
+results/results_RUN1/results,eval_roberta-base_binary_1337.json,binary,roberta-base,1337.0,val,0.7895,0.2105,recall of non_distorted
+results/results_RUN1/results,eval_roberta-base_binary_1337.json,binary,roberta-base,1337.0,test,0.7065,0.2935,recall of non_distorted
+results/results_RUN1/results,eval_roberta-base_binary_2024.json,binary,roberta-base,2024.0,val,0.8,0.2,recall of non_distorted
+results/results_RUN1/results,eval_roberta-base_binary_2024.json,binary,roberta-base,2024.0,test,0.6739,0.3261,recall of non_distorted
+results/results_RUN1/results,eval_roberta-base_binary_42.json,binary,roberta-base,42.0,val,0.6947,0.3053,recall of non_distorted
+results/results_RUN1/results,eval_roberta-base_binary_42.json,binary,roberta-base,42.0,test,0.587,0.413,recall of non_distorted
+results/results_RUN1/results,eval_roberta-base_multiclass_1337.json,multiclass,roberta-base,1337.0,val,0.6421,0.3579,recall of no_distortion
+results/results_RUN1/results,eval_roberta-base_multiclass_1337.json,multiclass,roberta-base,1337.0,test,0.5326,0.4674,recall of no_distortion
+results/results_RUN1/results,eval_roberta-base_multiclass_2024.json,multiclass,roberta-base,2024.0,val,0.5053,0.4947,recall of no_distortion
+results/results_RUN1/results,eval_roberta-base_multiclass_2024.json,multiclass,roberta-base,2024.0,test,0.4891,0.5109,recall of no_distortion
+results/results_RUN1/results,eval_roberta-base_multiclass_42.json,multiclass,roberta-base,42.0,val,0.6632,0.3368,recall of no_distortion
+results/results_RUN1/results,eval_roberta-base_multiclass_42.json,multiclass,roberta-base,42.0,test,0.5435,0.4565,recall of no_distortion
+results/results_RUN1/results,eval_roberta-base_multilabel_1337.json,multilabel,roberta-base,1337.0,val,,,not recorded
+results/results_RUN1/results,eval_roberta-base_multilabel_1337.json,multilabel,roberta-base,1337.0,test,,,not recorded
+results/results_RUN1/results,eval_roberta-base_multilabel_2024.json,multilabel,roberta-base,2024.0,val,,,not recorded
+results/results_RUN1/results,eval_roberta-base_multilabel_2024.json,multilabel,roberta-base,2024.0,test,,,not recorded
+results/results_RUN1/results,eval_roberta-base_multilabel_42.json,multilabel,roberta-base,42.0,val,,,not recorded
+results/results_RUN1/results,eval_roberta-base_multilabel_42.json,multilabel,roberta-base,42.0,test,,,not recorded
+results/results_RUN1/results_cascade,eval_cascade_binary_mental-roberta-base_1337_multilabel_mental-roberta-base_1337.json,,,,val,,,not recorded
+results/results_RUN1/results_cascade,eval_cascade_binary_mental-roberta-base_1337_multilabel_mental-roberta-base_1337.json,,,,test,,,not recorded
+results/results_RUN1/results_cascade,eval_cascade_binary_mental-roberta-base_2024_multilabel_mental-roberta-base_2024.json,,,,val,,,not recorded
+results/results_RUN1/results_cascade,eval_cascade_binary_mental-roberta-base_2024_multilabel_mental-roberta-base_2024.json,,,,test,,,not recorded
+results/results_RUN1/results_cascade,eval_cascade_binary_mental-roberta-base_42_multilabel_mental-roberta-base_42.json,,,,val,,,not recorded
+results/results_RUN1/results_cascade,eval_cascade_binary_mental-roberta-base_42_multilabel_mental-roberta-base_42.json,,,,test,,,not recorded
+results/results_RUN1/results_cascade_codipas_cls,eval_cascade_binary_mental-roberta-base_1337_multilabel_mental-roberta-base_1337_on_splits_codipas_cls.json,,,,val,,,not recorded
+results/results_RUN1/results_cascade_codipas_cls,eval_cascade_binary_mental-roberta-base_1337_multilabel_mental-roberta-base_1337_on_splits_codipas_cls.json,,,,test,,,not recorded
+results/results_RUN1/results_cascade_codipas_cls,eval_cascade_binary_mental-roberta-base_2024_multilabel_mental-roberta-base_2024_on_splits_codipas_cls.json,,,,val,,,not recorded
+results/results_RUN1/results_cascade_codipas_cls,eval_cascade_binary_mental-roberta-base_2024_multilabel_mental-roberta-base_2024_on_splits_codipas_cls.json,,,,test,,,not recorded
+results/results_RUN1/results_cascade_codipas_cls,eval_cascade_binary_mental-roberta-base_42_multilabel_mental-roberta-base_42_on_splits_codipas_cls.json,,,,val,,,not recorded
+results/results_RUN1/results_cascade_codipas_cls,eval_cascade_binary_mental-roberta-base_42_multilabel_mental-roberta-base_42_on_splits_codipas_cls.json,,,,test,,,not recorded
+results/results_RUN1/results_codipas,eval_mental-bert-base-uncased_binary_1337.json,binary,mental/mental-bert-base-uncased,1337.0,val,0.6923,0.3077,recall of non_distorted
+results/results_RUN1/results_codipas,eval_mental-bert-base-uncased_binary_1337.json,binary,mental/mental-bert-base-uncased,1337.0,test,0.6712,0.3288,recall of non_distorted
+results/results_RUN1/results_codipas,eval_mental-bert-base-uncased_binary_2024.json,binary,mental/mental-bert-base-uncased,2024.0,val,0.7244,0.2756,recall of non_distorted
+results/results_RUN1/results_codipas,eval_mental-bert-base-uncased_binary_2024.json,binary,mental/mental-bert-base-uncased,2024.0,test,0.7123,0.2877,recall of non_distorted
+results/results_RUN1/results_codipas,eval_mental-bert-base-uncased_binary_42.json,binary,mental/mental-bert-base-uncased,42.0,val,0.7628,0.2372,recall of non_distorted
+results/results_RUN1/results_codipas,eval_mental-bert-base-uncased_binary_42.json,binary,mental/mental-bert-base-uncased,42.0,test,0.7397,0.2603,recall of non_distorted
+results/results_RUN1/results_codipas,eval_mental-bert-base-uncased_multiclass_1337.json,multiclass,mental/mental-bert-base-uncased,1337.0,val,0.4679,0.5321,recall of no_distortion
+results/results_RUN1/results_codipas,eval_mental-bert-base-uncased_multiclass_1337.json,multiclass,mental/mental-bert-base-uncased,1337.0,test,0.4452,0.5548,recall of no_distortion
+results/results_RUN1/results_codipas,eval_mental-bert-base-uncased_multiclass_2024.json,multiclass,mental/mental-bert-base-uncased,2024.0,val,0.4487,0.5513,recall of no_distortion
+results/results_RUN1/results_codipas,eval_mental-bert-base-uncased_multiclass_2024.json,multiclass,mental/mental-bert-base-uncased,2024.0,test,0.4589,0.5411,recall of no_distortion
+results/results_RUN1/results_codipas,eval_mental-bert-base-uncased_multiclass_42.json,multiclass,mental/mental-bert-base-uncased,42.0,val,0.4744,0.5256,recall of no_distortion
+results/results_RUN1/results_codipas,eval_mental-bert-base-uncased_multiclass_42.json,multiclass,mental/mental-bert-base-uncased,42.0,test,0.4452,0.5548,recall of no_distortion
+results/results_RUN1/results_codipas,eval_mental-bert-base-uncased_multilabel_1337.json,multilabel,mental/mental-bert-base-uncased,1337.0,val,,,not recorded
+results/results_RUN1/results_codipas,eval_mental-bert-base-uncased_multilabel_1337.json,multilabel,mental/mental-bert-base-uncased,1337.0,test,,,not recorded
+results/results_RUN1/results_codipas,eval_mental-bert-base-uncased_multilabel_2024.json,multilabel,mental/mental-bert-base-uncased,2024.0,val,,,not recorded
+results/results_RUN1/results_codipas,eval_mental-bert-base-uncased_multilabel_2024.json,multilabel,mental/mental-bert-base-uncased,2024.0,test,,,not recorded
+results/results_RUN1/results_codipas,eval_mental-bert-base-uncased_multilabel_42.json,multilabel,mental/mental-bert-base-uncased,42.0,val,,,not recorded
+results/results_RUN1/results_codipas,eval_mental-bert-base-uncased_multilabel_42.json,multilabel,mental/mental-bert-base-uncased,42.0,test,,,not recorded
+results/results_RUN1/results_combined,eval_deberta-v3-base_binary_1337.json,binary,microsoft/deberta-v3-base,1337.0,val,0.8737,0.1263,recall of non_distorted
+results/results_RUN1/results_combined,eval_deberta-v3-base_binary_1337.json,binary,microsoft/deberta-v3-base,1337.0,test,0.7935,0.2065,recall of non_distorted
+results/results_RUN1/results_combined,eval_deberta-v3-base_binary_2024.json,binary,microsoft/deberta-v3-base,2024.0,val,0.8316,0.1684,recall of non_distorted
+results/results_RUN1/results_combined,eval_deberta-v3-base_binary_2024.json,binary,microsoft/deberta-v3-base,2024.0,test,0.7609,0.2391,recall of non_distorted
+results/results_RUN1/results_combined,eval_deberta-v3-base_binary_42.json,binary,microsoft/deberta-v3-base,42.0,val,0.8421,0.1579,recall of non_distorted
+results/results_RUN1/results_combined,eval_deberta-v3-base_binary_42.json,binary,microsoft/deberta-v3-base,42.0,test,0.7391,0.2609,recall of non_distorted
+results/results_RUN1/results_combined,eval_deberta-v3-base_multiclass_1337.json,multiclass,microsoft/deberta-v3-base,1337.0,val,0.6737,0.3263,recall of no_distortion
+results/results_RUN1/results_combined,eval_deberta-v3-base_multiclass_1337.json,multiclass,microsoft/deberta-v3-base,1337.0,test,0.5435,0.4565,recall of no_distortion
+results/results_RUN1/results_combined,eval_deberta-v3-base_multiclass_2024.json,multiclass,microsoft/deberta-v3-base,2024.0,val,0.5579,0.4421,recall of no_distortion
+results/results_RUN1/results_combined,eval_deberta-v3-base_multiclass_2024.json,multiclass,microsoft/deberta-v3-base,2024.0,test,0.4674,0.5326,recall of no_distortion
+results/results_RUN1/results_combined,eval_deberta-v3-base_multiclass_42.json,multiclass,microsoft/deberta-v3-base,42.0,val,0.6105,0.3895,recall of no_distortion
+results/results_RUN1/results_combined,eval_deberta-v3-base_multiclass_42.json,multiclass,microsoft/deberta-v3-base,42.0,test,0.5652,0.4348,recall of no_distortion
+results/results_RUN1/results_combined,eval_deberta-v3-base_multilabel_1337.json,multilabel,microsoft/deberta-v3-base,1337.0,val,,,not recorded
+results/results_RUN1/results_combined,eval_deberta-v3-base_multilabel_1337.json,multilabel,microsoft/deberta-v3-base,1337.0,test,,,not recorded
+results/results_RUN1/results_combined,eval_deberta-v3-base_multilabel_2024.json,multilabel,microsoft/deberta-v3-base,2024.0,val,,,not recorded
+results/results_RUN1/results_combined,eval_deberta-v3-base_multilabel_2024.json,multilabel,microsoft/deberta-v3-base,2024.0,test,,,not recorded
+results/results_RUN1/results_combined,eval_deberta-v3-base_multilabel_42.json,multilabel,microsoft/deberta-v3-base,42.0,val,,,not recorded
+results/results_RUN1/results_combined,eval_deberta-v3-base_multilabel_42.json,multilabel,microsoft/deberta-v3-base,42.0,test,,,not recorded
+results/results_RUN1/results_combined,eval_mental-roberta-base_binary_1337.json,binary,mental/mental-roberta-base,1337.0,val,0.7895,0.2105,recall of non_distorted
+results/results_RUN1/results_combined,eval_mental-roberta-base_binary_1337.json,binary,mental/mental-roberta-base,1337.0,test,0.6848,0.3152,recall of non_distorted
+results/results_RUN1/results_combined,eval_mental-roberta-base_binary_2024.json,binary,mental/mental-roberta-base,2024.0,val,0.8211,0.1789,recall of non_distorted
+results/results_RUN1/results_combined,eval_mental-roberta-base_binary_2024.json,binary,mental/mental-roberta-base,2024.0,test,0.7174,0.2826,recall of non_distorted
+results/results_RUN1/results_combined,eval_mental-roberta-base_binary_42.json,binary,mental/mental-roberta-base,42.0,val,0.8632,0.1368,recall of non_distorted
+results/results_RUN1/results_combined,eval_mental-roberta-base_binary_42.json,binary,mental/mental-roberta-base,42.0,test,0.7391,0.2609,recall of non_distorted
+results/results_RUN1/results_combined,eval_mental-roberta-base_multiclass_1337.json,multiclass,mental/mental-roberta-base,1337.0,val,0.6,0.4,recall of no_distortion
+results/results_RUN1/results_combined,eval_mental-roberta-base_multiclass_1337.json,multiclass,mental/mental-roberta-base,1337.0,test,0.5109,0.4891,recall of no_distortion
+results/results_RUN1/results_combined,eval_mental-roberta-base_multiclass_2024.json,multiclass,mental/mental-roberta-base,2024.0,val,0.4842,0.5158,recall of no_distortion
+results/results_RUN1/results_combined,eval_mental-roberta-base_multiclass_2024.json,multiclass,mental/mental-roberta-base,2024.0,test,0.413,0.587,recall of no_distortion
+results/results_RUN1/results_combined,eval_mental-roberta-base_multiclass_42.json,multiclass,mental/mental-roberta-base,42.0,val,0.5474,0.4526,recall of no_distortion
+results/results_RUN1/results_combined,eval_mental-roberta-base_multiclass_42.json,multiclass,mental/mental-roberta-base,42.0,test,0.4891,0.5109,recall of no_distortion
+results/results_RUN1/results_combined,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,val,,,not recorded
+results/results_RUN1/results_combined,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,test,,,not recorded
+results/results_RUN1/results_combined,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,val,,,not recorded
+results/results_RUN1/results_combined,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,test,,,not recorded
+results/results_RUN1/results_combined,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,val,,,not recorded
+results/results_RUN1/results_combined,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,test,,,not recorded
+results/results_RUN1/results_experiments,eval_mental-bert-base-uncased_binary_1337.json,binary,mental/mental-bert-base-uncased,1337.0,val,0.7684,0.2316,recall of non_distorted
+results/results_RUN1/results_experiments,eval_mental-bert-base-uncased_binary_1337.json,binary,mental/mental-bert-base-uncased,1337.0,test,0.6957,0.3043,recall of non_distorted
+results/results_RUN1/results_experiments,eval_mental-bert-base-uncased_binary_2024.json,binary,mental/mental-bert-base-uncased,2024.0,val,0.7158,0.2842,recall of non_distorted
+results/results_RUN1/results_experiments,eval_mental-bert-base-uncased_binary_2024.json,binary,mental/mental-bert-base-uncased,2024.0,test,0.6522,0.3478,recall of non_distorted
+results/results_RUN1/results_experiments,eval_mental-bert-base-uncased_binary_42.json,binary,mental/mental-bert-base-uncased,42.0,val,0.7684,0.2316,recall of non_distorted
+results/results_RUN1/results_experiments,eval_mental-bert-base-uncased_binary_42.json,binary,mental/mental-bert-base-uncased,42.0,test,0.663,0.337,recall of non_distorted
+results/results_RUN1/results_experiments,eval_mental-bert-base-uncased_multiclass_1337.json,multiclass,mental/mental-bert-base-uncased,1337.0,val,0.5474,0.4526,recall of no_distortion
+results/results_RUN1/results_experiments,eval_mental-bert-base-uncased_multiclass_1337.json,multiclass,mental/mental-bert-base-uncased,1337.0,test,0.5217,0.4783,recall of no_distortion
+results/results_RUN1/results_experiments,eval_mental-bert-base-uncased_multiclass_2024.json,multiclass,mental/mental-bert-base-uncased,2024.0,val,0.6,0.4,recall of no_distortion
+results/results_RUN1/results_experiments,eval_mental-bert-base-uncased_multiclass_2024.json,multiclass,mental/mental-bert-base-uncased,2024.0,test,0.4565,0.5435,recall of no_distortion
+results/results_RUN1/results_experiments,eval_mental-bert-base-uncased_multiclass_42.json,multiclass,mental/mental-bert-base-uncased,42.0,val,0.5789,0.4211,recall of no_distortion
+results/results_RUN1/results_experiments,eval_mental-bert-base-uncased_multiclass_42.json,multiclass,mental/mental-bert-base-uncased,42.0,test,0.5217,0.4783,recall of no_distortion
+results/results_RUN1/results_experiments,eval_mental-bert-base-uncased_multilabel_1337.json,multilabel,mental/mental-bert-base-uncased,1337.0,val,,,not recorded
+results/results_RUN1/results_experiments,eval_mental-bert-base-uncased_multilabel_1337.json,multilabel,mental/mental-bert-base-uncased,1337.0,test,,,not recorded
+results/results_RUN1/results_experiments,eval_mental-bert-base-uncased_multilabel_2024.json,multilabel,mental/mental-bert-base-uncased,2024.0,val,,,not recorded
+results/results_RUN1/results_experiments,eval_mental-bert-base-uncased_multilabel_2024.json,multilabel,mental/mental-bert-base-uncased,2024.0,test,,,not recorded
+results/results_RUN1/results_experiments,eval_mental-bert-base-uncased_multilabel_42.json,multilabel,mental/mental-bert-base-uncased,42.0,val,,,not recorded
+results/results_RUN1/results_experiments,eval_mental-bert-base-uncased_multilabel_42.json,multilabel,mental/mental-bert-base-uncased,42.0,test,,,not recorded
+results/results_RUN1/results_experiments,eval_roberta-base_binary_1337.json,binary,roberta-base,1337.0,val,0.7895,0.2105,recall of non_distorted
+results/results_RUN1/results_experiments,eval_roberta-base_binary_1337.json,binary,roberta-base,1337.0,test,0.7065,0.2935,recall of non_distorted
+results/results_RUN1/results_experiments,eval_roberta-base_binary_2024.json,binary,roberta-base,2024.0,val,0.8,0.2,recall of non_distorted
+results/results_RUN1/results_experiments,eval_roberta-base_binary_2024.json,binary,roberta-base,2024.0,test,0.6739,0.3261,recall of non_distorted
+results/results_RUN1/results_experiments,eval_roberta-base_binary_42.json,binary,roberta-base,42.0,val,0.6947,0.3053,recall of non_distorted
+results/results_RUN1/results_experiments,eval_roberta-base_binary_42.json,binary,roberta-base,42.0,test,0.587,0.413,recall of non_distorted
+results/results_RUN1/results_experiments,eval_roberta-base_multiclass_1337.json,multiclass,roberta-base,1337.0,val,0.6421,0.3579,recall of no_distortion
+results/results_RUN1/results_experiments,eval_roberta-base_multiclass_1337.json,multiclass,roberta-base,1337.0,test,0.5326,0.4674,recall of no_distortion
+results/results_RUN1/results_experiments,eval_roberta-base_multiclass_2024.json,multiclass,roberta-base,2024.0,val,0.5053,0.4947,recall of no_distortion
+results/results_RUN1/results_experiments,eval_roberta-base_multiclass_2024.json,multiclass,roberta-base,2024.0,test,0.4891,0.5109,recall of no_distortion
+results/results_RUN1/results_experiments,eval_roberta-base_multiclass_42.json,multiclass,roberta-base,42.0,val,0.6632,0.3368,recall of no_distortion
+results/results_RUN1/results_experiments,eval_roberta-base_multiclass_42.json,multiclass,roberta-base,42.0,test,0.5435,0.4565,recall of no_distortion
+results/results_RUN1/results_experiments,eval_roberta-base_multilabel_1337.json,multilabel,roberta-base,1337.0,val,,,not recorded
+results/results_RUN1/results_experiments,eval_roberta-base_multilabel_1337.json,multilabel,roberta-base,1337.0,test,,,not recorded
+results/results_RUN1/results_experiments,eval_roberta-base_multilabel_2024.json,multilabel,roberta-base,2024.0,val,,,not recorded
+results/results_RUN1/results_experiments,eval_roberta-base_multilabel_2024.json,multilabel,roberta-base,2024.0,test,,,not recorded
+results/results_RUN1/results_experiments,eval_roberta-base_multilabel_42.json,multilabel,roberta-base,42.0,val,,,not recorded
+results/results_RUN1/results_experiments,eval_roberta-base_multilabel_42.json,multilabel,roberta-base,42.0,test,,,not recorded
+results/results_RUN1/results_experiments/exp6,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,val,,,not recorded
+results/results_RUN1/results_experiments/exp6,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,test,,,not recorded
+results/results_RUN1/results_experiments/exp6,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,val,,,not recorded
+results/results_RUN1/results_experiments/exp6,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,test,,,not recorded
+results/results_RUN1/results_experiments/exp6,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,val,,,not recorded
+results/results_RUN1/results_experiments/exp6,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,test,,,not recorded
+results/results_RUN1/results_multiclass_v2,eval_mental-roberta-base_multiclass_1337.json,multiclass,mental/mental-roberta-base,1337.0,val,0.5263,0.4737,recall of no_distortion
+results/results_RUN1/results_multiclass_v2,eval_mental-roberta-base_multiclass_1337.json,multiclass,mental/mental-roberta-base,1337.0,test,0.5109,0.4891,recall of no_distortion
+results/results_RUN1/results_multiclass_v2,eval_mental-roberta-base_multiclass_2024.json,multiclass,mental/mental-roberta-base,2024.0,val,0.4211,0.5789,recall of no_distortion
+results/results_RUN1/results_multiclass_v2,eval_mental-roberta-base_multiclass_2024.json,multiclass,mental/mental-roberta-base,2024.0,test,0.4022,0.5978,recall of no_distortion
+results/results_RUN1/results_multiclass_v2,eval_mental-roberta-base_multiclass_42.json,multiclass,mental/mental-roberta-base,42.0,val,0.5474,0.4526,recall of no_distortion
+results/results_RUN1/results_multiclass_v2,eval_mental-roberta-base_multiclass_42.json,multiclass,mental/mental-roberta-base,42.0,test,0.5217,0.4783,recall of no_distortion
+results/results_RUN1/results_multiclass_v2_codipas_cls,eval_mental-roberta-base_multiclass_1337.json,multiclass,mental/mental-roberta-base,1337.0,val,0.4231,0.5769,recall of no_distortion
+results/results_RUN1/results_multiclass_v2_codipas_cls,eval_mental-roberta-base_multiclass_1337.json,multiclass,mental/mental-roberta-base,1337.0,test,0.3836,0.6164,recall of no_distortion
+results/results_RUN1/results_multiclass_v2_codipas_cls,eval_mental-roberta-base_multiclass_2024.json,multiclass,mental/mental-roberta-base,2024.0,val,0.2756,0.7244,recall of no_distortion
+results/results_RUN1/results_multiclass_v2_codipas_cls,eval_mental-roberta-base_multiclass_2024.json,multiclass,mental/mental-roberta-base,2024.0,test,0.2808,0.7192,recall of no_distortion
+results/results_RUN1/results_multiclass_v2_codipas_cls,eval_mental-roberta-base_multiclass_42.json,multiclass,mental/mental-roberta-base,42.0,val,0.4295,0.5705,recall of no_distortion
+results/results_RUN1/results_multiclass_v2_codipas_cls,eval_mental-roberta-base_multiclass_42.json,multiclass,mental/mental-roberta-base,42.0,test,0.4452,0.5548,recall of no_distortion
+results/results_RUN1/results_multilabel_flat,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,val,,,not recorded
+results/results_RUN1/results_multilabel_flat,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,test,,,not recorded
+results/results_RUN1/results_multilabel_flat,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,val,,,not recorded
+results/results_RUN1/results_multilabel_flat,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,test,,,not recorded
+results/results_RUN1/results_multilabel_flat,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,val,,,not recorded
+results/results_RUN1/results_multilabel_flat,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,test,,,not recorded
+results/results_RUN1/results_multilabel_flat_codipas_cls,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,val,,,not recorded
+results/results_RUN1/results_multilabel_flat_codipas_cls,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,test,,,not recorded
+results/results_RUN1/results_multilabel_flat_codipas_cls,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,val,,,not recorded
+results/results_RUN1/results_multilabel_flat_codipas_cls,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,test,,,not recorded
+results/results_RUN1/results_multilabel_flat_codipas_cls,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,val,,,not recorded
+results/results_RUN1/results_multilabel_flat_codipas_cls,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,test,,,not recorded
+results/results_RUN1/results_seq_stageA,eval_mrb-prA_multilabel_1337.json,multilabel,mrb-prA,1337.0,val,,,not recorded
+results/results_RUN1/results_seq_stageA,eval_mrb-prA_multilabel_1337.json,multilabel,mrb-prA,1337.0,test,,,not recorded
+results/results_RUN1/results_seq_stageA,eval_mrb-prA_multilabel_2024.json,multilabel,mrb-prA,2024.0,val,,,not recorded
+results/results_RUN1/results_seq_stageA,eval_mrb-prA_multilabel_2024.json,multilabel,mrb-prA,2024.0,test,,,not recorded
+results/results_RUN1/results_seq_stageA,eval_mrb-prA_multilabel_42.json,multilabel,mrb-prA,42.0,val,,,not recorded
+results/results_RUN1/results_seq_stageA,eval_mrb-prA_multilabel_42.json,multilabel,mrb-prA,42.0,test,,,not recorded
+results/results_RUN1/results_seq_stageA_holdout,eval_mrb-prA_multilabel_1337.json,multilabel,mrb-prA,1337.0,val,,,not recorded
+results/results_RUN1/results_seq_stageA_holdout,eval_mrb-prA_multilabel_1337.json,multilabel,mrb-prA,1337.0,test,,,not recorded
+results/results_RUN1/results_seq_stageA_holdout,eval_mrb-prA_multilabel_2024.json,multilabel,mrb-prA,2024.0,val,,,not recorded
+results/results_RUN1/results_seq_stageA_holdout,eval_mrb-prA_multilabel_2024.json,multilabel,mrb-prA,2024.0,test,,,not recorded
+results/results_RUN1/results_seq_stageA_holdout,eval_mrb-prA_multilabel_42.json,multilabel,mrb-prA,42.0,val,,,not recorded
+results/results_RUN1/results_seq_stageA_holdout,eval_mrb-prA_multilabel_42.json,multilabel,mrb-prA,42.0,test,,,not recorded
+results/results_RUN1/results_seq_stageB,eval_mrb-prA-annB_multilabel_1337.json,multilabel,mrb-prA-annB,1337.0,val,,,not recorded
+results/results_RUN1/results_seq_stageB,eval_mrb-prA-annB_multilabel_1337.json,multilabel,mrb-prA-annB,1337.0,test,,,not recorded
+results/results_RUN1/results_seq_stageB,eval_mrb-prA-annB_multilabel_2024.json,multilabel,mrb-prA-annB,2024.0,val,,,not recorded
+results/results_RUN1/results_seq_stageB,eval_mrb-prA-annB_multilabel_2024.json,multilabel,mrb-prA-annB,2024.0,test,,,not recorded
+results/results_RUN1/results_seq_stageB,eval_mrb-prA-annB_multilabel_42.json,multilabel,mrb-prA-annB,42.0,val,,,not recorded
+results/results_RUN1/results_seq_stageB,eval_mrb-prA-annB_multilabel_42.json,multilabel,mrb-prA-annB,42.0,test,,,not recorded
+results/results_RUN1/results_stage1,eval_mental-roberta-base_binary_1337.json,binary,mental/mental-roberta-base,1337.0,val,0.7158,0.2842,recall of non_distorted
+results/results_RUN1/results_stage1,eval_mental-roberta-base_binary_1337.json,binary,mental/mental-roberta-base,1337.0,test,0.6522,0.3478,recall of non_distorted
+results/results_RUN1/results_stage1,eval_mental-roberta-base_binary_2024.json,binary,mental/mental-roberta-base,2024.0,val,0.7263,0.2737,recall of non_distorted
+results/results_RUN1/results_stage1,eval_mental-roberta-base_binary_2024.json,binary,mental/mental-roberta-base,2024.0,test,0.6304,0.3696,recall of non_distorted
+results/results_RUN1/results_stage1,eval_mental-roberta-base_binary_42.json,binary,mental/mental-roberta-base,42.0,val,0.7263,0.2737,recall of non_distorted
+results/results_RUN1/results_stage1,eval_mental-roberta-base_binary_42.json,binary,mental/mental-roberta-base,42.0,test,0.6413,0.3587,recall of non_distorted
+results/results_RUN1/results_stage1_codipas_cls,eval_mental-roberta-base_binary_1337.json,binary,mental/mental-roberta-base,1337.0,val,0.6731,0.3269,recall of non_distorted
+results/results_RUN1/results_stage1_codipas_cls,eval_mental-roberta-base_binary_1337.json,binary,mental/mental-roberta-base,1337.0,test,0.6507,0.3493,recall of non_distorted
+results/results_RUN1/results_stage1_codipas_cls,eval_mental-roberta-base_binary_2024.json,binary,mental/mental-roberta-base,2024.0,val,0.6667,0.3333,recall of non_distorted
+results/results_RUN1/results_stage1_codipas_cls,eval_mental-roberta-base_binary_2024.json,binary,mental/mental-roberta-base,2024.0,test,0.6575,0.3425,recall of non_distorted
+results/results_RUN1/results_stage1_codipas_cls,eval_mental-roberta-base_binary_42.json,binary,mental/mental-roberta-base,42.0,val,0.7115,0.2885,recall of non_distorted
+results/results_RUN1/results_stage1_codipas_cls,eval_mental-roberta-base_binary_42.json,binary,mental/mental-roberta-base,42.0,test,0.6986,0.3014,recall of non_distorted
+results/results_RUN1/results_stage2,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,val,,,not recorded
+results/results_RUN1/results_stage2,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,test,,,not recorded
+results/results_RUN1/results_stage2,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,val,,,not recorded
+results/results_RUN1/results_stage2,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,test,,,not recorded
+results/results_RUN1/results_stage2,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,val,,,not recorded
+results/results_RUN1/results_stage2,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,test,,,not recorded
+results/results_RUN1/results_stage2_codipas_cls,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,val,,,not recorded
+results/results_RUN1/results_stage2_codipas_cls,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,test,,,not recorded
+results/results_RUN1/results_stage2_codipas_cls,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,val,,,not recorded
+results/results_RUN1/results_stage2_codipas_cls,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,test,,,not recorded
+results/results_RUN1/results_stage2_codipas_cls,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,val,,,not recorded
+results/results_RUN1/results_stage2_codipas_cls,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,test,,,not recorded
+results/results_RUN2/results_cascade,eval_cascade_binary_mental-roberta-base_1337_multilabel_mental-roberta-base_1337_on_splits.json,,,,val,,,not recorded
+results/results_RUN2/results_cascade,eval_cascade_binary_mental-roberta-base_1337_multilabel_mental-roberta-base_1337_on_splits.json,,,,test,,,not recorded
+results/results_RUN2/results_cascade,eval_cascade_binary_mental-roberta-base_2024_multilabel_mental-roberta-base_2024_on_splits.json,,,,val,,,not recorded
+results/results_RUN2/results_cascade,eval_cascade_binary_mental-roberta-base_2024_multilabel_mental-roberta-base_2024_on_splits.json,,,,test,,,not recorded
+results/results_RUN2/results_cascade,eval_cascade_binary_mental-roberta-base_42_multilabel_mental-roberta-base_42_on_splits.json,,,,val,,,not recorded
+results/results_RUN2/results_cascade,eval_cascade_binary_mental-roberta-base_42_multilabel_mental-roberta-base_42_on_splits.json,,,,test,,,not recorded
+results/results_RUN2/results_experiments/exp1,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,val,,,not recorded
+results/results_RUN2/results_experiments/exp1,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,test,,,not recorded
+results/results_RUN2/results_experiments/exp2/annotated_only,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,val,,,not recorded
+results/results_RUN2/results_experiments/exp2/annotated_only,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,test,,,not recorded
+results/results_RUN2/results_experiments/exp2/annotated_only,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,val,,,not recorded
+results/results_RUN2/results_experiments/exp2/annotated_only,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,test,,,not recorded
+results/results_RUN2/results_experiments/exp2/annotated_only,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,val,,,not recorded
+results/results_RUN2/results_experiments/exp2/annotated_only,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,test,,,not recorded
+results/results_RUN2/results_experiments/exp2/annotated_plus_codipas,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,val,,,not recorded
+results/results_RUN2/results_experiments/exp2/annotated_plus_codipas,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,test,,,not recorded
+results/results_RUN2/results_experiments/exp2/annotated_plus_codipas,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,val,,,not recorded
+results/results_RUN2/results_experiments/exp2/annotated_plus_codipas,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,test,,,not recorded
+results/results_RUN2/results_experiments/exp2/annotated_plus_codipas,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,val,,,not recorded
+results/results_RUN2/results_experiments/exp2/annotated_plus_codipas,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,test,,,not recorded
+results/results_RUN2/results_experiments/exp2/codipas_only,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,val,,,not recorded
+results/results_RUN2/results_experiments/exp2/codipas_only,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,test,,,not recorded
+results/results_RUN2/results_experiments/exp2/codipas_only,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,val,,,not recorded
+results/results_RUN2/results_experiments/exp2/codipas_only,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,test,,,not recorded
+results/results_RUN2/results_experiments/exp2/codipas_only,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,val,,,not recorded
+results/results_RUN2/results_experiments/exp2/codipas_only,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,test,,,not recorded
+results/results_RUN2/results_experiments/exp2/home,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,val,,,not recorded
+results/results_RUN2/results_experiments/exp2/home,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,test,,,not recorded
+results/results_RUN2/results_experiments/exp2/home,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,val,,,not recorded
+results/results_RUN2/results_experiments/exp2/home,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,test,,,not recorded
+results/results_RUN2/results_experiments/exp2/home,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,val,,,not recorded
+results/results_RUN2/results_experiments/exp2/home,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,test,,,not recorded
+results/results_RUN2/results_experiments/exp2_combmatched/annotated_plus_codipas,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,val,,,not recorded
+results/results_RUN2/results_experiments/exp2_combmatched/annotated_plus_codipas,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,test,,,not recorded
+results/results_RUN2/results_experiments/exp2_combmatched/annotated_plus_codipas,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,val,,,not recorded
+results/results_RUN2/results_experiments/exp2_combmatched/annotated_plus_codipas,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,test,,,not recorded
+results/results_RUN2/results_experiments/exp2_combmatched/annotated_plus_codipas,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,val,,,not recorded
+results/results_RUN2/results_experiments/exp2_combmatched/annotated_plus_codipas,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,test,,,not recorded
+results/results_RUN2/results_experiments/exp2_combmatched/home,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,val,,,not recorded
+results/results_RUN2/results_experiments/exp2_combmatched/home,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,test,,,not recorded
+results/results_RUN2/results_experiments/exp2_combmatched/home,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,val,,,not recorded
+results/results_RUN2/results_experiments/exp2_combmatched/home,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,test,,,not recorded
+results/results_RUN2/results_experiments/exp2_combmatched/home,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,val,,,not recorded
+results/results_RUN2/results_experiments/exp2_combmatched/home,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,test,,,not recorded
+results/results_RUN2/results_experiments/exp2_matched/codipas_only,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,val,,,not recorded
+results/results_RUN2/results_experiments/exp2_matched/codipas_only,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,test,,,not recorded
+results/results_RUN2/results_experiments/exp2_matched/codipas_only,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,val,,,not recorded
+results/results_RUN2/results_experiments/exp2_matched/codipas_only,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,test,,,not recorded
+results/results_RUN2/results_experiments/exp2_matched/codipas_only,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,val,,,not recorded
+results/results_RUN2/results_experiments/exp2_matched/codipas_only,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,test,,,not recorded
+results/results_RUN2/results_experiments/exp2_matched/home,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,val,,,not recorded
+results/results_RUN2/results_experiments/exp2_matched/home,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,test,,,not recorded
+results/results_RUN2/results_experiments/exp2_matched/home,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,val,,,not recorded
+results/results_RUN2/results_experiments/exp2_matched/home,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,test,,,not recorded
+results/results_RUN2/results_experiments/exp2_matched/home,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,val,,,not recorded
+results/results_RUN2/results_experiments/exp2_matched/home,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,test,,,not recorded
+results/results_RUN2/results_experiments/exp3,eval_mental-roberta-base_multiclass_1337.json,multiclass,mental/mental-roberta-base,1337.0,val,0.6526,0.3474,recall of no_distortion
+results/results_RUN2/results_experiments/exp3,eval_mental-roberta-base_multiclass_1337.json,multiclass,mental/mental-roberta-base,1337.0,test,0.6304,0.3696,recall of no_distortion
+results/results_RUN2/results_experiments/exp3,eval_mental-roberta-base_multiclass_2024.json,multiclass,mental/mental-roberta-base,2024.0,val,0.5474,0.4526,recall of no_distortion
+results/results_RUN2/results_experiments/exp3,eval_mental-roberta-base_multiclass_2024.json,multiclass,mental/mental-roberta-base,2024.0,test,0.4565,0.5435,recall of no_distortion
+results/results_RUN2/results_experiments/exp3,eval_mental-roberta-base_multiclass_42.json,multiclass,mental/mental-roberta-base,42.0,val,0.4421,0.5579,recall of no_distortion
+results/results_RUN2/results_experiments/exp3,eval_mental-roberta-base_multiclass_42.json,multiclass,mental/mental-roberta-base,42.0,test,0.4565,0.5435,recall of no_distortion
+results/results_RUN2/results_experiments/exp4,eval_mental-roberta-base_multiclass_1337.json,multiclass,mental/mental-roberta-base,1337.0,val,0.6526,0.3474,recall of no_distortion
+results/results_RUN2/results_experiments/exp4,eval_mental-roberta-base_multiclass_1337.json,multiclass,mental/mental-roberta-base,1337.0,test,0.5761,0.4239,recall of no_distortion
+results/results_RUN2/results_experiments/exp4,eval_mental-roberta-base_multiclass_2024.json,multiclass,mental/mental-roberta-base,2024.0,val,0.6842,0.3158,recall of no_distortion
+results/results_RUN2/results_experiments/exp4,eval_mental-roberta-base_multiclass_2024.json,multiclass,mental/mental-roberta-base,2024.0,test,0.5217,0.4783,recall of no_distortion
+results/results_RUN2/results_experiments/exp4,eval_mental-roberta-base_multiclass_42.json,multiclass,mental/mental-roberta-base,42.0,val,0.5684,0.4316,recall of no_distortion
+results/results_RUN2/results_experiments/exp4,eval_mental-roberta-base_multiclass_42.json,multiclass,mental/mental-roberta-base,42.0,test,0.4565,0.5435,recall of no_distortion
+results/results_RUN2/results_experiments/exp5,eval_mental-roberta-base_multiclass_1337.json,multiclass,mental/mental-roberta-base,1337.0,val,0.0,1.0,recall of no_distortion
+results/results_RUN2/results_experiments/exp5,eval_mental-roberta-base_multiclass_1337.json,multiclass,mental/mental-roberta-base,1337.0,test,0.0,1.0,recall of no_distortion
+results/results_RUN2/results_experiments/exp5,eval_mental-roberta-base_multiclass_2024.json,multiclass,mental/mental-roberta-base,2024.0,val,0.0105,0.9895,recall of no_distortion
+results/results_RUN2/results_experiments/exp5,eval_mental-roberta-base_multiclass_2024.json,multiclass,mental/mental-roberta-base,2024.0,test,0.0,1.0,recall of no_distortion
+results/results_RUN2/results_experiments/exp5,eval_mental-roberta-base_multiclass_42.json,multiclass,mental/mental-roberta-base,42.0,val,0.0,1.0,recall of no_distortion
+results/results_RUN2/results_experiments/exp5,eval_mental-roberta-base_multiclass_42.json,multiclass,mental/mental-roberta-base,42.0,test,0.0,1.0,recall of no_distortion
+results/results_RUN2/results_experiments/exp6,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,val,,,not recorded
+results/results_RUN2/results_experiments/exp6,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,test,,,not recorded
+results/results_RUN2/results_experiments/exp6,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,val,,,not recorded
+results/results_RUN2/results_experiments/exp6,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,test,,,not recorded
+results/results_RUN2/results_experiments/exp6,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,val,,,not recorded
+results/results_RUN2/results_experiments/exp6,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,test,,,not recorded
+results/results_RUN2/results_experiments/exp7/home,eval_mental-roberta-base_binary_1337.json,binary,mental/mental-roberta-base,1337.0,val,0.7789,0.2211,recall of non_distorted
+results/results_RUN2/results_experiments/exp7/home,eval_mental-roberta-base_binary_1337.json,binary,mental/mental-roberta-base,1337.0,test,0.7065,0.2935,recall of non_distorted
+results/results_RUN2/results_experiments/exp7/home,eval_mental-roberta-base_binary_2024.json,binary,mental/mental-roberta-base,2024.0,val,0.7789,0.2211,recall of non_distorted
+results/results_RUN2/results_experiments/exp7/home,eval_mental-roberta-base_binary_2024.json,binary,mental/mental-roberta-base,2024.0,test,0.5761,0.4239,recall of non_distorted
+results/results_RUN2/results_experiments/exp7/home,eval_mental-roberta-base_binary_42.json,binary,mental/mental-roberta-base,42.0,val,0.8,0.2,recall of non_distorted
+results/results_RUN2/results_experiments/exp7/home,eval_mental-roberta-base_binary_42.json,binary,mental/mental-roberta-base,42.0,test,0.587,0.413,recall of non_distorted
+results/results_RUN2/results_experiments/exp7/home,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,val,,,not recorded
+results/results_RUN2/results_experiments/exp7/home,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,test,,,not recorded
+results/results_RUN2/results_experiments/exp7/home,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,val,,,not recorded
+results/results_RUN2/results_experiments/exp7/home,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,test,,,not recorded
+results/results_RUN2/results_experiments/exp7/home,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,val,,,not recorded
+results/results_RUN2/results_experiments/exp7/home,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,test,,,not recorded
+results/results_RUN2/results_multiclass_v2,eval_mental-roberta-base_multiclass_1337.json,multiclass,mental/mental-roberta-base,1337.0,val,0.5368,0.4632,recall of no_distortion
+results/results_RUN2/results_multiclass_v2,eval_mental-roberta-base_multiclass_1337.json,multiclass,mental/mental-roberta-base,1337.0,test,0.4783,0.5217,recall of no_distortion
+results/results_RUN2/results_multiclass_v2,eval_mental-roberta-base_multiclass_2024.json,multiclass,mental/mental-roberta-base,2024.0,val,0.5684,0.4316,recall of no_distortion
+results/results_RUN2/results_multiclass_v2,eval_mental-roberta-base_multiclass_2024.json,multiclass,mental/mental-roberta-base,2024.0,test,0.4565,0.5435,recall of no_distortion
+results/results_RUN2/results_multiclass_v2,eval_mental-roberta-base_multiclass_42.json,multiclass,mental/mental-roberta-base,42.0,val,0.6316,0.3684,recall of no_distortion
+results/results_RUN2/results_multiclass_v2,eval_mental-roberta-base_multiclass_42.json,multiclass,mental/mental-roberta-base,42.0,test,0.5109,0.4891,recall of no_distortion
+results/results_RUN2/results_multilabel_flat,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,val,,,not recorded
+results/results_RUN2/results_multilabel_flat,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,test,,,not recorded
+results/results_RUN2/results_multilabel_flat,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,val,,,not recorded
+results/results_RUN2/results_multilabel_flat,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,test,,,not recorded
+results/results_RUN2/results_multilabel_flat,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,val,,,not recorded
+results/results_RUN2/results_multilabel_flat,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,test,,,not recorded
+results/results_RUN2/results_stage1,eval_mental-roberta-base_binary_1337.json,binary,mental/mental-roberta-base,1337.0,val,0.7789,0.2211,recall of non_distorted
+results/results_RUN2/results_stage1,eval_mental-roberta-base_binary_1337.json,binary,mental/mental-roberta-base,1337.0,test,0.7065,0.2935,recall of non_distorted
+results/results_RUN2/results_stage1,eval_mental-roberta-base_binary_2024.json,binary,mental/mental-roberta-base,2024.0,val,0.7789,0.2211,recall of non_distorted
+results/results_RUN2/results_stage1,eval_mental-roberta-base_binary_2024.json,binary,mental/mental-roberta-base,2024.0,test,0.5761,0.4239,recall of non_distorted
+results/results_RUN2/results_stage1,eval_mental-roberta-base_binary_42.json,binary,mental/mental-roberta-base,42.0,val,0.8,0.2,recall of non_distorted
+results/results_RUN2/results_stage1,eval_mental-roberta-base_binary_42.json,binary,mental/mental-roberta-base,42.0,test,0.587,0.413,recall of non_distorted
+results/results_RUN2/results_stage2,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,val,,,not recorded
+results/results_RUN2/results_stage2,eval_mental-roberta-base_multilabel_1337.json,multilabel,mental/mental-roberta-base,1337.0,test,,,not recorded
+results/results_RUN2/results_stage2,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,val,,,not recorded
+results/results_RUN2/results_stage2,eval_mental-roberta-base_multilabel_2024.json,multilabel,mental/mental-roberta-base,2024.0,test,,,not recorded
+results/results_RUN2/results_stage2,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,val,,,not recorded
+results/results_RUN2/results_stage2,eval_mental-roberta-base_multilabel_42.json,multilabel,mental/mental-roberta-base,42.0,test,,,not recorded
+results/results_thresholds,eval_mental-bert-base-uncased_binary_1337.json,binary,mental/mental-bert-base-uncased,1337.0,val,0.8526,0.1474,recall of non_distorted
+results/results_thresholds,eval_mental-bert-base-uncased_binary_1337.json,binary,mental/mental-bert-base-uncased,1337.0,test,0.8261,0.1739,recall of non_distorted
+results/results_thresholds,eval_mental-bert-base-uncased_binary_2024.json,binary,mental/mental-bert-base-uncased,2024.0,val,0.8526,0.1474,recall of non_distorted
+results/results_thresholds,eval_mental-bert-base-uncased_binary_2024.json,binary,mental/mental-bert-base-uncased,2024.0,test,0.7717,0.2283,recall of non_distorted
+results/results_thresholds,eval_mental-bert-base-uncased_binary_42.json,binary,mental/mental-bert-base-uncased,42.0,val,0.8526,0.1474,recall of non_distorted
+results/results_thresholds,eval_mental-bert-base-uncased_binary_42.json,binary,mental/mental-bert-base-uncased,42.0,test,0.8152,0.1848,recall of non_distorted
+results/results_thresholds,eval_mental-roberta-base_binary_1337.json,binary,mental/mental-roberta-base,1337.0,val,0.8526,0.1474,recall of non_distorted
+results/results_thresholds,eval_mental-roberta-base_binary_1337.json,binary,mental/mental-roberta-base,1337.0,test,0.7826,0.2174,recall of non_distorted
+results/results_thresholds,eval_mental-roberta-base_binary_2024.json,binary,mental/mental-roberta-base,2024.0,val,0.8526,0.1474,recall of non_distorted
+results/results_thresholds,eval_mental-roberta-base_binary_2024.json,binary,mental/mental-roberta-base,2024.0,test,0.7391,0.2609,recall of non_distorted
+results/results_thresholds,eval_mental-roberta-base_binary_42.json,binary,mental/mental-roberta-base,42.0,val,0.8526,0.1474,recall of non_distorted
+results/results_thresholds,eval_mental-roberta-base_binary_42.json,binary,mental/mental-roberta-base,42.0,test,0.7826,0.2174,recall of non_distorted
+results/results_thresholds,eval_roberta-base_binary_1337.json,binary,roberta-base,1337.0,val,0.8526,0.1474,recall of non_distorted
+results/results_thresholds,eval_roberta-base_binary_1337.json,binary,roberta-base,1337.0,test,0.7609,0.2391,recall of non_distorted
+results/results_thresholds,eval_roberta-base_binary_2024.json,binary,roberta-base,2024.0,val,0.8526,0.1474,recall of non_distorted
+results/results_thresholds,eval_roberta-base_binary_2024.json,binary,roberta-base,2024.0,test,0.7609,0.2391,recall of non_distorted
+results/results_thresholds,eval_roberta-base_binary_42.json,binary,roberta-base,42.0,val,0.8526,0.1474,recall of non_distorted
+results/results_thresholds,eval_roberta-base_binary_42.json,binary,roberta-base,42.0,test,0.7609,0.2391,recall of non_distorted
+results_RUN2/results_tutorial_distilbert,eval_tutorial-distilbert-base-uncased_multilabel_42.json,multilabel,tutorial-distilbert-base-uncased,42.0,val,,,not recorded
+results_RUN2/results_tutorial_distilbert,eval_tutorial-distilbert-base-uncased_multilabel_42.json,multilabel,tutorial-distilbert-base-uncased,42.0,test,,,not recorded
+results_RUN2/results_tutorial_distilbert/thr_fixed_cap0,eval_tutorial-distilbert-base-uncased_multilabel_42.json,multilabel,tutorial-distilbert-base-uncased,42.0,val,,,not recorded
+results_RUN2/results_tutorial_distilbert/thr_fixed_cap0,eval_tutorial-distilbert-base-uncased_multilabel_42.json,multilabel,tutorial-distilbert-base-uncased,42.0,test,,,not recorded
+results_RUN2/results_tutorial_distilbert/thr_fixed_cap2,eval_tutorial-distilbert-base-uncased_multilabel_42.json,multilabel,tutorial-distilbert-base-uncased,42.0,val,,,not recorded
+results_RUN2/results_tutorial_distilbert/thr_fixed_cap2,eval_tutorial-distilbert-base-uncased_multilabel_42.json,multilabel,tutorial-distilbert-base-uncased,42.0,test,,,not recorded
+results_RUN2/results_tutorial_distilbert/thr_tuned_cap0,eval_tutorial-distilbert-base-uncased_multilabel_42.json,multilabel,tutorial-distilbert-base-uncased,42.0,val,,,not recorded
+results_RUN2/results_tutorial_distilbert/thr_tuned_cap0,eval_tutorial-distilbert-base-uncased_multilabel_42.json,multilabel,tutorial-distilbert-base-uncased,42.0,test,,,not recorded
+results_RUN2/results_tutorial_distilbert/thr_tuned_cap2,eval_tutorial-distilbert-base-uncased_multilabel_42.json,multilabel,tutorial-distilbert-base-uncased,42.0,val,,,not recorded
+results_RUN2/results_tutorial_distilbert/thr_tuned_cap2,eval_tutorial-distilbert-base-uncased_multilabel_42.json,multilabel,tutorial-distilbert-base-uncased,42.0,test,,,not recorded

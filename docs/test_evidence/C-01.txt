@@ -1,0 +1,2 @@
+$ venv\Scripts\python.exe -c "import pandas as pd; s={n: pd.read_csv(f'data/splits/{n}.csv', encoding='utf-8-sig') for n in ['train','val','test']}; i={n: set(d.Id_Number) for n,d in s.items()}; print({n: len(d) for n,d in s.items()}, len(i['train']&i['val']), len(i['train']&i['test']), len(i['val']&i['test']))"
+{'train': 2024, 'val': 253, 'test': 253} 0 0 0

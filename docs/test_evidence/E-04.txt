@@ -1,0 +1,37 @@
+$ venv\Scripts\python.exe -m src.train_transformer --task binary --smoke --max-length 128 --model distilroberta-base
+C:\Users\HF SYTORE\Desktop\EmpowerLens\venv\Lib\site-packages\huggingface_hub\file_download.py:149: UserWarning: `huggingface_hub` cache-system uses symlinks by default to efficiently store duplicated files but your machine does not support them in C:\Users\HF SYTORE\.cache\huggingface\hub\models--distilroberta-base. Caching files will still work but in a degraded version that might require more space on your disk. This warning can be disabled by setting the `HF_HUB_DISABLE_SYMLINKS_WARNING` environment variable. For more details, see https://huggingface.co/docs/huggingface_hub/how-to-cache#limitations.
+To support symlinks on Windows, you either need to activate Developer Mode or to run Python as an administrator. In order to activate developer mode, see this article: https://docs.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development
+  warnings.warn(message)
+C:\Users\HF SYTORE\Desktop\EmpowerLens\venv\Lib\site-packages\huggingface_hub\file_download.py:149: UserWarning: `huggingface_hub` cache-system uses symlinks by default to efficiently store duplicated files but your machine does not support them in C:\Users\HF SYTORE\.cache\huggingface\hub. Caching files will still work but in a degraded version that might require more space on your disk. This warning can be disabled by setting the `HF_HUB_DISABLE_SYMLINKS_WARNING` environment variable. For more details, see https://huggingface.co/docs/huggingface_hub/how-to-cache#limitations.
+To support symlinks on Windows, you either need to activate Developer Mode or to run Python as an administrator. In order to activate developer mode, see this article: https://docs.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development
+  warnings.warn(message)
+[binary] device=cpu model=distilroberta-base train=100 val=100 epochs=1
+[transformers] [1mRobertaForSequenceClassification LOAD REPORT[0m from: distilroberta-base
+Key                         | Status     | 
+----------------------------+------------+-
+lm_head.dense.weight        | UNEXPECTED | 
+lm_head.bias                | UNEXPECTED | 
+roberta.pooler.dense.bias   | UNEXPECTED | 
+roberta.pooler.dense.weight | UNEXPECTED | 
+lm_head.layer_norm.weight   | UNEXPECTED | 
+lm_head.dense.bias          | UNEXPECTED | 
+lm_head.layer_norm.bias     | UNEXPECTED | 
+classifier.dense.weight     | MISSING    | 
+classifier.out_proj.weight  | MISSING    | 
+classifier.dense.bias       | MISSING    | 
+classifier.out_proj.bias    | MISSING    | 
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+- MISSING:	those params were newly initialized because missing from the checkpoint. Consider training on your downstream task.
+[transformers] Token indices sequence length is longer than the specified maximum sequence length for this model (527 > 512). Running this sequence through the model will result in indexing errors
+                                             [A{'eval_loss': '0.6898', 'eval_macro_f1': '0.2308', 'eval_runtime': '6.137', 'eval_samples_per_second': '16.3', 'eval_steps_per_second': '1.141', 'epoch': '1'}
+{'train_runtime': '32.53', 'train_samples_per_second': '3.074', 'train_steps_per_second': '0.215', 'train_loss': '0.696', 'epoch': '1'}
+  best epoch 1 of 1 (on macro_f1)  <-- peaked at the budget limit; budget may be too small
+Saved to checkpoints\binary_distilroberta-base_42_smoke/
+  val macro_f1 = 0.231
+[exit code 0]
+
+$ git status --short src
+?? src/specificity_audit.py
+?? src/time_cohort_report.py
+[the two ?? entries are new, untracked D27 scripts written in this session, not edits; no existing file under src/ changed (no M lines)]
