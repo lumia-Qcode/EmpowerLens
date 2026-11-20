@@ -1,0 +1,6 @@
+row,input,n_seeds,val_macro_f1,val_macro_f1_std,test_macro_f1,test_macro_f1_std,test_specificity_per_label,test_specificity_per_label_std
+full,full text,3,0.3807,0.0118,0.2681,0.0199,0.8434,0.0036
+crop_sel,selected sentences only - trained selector,3,0.3676,0.0153,0.336,0.0246,0.8685,0.0161
+crop_gold,selected sentences only - gold span (oracle),3,0.5194,0.0223,0.4341,0.016,0.8909,0.0116
+marked_sel,"full text, sentences marked - trained selector",3,0.3476,0.0182,0.269,0.0268,0.8442,0.0042
+marked_gold,"full text, sentences marked - gold span (oracle)",3,0.376,0.0064,0.3052,0.0216,0.8485,0.0033
