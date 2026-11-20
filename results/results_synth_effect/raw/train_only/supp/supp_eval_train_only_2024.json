@@ -1,0 +1,96 @@
+{
+  "condition": "train_only",
+  "seed": 2024,
+  "n": 376,
+  "n_distorted": 45,
+  "n_non_distorted": 331,
+  "binary_threshold": 0.8413150906562805,
+  "binary_splits": "data/splits",
+  "multilabel_splits": "data/splits",
+  "binary": {
+    "specificity": 0.9395770392749244,
+    "fpr": 0.06042296072507558,
+    "sensitivity": 0.24444444444444444,
+    "tn": 311,
+    "fp": 20,
+    "tp": 11,
+    "fn": 34
+  },
+  "multilabel": {
+    "macro_f1": 0.11185491511717623,
+    "micro_f1": 0.1360544217687075,
+    "weighted_f1": 0.16429947061351113
+  },
+  "per_class": [
+    {
+      "class": "emotional_reasoning",
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+    },
+    {
+      "class": "overgeneralization",
+      "precision": 0.1111111111111111,
+      "recall": 0.5333333333333333,
+      "f1": 0.1839080459770115,
+      "support": 15
+    },
+    {
+      "class": "mental_filter",
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+    },
+    {
+      "class": "should_statements",
+      "precision": 0.018518518518518517,
+      "recall": 0.14285714285714285,
+      "f1": 0.03278688524590164,
+      "support": 7
+    },
+    {
+      "class": "all_or_nothing",
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 8
+    },
+    {
+      "class": "mind_reading",
+      "precision": 0.2222222222222222,
+      "recall": 0.8571428571428571,
+      "f1": 0.35294117647058826,
+      "support": 7
+    },
+    {
+      "class": "fortune_telling",
+      "precision": 0.42857142857142855,
+      "recall": 0.3333333333333333,
+      "f1": 0.375,
+      "support": 9
+    },
+    {
+      "class": "magnification",
+      "precision": 0.10526315789473684,
+      "recall": 0.5,
+      "f1": 0.17391304347826086,
+      "support": 4
+    },
+    {
+      "class": "personalization",
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+    },
+    {
+      "class": "labeling",
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 8
+    }
+  ]
+}

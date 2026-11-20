@@ -1,0 +1,96 @@
+{
+  "condition": "train_only",
+  "seed": 1337,
+  "n": 376,
+  "n_distorted": 45,
+  "n_non_distorted": 331,
+  "binary_threshold": 0.9072331786155701,
+  "binary_splits": "data/splits",
+  "multilabel_splits": "data/splits",
+  "binary": {
+    "specificity": 0.9425981873111783,
+    "fpr": 0.05740181268882172,
+    "sensitivity": 0.3111111111111111,
+    "tn": 312,
+    "fp": 19,
+    "tp": 14,
+    "fn": 31
+  },
+  "multilabel": {
+    "macro_f1": 0.12367860975235864,
+    "micro_f1": 0.0997624703087886,
+    "weighted_f1": 0.17830916411855532
+  },
+  "per_class": [
+    {
+      "class": "emotional_reasoning",
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+    },
+    {
+      "class": "overgeneralization",
+      "precision": 0.043478260869565216,
+      "recall": 0.7333333333333333,
+      "f1": 0.08208955223880597,
+      "support": 15
+    },
+    {
+      "class": "mental_filter",
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+    },
+    {
+      "class": "should_statements",
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 7
+    },
+    {
+      "class": "all_or_nothing",
+      "precision": 0.058823529411764705,
+      "recall": 0.125,
+      "f1": 0.08,
+      "support": 8
+    },
+    {
+      "class": "mind_reading",
+      "precision": 0.5714285714285714,
+      "recall": 0.5714285714285714,
+      "f1": 0.5714285714285714,
+      "support": 7
+    },
+    {
+      "class": "fortune_telling",
+      "precision": 0.4444444444444444,
+      "recall": 0.4444444444444444,
+      "f1": 0.4444444444444444,
+      "support": 9
+    },
+    {
+      "class": "magnification",
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 4
+    },
+    {
+      "class": "personalization",
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+    },
+    {
+      "class": "labeling",
+      "precision": 0.038461538461538464,
+      "recall": 0.125,
+      "f1": 0.058823529411764705,
+      "support": 8
+    }
+  ]
+}
