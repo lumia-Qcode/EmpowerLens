@@ -1,0 +1,100 @@
+{
+  "n_requested": 20,
+  "accepted": 17,
+  "rejected": 3,
+  "revised": 5,
+  "filtered_length": 0,
+  "filtered_named_own_pattern": 0,
+  "critics_unknown": 0,
+  "attempted_by_label": {
+    "Emotional Reasoning": 1,
+    "Labeling": 2,
+    "Mind Reading": 2,
+    "No Distortion": 6,
+    "Magnification": 2,
+    "Fortune-telling": 2,
+    "All-or-nothing thinking": 1,
+    "Overgeneralization": 1,
+    "Mental filter": 1,
+    "Personalization": 1,
+    "Should statements": 1
+  },
+  "abandoned_by_label": {
+    "All-or-nothing thinking": 1,
+    "No Distortion": 1,
+    "Magnification": 1
+  },
+  "critic_rejected_by_label": {
+    "All-or-nothing thinking": 1,
+    "No Distortion": 1,
+    "Magnification": 1
+  },
+  "unknown_by_label": {},
+  "confusion": [
+    {
+      "intended": "All-or-nothing thinking",
+      "leaned": "Overgeneralization",
+      "n": 1
+    },
+    {
+      "intended": "No Distortion",
+      "leaned": "Personalization",
+      "n": 1
+    },
+    {
+      "intended": "Magnification",
+      "leaned": "Fortune-telling",
+      "n": 1
+    }
+  ],
+  "no_distortion_accept_margin": [
+    2,
+    2,
+    2,
+    3,
+    2
+  ],
+  "est_cost_usd": 0.0,
+  "accepted_by_type": {
+    "No Distortion": 5,
+    "Labeling": 2,
+    "Mind Reading": 2,
+    "Fortune-telling": 2,
+    "Emotional Reasoning": 1,
+    "Magnification": 1,
+    "Overgeneralization": 1,
+    "Mental filter": 1,
+    "Personalization": 1,
+    "Should statements": 1
+  },
+  "gen_models_used": [
+    "Qwen/Qwen3-14B-AWQ"
+  ],
+  "critic_slots": [
+    [
+      "casperhansen/mistral-small-24b-instruct-2501-awq"
+    ],
+    [
+      "stelterlab/phi-4-AWQ"
+    ],
+    [
+      "hugging-quants/Meta-Llama-3.1-8B-Instruct-AWQ-INT4",
+      "ibm-granite/granite-3.3-8b-instruct"
+    ]
+  ],
+  "critic_temps": [
+    0.3,
+    0.6,
+    0.9
+  ],
+  "chunk": 75,
+  "seed": 42,
+  "seconds_by_phase": {
+    "generate": 785.5,
+    "critique": 949.9,
+    "revise": 1094.8
+  },
+  "seconds_total": 2830.1,
+  "cost_usd": 0.0,
+  "note": "local open models on the notebook GPU; no API cost"
+}
