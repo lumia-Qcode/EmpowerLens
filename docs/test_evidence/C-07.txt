@@ -1,0 +1,13 @@
+$ python -c "group data/supplementary/supplementary.csv by thread_id; count distinct roles"
+Run 21 Nov 2026, branch lumia-space 637f1c6
+
+rows: 500
+threads: 154
+threads with two roles: 0
+
+            rows  threads
+role                     
+evaluation   376      108
+seed         124       46
+
+Same check as data/supplementary/cleaning_log.md ('threads in both roles: 0').

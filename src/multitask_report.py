@@ -207,7 +207,8 @@ def build(mt_dir=MT_DIR) -> str:
                      f"{r.n_sel_rows} / {r.n_sentences} | {r.n_truncated_sentences} |")
         L.append("")
 
-    L += ["## Fallback", "", FALLBACK, ""]
+    if not have_mt:   # only when the multi-task eval files are missing
+        L += ["## Fallback", "", FALLBACK, ""]
     return "\n".join(L)
 
 

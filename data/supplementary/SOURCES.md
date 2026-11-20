@@ -8,7 +8,6 @@ and cost nothing. Raw files are in `raw/`, one row per post / comment / paragrap
 |---|---|---|---|---|---|
 | Hacker News | Lumia | 330 | 330 | 121 | `raw/hn_raw.csv` |
 | Failory (founder interviews) | Lumia | 170 | 170 | 33 | `raw/failory_raw.csv` |
-| Indie Hackers | Izza | — | — | — | `raw/indiehackers_raw.csv` *(to add)* |
 | **Total so far** | | **500** | **500** | 154 | target 489 after exact dedup: **met** |
 
 Regenerate the counts with `venv\Scripts\python.exe -m src.scrape.dedup_check`.

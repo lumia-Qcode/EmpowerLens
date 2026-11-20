@@ -1,0 +1,9 @@
+$ python: row counts and Id_Number sets of the data the S08 train+synthetic runs used
+Run 21 Nov 2026, branch lumia-space 637f1c6
+
+train (data/splits_synth/train.csv): 2256 = 2024 benchmark + 232 synthetic
+  benchmark train IDs all present: True; extra IDs are exactly the final synthetic ids: True
+val (data/splits_synth/val.csv): 253 rows; same IDs as data/splits/val.csv: True (file is a byte-for-byte copy)
+test: no test.csv in data/splits_synth; every evaluation ran `src.evaluate --splits data/splits` (notebook cell 4). Test rows scored per run: [253, 253, 253] (data/splits/test.csv has 253)
+synthetic ids in val: 0; in test: 0
+training splits recorded in each train_synth checkpoint meta: ['data/splits_synth']

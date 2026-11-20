@@ -35,7 +35,3 @@ Multi-task results present for seeds [42, 1337, 2024].
 | 42 | test | 5 | 0.815 | 0.185 | 0.627 | 0.692 | 0.269 | 0.262 | 0.378 | 0.597 | 0.463 | 0.786 | 253 | 159 / 1591 | 4 |
 | 1337 | test | 3 | 0.761 | 0.239 | 0.658 | 0.689 | 0.278 | 0.275 | 0.401 | 0.652 | 0.497 | 0.805 | 253 | 159 / 1591 | 4 |
 | 2024 | test | 4 | 0.739 | 0.261 | 0.758 | 0.739 | 0.246 | 0.252 | 0.450 | 0.545 | 0.493 | 0.717 | 253 | 159 / 1591 | 4 |
-
-## Fallback
-
-**If the run is not done by the freeze.** The multi-task model was not trained by the D3 freeze. What was built: `src/train_multitask.py` (one MentalRoBERTa encoder with a binary head, a 10-way multilabel head and a sentence-selection head that scores each sentence from the mean of its token states; the selection loss is masked to zero for No-Distortion rows and the 13 rows whose quote could not be located), its unit tests (`tests/test_multitask.py`, including B-06), the Kaggle runner (`notebooks/kaggle_runner_d20_multitask.ipynb`) and this report script. Chapter 9 therefore reports flat vs cascade from `results/results_RUN2/experiments.md`, and Chapter 10 lists the multi-task model as the first FYP-2 experiment.

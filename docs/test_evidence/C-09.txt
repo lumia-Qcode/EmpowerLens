@@ -1,0 +1,10 @@
+$ python: is_duplicate(text, val + test + survey + supplementary evaluation pool, 0.8) per synthetic row
+Run 21 Nov 2026, branch lumia-space 637f1c6
+
+synthetic rows (S06): 258
+corpus texts: 1230 (val 253, test 253, survey 348, supplementary evaluation 376)
+near-copies found at 0.8: 0 []
+removed: 0
+near-copies in the final file (synthetic_train_en_final.jsonl, 232 rows): 0
+
+S07 used the stricter 0.6 cut (docs/synth_checks.md): 0 rows above 0.6 in any set; the highest Jaccard was 0.279 (seeds), 0.213 (supplementary evaluation), 0.235 (test), 0.224 (survey).

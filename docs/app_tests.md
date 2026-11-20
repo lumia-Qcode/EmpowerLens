@@ -1,6 +1,6 @@
 # D26: App and model-output test cases
 
-Rows from the *Test cases* tab of `D3/tasks_D3_2026-11-15.xlsx` whose *Task* is D26: A-01 to A-19, D-01, D-02, D-03,
+Rows from the *Test cases* tab of the D3 task sheet (`tasks_D3_2026-11-15.xlsx`, kept off-repo) whose *Task* is D26: A-01 to A-19, D-01, D-02, D-03,
 D-05 and D-06. Evidence is in `docs/test_evidence/<ID>.png|txt`.
 
 **Setup.** The demo app was `empowerlens-demo` at commit `570b82a` (D25), serving the D12 model from `models/d12`:
