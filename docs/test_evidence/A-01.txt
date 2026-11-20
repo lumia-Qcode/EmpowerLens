@@ -1,0 +1,14 @@
+A-01  Prompts shown in order; each answer stored against its own prompt
+Run: Claude agent, 2026-11-20, local app (empowerlens-demo 570b82a) on a throwaway SQLite copy, test cohort "TEST participant flow" (cohort 6).
+
+Prompt set in the DB (SELECT * FROM prompt):
+  prompt_id=1  display_order=1  open_recall  "How do you feel about your startup and your journey as a founder right now? ..."
+  -> the set has exactly ONE prompt (the app was changed to a single reflection question, commit 6b52c06).
+
+UI: after consent the page showed that one prompt once (screenshot A-01.png). Typed "answer to prompt 1", submitted.
+
+Stored rows for the participant (SELECT ... FROM participant JOIN reflection WHERE cohort_id=6):
+  participant_token=P-2F62AB50  reflection_id=34  prompt_id=1  text="answer to prompt 1"  submitted_at=2026-11-20T12:35:45+00:00
+
+Result: the single prompt appeared once and the answer is stored under prompt_id 1. The "different answer under each
+prompt" part cannot be exercised because the set has one prompt.

@@ -1,0 +1,10 @@
+A-09  A successful report view is logged
+Signed in (browser) as trainer A (Demo Trainer, user 1). Opened own cohort 1 "Spring Founders 2026" (18 submissions, threshold 3).
+Report shown (A-09.png), page text:
+  Submissions analysed 18 | Reporting threshold 3 | Types shown 1 of 10 | Most frequent Personalization
+  "3 rarer type(s) are hidden because fewer than 3 submissions showed them."
+  Personalization 3 · 17%
+  Illustrative sentences: "I feel like a fraud, so I must be one." (Personalization)
+access_log row written for this view (sign-in at 12:39:5x):
+  {"log_id": 4, "user_id": 1, "cohort_id": 1, "action": "view_report", "outcome": "allowed", "logged_at": "2026-11-20T12:39:52+00:00"}
+(log_id 3 is the same trainer's earlier view at 12:39:11 when the page reloaded signed in.)

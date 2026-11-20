@@ -1,0 +1,20 @@
+D-03  The selected sentences really come from the text
+Source: D-01 output (d01_run1.json), check script in scratchpad. Each sentence also carries start/end offsets; checked text[start:end] == sentence.
+
+D-03: selected sentences vs text (D-01 rows)
+val row 0: is_distorted=False selected=0 all sentences found verbatim (and at their offsets)=True
+val row 1: is_distorted=True selected=3 all sentences found verbatim (and at their offsets)=True
+   selected: "Why are such high expectations put on me that she doesn’t live up to?" score 0.9277 | in text: True
+   selected: "She is my biggest role model, and all I can think of at this moment is starving myself until I look like her." score 0.8468 | in text: True
+   selected: "But when she’s not…my motivation goes away and I want to restrict." score 0.7875 | in text: True
+val row 2: is_distorted=False selected=0 all sentences found verbatim (and at their offsets)=True
+val row 3: is_distorted=False selected=0 all sentences found verbatim (and at their offsets)=True
+val row 4: is_distorted=False selected=0 all sentences found verbatim (and at their offsets)=True
+cohort1 reflection 1 selected 1 of 2 verbatim True | I have to be perfect in every meeting. If I make one mistake the deal is gone.
+cohort1 reflection 4 selected 1 of 2 verbatim True | A competitor launched a similar product. We are doomed, there is no point continuing.
+cohort1 reflection 6 selected 2 of 2 verbatim True | I'm a complete failure at pitching. Every time I stand in front of investors I ruin it.
+cohort1 reflection 9 selected 1 of 1 verbatim True | We lost a big client last year and I keep thinking it was entirely my fault, even though t
+cohort1 reflection 10 selected 1 of 2 verbatim True | I feel like a fraud, so I must be one. Real founders don't feel this lost.
+
+(The last 5 lines are the distorted reflections of seed test cohort 1, checked the same way as extra cases.)
+Result: every selected sentence is found word for word in its reflection; every row called distorted has >= 1 selected sentence.

@@ -1,0 +1,40 @@
+D-02  The distortion types agree with the yes/no decision
+The app uses SEPARATE binary and multi-label models (classifier_pair). Types are reported only when the binary model says distorted
+(classifier_pair.predict: 'if distorted:' gate), capped at 2.
+
+D-02: decision vs types, D-01 rows (val) + seed cohort 1 reflections (researcher view, same model)
+source | is_distorted | p | types reported | types the multilabel model fires on its own (ungated, before the 2-cap) | rule ok
+val row 0 (Id 4508) | False | 0.009 | [] | [] | True
+val row 1 (Id 4522) | True | 0.984 | ['Personalization', 'Should statements'] | ['Personalization', 'Should statements', 'Labeling', 'All-or-nothing thinking'] | True
+val row 2 (Id 4541) | False | 0.9362 | [] | ['Overgeneralization'] | True
+val row 3 (Id 4543) | False | 0.5704 | [] | ['Mind Reading', 'Overgeneralization'] | True
+val row 4 (Id 4549) | False | 0.586 | [] | ['Mind Reading', 'Overgeneralization'] | True
+cohort1 reflection 1 | True | 0.9779 | ['All-or-nothing thinking', 'Should statements'] | ['All-or-nothing thinking', 'Should statements', 'Overgeneralization', 'Labeling'] | True
+cohort1 reflection 2 | False | 0.0401 | [] | [] | True
+cohort1 reflection 3 | False | 0.2228 | [] | ['Labeling'] | True
+cohort1 reflection 4 | True | 0.9849 | [] | [] | False
+cohort1 reflection 5 | False | 0.014 | [] | [] | True
+cohort1 reflection 6 | True | 0.9917 | ['Personalization', 'Labeling'] | ['Personalization', 'Labeling', 'Overgeneralization'] | True
+cohort1 reflection 7 | False | 0.0486 | [] | [] | True
+cohort1 reflection 8 | False | 0.9565 | [] | [] | True
+cohort1 reflection 9 | True | 0.9859 | ['Personalization'] | ['Personalization'] | True
+cohort1 reflection 10 | True | 0.9914 | ['Personalization', 'Labeling'] | ['Personalization', 'Labeling', 'Should statements', 'All-or-nothing thinking'] | True
+cohort1 reflection 11 | False | 0.4958 | [] | ['Mind Reading'] | True
+cohort1 reflection 12 | False | 0.0461 | [] | [] | True
+cohort1 reflection 13 | False | 0.4879 | [] | ['Mind Reading'] | True
+cohort1 reflection 14 | False | 0.1039 | [] | [] | True
+cohort1 reflection 15 | False | 0.2819 | [] | ['Overgeneralization'] | True
+cohort1 reflection 16 | False | 0.1273 | [] | [] | True
+cohort1 reflection 17 | False | 0.0236 | [] | [] | True
+cohort1 reflection 18 | False | 0.3035 | [] | ['Mind Reading'] | True
+
+Rows where the two models disagree, and how the app handles it:
+- Binary "not distorted" but the multi-label model fires types (val rows 2, 3, 4; cohort1 reflections 3, 11, 13, 15, 18):
+  the app reports 0 types (gate). Rule holds.
+- Binary "distorted" with 3-4 types firing (val row 1; cohort1 1, 6, 10): the app keeps the top 2 by score. Rule holds.
+- Binary "distorted" but NO type passes its threshold (cohort1 reflection 4, "A competitor launched a similar product. We are
+  doomed, there is no point continuing.", p=0.9849): the app returns is_distorted=true with labels=[] (researcher view says
+  "Distorted reasoning detected" with no bold type; the trainer report counts it in "share with distorted reasoning" but in
+  no type). Rule "distorted gives 1 or 2 types" is broken for this row.
+Result: on the D-01 rows the rule holds (1 distorted with 2 types, 4 not distorted with 0), but the app has no handling for
+the distorted-with-0-types case, which occurred on 1 of the 23 texts checked, so this is recorded as Fail.

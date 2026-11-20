@@ -1,0 +1,11 @@
+A-18  The participant flow works on a phone browser
+Playwright (Chromium) viewport resized to 375 x 812. Did the A-02 flow in cohort 6: consent -> one reflection -> submit.
+Screenshots: A-18_1_consent.png, A-18_2_question.png, A-18_3_received.png (A-18.png = final screen).
+Layout checks on each screen (document scrollWidth vs viewport width; every button's box inside the viewport):
+  consent : viewport 375, scrollWidth 360, side scroll false; "I do not agree" 134x50, "I agree, start" 132x50, both in view
+  question: viewport 375, scrollWidth 360, side scroll false; "Submit answer" 278x52 in view
+  received: viewport 375, scrollWidth 360, side scroll false; "Start a new exercise" 198x48 in view
+All buttons at least 48 px tall. Text wraps; nothing needs sideways scrolling.
+Stored: {"participant_token": "P-7A26CB2D", "consented_at": "2026-11-20T12:45:00+00:00", "completed_at": "2026-11-20T12:45:02+00:00",
+         "reflection_id": 40, "text": "A-18 phone test: the pitch went okay and I will follow up with two investors next week."}
+Limitation: emulated phone viewport in desktop Chromium with mouse clicks (no real phone, no touch emulation).

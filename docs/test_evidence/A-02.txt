@@ -1,0 +1,11 @@
+A-02  Consent recorded before anything is stored
+Before clicking consent (fresh /participant page, cohort 6 selected, screenshot A-02_1_consent.png):
+  SELECT count(*) FROM participant WHERE cohort_id=6  -> 0   (whole DB: 33 participants, 33 reflections, all seed data)
+After "I agree, start":
+  {"participant_token": "P-2F62AB50", "cohort_id": 6, "gender": null, "consented_at": "2026-11-20T12:35:17+00:00", "completed_at": null}
+After writing one reflection and submitting (screen: "Responses received", A-02_2_received.png):
+  {"participant_token": "P-2F62AB50", "consented_at": "2026-11-20T12:35:17+00:00", "completed_at": "2026-11-20T12:35:45+00:00",
+   "reflection_id": 34, "prompt_id": 1, "text": "answer to prompt 1", "submitted_at": "2026-11-20T12:35:45+00:00",
+   "consent_before_reflection": 1}
+Note: the reflection table's creation time column is submitted_at. consented_at 12:35:17 < submitted_at 12:35:45.
+Both are stored at 1-second resolution, so a scripted consent+submit inside the same second would record equal times.

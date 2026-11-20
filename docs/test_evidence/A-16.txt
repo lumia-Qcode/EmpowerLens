@@ -1,0 +1,16 @@
+A-16  Researcher view shows the prediction, and each access is logged
+Signed in (browser) as the project-team researcher account (researcher@empowerlens.demo, user 2), opened cohort 1,
+reflection 1 of 18 (A-16.png):
+  Text: "I have to be perfect in every meeting. If I make one mistake the deal is gone." (sentence 1 highlighted = selected)
+  Prediction: "Distorted reasoning detected (p = 0.978, threshold 0.977)"; passed labels in bold:
+  All-or-nothing thinking 0.69, Should statements 0.63; all 10 label scores shown. Model panel: MentalRoBERTa,
+  version mentalroberta-d12-s42-20261120.
+access_log rows written:
+  {"log_id": 8, "user_id": 2, "cohort_id": 1, "action": "open_researcher_review", "outcome": "allowed", "logged_at": "2026-11-20T12:40:49+00:00"}
+  (log_id 6 at 12:40:32 is the same call made from curl for A-11/A-12.)
+Clicking "Next" to open reflection 2: 0 new access_log rows.
+access_log columns: log_id, user_id, cohort_id, action, outcome, logged_at  -> no reflection_id column.
+
+Result: Fail on the logging part. Text, labels and selected sentences are shown, and an 'open_researcher_review' row with
+user and time is written, but it is logged once per cohort (cohort_id), not per reflection: the reflection ID is not
+recorded and moving between reflections writes nothing.

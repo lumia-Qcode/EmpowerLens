@@ -1,0 +1,14 @@
+A-05  The participant is never shown a classification
+UI: consented in cohort 6 (token P-C46BC01D), typed "Everyone will laugh at my pitch, I always fail", submitted.
+Screen after submit (A-05.png), full page text:
+  "Participant View / Trainer View / Researcher View / EmpowerLens / TEST participant flow / Responses received /
+   Thank you. Your reflection was saved and the exercise is closed. / Start a new exercise /
+   Saved under an anonymous participant token. Nothing here is scored or shown back to you."
+Every API response the page received (Playwright network log, equivalent of F12 > Network):
+  GET  /api/participant/cohorts -> [{"cohort_id":2,"name":"Pitch Lab Autumn"},{"cohort_id":6,"name":"TEST participant flow"}]
+  GET  /api/prompts             -> [{prompt_id 1, prompt_type, prompt_text, display_order}]
+  POST /api/participant/consent -> {"stored":true,"participant_token":"P-C46BC01D"}
+  POST /api/participant/submit  -> {"received":true}
+No label, score, distortion name or highlighted sentence on screen or in any response.
+Note: the top navigation bar with "Trainer View" / "Researcher View" links is visible to participants
+(they still need a sign-in, see A-07/A-15).

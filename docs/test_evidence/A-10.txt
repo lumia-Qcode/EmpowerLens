@@ -1,0 +1,7 @@
+A-10  No report below the reporting threshold
+Test cohort 5 "TEST below threshold" (trainer A): report_threshold = 5, current count = 2 submissions.
+Expected "more needed" = 5 - 2 = 3.
+Trainer view after selecting the cohort (A-10.png):
+  "Not enough submissions for a report. This cohort has 2 submissions. Reports start at 5, so that no pattern can be
+   traced to one person. 3 more needed."
+No distribution, types or sentences shown; the Export button is disabled.

@@ -1,0 +1,17 @@
+A-07  The cohort report needs a signed-in trainer
+Signed in as trainer A in the browser, clicked "Sign out" (sessionStorage afterwards: {}, page heading "Sign in as trainer").
+Pasted the cohort report URL into the browser: http://localhost:5173/api/trainer/cohorts/1/report
+  -> HTTP 401, body {"detail":"Sign in required"}  (A-07.png). No report content.
+The trainer page itself (http://localhost:5173/trainer, A-07_trainer_page.png) shows "Sign in as trainer".
+Note: the frontend has no per-cohort URL (the selected cohort is page state), so the only cohort report URL is the API
+one; it returns 401 rather than redirecting to the sign-in page.
+
+Additional finding (bug): signing out does not end the server session.
+  Bearer token issued at sign-in: kw6fl2Gz... (Demo Trainer). After the UI sign-out, the same token was sent from curl:
+  GET /api/trainer/cohorts/2/report with that token -> HTTP 200 and the full cohort report
+  ({"cohort":{"cohort_id":2,...,"name":"Pitch Lab Autumn"},"status":"ok","submissions":7,...}); logged as access_log
+  row 2 (user 1, cohort 2, view_report, allowed, 12:38:28). The Sign out button only clears sessionStorage; there is no
+  logout endpoint and session rows never expire.
+  Without a token: GET /api/trainer/cohorts/2/report -> {"detail":"Sign in required"} HTTP 401.
+Observation: on the first attempt (12:38:24) a Sign out click left the page signed in and the token in sessionStorage;
+a second click at 12:39:29 worked. Not reproduced, so not listed as a bug.
