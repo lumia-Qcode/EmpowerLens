@@ -1,0 +1,16 @@
+row,seed,file,val_macro_f1,test_macro_f1,test_specificity_per_label
+full,42,full/eval_mental-roberta-base_multilabel_42.json,0.394,0.2572,0.8396
+full,1337,full/eval_mental-roberta-base_multilabel_1337.json,0.3718,0.256,0.8436
+full,2024,full/eval_mental-roberta-base_multilabel_2024.json,0.3763,0.2911,0.8469
+crop_sel,42,crop_sel/eval_mental-roberta-base_multilabel_42.json,0.3565,0.3362,0.8509
+crop_sel,1337,crop_sel/eval_mental-roberta-base_multilabel_1337.json,0.3611,0.3113,0.8823
+crop_sel,2024,crop_sel/eval_mental-roberta-base_multilabel_2024.json,0.385,0.3605,0.8724
+crop_gold,42,crop_gold/eval_mental-roberta-base_multilabel_42.json,0.4966,0.4359,0.8801
+crop_gold,1337,crop_gold/eval_mental-roberta-base_multilabel_1337.json,0.5203,0.4173,0.9032
+crop_gold,2024,crop_gold/eval_mental-roberta-base_multilabel_2024.json,0.5411,0.449,0.8895
+marked_sel,42,marked_sel/eval_mental-roberta-base_multilabel_42.json,0.3452,0.241,0.849
+marked_sel,1337,marked_sel/eval_mental-roberta-base_multilabel_1337.json,0.3307,0.2718,0.842
+marked_sel,2024,marked_sel/eval_mental-roberta-base_multilabel_2024.json,0.3669,0.2944,0.8416
+marked_gold,42,marked_gold/eval_mental-roberta-base_multilabel_42.json,0.3826,0.2889,0.8517
+marked_gold,1337,marked_gold/eval_mental-roberta-base_multilabel_1337.json,0.3697,0.2969,0.8451
+marked_gold,2024,marked_gold/eval_mental-roberta-base_multilabel_2024.json,0.3757,0.3297,0.8488
