@@ -123,3 +123,16 @@ spec. Nayab's retry design (which also sends retries through the filters) goes t
 freeze rule.
 
 **Tests:** 170 passed on `lumia-space` after the merge; the fresh-checkout run on `main` is recorded below.
+
+**Fresh checkout of `main` (`aab42b7`, PR #15 merge), 21 Nov 2026:** cloned with `core.longpaths=true` into a new
+folder and ran `venv\Scripts\python.exe -m pytest -q` there (imports resolved to the clone's `src/`):
+**170 passed**. Checks on that checkout:
+- all 38 cited "Done when" files are present, including the S07–S10 and S08 docs and data;
+- the test evidence B-06 and C-07 to C-10 is present;
+- `planning/` has 0 tracked files;
+- `data/splits/` is unchanged since before D28 (`47018de`);
+- the only frozen-file change is the approved one-word README fix;
+- 0 model-weight files are tracked.
+
+**Demo repo:** `d26-fixes` was merged into empowerlens-demo `main` (PR izza14/empowerlens-demo#1, `1e92a97`); 49 tests
+pass.
